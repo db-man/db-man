@@ -1,0 +1,75 @@
+{
+  "name": "@db-man/components",
+  "version": "0.1.59",
+  "description": "",
+  "main": "lib/lib.js",
+  "scripts": {
+    "start": "PUBLIC_URL=/ react-scripts start",
+    "build": "yarn build-lib",
+    "build-lib": "./build.sh",
+    "build-app": "react-scripts build",
+    "test": "react-scripts test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/db-man/components.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/db-man/components/issues"
+  },
+  "homepage": "https://github.com/db-man/components#readme",
+  "devDependencies": {
+    "@ant-design/icons": "^4.7.0",
+    "@babel/cli": "^7.17.6",
+    "@babel/core": "^7.17.9",
+    "@babel/preset-env": "^7.16.11",
+    "@babel/preset-react": "^7.16.7",
+    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/react": "^13.0.1",
+    "antd": "^4.20.2",
+    "eslint": "^8.13.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jest": "^26.1.4",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
+    "eslint-plugin-react": "^7.29.4",
+    "eslint-plugin-react-hooks": "^4.4.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-scripts": "5.0.1"
+  },
+  "dependencies": {
+    "@ant-design/icons": "^4.7.0",
+    "@db-man/github": "^0.1.9",
+    "db-man": "^0.1.5",
+    "handlebars": "^4.7.7",
+    "lodash.debounce": "^4.0.8",
+    "prop-types": "^15.8.1",
+    "react-router": "^6.3.0",
+    "react-router-dom": "^6.3.0"
+  },
+  "peerDependencies": {
+    "antd": ">=4.19.0",
+    "react": ">=16.9.0",
+    "react-dom": ">=16.9.0"
+  },
+  "jest": {
+    "transformIgnorePatterns": [
+      "node_modules/(?!(@db-man|db-man)/)"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
