@@ -85,7 +85,7 @@ export default class Settings extends React.Component {
 
     return (
       <div>
-        <h1>Settings</h1>
+        <h1>Settings (v0.1.60)</h1>
         <h2>Database Connections</h2>
         <EditableTable onEnable={onEnable} />
         <div style={{ display: 'none' }}>

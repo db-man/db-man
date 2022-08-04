@@ -78,12 +78,13 @@ export function ImageLink({
     </div>
   );
 }
-ImageLink.propTypes = {
+const imageLinkShape = {
   children: PropTypes.string,
   url: PropTypes.string,
   imgSrc: PropTypes.string,
   description: PropTypes.string,
 };
+ImageLink.propTypes = imageLinkShape;
 ImageLink.defaultProps = {
   children: '',
   url: '',
@@ -101,3 +102,13 @@ export function ImageLinks({ imgs, limit = 3 }) {
   // eslint-disable-next-line react/no-array-index-key, react/jsx-props-no-spreading
   return results.map((img, index) => <ImageLink key={index} {...img} />);
 }
+
+ImageLinks.propTypes = {
+  imgs: PropTypes.arrayOf(
+    PropTypes.shape(imageLinkShape),
+  ).isRequired,
+  limit: PropTypes.number,
+};
+ImageLinks.defaultProps = {
+  limit: 3,
+};
