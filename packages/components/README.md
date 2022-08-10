@@ -16,7 +16,7 @@ A sample GitHub database: [https://github.com/db-man/db](https://github.com/db-m
 ```
 npx create-react-app my-app
 cd my-app
-yarn add @db-man/components antd
+npm i @db-man/components antd
 ```
 
 Modify `src/App.jsx`

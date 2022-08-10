@@ -3,14 +3,14 @@
 Dev
 
 ```
-yarn start
+npm start
 ```
 
 Publish
 
 ```
-yarn test --watchAll=false
-yarn build
+npm test --watchAll=false
+npm run build
 git add . && git commit -m 'Build'
 npm version patch
 git push && git push origin v0.1.2

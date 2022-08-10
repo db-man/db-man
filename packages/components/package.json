@@ -42,7 +42,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
-    "@db-man/github": "^0.1.9",
+    "@db-man/github": "^0.1.10",
     "db-man": "^0.1.5",
     "handlebars": "^4.7.7",
     "lodash.debounce": "^4.0.8",
