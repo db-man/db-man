@@ -1,5 +1,21 @@
+# Develop
+
+## Install
+
 ```
-npm version patch
-git push && git push origin v0.1.2
-yarn build && npm publish --access=public
+npm i
+```
+
+## Test
+
+```
+npm test -- --watch
+```
+
+## Publish
+
+Start to publish
+
+```
+TOKEN=ghp_123 npm run release
 ```

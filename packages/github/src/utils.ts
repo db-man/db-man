@@ -1,5 +1,3 @@
-import { constants } from 'db-man';
-
 // // Check something like: "Failed to load resource: the server responded with a status of 409 ()"
 // const _checkError = (response) => {
 //   if (!response.ok) {
@@ -22,23 +20,34 @@ import { constants } from 'db-man';
 // };
 
 /**
- *
- * @param {string} path e.g. dbsDir/dbName/tableName.data.json
- * @returns
+ * Get valid file name
+ * See: https://stackoverflow.com/a/4814088
+ * @param oldStr
+ * @returns POSIX "Fully portable filenames"
  */
-export const getGitHubFullPath = (path) => `https://github.com/${localStorage.getItem(
-  constants.LS_KEY_GITHUB_OWNER,
-)}/${localStorage.getItem(
-  constants.LS_KEY_GITHUB_REPO_NAME,
-)}/blob/main/${path}`;
-export const getGitHubUrl = (path) => `https://github.com/${localStorage.getItem(
-  constants.LS_KEY_GITHUB_OWNER,
-)}/${localStorage.getItem(
-  constants.LS_KEY_GITHUB_REPO_NAME,
-)}/${path}`;
+export const validFilename = (oldStr: string) => oldStr.replace(/[^a-zA-Z0-9._-]/g, '_');
 
-export const getGitHubHistoryPath = (path) => `https://github.com/${localStorage.getItem(
-  constants.LS_KEY_GITHUB_OWNER,
-)}/${localStorage.getItem(
-  constants.LS_KEY_GITHUB_REPO_NAME,
-)}/commits/main/${path}`;
+export const getDataFileName = (tableName: string) => `${tableName}.data.json`;
+
+export const getRecordFileName = (primaryKeyVal: string) => `${validFilename(primaryKeyVal)}.json`;
+
+/**
+ * @param {Date} d
+ * @returns {string} "2021-07-04 01:16:01"
+ */
+export const formatDate = (d: Date) => {
+  const pad = (num) => num.toString().padStart(2, '0');
+  return (
+    `${d.getFullYear()
+    }-${
+      pad(d.getMonth() + 1)
+    }-${
+      pad(d.getDate())
+    } ${
+      pad(d.getHours())
+    }:${
+      pad(d.getMinutes())
+    }:${
+      pad(d.getSeconds())}`
+  );
+};
