@@ -1,5 +1,25 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`getColumnRender given ImageLink should match snapshot 1`] = `
+<ImageLink
+  description=""
+  imgSrc="https://foo.com/a.jpg"
+  url="https://foo.com/a.jpg"
+>
+  
+</ImageLink>
+`;
+
+exports[`getColumnRender given ImageLink should match snapshot when photos is undefined 1`] = `
+<ImageLink
+  description=""
+  imgSrc="record.photos.[0]"
+  url=""
+>
+  
+</ImageLink>
+`;
+
 exports[`getColumnRender given Link should match snapshot 1`] = `
 <Link
   href="https://foo.com"

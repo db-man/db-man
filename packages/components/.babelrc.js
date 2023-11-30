@@ -1,4 +1,5 @@
 module.exports = {
-  presets: [["@babel/preset-react"]],
-  plugins: [["@babel/plugin-proposal-class-properties"]],
+  presets: ['@babel/preset-react', '@babel/preset-typescript'],
+  plugins: ['@babel/plugin-proposal-class-properties'],
+  ignore: ['**/__snapshots__/*', '*.snap'],
 };

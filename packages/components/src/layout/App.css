@@ -21,7 +21,7 @@
   margin-top: 10px;
 }
 
-.dm-dd-image-link span {
+.dm-dd-image-link a span {
   /* color: white;  */
   width: 150px;
   display: block;
@@ -29,6 +29,6 @@
   font-size: 1px;
 }
 
-.dm-dd-image-link img {
+.dm-dd-image-link a img {
   width: 150px;
 }
