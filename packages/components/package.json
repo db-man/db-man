@@ -53,12 +53,12 @@
     "react-dom": ">=18.0.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "start-cra": "react-scripts start",
+    "build-cra": "react-scripts build",
+    "test-cra": "react-scripts test",
     "dev": "PUBLIC_URL=/ npm start",
-    "build-lib": "./build.sh",
-    "release": "CI=true npm test && npm run build-lib && git add . && git commit -m 'Build'; npm version patch && git push && git push --tags && npm publish --access=public",
+    "build": "./build.sh",
+    "release": "CI=true npm test && npm run build && git add . && git commit -m 'Build'; npm version patch && git push && git push --tags && npm publish --access=public",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
