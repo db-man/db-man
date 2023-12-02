@@ -28,13 +28,12 @@ const DbConnections = ({ storage }: { storage: StorageType }) => {
 
   const handleDbConnectionEnable = () => {
     const githubDb = new GithubDb({
-      personalAccessToken: storage.get(
-        constants.LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN
-      ),
-      repoPath: storage.get(constants.LS_KEY_GITHUB_REPO_PATH),
-      owner: storage.get(constants.LS_KEY_GITHUB_OWNER),
-      repoName: storage.get(constants.LS_KEY_GITHUB_REPO_NAME),
-      dbsSchema: storage.get(constants.LS_KEY_DBS_SCHEMA),
+      personalAccessToken:
+        storage.get(constants.LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN) || '',
+      repoPath: storage.get(constants.LS_KEY_GITHUB_REPO_PATH) || '',
+      owner: storage.get(constants.LS_KEY_GITHUB_OWNER) || '',
+      repoName: storage.get(constants.LS_KEY_GITHUB_REPO_NAME) || '',
+      dbsSchema: storage.get(constants.LS_KEY_DBS_SCHEMA) || '',
     });
     const { github } = githubDb;
     reloadDbsSchemaAsync(github, githubDb).then(() => {});
