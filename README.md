@@ -15,13 +15,19 @@ You can either move it inside src/, or add a symlink to it from project's node_m
 ```
 
 ```
-$ ls -l node_modules/@db-man 
+$ ls -l node_modules/@db-man
 total 0
 lrwxr-xr-x  1 chenyang  staff    19B Aug 10 23:30 components -> ../../../components
 ```
 
 Root cause: https://stackoverflow.com/questions/44114436/the-create-react-app-imports-restriction-outside-of-src-directory
 
+## Develop
+
+```sh
+lerna bootstrap # install all dependencies (npm install)
+```
+
 ## References
 
-* https://github.com/airbnb/visx/blob/master/packages/visx-axis/package.json
+- https://github.com/airbnb/visx/blob/master/packages/visx-axis/package.json
