@@ -26,6 +26,7 @@ Root cause: https://stackoverflow.com/questions/44114436/the-create-react-app-im
 
 ```sh
 lerna bootstrap # install all dependencies (npm install)
+lerna run build # build all packages (github+components)
 ```
 
 ## References
