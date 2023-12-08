@@ -27,6 +27,7 @@ Root cause: https://stackoverflow.com/questions/44114436/the-create-react-app-im
 ```sh
 lerna bootstrap # install all dependencies (npm install)
 lerna run build # build all packages (github+components)
+lerna run dev --scope @db-man/components # start dev env
 ```
 
 ### How to debug @db-man/github in @db-man/components
