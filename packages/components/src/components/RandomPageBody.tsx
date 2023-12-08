@@ -51,6 +51,7 @@ const RandomPageBody = () => {
   const renderItem = (item: RowType) => {
     const column = columns.find((col) => col.id === primaryKey);
     if (!column) return <div>No primary column found</div>;
+    // TODO move `type:randomPage` out of the primary column, it should be in the table level.
     const args = column['type:randomPage'] || '';
     const fn = ddRender.getRender(args) || ((val: any) => val);
     return (
