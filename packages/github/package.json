@@ -1,0 +1,43 @@
+{
+  "name": "@db-man/github",
+  "version": "0.1.29",
+  "description": "@db-man/github",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/db-man/github.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/db-man/github/issues"
+  },
+  "homepage": "https://github.com/db-man/github#readme",
+  "dependencies": {
+    "@octokit/rest": "^18.12.0",
+    "js-base64": "^3.7.2"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.17.6",
+    "@babel/core": "^7.21.0",
+    "@babel/preset-env": "^7.20.2",
+    "@babel/preset-typescript": "^7.22.5",
+    "@octokit/types": "^11.1.0",
+    "@types/jest": "^29.5.2",
+    "@typescript-eslint/eslint-plugin": "^5.40.0",
+    "@typescript-eslint/parser": "^5.40.0",
+    "babel-jest": "^29.4.3",
+    "eslint": "^8.44.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-airbnb-typescript": "^17.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "jest": "^29.6.0",
+    "ts-jest": "^29.1.1"
+  },
+  "scripts": {
+    "build": "rm -rf dist && babel src --out-dir dist --extensions '.ts,.tsx,.js' --copy-files --source-maps && tsc",
+    "test": "jest --detectOpenHandles",
+    "release": "npm test && npm version patch && git push && git push --tags && npm run build && npm publish --access=public"
+  }
+}

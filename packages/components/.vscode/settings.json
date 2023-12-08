@@ -1,0 +1,11 @@
+{
+  "search.exclude": {
+    "/dist/**": true
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "eslint.format.enable": true,
+  "editor.tabSize": 2,
+  "prettier.singleQuote": true,
+  "prettier.jsxSingleQuote": true
+}
