@@ -74,6 +74,10 @@ See `src/types/Column.ts::DbColumnType`
 
 See `src/types/Column.ts`
 
+### `filter`
+
+TODO add description here
+
 ### `placeholder`
 
 See `src/types/Column.ts::ColumnPlaceholder`
@@ -85,6 +89,18 @@ See `src/types/Column.ts::RadioGroupUiTypeEnum`
 ### `ui:presets`
 
 See `src/types/Column.ts::Column`
+
+### `tableProps`
+
+TODO add description here
+
+### `referenceTable`
+
+TODO add description here
+
+### `isListPageImageViewKey`
+
+TODO add description here
 
 ### `type:listPage`
 

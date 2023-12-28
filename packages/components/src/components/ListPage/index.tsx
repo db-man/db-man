@@ -7,7 +7,17 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { Table, Input, Row, Col, Spin, Popover, Alert, message } from 'antd';
+import {
+  Table,
+  Input,
+  Row,
+  Col,
+  Spin,
+  Popover,
+  Alert,
+  message,
+  Segmented,
+} from 'antd';
 import type { TableProps, ColumnType as AntdColumnType } from 'antd/es/table';
 import { RightSquareFilled } from '@ant-design/icons';
 // @ts-ignore TODO: fix types for lodash
@@ -28,6 +38,7 @@ import RefTableLinks from '../RefTableLinks';
 import * as constants from '../../constants';
 import DbColumn from '../../types/DbColumn';
 import { RowType } from '../../types/Data';
+import ImageCardTable, { CardTablePagination } from './ImageCardTable';
 
 interface ListPageProps {
   tableName: string;
@@ -41,6 +52,17 @@ const filterCols = (columns: DbColumn[]) => {
   return columns.filter((col) => col.filter);
 };
 
+const TableView = 'table_view';
+const ImageView = 'image_view';
+
+/**
+ * URL params:
+ * - page: number
+ * - pageSize: number
+ * - filter: string
+ * - sorter: string
+ * - view: string (table_view or image_view)
+ */
 const ListPage = (props: ListPageProps) => {
   const { columns, tableName, primaryKey, dbName, githubDb } =
     useContext<PageContextType>(PageContext);
@@ -54,13 +76,21 @@ const ListPage = (props: ListPageProps) => {
   const [errMsg, setErrMsg] = useState('');
   const [rows, setRows] = useState<RowType[] | null>(null);
   const [contentTableName, setContentTableName] = useState(''); // the current table name of data this.state.rows
+  // TODO to improve this part, how to get initial value from URL?
   const [page, setPage] = useState(() => {
-    const url = new URL(window.location.href);
-    return Number(url.searchParams.get('page')) || defaultPage;
+    return (
+      Number(new URL(window.location.href).searchParams.get('page')) ||
+      defaultPage
+    );
   });
   const [pageSize, setPageSize] = useState(() => {
-    const url = new URL(window.location.href);
-    return Number(url.searchParams.get('pageSize')) || defaultPageSize;
+    return (
+      Number(new URL(window.location.href).searchParams.get('pageSize')) ||
+      defaultPageSize
+    );
+  });
+  const [view, setView] = useState(() => {
+    return new URL(window.location.href).searchParams.get('view') || TableView;
   });
 
   const controllerRef = useRef(new AbortController());
@@ -161,6 +191,16 @@ const ListPage = (props: ListPageProps) => {
         // @ts-ignore TODO: fix types for antd
         order: newSorter.order, // order could be undefined
       },
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleCardTableChange = (pagination: CardTablePagination) => {
+    setPage(pagination.current || defaultPage);
+    setPageSize(pagination.pageSize || defaultPageSize);
+    debouncedUpdateUrl({
+      page: pagination.current,
+      pageSize: pagination.pageSize,
     });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -355,7 +395,7 @@ const ListPage = (props: ListPageProps) => {
 
   return (
     <div className='dm-list-page list-component'>
-      <div className='table-filter'>
+      <div className='dm-table-filter'>
         <Row gutter={10}>
           {filterCols(columns).map((f) => (
             <Col key={f.id} span={6}>
@@ -370,7 +410,36 @@ const ListPage = (props: ListPageProps) => {
           ))}
         </Row>
       </div>
-      {renderTable()}
+      <Segmented
+        value={view}
+        options={[
+          {
+            label: 'Table View',
+            value: TableView,
+          },
+          {
+            label: 'Image View',
+            value: ImageView,
+          },
+        ]}
+        onChange={(val) => {
+          setView(val + '');
+          debouncedUpdateUrl({ view: val });
+        }}
+      />
+      {view === TableView ? (
+        renderTable()
+      ) : (
+        <ImageCardTable
+          imgKey={columns.find((col) => col.isListPageImageViewKey)?.id}
+          dataSource={filteredSortedData()}
+          pagination={{
+            current: page,
+            pageSize,
+          }}
+          onChange={handleCardTableChange}
+        />
+      )}
     </div>
   );
 };

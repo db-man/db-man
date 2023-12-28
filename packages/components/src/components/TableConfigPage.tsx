@@ -57,6 +57,12 @@ const columns = [
       return cell;
     },
   },
+  {
+    key: 'isListPageImageViewKey',
+    dataIndex: 'isListPageImageViewKey',
+    title: 'isListPageImageViewKey',
+    render: (cell: boolean) => (cell === true ? 'Yes' : 'No'),
+  },
 ];
 
 const footer = ({ dbName }: { dbName: string }) =>

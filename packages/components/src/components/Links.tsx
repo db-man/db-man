@@ -96,6 +96,7 @@ export function ImageLink({
       {description}
       <br />
       <Button
+        className='dm-dd-image-link-download-btn'
         onClick={() => {
           downloadImage(url2);
         }}
