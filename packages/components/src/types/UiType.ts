@@ -28,7 +28,7 @@ export type GetPageUiType = RenderArgs;
  */
 export type ListPageUiType = RenderArgs | 'HIDE';
 
-export type RandomPageUiType = string;
+export type RandomPageUiType = RenderArgs;
 
 type RenderFuncName = string;
 type RenderFuncTpl = string;

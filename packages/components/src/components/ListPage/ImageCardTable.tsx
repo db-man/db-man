@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
 import { Alert, Card, Empty, Pagination } from 'antd';
+import { Link } from 'react-router-dom';
 import { ImageLink } from '../Links';
+import PageContext from '../../contexts/page';
 
 const gridStyle: React.CSSProperties = {
   width: '25%',
@@ -24,6 +26,8 @@ const ImageCardTable = ({
   pagination: CardTablePagination;
   onChange: (pagination: CardTablePagination) => void;
 }) => {
+  const { dbName, tableName, primaryKey } = useContext(PageContext);
+
   if (!imgKey) {
     return (
       <Alert
@@ -91,6 +95,14 @@ const ImageCardTable = ({
             return (
               <Card.Grid key={index} style={gridStyle}>
                 {el}
+                <Link
+                  to={{
+                    pathname: `/${dbName}/${tableName}/update`,
+                    search: `?${primaryKey}=${item[primaryKey]}`,
+                  }}
+                >
+                  Update
+                </Link>
               </Card.Grid>
             );
           })}

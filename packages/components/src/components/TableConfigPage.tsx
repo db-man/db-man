@@ -58,6 +58,15 @@ const columns = [
     },
   },
   {
+    key: 'type:randomPage',
+    dataIndex: 'type:randomPage',
+    title: 'type:randomPage',
+    render: (cell: object) => {
+      if (typeof cell === 'object') return JSON.stringify(cell);
+      return cell;
+    },
+  },
+  {
     key: 'isListPageImageViewKey',
     dataIndex: 'isListPageImageViewKey',
     title: 'isListPageImageViewKey',

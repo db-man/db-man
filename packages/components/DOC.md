@@ -133,6 +133,26 @@ This props will pass to `ImageLink` component.
 }
 ```
 
+### `type:randomPage`
+
+On the Random Page, choose the UI component to use for one of the list item.
+
+Below is an example of using `ImageLink` component. The string after "ImageLink" is a template (Handlebars).
+It will transform the `record` which passing from antd `Table` component, into a props object like `{url:'',imgSrc:''}`.
+This props will pass to `ImageLink` component.
+
+```json
+{
+  "id": "product_id",
+  "type:randomPage": [
+    [
+      "ImageLink",
+      "{\"url\":\"{{record.photos.[0]}}\",\"imgSrc\":\"{{record.photos.[0]}}\"}"
+    ]
+  ]
+}
+```
+
 ## Split table
 
 - .github/workflows/merge.yml - https://github.com/db-man/split-table-db/blob/main/.github/workflows/merge.yml
