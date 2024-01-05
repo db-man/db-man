@@ -5,10 +5,13 @@ import { Layout } from 'antd';
 import BreadcrumbWrapper from './BreadcrumbWrapper';
 import LeftSideMenu from '../components/LeftSideMenu';
 import PageHeaderContent from '../components/PageHeaderContent';
+import { useAppContext } from '../contexts/AppContext';
+import Databases from '../types/Databases';
 
 const { Header, Content, Sider } = Layout;
 
 export default function PageLayout() {
+  const { dbs }: { dbs: Databases } = useAppContext();
   const { dbName, tableName, action } = useParams();
   return (
     <Layout>
@@ -17,7 +20,7 @@ export default function PageLayout() {
       </Header>
       <Layout>
         <Sider width={300} className='site-layout-background' collapsible>
-          {dbName ? (
+          {dbName && dbs[dbName] && tableName ? (
             <LeftSideMenu
               dbName={dbName}
               tableName={tableName}

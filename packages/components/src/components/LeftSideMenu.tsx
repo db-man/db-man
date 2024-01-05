@@ -8,7 +8,7 @@ import { useAppContext } from '../contexts/AppContext';
 
 interface LeftSideMenuProps {
   dbName: string;
-  tableName?: string;
+  tableName: string;
   action?: string;
 }
 
@@ -18,40 +18,29 @@ const LeftSideMenu: React.FC<LeftSideMenuProps> = ({
   action,
 }) => {
   const { dbs }: { dbs: Databases } = useAppContext();
-  const [openKeys, setOpenKeys] = useState<string[]>([]);
+
+  const [openKeys, setOpenKeys] = useState<string[]>(() => {
+    // if table name not exist, then collapse all menus
+    // if table name exist, then expand the menu of this table
+    const table = dbs[dbName].find(({ name }) => name === tableName);
+    if (!table) {
+      return [];
+    }
+    return [table.name];
+  });
 
   const handleOpenChange = (keys: string[]) => {
     setOpenKeys(keys);
   };
 
-  if (!dbs) {
-    return null;
-  }
-
-  const tablesOfSelectedDb = dbs[dbName];
-  if (!tablesOfSelectedDb) {
-    return null;
-  }
-
-  const firstTableOfSelectedDb = tablesOfSelectedDb[0];
-
-  const selectedKeys = [`${dbName}-${tableName}-${action}`];
-  let openKeys3 = [firstTableOfSelectedDb.name];
-  if (tableName) {
-    openKeys3 = [tableName];
-  }
-  if (openKeys.length > 0) {
-    openKeys3 = openKeys;
-  }
-
   return (
     <Menu
       mode='inline'
-      selectedKeys={selectedKeys}
-      openKeys={openKeys3}
+      selectedKeys={[`${dbName}-${tableName}-${action}`]}
+      openKeys={openKeys}
       style={{ height: '100%', borderRight: 0 }}
       onOpenChange={handleOpenChange}
-      items={tablesOfSelectedDb.map(({ name: tName }) => ({
+      items={dbs[dbName].map(({ name: tName }) => ({
         key: tName,
         label: tName,
         icon: <UserOutlined />,
@@ -90,7 +79,7 @@ const LeftSideMenu: React.FC<LeftSideMenuProps> = ({
 
 LeftSideMenu.propTypes = {
   dbName: PropTypes.string.isRequired,
-  tableName: PropTypes.string,
+  tableName: PropTypes.string.isRequired,
   action: PropTypes.string,
 };
 
