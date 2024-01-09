@@ -6,7 +6,7 @@ import PageContext from '../contexts/page';
 import ReactSimpleCodeEditor from './ReactSimpleCodeEditor';
 import { RowType } from '../types/Data';
 
-const defaultCode = 'return input;';
+const defaultCode = 'return rows.slice(0, 10);';
 
 export default function QueryPage() {
   const { dbName, tableName, githubDb } = useContext(PageContext);
@@ -23,7 +23,7 @@ export default function QueryPage() {
   useEffect(() => {
     try {
       // eslint-disable-next-line no-new-func
-      const fn = Function('input', code);
+      const fn = Function('rows', code);
 
       const output = fn(content);
       setResult({ obj: JSON.stringify(output), err: '' });
