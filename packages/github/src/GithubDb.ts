@@ -16,7 +16,11 @@ export default class GithubDb {
   github: Github;
 
   constructor({
-    personalAccessToken, repoPath, dbsSchema, owner, repoName,
+    personalAccessToken,
+    repoPath,
+    dbsSchema,
+    owner,
+    repoName,
   }: {
     personalAccessToken: string;
     repoPath: string;
@@ -58,54 +62,56 @@ export default class GithubDb {
    * @returns
    */
   getGitHubFullPath(path) {
-    return `https://github.com/${this.LS_KEY_GITHUB_OWNER}/${
-      this.LS_KEY_GITHUB_REPO_NAME
-    }/blob/main/${path}`;
+    return `https://github.com/${this.LS_KEY_GITHUB_OWNER}/${this.LS_KEY_GITHUB_REPO_NAME}/blob/main/${path}`;
   }
 
   getGitHubHistoryPath(path) {
-    return `https://github.com/${this.LS_KEY_GITHUB_OWNER}/${
-      this.LS_KEY_GITHUB_REPO_NAME
-    }/commits/main/${path}`;
+    return `https://github.com/${this.LS_KEY_GITHUB_OWNER}/${this.LS_KEY_GITHUB_REPO_NAME}/commits/main/${path}`;
   }
 
   /**
- * @param {string} dbName
- * @param {string} tableName
- * @returns Path for GitHub
- */
+   * @param {string} dbName
+   * @param {string} tableName
+   * @returns Path for GitHub
+   */
   getRecordPath(dbName, tableName, primaryKeyVal) {
-    return `${this.LS_KEY_GITHUB_REPO_PATH}/${dbName}/${tableName}/${getRecordFileName(primaryKeyVal)}`;
+    return `${
+      this.LS_KEY_GITHUB_REPO_PATH
+    }/${dbName}/${tableName}/${getRecordFileName(primaryKeyVal)}`;
   }
 
   /**
- * @param {string} dbName
- * @param {string} tableName
- * @returns Path for GitHub, e.g. dbs/dbName/tableName.data.json
- */
+   * @param {string} dbName
+   * @param {string} tableName
+   * @returns Path for GitHub, e.g. dbs/dbName/tableName.data.json
+   */
   getDataPath(dbName, tableName) {
-    return `${this.LS_KEY_GITHUB_REPO_PATH}/${dbName}/${getDataFileName(tableName)}`;
+    return `${this.LS_KEY_GITHUB_REPO_PATH}/${dbName}/${getDataFileName(
+      tableName // eslint-disable-line @typescript-eslint/comma-dangle
+    )}`;
   }
 
   /**
- * @param {string} dbName
- * @param {string} tableName
- * @returns GitHub URL of table data file, e.g. https://github.com/ownerName/repoName/blob/main/dbs/dbName/tableName.data.json
- */
+   * @param {string} dbName
+   * @param {string} tableName
+   * @returns GitHub URL of table data file, e.g. https://github.com/ownerName/repoName/blob/main/dbs/dbName/tableName.data.json
+   */
   getDataUrl(dbName, tableName) {
     return this.getGitHubFullPath(this.getDataPath(dbName, tableName));
   }
 
   /**
- * @return {string} e.g. "dbs/dbName/columns.json"
- * @private
- */
+   * @return {string} e.g. "dbs/dbName/dbcfg.json"
+   * @private
+   */
   getDbTableColDefPath(dbName) {
     return `${this.LS_KEY_GITHUB_REPO_PATH}/${dbName}/columns.json`;
   }
 
   async getDbTablesSchemaAsync(dbName) {
-    const { content } = await this.github.getFileContentAndSha(this.getDbTableColDefPath(dbName));
+    const { content } = await this.github.getFileContentAndSha(
+      this.getDbTableColDefPath(dbName) // eslint-disable-line @typescript-eslint/comma-dangle
+    );
     return content;
   }
 
@@ -138,17 +144,22 @@ export default class GithubDb {
    */
   async getTableRows(dbName: string, tableName: string, signal?: AbortSignal) {
     if (!this.isLargeTable(dbName, tableName)) {
-      return this.github.getFileContentAndSha(this.getDataPath(dbName, tableName), signal);
+      return this.github.getFileContentAndSha(
+        this.getDataPath(dbName, tableName),
+        signal // eslint-disable-line @typescript-eslint/comma-dangle
+      );
     }
 
     const files = await this.github.getPath(
       `${this.LS_KEY_GITHUB_REPO_PATH}/${dbName}`,
-      signal,
+      signal // eslint-disable-line @typescript-eslint/comma-dangle
     );
 
     // when calling getPath with a file as path param, it returns an object instead of an array
     if (!Array.isArray(files)) {
-      throw new Error(`getTableRows: Expected an array of files for the path "${this.LS_KEY_GITHUB_REPO_PATH}/${dbName}", but received an object. Please check if the provided path is a directory.`);
+      throw new Error(
+        `getTableRows: Expected an array of files for the path "${this.LS_KEY_GITHUB_REPO_PATH}/${dbName}", but received an object. Please check if the provided path is a directory.` // eslint-disable-line @typescript-eslint/comma-dangle
+      );
     }
 
     let sha;
@@ -161,47 +172,57 @@ export default class GithubDb {
   }
 
   /**
- * @param {string} path
- * @param {string} dbName
- * @param {string} tableName
- * @param {new AbortController().signal} signal
- * @returns {Promise}
- */
+   * @param {string} path
+   * @param {string} dbName
+   * @param {string} tableName
+   * @param {new AbortController().signal} signal
+   * @returns {Promise}
+   */
   getRecordFileContentAndSha(dbName, tableName, primaryKeyVal, signal) {
     const path = this.getRecordPath(dbName, tableName, primaryKeyVal);
     return this.github.getFileContentAndSha(path, signal);
   }
 
   /**
- * @param {Object} content File content in JSON object
- * @return {Promise<Response>}
- * response.commit
- * response.commit.html_url https://github.com/username/reponame/commit/a7f...04d
- * response.content
- */
+   * @param {Object} content File content in JSON object
+   * @return {Promise<Response>}
+   * response.commit
+   * response.commit.html_url https://github.com/username/reponame/commit/a7f...04d
+   * response.content
+   */
   async updateTableFile(dbName, tableName, content, sha) {
     const path = this.getDataPath(dbName, tableName);
-    return this.github.updateFile(path, JSON.stringify(content, null, 1), sha, 'Update table file');
+    return this.github.updateFile(
+      path,
+      JSON.stringify(content, null, 1),
+      sha,
+      'Update table file' // eslint-disable-line @typescript-eslint/comma-dangle
+    );
   }
 
   /**
- * @param {Object} content File content in JSON object
- * @return {Promise<Response>}
- * response.commit
- * response.commit.html_url https://github.com/username/reponame/commit/a7f...04d
- * response.content
- */
+   * @param {Object} content File content in JSON object
+   * @return {Promise<Response>}
+   * response.commit
+   * response.commit.html_url https://github.com/username/reponame/commit/a7f...04d
+   * response.content
+   */
   async updateRecordFile(dbName, tableName, primaryKey, record, sha) {
     const path = this.getRecordPath(dbName, tableName, record[primaryKey]);
-    return this.github.updateFile(path, JSON.stringify(record, null, '  '), sha, 'Update record file');
+    return this.github.updateFile(
+      path,
+      JSON.stringify(record, null, '  '),
+      sha,
+      'Update record file' // eslint-disable-line @typescript-eslint/comma-dangle
+    );
   }
 
   /**
- * @return {Promise<Response>}
- * response.commit
- * response.commit.html_url https://github.com/username/reponame/commit/a7f...04d
- * response.content
- */
+   * @return {Promise<Response>}
+   * response.commit
+   * response.commit.html_url https://github.com/username/reponame/commit/a7f...04d
+   * response.content
+   */
   async deleteRecordFile(dbName, tableName, primaryKeyVal, sha) {
     const path = this.getRecordPath(dbName, tableName, primaryKeyVal);
     return this.github.deleteFile(path, sha);
