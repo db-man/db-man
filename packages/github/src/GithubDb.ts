@@ -2,6 +2,8 @@ import { Database } from './types';
 import { getDataFileName, getRecordFileName } from './utils';
 import Github from './Github';
 
+const DB_CFG_FILENAME = 'dbcfg.json';
+
 export default class GithubDb {
   LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN: string;
 
@@ -105,7 +107,7 @@ export default class GithubDb {
    * @private
    */
   getDbTableColDefPath(dbName) {
-    return `${this.LS_KEY_GITHUB_REPO_PATH}/${dbName}/columns.json`;
+    return `${this.LS_KEY_GITHUB_REPO_PATH}/${dbName}/${DB_CFG_FILENAME}`;
   }
 
   async getDbTablesSchemaAsync(dbName) {

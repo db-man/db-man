@@ -29,10 +29,10 @@ describe('Github', () => {
     });
 
     it('should return the correct file object when calling getPath with a file path', async () => {
-      const data = await g.getPath('dbs/iam/columns.json');
+      const data = await g.getPath('dbs/iam/dbcfg.json');
       // console.log('Github.getPath data:', data);
       if ('content' in data) {
-        expect(data.name).toBe('columns.json');
+        expect(data.name).toBe('dbcfg.json');
         return;
       }
       // should not be here

@@ -6,6 +6,7 @@ import type { TabsProps } from 'antd';
 
 import PageContext from '../contexts/page';
 import ReactSimpleCodeEditor from './ReactSimpleCodeEditor';
+import { DB_CFG_FILENAME } from '../constants';
 
 const columns = [
   {
@@ -86,11 +87,11 @@ const footer = ({ dbName }: { dbName: string }) =>
             'dm_github_repo_name'
           )}/blob/main/${localStorage.getItem(
             'dm_github_repo_path'
-          )}/${dbName}/columns.json`}
+          )}/${dbName}/${DB_CFG_FILENAME}`}
           target='_blank'
           rel='noreferrer'
         >
-          columns.json
+          {DB_CFG_FILENAME}
         </a>
       </div>
     );

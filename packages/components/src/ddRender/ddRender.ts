@@ -50,16 +50,22 @@ export const getRender = (args: RenderArgs, tplExtra?: any) => {
   return renderFn;
 };
 
+type ColumnRenderType = (
+  renderKey: RenderKeyType,
+  column: DbColumn,
+  tplExtra?: any
+) => (val: any, record: RowType, index?: number) => any;
+
 /**
  * column def:
  * {
  *   "type:listPage": ["Link", "{{record.url}}"]
  * }
  */
-export const getColumnRender = (
-  renderKey: RenderKeyType,
-  column: DbColumn,
-  tplExtra?: any
+export const getColumnRender: ColumnRenderType = (
+  renderKey,
+  column,
+  tplExtra
 ) => {
   // should only used for "type:listPage" or "type:getPage"
   if (

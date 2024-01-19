@@ -83,7 +83,7 @@ const PageWrapper = (props: {
   tableName?: string;
   action?: string;
 }) => {
-  // tables is got from db repo db_name/columns.json which contain all tables column definition in current database
+  // tables is got from db repo db_name/dbcfg.json which contain all tables column definition in current database
   const [tables, setTables] = useState([]);
   const [loading, setLoading] = useState(false);
   const [errMsg, setErrMsg] = useState('');

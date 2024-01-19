@@ -15,13 +15,13 @@ When a database is set `split-table`, when update a table record, will only upda
 
 ## Database structure
 
-- dbs/iam/columns.json All tables in this database, and all columns in each table
+- dbs/iam/dbcfg.json All tables in this database, and all columns in each table
 - dbs/iam/users.data.json Table data file
 - dbs/iam/users/\*.json Table record files. These files are split from `users.data.json` file. (Only in `split-table` mode)
 
 ## Table definition
 
-Table is defined in `columns.json` file.
+Table is defined in `dbcfg.json` file.
 
 See `src/types/DbTable.ts`
 
