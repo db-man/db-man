@@ -17,6 +17,6 @@ describe('hello', () => {
   });
 
   it('displays Settings by default', () => {
-    cy.get('h1').should('have.text', 'Settings');
+    cy.get('span.ant-menu-title-content').should('have.text', 'HomeSettings');
   });
 });

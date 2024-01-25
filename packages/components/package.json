@@ -19,6 +19,7 @@
     "@ant-design/icons": "^5.0.1",
     "@db-man/github": "^0.1.31",
     "@uiw/react-json-view": "^2.0.0-alpha.7",
+    "eslint-plugin-cypress": "^2.15.1",
     "handlebars": "^4.7.7",
     "lodash.debounce": "^4.0.8",
     "prismjs": "^1.29.0",
@@ -64,7 +65,8 @@
   "eslintConfig": {
     "extends": [
       "react-app",
-      "react-app/jest"
+      "react-app/jest",
+      "plugin:cypress/recommended"
     ]
   },
   "browserslist": {

@@ -7,6 +7,12 @@ npm i
 npm run dev
 ```
 
+## Run cypress test
+
+```sh
+npx cypress run
+```
+
 ## Publish
 
 ```
