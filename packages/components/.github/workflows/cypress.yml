@@ -23,7 +23,7 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v4
         with:
-          start: npm start-cra
+          start: npm run start-cra
           wait-on: 'http://localhost:3000'
           # Specify Browser since container image is compile with Firefox
           browser: chrome
