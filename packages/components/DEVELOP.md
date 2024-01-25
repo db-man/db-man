@@ -13,6 +13,15 @@ npm run dev
 npm run release
 ```
 
+## Publish (with lerna)
+
+```sh
+CI=true lerna run test-cra --scope @db-man/components
+lerna run build  --scope @db-man/components
+git add . && git commit -m 'Build' && git push
+lerna publish --no-private # will include `lerna version patch --no-private -y`
+```
+
 ## Preview demos
 
 - http://localhost:3000/ - The whole App example
