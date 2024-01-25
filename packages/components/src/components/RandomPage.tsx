@@ -1,6 +1,6 @@
 /* eslint-disable react/destructuring-assignment, no-console, max-len */
 
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { List, Card } from 'antd';
 
@@ -9,6 +9,7 @@ import PageContext from '../contexts/page';
 import * as ddRender from '../ddRender/ddRender';
 import { RowType } from '../types/Data';
 
+const defaultPageSize = 9;
 const listGrid = {
   gutter: 16,
   xs: 1,
@@ -21,7 +22,7 @@ const listGrid = {
 const getAny = (arr: RowType[]) => arr[Math.floor(Math.random() * arr.length)];
 const getRandomItems = (rows: RowType[]) => {
   const randomItems = [];
-  for (let i = 0; i < 8; i += 1) {
+  for (let i = 0; i < defaultPageSize; i += 1) {
     randomItems.push(getAny(rows));
   }
   return randomItems;
@@ -31,12 +32,10 @@ export default function RandomPage() {
   const { githubDb, dbName, tableName, primaryKey, columns } =
     useContext(PageContext);
   const [content, setContent] = useState<RowType[] | null>(null);
+  // idx only used to force reload page data
+  const [idx, setIdx] = useState(0);
 
-  useEffect(() => {
-    getDataAsync();
-  }, []);
-
-  const getDataAsync = async () => {
+  const getDataAsync = useCallback(async () => {
     try {
       const contentAndSha = await githubDb!.getTableRows(dbName, tableName);
       setContent(contentAndSha.content);
@@ -46,7 +45,24 @@ export default function RandomPage() {
         error
       );
     }
-  };
+  }, [githubDb, dbName, tableName]);
+
+  useEffect(() => {
+    getDataAsync();
+  }, [getDataAsync]);
+
+  // Press `r` to reload page data
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'r') {
+        // idx only used to force reload page data
+        setIdx(idx + 1);
+      }
+    };
+
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [idx]);
 
   const renderItem = (item: RowType) => {
     const column = columns.find((col) => col.id === primaryKey);
