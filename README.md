@@ -17,6 +17,12 @@ lerna run build --scope @db-man/github # build ts to js (in dist dir)
 lerna bootstrap # install the changed @db-man/github dependency
 ```
 
+## Publish
+
+```sh
+lerna publish --no-private
+```
+
 ## References
 
 - https://github.com/airbnb/visx/blob/master/packages/visx-axis/package.json

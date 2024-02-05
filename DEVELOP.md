@@ -23,3 +23,7 @@ lrwxr-xr-x  1 chenyang  staff    19B Aug 10 23:30 components -> ../../../compone
 ```
 
 Root cause: https://stackoverflow.com/questions/44114436/the-create-react-app-imports-restriction-outside-of-src-directory
+
+## References
+
+- https://github.com/airbnb/visx/blob/master/packages/visx-axis/package.json
