@@ -74,9 +74,10 @@ export default class GithubDb {
   /**
    * @param {string} dbName
    * @param {string} tableName
+   * @param {string|number} primaryKeyVal
    * @returns Path for GitHub
    */
-  getRecordPath(dbName, tableName, primaryKeyVal) {
+  getRecordPath(dbName, tableName, primaryKeyVal: string | number) {
     return `${
       this.LS_KEY_GITHUB_REPO_PATH
     }/${dbName}/${tableName}/${getRecordFileName(primaryKeyVal)}`;

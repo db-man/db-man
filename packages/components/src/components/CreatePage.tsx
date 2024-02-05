@@ -1,6 +1,6 @@
 /* eslint-disable react/destructuring-assignment, no-console, max-len, react/no-unused-class-component-methods */
 
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { message, Spin, Alert } from 'antd';
 import { utils as githubUtils } from '@db-man/github';
 
@@ -27,6 +27,53 @@ const CreatePage = () => {
   );
   const [saveLoading, setSaveLoading] = useState(false);
 
+  const isSplitTable = useCallback(() => {
+    return appModes.indexOf('split-table') !== -1;
+  }, [appModes]);
+
+  const getTableFileAsync = useCallback(async () => {
+    setTableFileLoading(true);
+    try {
+      const _result = await githubDb?.getTableRows(dbName, tableName);
+      if (_result) {
+        setRows(_result.content);
+        setTableFileSha(_result.sha);
+      }
+    } catch (err) {
+      console.error('getTableRows, error:', err);
+      setErrorMessage('Failed to get table file from server!');
+    }
+    setTableFileLoading(false);
+  }, [dbName, githubDb, tableName]);
+
+  // Get single record file, the whole table file will be used to de-dup
+  const getData = useCallback(() => {
+    const ps = [];
+    // Whole table file is too big, so only get it when it's not split table
+    if (!isSplitTable()) {
+      ps.push(getTableFileAsync());
+    }
+    Promise.all(ps);
+  }, [getTableFileAsync, isSplitTable]);
+
+  // Create the initial form fields
+  const getInitialFormFields = useCallback(() => {
+    const fields: ValueType = {};
+
+    // Fill the form field with URL params
+    columns
+      .filter((col) => utils.getUrlParams()[col.id])
+      .forEach((col) => {
+        if (col.type === constants.STRING_ARRAY) {
+          fields[col.id] = [utils.getUrlParams()[col.id]];
+        } else {
+          fields[col.id] = utils.getUrlParams()[col.id];
+        }
+      });
+
+    return fields;
+  }, [columns]);
+
   useEffect(() => {
     getData();
 
@@ -34,7 +81,7 @@ const CreatePage = () => {
     setDefaultFormValues({
       ...fields,
     });
-  }, []);
+  }, [getData, getInitialFormFields]);
 
   // `updateTableFileAsync` to update the whole table file, it's too big, and take more time to get the response from server
   // `createRecordFileAsync` to only create record file, file is small, so get response quickly, but backend (github action) need to merge records into big table file
@@ -44,10 +91,6 @@ const CreatePage = () => {
     } else {
       createRecordFileAsync(formValues);
     }
-  };
-
-  const isSplitTable = () => {
-    return appModes.indexOf('split-table') !== -1;
   };
 
   const updateTableFileAsync = async (formValues: ValueType) => {
@@ -111,49 +154,6 @@ const CreatePage = () => {
     }
 
     setSaveLoading(false);
-  };
-
-  // Get single record file, the whole table file will be used to de-dup
-  const getData = () => {
-    const ps = [];
-    // Whole table file is too big, so only get it when it's not split table
-    if (!isSplitTable()) {
-      ps.push(getTableFileAsync());
-    }
-    Promise.all(ps);
-  };
-
-  const getTableFileAsync = async () => {
-    setTableFileLoading(true);
-    try {
-      const _result = await githubDb?.getTableRows(dbName, tableName);
-      if (_result) {
-        setRows(_result.content);
-        setTableFileSha(_result.sha);
-      }
-    } catch (err) {
-      console.error('getTableRows, error:', err);
-      setErrorMessage('Failed to get table file from server!');
-    }
-    setTableFileLoading(false);
-  };
-
-  // Create the initial form fields
-  const getInitialFormFields = () => {
-    const fields: ValueType = {};
-
-    // Fill the form field with URL params
-    columns
-      .filter((col) => utils.getUrlParams()[col.id])
-      .forEach((col) => {
-        if (col.type === constants.STRING_ARRAY) {
-          fields[col.id] = [utils.getUrlParams()[col.id]];
-        } else {
-          fields[col.id] = utils.getUrlParams()[col.id];
-        }
-      });
-
-    return fields;
   };
 
   const formValidation = (rows: RowType[], formValues: ValueType) => {

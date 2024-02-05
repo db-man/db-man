@@ -25,11 +25,20 @@
  * @param oldStr
  * @returns POSIX "Fully portable filenames"
  */
-export const validFilename = (oldStr: string) => oldStr.replace(/[^a-zA-Z0-9._-]/g, '_');
+export function validFilename(oldStr: string) {
+  return oldStr.replace(/[^a-zA-Z0-9._-]/g, '_');
+}
 
-export const getDataFileName = (tableName: string) => `${tableName}.data.json`;
+export function getDataFileName(tableName: string) {
+  return `${tableName}.data.json`;
+}
 
-export const getRecordFileName = (primaryKeyVal: string) => `${validFilename(primaryKeyVal)}.json`;
+export const getRecordFileName = (primaryKeyVal: string | number) => {
+  if (typeof primaryKeyVal === 'number') {
+    return `${validFilename(String(primaryKeyVal))}.json`;
+  }
+  return `${validFilename(primaryKeyVal)}.json`;
+};
 
 /**
  * @param {Date} d
@@ -37,17 +46,7 @@ export const getRecordFileName = (primaryKeyVal: string) => `${validFilename(pri
  */
 export const formatDate = (d: Date) => {
   const pad = (num) => num.toString().padStart(2, '0');
-  return (
-    `${d.getFullYear()
-    }-${
-      pad(d.getMonth() + 1)
-    }-${
-      pad(d.getDate())
-    } ${
-      pad(d.getHours())
-    }:${
-      pad(d.getMinutes())
-    }:${
-      pad(d.getSeconds())}`
-  );
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(
+    d.getHours() // eslint-disable-line @typescript-eslint/comma-dangle
+  )}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
 };
