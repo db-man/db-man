@@ -1,14 +1,12 @@
-// @ts-nocheck
-
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { render, act /* screen,  waitFor, */ } from '@testing-library/react';
 
 import ListPageBody from './index';
-import PageContext from '../../contexts/page';
+import PageContext, { PageContextType } from '../../contexts/page';
 import { STRING } from '../../constants';
 
-const context = {
+const context: PageContextType = {
   dbName: 'db-man',
   tableName: 'users',
   action: 'list',
@@ -20,6 +18,13 @@ const context = {
   tables: [],
   githubDb: {
     getTableRows: jest.fn(),
+    updateTableFile: jest.fn(),
+    updateRecordFile: jest.fn(),
+    getDataUrl: jest.fn(),
+    getRecordFileContentAndSha: jest.fn(),
+    getGitHubFullPath: jest.fn(),
+    getDataPath: jest.fn(),
+    deleteRecordFile: jest.fn(),
   },
   appModes: [],
   dbs: {},
@@ -27,8 +32,8 @@ const context = {
 jest.mock('@db-man/github');
 
 beforeEach(() => {
-  context.githubDb.getTableRows.mockReset();
-  context.githubDb.getTableRows.mockResolvedValue({
+  (context.githubDb?.getTableRows as any).mockReset();
+  (context.githubDb?.getTableRows as any).mockResolvedValue({
     content: [{ userId: '123' }],
   });
 });
