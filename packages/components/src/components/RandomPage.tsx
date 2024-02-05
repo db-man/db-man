@@ -9,15 +9,15 @@ import PageContext from '../contexts/page';
 import * as ddRender from '../ddRender/ddRender';
 import { RowType } from '../types/Data';
 
-const defaultPageSize = 9;
+const defaultPageSize = 8;
 const listGrid = {
   gutter: 16,
   xs: 1,
   sm: 2,
   md: 4,
-  lg: 4,
-  xl: 4,
-  xxl: 3,
+  lg: 4, // ≥992px column of grid
+  xl: 4, // ≥1200px column of grid
+  xxl: 4, // ≥1600px column of grid
 };
 const getAny = (arr: RowType[]) => arr[Math.floor(Math.random() * arr.length)];
 const getRandomItems = (rows: RowType[]) => {
