@@ -22,7 +22,3 @@ lerna bootstrap # install the changed @db-man/github dependency
 ```sh
 lerna publish --no-private
 ```
-
-## References
-
-- https://github.com/airbnb/visx/blob/master/packages/visx-axis/package.json
