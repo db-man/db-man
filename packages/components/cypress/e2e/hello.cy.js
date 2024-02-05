@@ -17,6 +17,7 @@ describe('hello', () => {
   });
 
   it('displays Settings by default', () => {
+    cy.get('span.ant-menu-title-content').debug();
     cy.get('span.ant-menu-title-content').should('have.text', 'HomeSettings');
   });
 });
