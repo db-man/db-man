@@ -144,11 +144,13 @@ test('getFilteredData should return proper value', () => {
           id: 'name',
           name: 'Name',
           type: 'STRING',
+          'ui:listPage:isFilter': true,
         },
         {
           id: 'tags',
           name: 'Tags',
           type: 'STRING_ARRAY',
+          'ui:listPage:isFilter': true,
         },
       ],
       { name: 'foo', tags: '' },
@@ -163,11 +165,13 @@ test('getFilteredData should return proper value', () => {
           id: 'name',
           name: 'Name',
           type: 'STRING',
+          'ui:listPage:isFilter': true,
         },
         {
           id: 'tags',
           name: 'Tags',
           type: 'STRING_ARRAY',
+          'ui:listPage:isFilter': true,
         },
       ],
       { name: 'foo', tags: '' },
@@ -177,8 +181,18 @@ test('getFilteredData should return proper value', () => {
   expect(
     getFilteredData(
       [
-        { id: 'name', name: 'Name', type: STRING },
-        { id: 'tags', name: 'Tags', type: STRING_ARRAY },
+        {
+          id: 'name',
+          name: 'Name',
+          type: STRING,
+          'ui:listPage:isFilter': true,
+        },
+        {
+          id: 'tags',
+          name: 'Tags',
+          type: STRING_ARRAY,
+          'ui:listPage:isFilter': true,
+        },
       ],
       { name: 'foo', tags: 'bar' },
       [{ name: 'foo' }]
@@ -191,11 +205,13 @@ test('getFilteredData should return proper value', () => {
           id: 'name',
           name: 'Name',
           type: 'STRING',
+          'ui:listPage:isFilter': true,
         },
         {
           id: 'tags',
           name: 'Tags',
           type: 'STRING_ARRAY',
+          'ui:listPage:isFilter': true,
         },
       ],
       { name: 'foo', tags: 'bar' },

@@ -139,17 +139,14 @@ export const filterCols = (columns: DbColumn[]) => {
 
 /**
  * Filter the data by filterKeyVals
- * @param {Object} filterKeyVals
- * @param {Array} originalRows
- * @param {Column[]} filterColumns The table columns definitions,
- * but only the col which is filterable
- * @returns {Array}
+ * @returns {RowType[]}
  */
 export const getFilteredData = (
   columns: DbColumn[],
   filterKeyVals: { [key: string]: string },
   originalRows: RowType[]
 ) => {
+  // The table columns definitions, but only the col which is filterable
   const filterColumns = filterCols(columns);
   if (
     isAllFilterInvalid(
