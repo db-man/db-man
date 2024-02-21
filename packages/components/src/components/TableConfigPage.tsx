@@ -36,6 +36,12 @@ const columns = [
     render: (cell: boolean) => (cell === true ? 'Yes' : 'No'),
   },
   {
+    key: 'filter',
+    dataIndex: 'filter',
+    title: 'filter',
+    render: (cell: boolean) => (cell === true ? 'Yes' : 'No'),
+  },
+  {
     key: 'enum',
     dataIndex: 'enum',
     title: 'enum',
