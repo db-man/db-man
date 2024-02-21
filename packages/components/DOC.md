@@ -98,7 +98,7 @@ TODO add description here
 
 TODO add description here
 
-### `isListPageImageViewKey`
+### `ui:listPage:isImageViewKey`
 
 TODO add description here
 

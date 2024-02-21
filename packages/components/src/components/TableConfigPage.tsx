@@ -74,9 +74,9 @@ const columns = [
     },
   },
   {
-    key: 'isListPageImageViewKey',
-    dataIndex: 'isListPageImageViewKey',
-    title: 'isListPageImageViewKey',
+    key: 'ui:listPage:isImageViewKey',
+    dataIndex: 'ui:listPage:isImageViewKey',
+    title: 'ui:listPage:isImageViewKey',
     render: (cell: boolean) => (cell === true ? 'Yes' : 'No'),
   },
 ];

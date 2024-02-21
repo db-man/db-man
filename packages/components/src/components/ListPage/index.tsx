@@ -412,7 +412,9 @@ const ListPage = (props: ListPageProps) => {
       case ImageView:
         return (
           <ImageCardTable
-            imgKey={columns.find((col) => col.isListPageImageViewKey)?.id}
+            imgKey={
+              columns.find((col) => col['ui:listPage:isImageViewKey'])?.id
+            }
             dataSource={filteredSortedData}
             pagination={{
               current: page,

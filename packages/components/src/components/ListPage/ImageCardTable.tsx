@@ -35,7 +35,7 @@ const ImageCardTable = ({
         description={
           <div>
             Which column data to render the image list? Please define only one
-            column with <code>isListPageImageViewKey: true</code>
+            column with <code>ui:listPage:isImageViewKey: true</code>
           </div>
         }
         type='error'

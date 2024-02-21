@@ -72,7 +72,7 @@ type DbColumnExtendsUiType = {
    * }
    */
   referenceTable?: string;
-  isListPageImageViewKey?: string;
+  'ui:listPage:isImageViewKey'?: string;
 };
 
 // export default interface DbColumn extends AntdColumnType<RowType> {
