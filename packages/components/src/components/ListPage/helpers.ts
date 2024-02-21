@@ -133,6 +133,10 @@ const searchByFilter =
       return prev && matched;
     }, true);
 
+export const filterCols = (columns: DbColumn[]) => {
+  return columns.filter((col) => col['ui:listPage:isFilter']);
+};
+
 /**
  * Filter the data by filterKeyVals
  * @param {Object} filterKeyVals
@@ -142,10 +146,11 @@ const searchByFilter =
  * @returns {Array}
  */
 export const getFilteredData = (
-  filterColumns: DbColumn[],
+  columns: DbColumn[],
   filterKeyVals: { [key: string]: string },
   originalRows: RowType[]
 ) => {
+  const filterColumns = filterCols(columns);
   if (
     isAllFilterInvalid(
       filterKeyVals,

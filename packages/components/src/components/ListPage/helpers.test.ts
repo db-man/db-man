@@ -80,23 +80,26 @@ describe('getFilteredData', () => {
     { id: 'foo2', tags: ['bar2', 'bar'] },
     { id: 'foo3', tags: ['bar2', 'bar1'] },
   ];
-  const filterCols: DbColumn[] = [
-    { id: 'name', name: 'Name', type: STRING },
-    { id: 'tags', name: 'Tags', type: STRING_ARRAY },
+  const cols: DbColumn[] = [
+    { id: 'name', name: 'Name', type: STRING, 'ui:listPage:isFilter': true },
+    {
+      id: 'tags',
+      name: 'Tags',
+      type: STRING_ARRAY,
+      'ui:listPage:isFilter': true,
+    },
   ];
   it('should reture 3 rows when fitler by bar1 OR bar2', () => {
-    expect(
-      getFilteredData(filterCols, { tags: 'bar1 bar2' }, originalRows)
-    ).toEqual([
+    expect(getFilteredData(cols, { tags: 'bar1 bar2' }, originalRows)).toEqual([
       { id: 'foo1', tags: ['bar', 'bar1'] },
       { id: 'foo2', tags: ['bar2', 'bar'] },
       { id: 'foo3', tags: ['bar2', 'bar1'] },
     ]);
   });
   it('should reture 1 row when fitler by bar1 AND bar2', () => {
-    expect(
-      getFilteredData(filterCols, { tags: 'bar1+bar2' }, originalRows)
-    ).toEqual([{ id: 'foo3', tags: ['bar2', 'bar1'] }]);
+    expect(getFilteredData(cols, { tags: 'bar1+bar2' }, originalRows)).toEqual([
+      { id: 'foo3', tags: ['bar2', 'bar1'] },
+    ]);
   });
 });
 

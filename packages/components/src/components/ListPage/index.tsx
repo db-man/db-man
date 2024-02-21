@@ -33,6 +33,7 @@ import {
   updateUrl,
   getColumnSortOrder,
   getInitialSorter,
+  filterCols,
 } from './helpers';
 import RefTableLinks from '../RefTableLinks';
 import * as constants from '../../constants';
@@ -50,8 +51,21 @@ const defaultPage = 1;
 const defaultPageSize = 10;
 const debouncedUpdateUrl = debounce(updateUrl, 500);
 
-const filterCols = (columns: DbColumn[]) => {
-  return columns.filter((col) => col['ui:listPage:isFilter']);
+const getFilteredSortedData = (
+  columns: DbColumn[],
+  filter: Record<string, string>,
+  sorter: {
+    // TODO this type is from antd
+    columnKey: string;
+    order: string;
+  },
+  rows: RowType[] | null
+) => {
+  const filteredData = getFilteredData(columns, filter, rows || []);
+  if (sorter.columnKey && sorter.order !== undefined) {
+    return getSortedData(filteredData, sorter);
+  }
+  return filteredData;
 };
 
 const TableView = 'table_view';
@@ -111,22 +125,17 @@ const ListPage = (props: ListPageProps) => {
     };
   }, []);
 
-  const getFilteredSortedData = () => {
-    const filteredData = getFilteredData(
-      filterCols(columns),
-      filter,
-      rows || []
-    );
-    if (sorter.columnKey && sorter.order !== undefined) {
-      return getSortedData(filteredData, sorter);
-    }
-    return filteredData;
-  };
+  const filteredSortedData = getFilteredSortedData(
+    columns,
+    filter,
+    sorter,
+    rows
+  );
 
   const handleKeyDown = (e: KeyboardEvent) => {
     if (e.key === 'ArrowRight') {
       setPage((prevPage) => {
-        if (prevPage < getFilteredSortedData().length / pageSize) {
+        if (prevPage < filteredSortedData.length / pageSize) {
           window.scrollTo({ top: 0, behavior: 'smooth' });
           debouncedUpdateUrl({ page: prevPage + 1 });
           return prevPage + 1;
@@ -379,11 +388,11 @@ const ListPage = (props: ListPageProps) => {
           showSorterTooltip={false}
           rowKey={primaryKey}
           columns={getTableColumns()}
-          dataSource={getFilteredSortedData()}
+          dataSource={filteredSortedData}
           pagination={{
             current: page,
             pageSize,
-            // total: getFilteredSortedData().length,
+            // total: filteredSortedData.length,
             showQuickJumper: true,
             showTotal: (total) => `Total ${total} items`,
           }}
@@ -405,7 +414,7 @@ const ListPage = (props: ListPageProps) => {
         return (
           <ImageCardTable
             imgKey={columns.find((col) => col.isListPageImageViewKey)?.id}
-            dataSource={getFilteredSortedData()}
+            dataSource={filteredSortedData}
             pagination={{
               current: page,
               pageSize,
@@ -414,7 +423,11 @@ const ListPage = (props: ListPageProps) => {
           />
         );
       case RandomView:
-        return <RandomList rows={getRandomItems(rows)} />;
+        return (
+          <RandomList
+            rows={getRandomItems(getFilteredData(columns, filter, rows))}
+          />
+        );
       default:
         return null;
     }
