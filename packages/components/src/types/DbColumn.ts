@@ -36,9 +36,9 @@ type DbColumnExtendsUiType = {
   'ui:presets'?: string[];
   placeholder?: ColumnPlaceholder;
   /**
-   * If true, on the list page, the column will be shown in the filter section.
+   * If true, on the list page, the field/column will be shown in the filter section above the table.
    */
-  filter?: boolean;
+  'ui:listPage:isFilter'?: boolean;
   /**
    * In the Form page, e.g. to create a new user, use it to show a dropdown list with "Maintainer" and "Developer".
    */

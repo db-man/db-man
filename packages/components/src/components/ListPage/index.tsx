@@ -51,7 +51,7 @@ const defaultPageSize = 10;
 const debouncedUpdateUrl = debounce(updateUrl, 500);
 
 const filterCols = (columns: DbColumn[]) => {
-  return columns.filter((col) => col.filter);
+  return columns.filter((col) => col['ui:listPage:isFilter']);
 };
 
 const TableView = 'table_view';

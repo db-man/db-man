@@ -36,9 +36,9 @@ const columns = [
     render: (cell: boolean) => (cell === true ? 'Yes' : 'No'),
   },
   {
-    key: 'filter',
-    dataIndex: 'filter',
-    title: 'filter',
+    key: 'ui:listPage:isFilter',
+    dataIndex: 'ui:listPage:isFilter',
+    title: 'ui:listPage:isFilter',
     render: (cell: boolean) => (cell === true ? 'Yes' : 'No'),
   },
   {

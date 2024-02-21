@@ -74,7 +74,7 @@ See `src/types/Column.ts::DbColumnType`
 
 See `src/types/Column.ts`
 
-### `filter`
+### `ui:listPage:isFilter`
 
 TODO add description here
 
