@@ -84,8 +84,7 @@ const NavBar = () => {
 
   return (
     <div className='dm-nav-bar'>
-      NavBar:
-      <span> </span>
+      NavBar |<span> </span>
       <span> </span>
       <span>
         <span>{tableName}</span>
