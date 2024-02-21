@@ -52,7 +52,7 @@ const NavBar = () => {
       target='_blank'
       rel='noreferrer'
     >
-      GitHub Path
+      {`${utils.validFilename(id)}.json`}
     </a>
   ) : null;
 
@@ -86,12 +86,6 @@ const NavBar = () => {
     <div className='dm-nav-bar'>
       NavBar:
       <span> </span>
-      <span>
-        <span>github</span>
-        <span>(</span>
-        <span>{aaa}</span>
-        <span>)</span>
-      </span>
       <span> </span>
       <span>
         <span>{tableName}</span>
@@ -112,6 +106,8 @@ const NavBar = () => {
         <span>)</span>
       </span>
       <span> | </span>
+      {/* GitHub link of DB table file, e.g. "dbs/iam/users.data.json" */}
+      <span>GitHub Link: </span>
       <a
         title='GitHub File Path'
         href={githubDb?.getDataUrl(dbName, tableName)}
@@ -120,6 +116,12 @@ const NavBar = () => {
       >
         {githubDb?.getDataPath(dbName, tableName)}
       </a>
+      {aaa && (
+        <>
+          <span>::</span>
+          {aaa}
+        </>
+      )}
       {/* (
         <a
           title="Commit History"
