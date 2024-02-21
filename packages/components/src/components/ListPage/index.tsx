@@ -40,7 +40,6 @@ import * as constants from '../../constants';
 import DbColumn from '../../types/DbColumn';
 import { RowType } from '../../types/Data';
 import ImageCardTable, { CardTablePagination } from './ImageCardTable';
-import { getRandomItems } from '../RandomList';
 import RandomList from '../RandomList';
 
 interface ListPageProps {
@@ -423,11 +422,7 @@ const ListPage = (props: ListPageProps) => {
           />
         );
       case RandomView:
-        return (
-          <RandomList
-            rows={getRandomItems(getFilteredData(columns, filter, rows))}
-          />
-        );
+        return <RandomList rows={getFilteredData(columns, filter, rows)} />;
       default:
         return null;
     }

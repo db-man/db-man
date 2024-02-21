@@ -22,7 +22,8 @@ const defaultPageSize = 8;
 const getAny = (arr: RowType[]) => arr[Math.floor(Math.random() * arr.length)];
 export const getRandomItems = (rows: RowType[]) => {
   const randomItems = [];
-  for (let i = 0; i < defaultPageSize; i += 1) {
+  const numberOfItems = Math.min(defaultPageSize, rows.length);
+  for (let i = 0; i < numberOfItems; i += 1) {
     randomItems.push(getAny(rows));
   }
   return randomItems;
