@@ -8,7 +8,7 @@
  *   "id": "vehicleType",
  *   "name": "Vehicle Type",
  *   "type": "STRING",
- *   "enum": ["car", "bike"]
+ *   "ui:createUpdatePage:enum": ["car", "bike"]
  * }
  * ```
  */

@@ -53,7 +53,7 @@ export const getFormInitialValues = (
       let defaultValue = '';
       switch (col['type:createUpdatePage']) {
         case 'RadioGroup':
-          [defaultValue] = col.enum!;
+          [defaultValue] = col['ui:createUpdatePage:enum']!;
           break;
         default:
           defaultValue = '';

@@ -42,9 +42,9 @@ const columns = [
     render: (cell: boolean) => (cell === true ? 'Yes' : 'No'),
   },
   {
-    key: 'enum',
-    dataIndex: 'enum',
-    title: 'enum',
+    key: 'ui:createUpdatePage:enum',
+    dataIndex: 'ui:createUpdatePage:enum',
+    title: 'ui:createUpdatePage:enum',
     render: (cell: string[]) => {
       if (!cell) return 'None';
       return cell.join(', ');

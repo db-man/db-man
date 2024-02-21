@@ -185,7 +185,7 @@ const Form: React.FC<FormProps> = (props) => {
       );
     }
     if (column['type:createUpdatePage'] === 'RadioGroup') {
-      const radioValue = value || column?.enum?.[0];
+      const radioValue = value || column?.['ui:createUpdatePage:enum']?.[0];
       return renderFormFieldWrapper({
         id: column.id,
         label: column.name,

@@ -42,7 +42,7 @@ type DbColumnExtendsUiType = {
   /**
    * In the Form page, e.g. to create a new user, use it to show a dropdown list with "Maintainer" and "Developer".
    */
-  enum?: RadioGroupUiTypeEnum;
+  'ui:createUpdatePage:enum'?: RadioGroupUiTypeEnum;
   /**
    * Pass to the Column of Ant Design Table.
    * TODO maybe we should use `tableColProps` instead of `tableProps`?

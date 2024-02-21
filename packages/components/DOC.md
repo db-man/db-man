@@ -82,7 +82,7 @@ TODO add description here
 
 See `src/types/Column.ts::ColumnPlaceholder`
 
-### `enum`
+### `ui:createUpdatePage:enum`
 
 See `src/types/Column.ts::RadioGroupUiTypeEnum`
 

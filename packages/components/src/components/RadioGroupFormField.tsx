@@ -17,7 +17,7 @@ function RadioGroupFormField(props: {
 
   return (
     <Radio.Group onChange={handleChange} value={value} disabled={disabled}>
-      {(column.enum || []).map((r) => (
+      {(column['ui:createUpdatePage:enum'] || []).map((r) => (
         <Radio key={r} value={r}>
           {r}
         </Radio>
