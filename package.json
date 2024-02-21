@@ -4,5 +4,9 @@
   "devDependencies": {
     "lerna": "^4.0.0",
     "nx": "^14.5.2"
+  },
+  "scripts": {
+    "build": "lerna run build",
+    "prepublishOnly": "npm run build"
   }
 }
