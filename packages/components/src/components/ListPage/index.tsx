@@ -39,6 +39,8 @@ import * as constants from '../../constants';
 import DbColumn from '../../types/DbColumn';
 import { RowType } from '../../types/Data';
 import ImageCardTable, { CardTablePagination } from './ImageCardTable';
+import { getRandomItems } from '../RandomList';
+import RandomList from '../RandomList';
 
 interface ListPageProps {
   tableName: string;
@@ -54,6 +56,7 @@ const filterCols = (columns: DbColumn[]) => {
 
 const TableView = 'table_view';
 const ImageView = 'image_view';
+const RandomView = 'random_view';
 
 /**
  * URL params:
@@ -108,7 +111,7 @@ const ListPage = (props: ListPageProps) => {
     };
   }, []);
 
-  const filteredSortedData = () => {
+  const getFilteredSortedData = () => {
     const filteredData = getFilteredData(
       filterCols(columns),
       filter,
@@ -123,7 +126,7 @@ const ListPage = (props: ListPageProps) => {
   const handleKeyDown = (e: KeyboardEvent) => {
     if (e.key === 'ArrowRight') {
       setPage((prevPage) => {
-        if (prevPage < filteredSortedData().length / pageSize) {
+        if (prevPage < getFilteredSortedData().length / pageSize) {
           window.scrollTo({ top: 0, behavior: 'smooth' });
           debouncedUpdateUrl({ page: prevPage + 1 });
           return prevPage + 1;
@@ -365,9 +368,6 @@ const ListPage = (props: ListPageProps) => {
   };
 
   const renderTable = () => {
-    if (loading) return <Spin tip={loading}>Loading...</Spin>;
-    if (errMsg) return <Alert message={errMsg} type='error' />;
-    if (!rows) return null;
     // When router changed, before loading next table rows,
     // contentTableName is old table, but this.props.tableName is new table.
     if (contentTableName !== tableName) return null;
@@ -379,11 +379,11 @@ const ListPage = (props: ListPageProps) => {
           showSorterTooltip={false}
           rowKey={primaryKey}
           columns={getTableColumns()}
-          dataSource={filteredSortedData()}
+          dataSource={getFilteredSortedData()}
           pagination={{
             current: page,
             pageSize,
-            // total: filteredSortedData().length,
+            // total: getFilteredSortedData().length,
             showQuickJumper: true,
             showTotal: (total) => `Total ${total} items`,
           }}
@@ -391,6 +391,33 @@ const ListPage = (props: ListPageProps) => {
         />
       </div>
     );
+  };
+
+  const renderTableViewOrImageView = () => {
+    if (loading) return <Spin tip={loading}>Loading...</Spin>;
+    if (errMsg) return <Alert message={errMsg} type='error' />;
+    if (!rows) return null;
+
+    switch (view) {
+      case TableView:
+        return renderTable();
+      case ImageView:
+        return (
+          <ImageCardTable
+            imgKey={columns.find((col) => col.isListPageImageViewKey)?.id}
+            dataSource={getFilteredSortedData()}
+            pagination={{
+              current: page,
+              pageSize,
+            }}
+            onChange={handleCardTableChange}
+          />
+        );
+      case RandomView:
+        return <RandomList rows={getRandomItems(rows)} />;
+      default:
+        return null;
+    }
   };
 
   return (
@@ -421,25 +448,17 @@ const ListPage = (props: ListPageProps) => {
             label: 'Image View',
             value: ImageView,
           },
+          {
+            label: 'Random View',
+            value: RandomView,
+          },
         ]}
         onChange={(val) => {
           setView(val + '');
           debouncedUpdateUrl({ view: val });
         }}
       />
-      {view === TableView ? (
-        renderTable()
-      ) : (
-        <ImageCardTable
-          imgKey={columns.find((col) => col.isListPageImageViewKey)?.id}
-          dataSource={filteredSortedData()}
-          pagination={{
-            current: page,
-            pageSize,
-          }}
-          onChange={handleCardTableChange}
-        />
-      )}
+      {renderTableViewOrImageView()}
     </div>
   );
 };

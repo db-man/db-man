@@ -134,6 +134,7 @@ const searchByFilter =
     }, true);
 
 /**
+ * Filter the data by filterKeyVals
  * @param {Object} filterKeyVals
  * @param {Array} originalRows
  * @param {Column[]} filterColumns The table columns definitions,
