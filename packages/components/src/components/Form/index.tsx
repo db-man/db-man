@@ -42,6 +42,8 @@ interface RenderFormFieldWrapperProps {
 export type ValueType = RowType;
 
 interface FormProps {
+  /** Wether to show delete button, default is true */
+  showDelete?: boolean;
   defaultValues: ValueType;
   loading: boolean;
   rows: RowType[];
@@ -63,6 +65,8 @@ const filterOutHiddenFields = (column: DbColumn) =>
   column['type:createUpdatePage'] !== 'HIDE';
 
 const Form: React.FC<FormProps> = (props) => {
+  const { showDelete = true } = props;
+
   const context = useContext(PageContext);
   const { dbs } = useAppContext();
 
@@ -392,18 +396,22 @@ const Form: React.FC<FormProps> = (props) => {
         >
           Save
         </Button>{' '}
-        |{' '}
-        <Popconfirm
-          title='Are you sure to delete?'
-          onConfirm={handleDelete}
-          onCancel={() => {}}
-          okText='Yes'
-          cancelText='No'
-        >
-          <Button danger disabled={loading} loading={loading}>
-            Delete
-          </Button>
-        </Popconfirm>{' '}
+        {showDelete && (
+          <>
+            |{' '}
+            <Popconfirm
+              title='Are you sure to delete?'
+              onConfirm={handleDelete}
+              onCancel={() => {}}
+              okText='Yes'
+              cancelText='No'
+            >
+              <Button danger disabled={loading} loading={loading}>
+                Delete
+              </Button>
+            </Popconfirm>{' '}
+          </>
+        )}
         |{' '}
         <Button
           type='link'

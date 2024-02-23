@@ -202,6 +202,7 @@ const CreatePage = () => {
         >
           {errorMessage && <Alert message={errorMessage} type='error' />}
           <Form
+            showDelete={false}
             defaultValues={defaultFormValues}
             rows={rows}
             loading={saveLoading}
