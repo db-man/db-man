@@ -1,5 +1,11 @@
 # db-man
 
+## Start
+
+```sh
+npm run dev
+```
+
 ## Develop
 
 ```sh
