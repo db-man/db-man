@@ -4,6 +4,7 @@
 
 ```sh
 npm run dev
+npm run test
 ```
 
 ## Develop
