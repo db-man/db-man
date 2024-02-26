@@ -132,6 +132,12 @@ const ListPage = (props: ListPageProps) => {
   );
 
   const handleKeyDown = (e: KeyboardEvent) => {
+    // Check if the focus is on an input element
+    if (document.activeElement?.tagName === 'INPUT') {
+      e.stopPropagation();
+      return;
+    }
+
     if (e.key === 'ArrowRight') {
       setPage((prevPage) => {
         if (prevPage < filteredSortedData.length / pageSize) {
