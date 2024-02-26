@@ -22,11 +22,19 @@ export const searchNumberKeywordInText = (keyword: string, number: number) =>
  */
 export const searchStringInArray = (keyword: string, tags: string[]) => {
   let match = false;
-  tags.forEach((subCellValue) => {
-    if (searchKeywordInText(keyword, subCellValue)) {
-      match = true;
-    }
-  });
+
+  if (keyword.startsWith('!')) {
+    // Inverse exact match
+    const inverseKeyword = keyword.slice(1);
+    match = tags.every((tag) => !searchKeywordInText(inverseKeyword, tag));
+  } else {
+    tags.forEach((subCellValue) => {
+      if (searchKeywordInText(keyword, subCellValue)) {
+        match = true;
+      }
+    });
+  }
+
   return match;
 };
 

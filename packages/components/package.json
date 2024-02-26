@@ -59,6 +59,7 @@
     "test-cra": "react-scripts test",
     "dev": "PUBLIC_URL=/ npm run start-cra",
     "test": "CI=true npm run test-cra",
+    "tdd": "npm run test-cra",
     "build": "./build.sh",
     "release": "CI=true npm run test-cra && npm run build && git add . && git commit -m 'Build' && npm version patch && git push && git push --tags && npm publish --access=public",
     "eject": "react-scripts eject"

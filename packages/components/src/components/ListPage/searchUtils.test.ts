@@ -1,5 +1,3 @@
-import { STRING, STRING_ARRAY } from '../../constants';
-import DbColumn from '../../types/DbColumn';
 import {
   searchKeywordInText,
   stringArrayFilter,
@@ -22,6 +20,10 @@ describe('searchStringInArray', () => {
   it('should return proper value', () => {
     expect(searchStringInArray('do', ['dog', 'red', 'short'])).toBe(true);
     expect(searchStringInArray('dog', ['dog', 'red', 'short'])).toBe(true);
+  });
+  it.only('should return proper value for inverse exact match', () => {
+    expect(searchStringInArray('!dog', ['dog', 'cat', 'fish'])).toBe(false);
+    expect(searchStringInArray('!dog', ['cat', 'fish'])).toBe(true);
   });
 });
 
