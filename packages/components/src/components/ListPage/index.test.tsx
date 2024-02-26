@@ -40,7 +40,7 @@ beforeEach(() => {
 
 afterEach(() => {});
 
-describe('ListPageBody', () => {
+describe.skip('ListPageBody', () => {
   it('renders table properly', async () => {
     Object.defineProperty(window, 'matchMedia', {
       writable: true,

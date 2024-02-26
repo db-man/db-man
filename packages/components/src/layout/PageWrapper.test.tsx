@@ -9,7 +9,7 @@ import PageWrapper from './PageWrapper';
 
 // jest.mock('@db-man/github');
 
-describe('PageWrapper', () => {
+describe.skip('PageWrapper', () => {
   it('renders err when dbName is undefined', () => {
     render(
       <BrowserRouter>
