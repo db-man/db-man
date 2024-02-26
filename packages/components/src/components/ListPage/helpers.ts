@@ -6,17 +6,19 @@ import DbColumn from '../../types/DbColumn';
 import { RowType } from '../../types/Data';
 import {
   searchKeywordInText,
-  searchNumberKeywordInText,
+  searchKeywordInNumberText,
   stringArrayFilter,
 } from './searchUtils';
 
+// For each column type, define the filter function
 const filterFnMapping: {
   [key: string]: Function;
 } = {
-  [constants.NUMBER]: searchNumberKeywordInText,
+  [constants.NUMBER]: searchKeywordInNumberText,
   [constants.STRING]: searchKeywordInText,
   [constants.STRING_ARRAY]: stringArrayFilter,
 };
+
 const defaultValueMapping: {
   [key: string]: string | string[];
 } = {

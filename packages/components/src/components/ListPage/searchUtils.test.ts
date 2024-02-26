@@ -2,28 +2,34 @@ import {
   searchKeywordInText,
   stringArrayFilter,
   searchStringInArray,
-  searchKeywordInTags,
   searchKeywordsInTagsWithLogicAnd,
   searchKeywordsInTagsWithLogicOr,
+  searchExactStringNotInArray,
+  searchKeywordInNumberText,
 } from './searchUtils';
 
-describe('searchKeywordInTags', () => {
+describe('searchKeywordInNumberText', () => {
   it('should return proper value', () => {
-    expect(searchKeywordInTags('', ['dog', 'red', 'short'])).toBe(true);
-    expect(searchKeywordInTags('do', ['dog', 'red', 'short'])).toBe(true);
-    expect(searchKeywordInTags('dog', ['dog', 'red', 'short'])).toBe(true);
-    expect(searchKeywordInTags('dogs', ['dog', 'red', 'short'])).toBe(false);
+    expect(searchKeywordInNumberText('234', 123456)).toBe(true);
+    expect(searchKeywordInNumberText('012', 123456)).toBe(false);
   });
 });
 
 describe('searchStringInArray', () => {
   it('should return proper value', () => {
+    expect(searchStringInArray('', ['dog', 'red', 'short'])).toBe(true);
     expect(searchStringInArray('do', ['dog', 'red', 'short'])).toBe(true);
     expect(searchStringInArray('dog', ['dog', 'red', 'short'])).toBe(true);
+    expect(searchStringInArray('dogs', ['dog', 'red', 'short'])).toBe(false);
   });
-  it.only('should return proper value for inverse exact match', () => {
-    expect(searchStringInArray('!dog', ['dog', 'cat', 'fish'])).toBe(false);
-    expect(searchStringInArray('!dog', ['cat', 'fish'])).toBe(true);
+});
+
+describe('searchExactStringNotInArray', () => {
+  it('should return proper value for inverse exact match', () => {
+    expect(searchExactStringNotInArray('dog', ['dog', 'cat', 'fish'])).toBe(
+      false
+    );
+    expect(searchExactStringNotInArray('dog', ['cat', 'fish'])).toBe(true);
   });
 });
 

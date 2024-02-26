@@ -11,41 +11,26 @@ export const searchKeywordInText = (keyword: string, text: string) =>
  * @param {string} keyword
  * @param {number} number
  */
-export const searchNumberKeywordInText = (keyword: string, number: number) =>
-  String(number).toLowerCase().indexOf(keyword.toLowerCase()) !== -1;
+export const searchKeywordInNumberText = (keyword: string, number: number) =>
+  searchKeywordInText(keyword, String(number));
 
 /**
- * Search keyword 'do' in string array ['dog', 'cat']
+ * Search string 'do' in string array ['dog', 'cat']
  * @param {string|undefined} keyword Search keyword
  * @param {string[]} tags The table cell value
  * @return {boolean}
  */
-export const searchStringInArray = (keyword: string, tags: string[]) => {
-  let match = false;
-
-  if (keyword.startsWith('!')) {
-    // Inverse exact match
-    const inverseKeyword = keyword.slice(1);
-    match = tags.every((tag) => !searchKeywordInText(inverseKeyword, tag));
-  } else {
-    tags.forEach((subCellValue) => {
-      if (searchKeywordInText(keyword, subCellValue)) {
-        match = true;
-      }
-    });
-  }
-
-  return match;
-};
-
-/**
- * Search keyword in string array, e.g. find "ap" in ["apple","banana"]
- * @param {string|undefined} keyword Search keyword
- * @param {string[]} tags The table cell value
- * @return {boolean}
- */
-export const searchKeywordInTags = (keyword: string, tags: string[]) =>
+export const searchStringInArray = (keyword: string, tags: string[]) =>
   tags.reduce((prev, tag) => prev || searchKeywordInText(keyword, tag), false);
+
+/**
+ * Search exact keyword 'dog' NOT in string array ['dog', 'cat'] (Inverse exact match)
+ * @param {string|undefined} keyword Search keyword
+ * @param {string[]} tags The table cell value
+ * @return {boolean}
+ */
+export const searchExactStringNotInArray = (keyword: string, tags: string[]) =>
+  tags.every((tag) => !searchKeywordInText(keyword, tag));
 
 // keywords="ap+ba" tags=["apple","banana"]
 // take 1st kw "ap": "apple".indexOf("ap")=>0, "banana".indexOf("ap")=>-1, data has tags matched "ap", => true
@@ -54,7 +39,7 @@ export const searchKeywordInTags = (keyword: string, tags: string[]) =>
 export const searchKeywordsInTagsWithLogicAnd = (
   keywords: string[],
   tags: string[]
-) => keywords.reduce((prev, kw) => prev && searchKeywordInTags(kw, tags), true);
+) => keywords.reduce((prev, kw) => prev && searchStringInArray(kw, tags), true);
 
 // keywords="ap ba" data=["apple","pair"]
 // take 1st kw "ap": "apple".indexOf("ap")=>0, "pair".indexOf("ap")=>-1, data has tags matched "ap", => true
@@ -64,7 +49,7 @@ export const searchKeywordsInTagsWithLogicOr = (
   keywords: string[],
   tags: string[]
 ) =>
-  keywords.reduce((prev, kw) => prev || searchKeywordInTags(kw, tags), false);
+  keywords.reduce((prev, kw) => prev || searchStringInArray(kw, tags), false);
 
 /**
  * Search filterKeyword in cellValue
@@ -77,6 +62,9 @@ export const stringArrayFilter = (
   filterKeyword: string,
   cellValue: string[] = []
 ) => {
+  // first will try to parse operator from filterKeyword
+  // choose different search logic based on operator
+
   // AND
   if (filterKeyword.indexOf('+') !== -1) {
     const keywords = filterKeyword.split('+');
@@ -87,6 +75,12 @@ export const stringArrayFilter = (
   if (filterKeyword.indexOf(' ') !== -1) {
     const keywords = filterKeyword.split(' ');
     return searchKeywordsInTagsWithLogicOr(keywords, cellValue);
+  }
+
+  // Inverse exact match
+  if (filterKeyword.startsWith('!')) {
+    const inverseKeyword = filterKeyword.slice(1);
+    return searchExactStringNotInArray(inverseKeyword, cellValue);
   }
 
   return searchStringInArray(filterKeyword, cellValue);
