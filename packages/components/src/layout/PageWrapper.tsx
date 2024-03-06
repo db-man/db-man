@@ -13,7 +13,6 @@ import NavBar from '../components/NavBar';
 import CreatePage from '../components/CreatePage';
 import UpdatePage from '../components/UpdatePage';
 import ListPage from '../components/ListPage';
-import TagsCloudPage from '../components/TagsCloudPage';
 import GetPage from '../components/GetPage';
 import TableConfigPage from '../components/TableConfigPage';
 import QueryPage from '../components/QueryPage';
@@ -35,7 +34,6 @@ const actionToComponentMapping: {
   create: CreatePage,
   update: UpdatePage,
   get: GetPage,
-  tagsCloud: TagsCloudPage,
   tableConfig: TableConfigPage,
   query: QueryPage,
 };

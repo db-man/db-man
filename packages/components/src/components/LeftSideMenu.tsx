@@ -54,10 +54,6 @@ const LeftSideMenu: React.FC<LeftSideMenuProps> = ({
             label: <Link to={`/${dbName}/${tName}/create`}>Create</Link>,
           },
           {
-            key: `${dbName}-${tName}-tagsCloud`,
-            label: <Link to={`/${dbName}/${tName}/tagsCloud`}>tagsCloud</Link>,
-          },
-          {
             key: `${dbName}-${tName}-tableConfig`,
             label: (
               <Link to={`/${dbName}/${tName}/tableConfig`}>tableConfig</Link>

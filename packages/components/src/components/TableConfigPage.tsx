@@ -13,7 +13,7 @@ import DbColumn, {
   TableColumnKeyType,
 } from '../types/DbColumn';
 import { Link } from 'react-router-dom';
-import TagsCloudPageBody from './TagsCloudPageBody';
+import DistinctColumn from './DistinctColumn';
 
 const genColumn = (dbTableColumns: DbColumn[]) => [
   {
@@ -179,7 +179,7 @@ export default function TableConfigPage() {
   if (distinctParam) {
     return (
       <div className='table-config-page'>
-        <TagsCloudPageBody columnKey={distinctParam} />
+        <DistinctColumn columnKey={distinctParam} />
       </div>
     );
   }

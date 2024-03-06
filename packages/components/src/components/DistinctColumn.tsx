@@ -7,7 +7,7 @@ import { List } from 'antd';
 import PageContext from '../contexts/page';
 import { RowType } from '../types/Data';
 
-const TagsCloudPageBody = ({ columnKey }: { columnKey: string }) => {
+const DistinctColumn = ({ columnKey }: { columnKey: string }) => {
   const { githubDb, dbName, tableName } = useContext(PageContext);
   const [loading, setLoading] = useState(false);
   const [content, setContent] = useState<RowType>([]);
@@ -25,7 +25,7 @@ const TagsCloudPageBody = ({ columnKey }: { columnKey: string }) => {
     } catch (error) {
       setLoading(false);
       console.error(
-        'Failed to get JSON file in TagsCloudPageBody component, error:',
+        'Failed to get JSON file in DistinctColumn component, error:',
         error
       );
     }
@@ -76,7 +76,7 @@ const TagsCloudPageBody = ({ columnKey }: { columnKey: string }) => {
           );
           return (
             <List.Item>
-              <div className='tags-cloud-item'>
+              <div className='dm-distinct-column-item'>
                 <Link
                   to={{
                     pathname: `/${dbName}/${tableName}/list`,
@@ -94,7 +94,7 @@ const TagsCloudPageBody = ({ columnKey }: { columnKey: string }) => {
     );
   };
 
-  return <div className='tags-cloud-page-body-component'>{renderList()}</div>;
+  return <div className='dm-distinct-column-component'>{renderList()}</div>;
 };
 
-export default TagsCloudPageBody;
+export default DistinctColumn;
