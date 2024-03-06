@@ -3,7 +3,7 @@ import {
   GetPageUiType,
   ListPageUiType,
   RadioGroupUiTypeEnum,
-  RandomPageUiType,
+  ListPageRandomViewUiType,
   UiType,
 } from './UiType';
 import { RowType } from './Data';
@@ -19,13 +19,31 @@ export type RenderKeyType =
   | 'type:createUpdatePage'
   | 'type:getPage'
   | 'type:listPage'
-  | 'type:randomPage';
+  | 'ui:listPage:randomView';
+
+export const TABLE_COLUMN_KEYS = [
+  'id',
+  'name',
+  'type',
+  'placeholder',
+  'primary',
+  'ui:listPage:isFilter',
+  'ui:createUpdatePage:enum',
+  'type:createUpdatePage',
+  'type:getPage',
+  'type:listPage',
+  'ui:listPage:randomView',
+  'referenceTable',
+  'ui:listPage:isImageViewKey',
+] as const; // "as const" makes TypeScript treat this as a readonly tuple
+type TableColumnKeysType = typeof TABLE_COLUMN_KEYS;
+export type TableColumnKeyType = TableColumnKeysType[number];
 
 type DbColumnExtendsUiType = {
   'type:createUpdatePage'?: UiType;
   'type:getPage'?: GetPageUiType;
   'type:listPage'?: ListPageUiType;
-  'type:randomPage'?: RandomPageUiType;
+  'ui:listPage:randomView'?: ListPageRandomViewUiType;
   /**
    * - Only used on create/update page.
    *   - When `type="STRING_ARRAY"`, and default UI component `Select` is used.

@@ -133,7 +133,7 @@ This props will pass to `ImageLink` component.
 }
 ```
 
-### `type:randomPage`
+### `ui:listPage:randomView`
 
 On the Random Page, choose the UI component to use for one of the list item.
 
@@ -144,7 +144,7 @@ This props will pass to `ImageLink` component.
 ```json
 {
   "id": "product_id",
-  "type:randomPage": [
+  "ui:listPage:randomView": [
     [
       "ImageLink",
       "{\"url\":\"{{record.photos.[0]}}\",\"imgSrc\":\"{{record.photos.[0]}}\"}"

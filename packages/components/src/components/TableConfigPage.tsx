@@ -7,6 +7,10 @@ import type { TabsProps } from 'antd';
 import PageContext from '../contexts/page';
 import ReactSimpleCodeEditor from './ReactSimpleCodeEditor';
 import { DB_CFG_FILENAME } from '../constants';
+import DbColumn, {
+  TABLE_COLUMN_KEYS,
+  TableColumnKeyType,
+} from '../types/DbColumn';
 
 const columns = [
   {
@@ -65,9 +69,9 @@ const columns = [
     },
   },
   {
-    key: 'type:randomPage',
-    dataIndex: 'type:randomPage',
-    title: 'type:randomPage',
+    key: 'ui:listPage:randomView',
+    dataIndex: 'ui:listPage:randomView',
+    title: 'ui:listPage:randomView',
     render: (cell: object) => {
       if (typeof cell === 'object') return JSON.stringify(cell);
       return cell;
@@ -103,8 +107,26 @@ const footer = ({ dbName }: { dbName: string }) =>
     );
   };
 
+const checkValidTableColumns = (dbTableColumns: DbColumn[]) => {
+  let msg = '';
+  if (dbTableColumns.length === 0) {
+    msg += 'No columns defined in the table. ';
+  }
+  dbTableColumns.forEach((col) => {
+    // check every properties of col, should in this list TABLE_COLUMN_KEYS
+    Object.keys(col).forEach((key) => {
+      if (TABLE_COLUMN_KEYS.indexOf(key as TableColumnKeyType) < 0) {
+        msg += `Invalid key: ${key} in column: ${col.id}. `;
+      }
+    });
+  });
+  return msg;
+};
+
 export default function TableConfigPage() {
   const { dbName, columns: dbTableColumns } = useContext(PageContext);
+
+  const errMsg = checkValidTableColumns(dbTableColumns);
 
   const items: TabsProps['items'] = [
     {
@@ -112,6 +134,7 @@ export default function TableConfigPage() {
       label: 'Table',
       children: (
         <div>
+          {errMsg && <div>{errMsg}</div>}
           <Table
             rowKey='id'
             dataSource={dbTableColumns}
