@@ -81,7 +81,7 @@ const DbConnections = ({ storage }: { storage: StorageType }) => {
 
   return (
     <div className='dm-db-connections'>
-      <h2>Database Connections 2</h2>
+      <h2>Database Connections</h2>
       <EditableTable storage={storage} onEnable={handleDbConnectionEnable} />
       <Button onClick={handleExport}>Export</Button>{' '}
       <Button onClick={handleImport}>Import</Button>

@@ -290,7 +290,7 @@ function EditableTable({
           ) {
             return (
               <span>
-                {text} <CheckCircleOutlined />
+                {text} <CheckCircleOutlined style={{ color: 'red' }} />
               </span>
             );
           }
