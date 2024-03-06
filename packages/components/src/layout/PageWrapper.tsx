@@ -10,33 +10,11 @@ import * as constants from '../constants';
 import { getPrimaryKey } from '../utils';
 import PageContext from '../contexts/page';
 import NavBar from '../components/NavBar';
-import CreatePage from '../components/CreatePage';
-import UpdatePage from '../components/UpdatePage';
-import ListPage from '../components/ListPage';
-import GetPage from '../components/GetPage';
-import TableConfigPage from '../components/TableConfigPage';
-import QueryPage from '../components/QueryPage';
 import { useAppContext } from '../contexts/AppContext';
 import DbTable from '../types/DbTable';
+import { actionToComponentMapping } from '../pages';
 
 const { Provider } = PageContext;
-
-// map action to component
-const actionToComponentMapping: {
-  [key: string]: React.ComponentType<{
-    dbName: string;
-    tableName: string;
-    action: string;
-    tables: DbTable[];
-  }>;
-} = {
-  list: ListPage,
-  create: CreatePage,
-  update: UpdatePage,
-  get: GetPage,
-  tableConfig: TableConfigPage,
-  query: QueryPage,
-};
 
 export function TableList({ dbName }: { dbName: string }) {
   const { dbs } = useAppContext();
