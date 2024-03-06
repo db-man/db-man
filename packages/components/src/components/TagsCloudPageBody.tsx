@@ -7,7 +7,7 @@ import { List } from 'antd';
 import PageContext from '../contexts/page';
 import { RowType } from '../types/Data';
 
-const TagsCloudPageBody = () => {
+const TagsCloudPageBody = ({ columnKey }: { columnKey: string }) => {
   const { githubDb, dbName, tableName } = useContext(PageContext);
   const [loading, setLoading] = useState(false);
   const [content, setContent] = useState<RowType>([]);
@@ -39,8 +39,8 @@ const TagsCloudPageBody = () => {
       [key: string]: number;
     } = {};
     content.forEach((item: RowType) => {
-      if (!item.tags) return;
-      item.tags.forEach((name: string) => {
+      if (!item[columnKey]) return;
+      item[columnKey].forEach((name: string) => {
         if (!tagNameCount[name]) {
           tagNameCount[name] = 0;
         }
@@ -71,7 +71,7 @@ const TagsCloudPageBody = () => {
         renderItem={(item) => {
           const filter = encodeURIComponent(
             JSON.stringify({
-              tags: item.name,
+              [columnKey]: item.name,
             })
           );
           return (

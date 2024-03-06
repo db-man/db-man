@@ -7,7 +7,7 @@ import TagsCloudPageBody from './TagsCloudPageBody';
 export default function TagsCloudPage() {
   return (
     <div className='tags-cloud-page'>
-      <TagsCloudPageBody />
+      <TagsCloudPageBody columnKey='tags' />
     </div>
   );
 }

@@ -3,20 +3,35 @@
 import React, { useContext } from 'react';
 import { Table, Tabs } from 'antd';
 import type { TabsProps } from 'antd';
+import { useLocation } from 'react-router-dom';
 
 import PageContext from '../contexts/page';
 import ReactSimpleCodeEditor from './ReactSimpleCodeEditor';
-import { DB_CFG_FILENAME } from '../constants';
+import { DB_CFG_FILENAME, STRING_ARRAY } from '../constants';
 import DbColumn, {
   TABLE_COLUMN_KEYS,
   TableColumnKeyType,
 } from '../types/DbColumn';
+import { Link } from 'react-router-dom';
+import TagsCloudPageBody from './TagsCloudPageBody';
 
-const columns = [
+const genColumn = (dbTableColumns: DbColumn[]) => [
   {
     key: 'id',
     dataIndex: 'id',
     title: 'ID',
+    render: (cell: string) => {
+      // if this column is string_array, then render a link "?distinct=tags"
+      if (
+        dbTableColumns.find(
+          (col) => col.id === cell && col.type === STRING_ARRAY
+        )
+      ) {
+        // return <a href={`?distinct=${cell}`}>{cell}</a>;
+        return <Link to={`?distinct=${cell}`}>{cell}</Link>;
+      }
+      return cell;
+    },
   },
   {
     key: 'name',
@@ -125,6 +140,10 @@ const checkValidTableColumns = (dbTableColumns: DbColumn[]) => {
 
 export default function TableConfigPage() {
   const { dbName, columns: dbTableColumns } = useContext(PageContext);
+  const location = useLocation();
+
+  const queryParams = new URLSearchParams(location.search);
+  const distinctParam = queryParams.get('distinct');
 
   const errMsg = checkValidTableColumns(dbTableColumns);
 
@@ -138,7 +157,7 @@ export default function TableConfigPage() {
           <Table
             rowKey='id'
             dataSource={dbTableColumns}
-            columns={columns}
+            columns={genColumn(dbTableColumns)}
             pagination={false}
             footer={footer({ dbName })}
           />
@@ -156,6 +175,14 @@ export default function TableConfigPage() {
       ),
     },
   ];
+
+  if (distinctParam) {
+    return (
+      <div className='table-config-page'>
+        <TagsCloudPageBody columnKey={distinctParam} />
+      </div>
+    );
+  }
 
   return (
     <div className='table-config-page'>
