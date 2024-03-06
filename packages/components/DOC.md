@@ -135,7 +135,7 @@ This props will pass to `ImageLink` component.
 
 ### `ui:listPage:randomView`
 
-On the Random Page, choose the UI component to use for one of the list item.
+On the List Page, Random View, choose the UI component to use for one of the list item.
 
 Below is an example of using `ImageLink` component. The string after "ImageLink" is a template (Handlebars).
 It will transform the `record` which passing from antd `Table` component, into a props object like `{url:'',imgSrc:''}`.

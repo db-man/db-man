@@ -13,7 +13,6 @@ import NavBar from '../components/NavBar';
 import CreatePage from '../components/CreatePage';
 import UpdatePage from '../components/UpdatePage';
 import ListPage from '../components/ListPage';
-import RandomPage from '../components/RandomPage';
 import TagsCloudPage from '../components/TagsCloudPage';
 import GetPage from '../components/GetPage';
 import TableConfigPage from '../components/TableConfigPage';
@@ -23,7 +22,8 @@ import DbTable from '../types/DbTable';
 
 const { Provider } = PageContext;
 
-const mapp: {
+// map action to component
+const actionToComponentMapping: {
   [key: string]: React.ComponentType<{
     dbName: string;
     tableName: string;
@@ -32,7 +32,6 @@ const mapp: {
   }>;
 } = {
   list: ListPage,
-  random: RandomPage,
   create: CreatePage,
   update: UpdatePage,
   get: GetPage,
@@ -171,16 +170,16 @@ const PageWrapper = (props: {
     setTables(_tables);
   };
 
-  const renderTableListInDb = () => (
-    <div>
-      List of tables in DB:
-      <TableList dbName={props.dbName || ''} />
-    </div>
-  );
+  // const renderTableListInDb = () => (
+  //   <div>
+  //     List of tables in DB:
+  //     <TableList dbName={props.dbName || ''} />
+  //   </div>
+  // );
 
-  const renderActionInTable = () => (
-    <ActionList dbName={props.dbName || ''} tableName={props.tableName || ''} />
-  );
+  // const renderActionInTable = () => (
+  //   <ActionList dbName={props.dbName || ''} tableName={props.tableName || ''} />
+  // );
 
   const { dbName, tableName, action } = props;
 
@@ -210,7 +209,7 @@ const PageWrapper = (props: {
     return <div className='dm-page-v2 err-msg'>{errMsgs.join(' ,')}</div>;
   }
 
-  const PageComponent = mapp[action || ''];
+  const PageComponent = actionToComponentMapping[action || ''];
 
   if (!PageComponent) {
     return (

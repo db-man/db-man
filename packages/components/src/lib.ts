@@ -19,7 +19,6 @@ export { default as MultiLineInputBox } from './components/MultiLineInputBox';
 export { default as NavBar } from './components/NavBar';
 export { default as PageHeaderContent } from './components/PageHeaderContent';
 export { default as RadioGroupFormField } from './components/RadioGroupFormField';
-export { default as RandomPage } from './components/RandomPage';
 export { default as RefTableLink } from './components/RefTableLink';
 export { default as RefTableLinks } from './components/RefTableLinks';
 export { default as StringFormField } from './components/StringFormField';
