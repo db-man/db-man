@@ -84,7 +84,7 @@ See `src/types/Column.ts`
 
 TODO add description here
 
-### `placeholder`
+### `ui:createUpdatePage:placeholder`
 
 See `src/types/Column.ts::ColumnPlaceholder`
 

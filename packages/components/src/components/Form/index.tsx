@@ -218,7 +218,7 @@ const Form: React.FC<FormProps> = (props) => {
           disabled: loading,
           autoFocus: column.id === context.primaryKey,
           onKeyDown: handleKeyDown,
-          placeholder: column.placeholder,
+          placeholder: column['ui:createUpdatePage:placeholder'],
         }}
         preview={preview}
         label={column.name}

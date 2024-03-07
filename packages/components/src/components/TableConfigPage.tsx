@@ -19,7 +19,7 @@ const genColumn = (dbTableColumns: DbColumn[]) => [
   {
     key: 'id',
     dataIndex: 'id',
-    title: 'ID',
+    title: 'id',
     render: (cell: string) => {
       // if this column is string_array, then render a link "?distinct=tags"
       if (
@@ -36,17 +36,12 @@ const genColumn = (dbTableColumns: DbColumn[]) => [
   {
     key: 'name',
     dataIndex: 'name',
-    title: 'Name',
+    title: 'name',
   },
   {
     key: 'type',
     dataIndex: 'type',
-    title: 'Type',
-  },
-  {
-    key: 'placeholder',
-    dataIndex: 'placeholder',
-    title: 'placeholder',
+    title: 'type',
   },
   {
     key: 'primary',
@@ -68,6 +63,11 @@ const genColumn = (dbTableColumns: DbColumn[]) => [
       if (!cell) return 'None';
       return cell.join(', ');
     },
+  },
+  {
+    key: 'ui:createUpdatePage:placeholder',
+    dataIndex: 'ui:createUpdatePage:placeholder',
+    title: 'ui:createUpdatePage:placeholder',
   },
   {
     key: 'type:createUpdatePage',
