@@ -17,6 +17,7 @@ import {
   Alert,
   message,
   Segmented,
+  Typography,
 } from 'antd';
 import type { TableProps, ColumnType as AntdColumnType } from 'antd/es/table';
 import { RightSquareFilled } from '@ant-design/icons';
@@ -41,6 +42,9 @@ import DbColumn from '../../types/DbColumn';
 import { RowType } from '../../types/Data';
 import ImageCardTable, { CardTablePagination } from './ImageCardTable';
 import RandomList from '../RandomList';
+
+// Use `Typography` so can apply dark theme to text
+const { Text } = Typography;
 
 interface ListPageProps {
   tableName: string;
@@ -442,7 +446,7 @@ const ListPage = (props: ListPageProps) => {
         <Row gutter={10}>
           {filterCols(columns).map((f) => (
             <Col key={f.id} span={6}>
-              {f.name}
+              <Text>{f.name}</Text>
               :
               <Input
                 size='small'

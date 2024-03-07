@@ -1,10 +1,15 @@
-import { Row, Col } from 'antd';
+import { Row, Col, Typography } from 'antd';
 import React, { useContext, useEffect } from 'react';
 import JsonView from '@uiw/react-json-view';
+import { lightTheme } from '@uiw/react-json-view/light';
+import { darkTheme } from '@uiw/react-json-view/dark';
 
 import PageContext from '../contexts/page';
 import ReactSimpleCodeEditor from './ReactSimpleCodeEditor';
 import { RowType } from '../types/Data';
+
+// Use `Typography` so can apply dark theme to text
+const { Text } = Typography;
 
 const defaultCode = 'return rows.slice(0, 10);';
 
@@ -47,11 +52,23 @@ export default function QueryPage() {
           <br />
         </Col>
         <Col span={8}>
-          <div>Error:</div>
+          <div>
+            <Text>Error:</Text>
+          </div>
           <div style={{ color: 'red' }}>{result.err}</div>
-          <div>Result:</div>
+          <div>
+            <Text>Result:</Text>
+          </div>
           {result.obj && (
-            <JsonView value={JSON.parse(result.obj)} collapsed={1} />
+            <JsonView
+              value={JSON.parse(result.obj)}
+              collapsed={1}
+              style={
+                localStorage.getItem('dm_dark_theme') === 'true'
+                  ? darkTheme
+                  : lightTheme
+              }
+            />
           )}
         </Col>
       </Row>

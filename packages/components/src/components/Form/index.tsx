@@ -10,6 +10,7 @@ import {
   Popconfirm,
   InputNumber,
   Switch,
+  Typography,
 } from 'antd';
 
 import StringFormField from '../StringFormField';
@@ -32,6 +33,9 @@ import PresetsButtons from '../PresetsButtons';
 import DbColumn from '../../types/DbColumn';
 import { useAppContext } from '../../contexts/AppContext';
 import { RowType } from '../../types/Data';
+
+// Use `Typography` so can apply dark theme to text
+const { Text } = Typography;
 
 interface RenderFormFieldWrapperProps {
   id: string;
@@ -398,7 +402,7 @@ const Form: React.FC<FormProps> = (props) => {
         </Button>{' '}
         {showDelete && (
           <>
-            |{' '}
+            <Text>|</Text>{' '}
             <Popconfirm
               title='Are you sure to delete?'
               onConfirm={handleDelete}
@@ -412,7 +416,7 @@ const Form: React.FC<FormProps> = (props) => {
             </Popconfirm>{' '}
           </>
         )}
-        |{' '}
+        <Text>|</Text>{' '}
         <Button
           type='link'
           href={`/${context.dbName}/${context.tableName}/create`}

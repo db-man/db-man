@@ -5,6 +5,10 @@ import { utils } from '@db-man/github';
 import * as constants from '../constants';
 import { getUrlParams } from '../utils';
 import PageContext from '../contexts/page';
+import { Typography } from 'antd';
+
+// Use `Typography` so can apply dark theme to text
+const { Text } = Typography;
 
 /**
  * This component depends on page context, so only used in Application/Page
@@ -17,20 +21,22 @@ const NavBar = () => {
   const renderReferenceTableLink = () => {
     return columns
       .filter((column) => column.referenceTable)
-      .map((column) => [
-        `${column.referenceTable}(`,
-        <a
-          key='create-link'
-          href={`/${dbName}/${column.referenceTable}/create`}
-        >
-          Create
-        </a>,
-        ',',
-        <a key='list-link' href={`/${dbName}/${column.referenceTable}/list`}>
-          List
-        </a>,
-        ') | ',
-      ]);
+      .map((column, idx) => (
+        <span key={idx}>
+          [<Text>{`${column.referenceTable}(`}</Text>,
+          <a
+            key='create-link'
+            href={`/${dbName}/${column.referenceTable}/create`}
+          >
+            Create
+          </a>
+          ,<Text>,</Text>,
+          <a key='list-link' href={`/${dbName}/${column.referenceTable}/list`}>
+            List
+          </a>
+          ,<Text>{`) | `}</Text>, ]
+        </span>
+      ));
   };
 
   const id = getUrlParams()[primaryKey];
@@ -84,29 +90,29 @@ const NavBar = () => {
 
   return (
     <div className='dm-nav-bar'>
-      NavBar: <span> </span>
+      <Text>NavBar:</Text> <span> </span>
       <span> </span>
       <span>
-        <span>{tableName}</span>
-        <span>( </span>
+        <Text>{tableName}</Text>
+        <Text>( </Text>
         <span>{createLink}</span>
-        <span>,</span>
+        <Text>,</Text>
         <span>{updateOrGetLink}</span>
-        <span>,</span>
+        <Text>,</Text>
         <span>{listLink}</span>
-        <span>)</span>
+        <Text>)</Text>
       </span>
-      <span> | </span>
+      <Text> | </Text>
       <span>
-        <span>Ref tables</span>
-        <span>: </span>
-        <span>(</span>
+        <Text>Ref tables</Text>
+        <Text>: </Text>
+        <Text>(</Text>
         <span>{renderReferenceTableLink()}</span>
-        <span>)</span>
+        <Text>)</Text>
       </span>
-      <span> | </span>
+      <Text> | </Text>
       {/* GitHub link of DB table file, e.g. "dbs/iam/users.data.json" */}
-      <span>GitHub Link: </span>
+      <Text>GitHub Link: </Text>
       <a
         title='GitHub File Path'
         href={githubDb?.getDataUrl(dbName, tableName)}
@@ -117,7 +123,7 @@ const NavBar = () => {
       </a>
       {aaa && (
         <>
-          <span>::</span>
+          <Text>::</Text>
           {aaa}
         </>
       )}

@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Button } from 'antd';
 
 import * as types from './types';
 import { PhotoType } from './PhotoList';
@@ -94,14 +95,14 @@ export function ImageLink({
       <br />
       {description}
       <br />
-      <button
+      <Button
         className='dm-dd-image-link-download-btn'
         onClick={() => {
           downloadImage(url2);
         }}
       >
         Download
-      </button>
+      </Button>
     </div>
   );
 }
