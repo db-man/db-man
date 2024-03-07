@@ -4,6 +4,12 @@
 
 <!-- toc -->
 
+## Theme
+
+```js
+localStorage.setItem('dm_dark_theme', 'true');
+```
+
 ## Database connections
 
 | key | owner  | token | repo           | path | modes       |
