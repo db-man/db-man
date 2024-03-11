@@ -6,13 +6,13 @@ import '@testing-library/jest-dom';
 
 const localStorageMock = (function mock() {
   let store: { [key: string]: string } = {
-    dm_github_personal_access_token: '',
-    dm_github_repo_path: 'dbs',
-    dm_github_owner: 'db-man',
-    dm_github_repo_name: 'db',
-    dm_dbs_schema:
+    dbm_github_personal_access_token: '',
+    dbm_github_repo_path: 'dbs',
+    dbm_github_owner: 'db-man',
+    dbm_github_repo_name: 'db',
+    dbm_dbs_schema:
       '{"iam":[{"name":"users","columns":[{"id":"userId","name":"User ID","primary":true},{"id":"name","name":"Name"},{"id":"age","name":"Age","type":"NUMBER"},{"id":"active","name":"Active","type":"BOOL"},{"id":"tags","name":"Tags","type":"STRING_ARRAY"}]}]}',
-    dm_db_connections:
+    dbm_db_connections:
       '[{"key":"1","owner":"db-man","token":"123","repo":"db","path":"dbs","modes":""}]',
   };
 

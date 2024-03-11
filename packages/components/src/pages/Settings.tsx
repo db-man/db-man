@@ -14,12 +14,12 @@ const Settings = () => {
   useTitle('Settings - db-man');
 
   const [isDarkTheme, setIsDarkTheme] = React.useState(
-    localStorage.getItem('dm_is_dark_theme') === 'true'
+    localStorage.getItem('dbm_is_dark_theme') === 'true'
   );
 
   const onChange = (checked: boolean) => {
     setIsDarkTheme(checked);
-    localStorage.setItem('dm_is_dark_theme', checked ? 'true' : 'false');
+    localStorage.setItem('dbm_is_dark_theme', checked ? 'true' : 'false');
     window.location.reload();
   };
 

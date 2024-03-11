@@ -7,7 +7,12 @@ import { useLocation } from 'react-router-dom';
 
 import PageContext from '../contexts/page';
 import ReactSimpleCodeEditor from './ReactSimpleCodeEditor';
-import { DB_CFG_FILENAME, STRING_ARRAY } from '../constants';
+import {
+  DB_CFG_FILENAME,
+  LS_KEY_GITHUB_REPO_NAME,
+  LS_KEY_GITHUB_REPO_PATH,
+  STRING_ARRAY,
+} from '../constants';
 import DbColumn, {
   TABLE_COLUMN_KEYS,
   TableColumnKeyType,
@@ -127,11 +132,11 @@ const footer = ({ dbName }: { dbName: string }) =>
         Table column definition:{' '}
         <a
           href={`https://github.com/${localStorage.getItem(
-            'dm_github_owner'
+            'dbm_github_owner'
           )}/${localStorage.getItem(
-            'dm_github_repo_name'
+            LS_KEY_GITHUB_REPO_NAME
           )}/blob/main/${localStorage.getItem(
-            'dm_github_repo_path'
+            LS_KEY_GITHUB_REPO_PATH
           )}/${dbName}/${DB_CFG_FILENAME}`}
           target='_blank'
           rel='noreferrer'

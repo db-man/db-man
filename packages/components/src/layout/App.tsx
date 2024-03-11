@@ -25,7 +25,7 @@ export default function App() {
         <ConfigProvider
           theme={{
             algorithm:
-              localStorage.getItem('dm_is_dark_theme') === 'true'
+              localStorage.getItem('dbm_is_dark_theme') === 'true'
                 ? darkAlgorithm
                 : defaultAlgorithm,
           }}

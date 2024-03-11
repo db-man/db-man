@@ -7,7 +7,7 @@
 ## Theme
 
 ```js
-localStorage.setItem('dm_is_dark_theme', 'true');
+localStorage.setItem('dbm_is_dark_theme', 'true');
 ```
 
 ## Database connections
