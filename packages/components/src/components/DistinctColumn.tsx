@@ -76,7 +76,7 @@ const DistinctColumn = ({ columnKey }: { columnKey: string }) => {
           );
           return (
             <List.Item>
-              <div className='dm-distinct-column-item'>
+              <div className='dbm-distinct-column-item'>
                 <Link
                   to={{
                     pathname: `/${dbName}/${tableName}/list`,
@@ -94,7 +94,7 @@ const DistinctColumn = ({ columnKey }: { columnKey: string }) => {
     );
   };
 
-  return <div className='dm-distinct-column-component'>{renderList()}</div>;
+  return <div className='dbm-distinct-column-component'>{renderList()}</div>;
 };
 
 export default DistinctColumn;

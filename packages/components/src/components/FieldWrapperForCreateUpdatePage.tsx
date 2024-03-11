@@ -17,15 +17,15 @@ const FieldWrapperForCreateUpdatePage = ({
 }) => {
   const typeClassName =
     column.type === constants.STRING_ARRAY
-      ? 'dm-string-array-form-field'
-      : 'dm-string-form-field';
+      ? 'dbm-string-array-form-field'
+      : 'dbm-string-form-field';
   return (
     <div
       // key={column.id}
       className={`dbm-form-field ${typeClassName}`}
       data-debug={JSON.stringify(column)}
     >
-      <div className='dm-field-label'>
+      <div className='dbm-field-label'>
         <b>{column.name}</b>:{' '}
       </div>
       {children}

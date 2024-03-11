@@ -45,7 +45,7 @@ const ImageCardTable = ({
   }
 
   return (
-    <div className='dm-card-table'>
+    <div className='dbm-card-table'>
       <Card>
         {dataSource
           .slice(

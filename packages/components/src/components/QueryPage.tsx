@@ -40,7 +40,7 @@ export default function QueryPage() {
   }, [content, code]);
 
   return (
-    <div className='dm-query-page'>
+    <div className='dbm-query-page'>
       <Row>
         <Col span={16}>
           Code:

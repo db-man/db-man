@@ -14,7 +14,7 @@ interface TextAreaFormFieldProps {
 export default function TextAreaFormField(props: TextAreaFormFieldProps) {
   const { label, value, onChange } = props;
   return (
-    <div className='dbm-form-field dm-string-form-field'>
+    <div className='dbm-form-field dbm-string-form-field'>
       <b>{label}</b>:{' '}
       <TextAreaFormFieldValue
         value={value}

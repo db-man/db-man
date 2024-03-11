@@ -22,7 +22,7 @@ export function Link({
   if (children) {
     return (
       <a
-        className='dm-dd-link'
+        className='dbm-dd-link'
         href={children}
         target='_blank'
         rel='noreferrer'
@@ -32,7 +32,7 @@ export function Link({
     );
   }
   return (
-    <a className='dm-dd-link' href={href} target='_blank' rel='noreferrer'>
+    <a className='dbm-dd-link' href={href} target='_blank' rel='noreferrer'>
       {text}
     </a>
   );
@@ -87,7 +87,7 @@ export function ImageLink({
     imgSrc2 = children;
   }
   return (
-    <div className='dm-dd-image-link'>
+    <div className='dbm-dd-image-link'>
       <a href={url2} rel='noreferrer' target='_blank'>
         <span>{url2}</span>
         <img alt='ImageLink' src={imgSrc2} />
@@ -96,7 +96,7 @@ export function ImageLink({
       {description}
       <br />
       <Button
-        className='dm-dd-image-link-download-btn'
+        className='dbm-dd-image-link-download-btn'
         onClick={() => {
           downloadImage(url2);
         }}

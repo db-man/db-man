@@ -1,4 +1,4 @@
-/* dm = db-man */
+/* dbm = db-man */
 .dbm-page {
   /* margin will cause scrollbar on page */
   /* margin: 10px; */
@@ -11,17 +11,17 @@
   width: 150px;
 }
 
-.dm-distinct-column-item {
+.dbm-distinct-column-item {
   padding: 10px;
   background-color: white;
 }
 
 .dbm-form-field,
-.dm-action-buttons {
+.dbm-action-buttons {
   margin-top: 10px;
 }
 
-.dm-dd-image-link a span {
+.dbm-dd-image-link a span {
   /* color: white;  */
   width: 150px;
   display: block;
@@ -29,10 +29,10 @@
   font-size: 1px;
 }
 
-.dm-dd-image-link a img {
+.dbm-dd-image-link a img {
   width: 150px;
 }
 
-.dm-table-filter {
+.dbm-table-filter {
   margin-bottom: 10px;
 }

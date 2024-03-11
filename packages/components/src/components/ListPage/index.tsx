@@ -285,7 +285,7 @@ const ListPage = (props: ListPageProps) => {
   };
 
   const alertValidations = () => (
-    <div className='dm-alert-validations'>
+    <div className='dbm-alert-validations'>
       {alertDuplicatedRowKey()}
       {alertTableDataInvalid()}
     </div>
@@ -441,8 +441,8 @@ const ListPage = (props: ListPageProps) => {
   };
 
   return (
-    <div className='dm-list-page list-component'>
-      <div className='dm-table-filter'>
+    <div className='dbm-list-page list-component'>
+      <div className='dbm-table-filter'>
         <Row gutter={10}>
           {filterCols(columns).map((f) => (
             <Col key={f.id} span={6}>

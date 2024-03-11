@@ -60,7 +60,7 @@ const renderFormFieldWrapper = ({
   label,
   formField,
 }: RenderFormFieldWrapperProps) => (
-  <div key={id} className='dbm-form-field dm-string-form-field'>
+  <div key={id} className='dbm-form-field dbm-string-form-field'>
     <b>{label}</b>: {formField}
   </div>
 );
@@ -239,7 +239,7 @@ const Form: React.FC<FormProps> = (props) => {
       return (
         <div
           key={column.id}
-          className='dbm-form-field dm-string-array-form-field'
+          className='dbm-form-field dbm-string-array-form-field'
         >
           <b>{column.name}</b>:{' '}
           <PresetsButtons
@@ -295,7 +295,7 @@ const Form: React.FC<FormProps> = (props) => {
       return (
         <div
           key={column.id}
-          className='dbm-form-field dm-string-array-form-field'
+          className='dbm-form-field dbm-string-array-form-field'
         >
           <b>{column.name}</b>:{' '}
           <RefTableLink
@@ -368,7 +368,7 @@ const Form: React.FC<FormProps> = (props) => {
       label: 'Form',
       key: 'form',
       children: (
-        <div className='dm-form'>
+        <div className='dbm-form'>
           {context.columns.filter(filterOutHiddenFields).map(fieldRender)}
         </div>
       ),
@@ -391,7 +391,7 @@ const Form: React.FC<FormProps> = (props) => {
   return (
     <div className='create-update-component'>
       <Tabs defaultActiveKey='form' items={tabsItems} />
-      <div className='dm-action-buttons'>
+      <div className='dbm-action-buttons'>
         <Button
           type='primary'
           disabled={loading}
