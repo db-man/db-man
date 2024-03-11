@@ -64,7 +64,7 @@ export default function QueryPage() {
               value={JSON.parse(result.obj)}
               collapsed={1}
               style={
-                localStorage.getItem('dm_dark_theme') === 'true'
+                localStorage.getItem('dm_is_dark_theme') === 'true'
                   ? darkTheme
                   : lightTheme
               }

@@ -1,11 +1,14 @@
 import React, { useRef } from 'react';
 
-import { Button } from 'antd';
+import { Button, Typography } from 'antd';
 import { GithubDb } from '@db-man/github';
 
 import * as constants from '../constants';
 import reloadDbsSchemaAsync from '../pages/helpers';
 import EditableTable from './EditableTable';
+
+// Use `Typography` so can apply dark theme to text
+const { Title } = Typography;
 
 export type StorageType = {
   set: (k: string, v: string) => void;
@@ -81,7 +84,7 @@ const DbConnections = ({ storage }: { storage: StorageType }) => {
 
   return (
     <div className='dm-db-connections'>
-      <h2>Database Connections</h2>
+      <Title level={2}>Database Connections</Title>
       <EditableTable storage={storage} onEnable={handleDbConnectionEnable} />
       <Button onClick={handleExport}>Export</Button>{' '}
       <Button onClick={handleImport}>Import</Button>
