@@ -35,7 +35,7 @@ export default function StringFormField(props: StringFormFieldProps) {
     );
   };
   return (
-    <div className='dm-form-field dm-string-form-field'>
+    <div className='dbm-form-field dm-string-form-field'>
       <b>{label}</b>: <PresetsButtons column={column} onChange={onChange} />{' '}
       <RefTableLink
         column={column}

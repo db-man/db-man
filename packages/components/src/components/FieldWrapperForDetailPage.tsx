@@ -33,7 +33,7 @@ const FieldWrapperForDetailPage = ({
   return (
     <div
       // key={column.id}
-      className={`dm-form-field ${typeClassName}`}
+      className={`dbm-form-field ${typeClassName}`}
       data-debug={JSON.stringify(column)}
     >
       <div className='dm-field-label'>

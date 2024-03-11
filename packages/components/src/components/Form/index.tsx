@@ -60,7 +60,7 @@ const renderFormFieldWrapper = ({
   label,
   formField,
 }: RenderFormFieldWrapperProps) => (
-  <div key={id} className='dm-form-field dm-string-form-field'>
+  <div key={id} className='dbm-form-field dm-string-form-field'>
     <b>{label}</b>: {formField}
   </div>
 );
@@ -239,7 +239,7 @@ const Form: React.FC<FormProps> = (props) => {
       return (
         <div
           key={column.id}
-          className='dm-form-field dm-string-array-form-field'
+          className='dbm-form-field dm-string-array-form-field'
         >
           <b>{column.name}</b>:{' '}
           <PresetsButtons
@@ -295,7 +295,7 @@ const Form: React.FC<FormProps> = (props) => {
       return (
         <div
           key={column.id}
-          className='dm-form-field dm-string-array-form-field'
+          className='dbm-form-field dm-string-array-form-field'
         >
           <b>{column.name}</b>:{' '}
           <RefTableLink
