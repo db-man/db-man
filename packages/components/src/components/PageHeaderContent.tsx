@@ -25,20 +25,27 @@ function PageHeaderContent(props: PropsType) {
   }
 
   return (
-    <div className='page-header'>
+    <div className='dbm-page-header'>
       <div key='logo' className='logo' />
       <Menu
         key='menu'
         theme='dark'
         mode='horizontal'
+        className='dbm-top-navbar-menu'
         defaultSelectedKeys={['home']}
         selectedKeys={[params?.dbName || '']}
         items={[
           { key: 'home', label: <Link to='/'>Home</Link> },
-          ...Object.keys(dbs || {}).map((dbName) => ({
-            key: dbName,
-            label: <Link to={`/${dbName}`}>{dbName}</Link>,
-          })),
+          ...Object.keys(dbs || {})
+            .sort((dbNameA, dbNameB) => dbNameA.localeCompare(dbNameB))
+            .map((dbName) => ({
+              key: dbName,
+              label: (
+                <Link to={`/${dbName}`}>
+                  {dbName}({dbs[dbName].length})
+                </Link>
+              ),
+            })),
           { key: 'settings', label: <Link to='/settings'>Settings</Link> },
         ]}
       />
