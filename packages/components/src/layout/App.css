@@ -1,12 +1,12 @@
 /* dm = db-man */
-.dm-page {
+.dbm-page {
   /* margin will cause scrollbar on page */
   /* margin: 10px; */
   padding: 10px;
 }
 
 /* images column of table */
-/*.dm-page > * > .ant-table-cell > * > img {*/
+/*.dbm-page > * > .ant-table-cell > * > img {*/
 .ant-table-cell img {
   width: 150px;
 }

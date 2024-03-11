@@ -182,7 +182,7 @@ const PageWrapper = (props: {
   }
 
   if (errMsgs.length > 0) {
-    return <div className='dm-page-v2 err-msg'>{errMsgs.join(' ,')}</div>;
+    return <div className='dbm-page-v2 err-msg'>{errMsgs.join(' ,')}</div>;
   }
 
   const PageComponent = actionToComponentMapping[action || ''];
@@ -202,7 +202,7 @@ const PageWrapper = (props: {
 
   return (
     <Provider value={pageInfo()}>
-      <div className='dm-page-v2'>
+      <div className='dbm-page-v2'>
         {/* Pass tableName down, so child component to rerender according to this props */}
         <PageComponent
           dbName={dbName || ''}

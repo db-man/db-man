@@ -215,7 +215,7 @@ const UpdatePage = () => {
   };
 
   return (
-    <div className='dm-page update-page-body-component'>
+    <div className='dbm-page update-page-body-component'>
       <Skeleton loading={tips().length > 0}>
         {renderAlert()}
         {renderForm()}

@@ -180,7 +180,7 @@ const CreatePage = () => {
   }
 
   return (
-    <div className='dm-page'>
+    <div className='dbm-page'>
       <h1>
         Create {dbName} {tableName}
       </h1>
