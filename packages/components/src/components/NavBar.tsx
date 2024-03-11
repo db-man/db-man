@@ -23,18 +23,18 @@ const NavBar = () => {
       .filter((column) => column.referenceTable)
       .map((column, idx) => (
         <span key={idx}>
-          [<Text>{`${column.referenceTable}(`}</Text>,
+          <Text>{`${column.referenceTable}(`}</Text>
           <a
             key='create-link'
             href={`/${dbName}/${column.referenceTable}/create`}
           >
             Create
           </a>
-          ,<Text>,</Text>,
+          <Text>,</Text>
           <a key='list-link' href={`/${dbName}/${column.referenceTable}/list`}>
             List
           </a>
-          ,<Text>{`) | `}</Text>, ]
+          <Text>{`) | `}</Text>
         </span>
       ));
   };
