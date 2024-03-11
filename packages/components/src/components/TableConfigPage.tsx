@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 
 import React, { useContext } from 'react';
-import { Table, Tabs } from 'antd';
+import { Table, Tabs, Tooltip } from 'antd';
 import type { TabsProps } from 'antd';
 import { useLocation } from 'react-router-dom';
 
@@ -15,7 +15,7 @@ import DbColumn, {
 import { Link } from 'react-router-dom';
 import DistinctColumn from './DistinctColumn';
 
-const genColumn = (dbTableColumns: DbColumn[]) => [
+const genColumn = (dbName: string, dbTableColumns: DbColumn[]) => [
   {
     key: 'id',
     dataIndex: 'id',
@@ -27,8 +27,13 @@ const genColumn = (dbTableColumns: DbColumn[]) => [
           (col) => col.id === cell && col.type === STRING_ARRAY
         )
       ) {
-        // return <a href={`?distinct=${cell}`}>{cell}</a>;
-        return <Link to={`?distinct=${cell}`}>{cell}</Link>;
+        return (
+          <Tooltip
+            title={`This column type is STRING_ARRAY, will show all ${cell} distinct count. Click to view.`}
+          >
+            <Link to={`?distinct=${cell}`}>{cell}</Link>
+          </Tooltip>
+        );
       }
       return cell;
     },
@@ -48,6 +53,21 @@ const genColumn = (dbTableColumns: DbColumn[]) => [
     dataIndex: 'primary',
     title: 'primary',
     render: (cell: boolean) => (cell === true ? 'Yes' : 'No'),
+  },
+  {
+    key: 'referenceTable',
+    dataIndex: 'referenceTable',
+    title: 'referenceTable',
+    render: (referenceTableName: string) => {
+      if (!referenceTableName) {
+        return '';
+      }
+      return (
+        <Link to={`/${dbName}/${referenceTableName}/list`}>
+          {referenceTableName}
+        </Link>
+      );
+    },
   },
   {
     key: 'ui:listPage:isFilter',
@@ -157,7 +177,7 @@ export default function TableConfigPage() {
           <Table
             rowKey='id'
             dataSource={dbTableColumns}
-            columns={genColumn(dbTableColumns)}
+            columns={genColumn(dbName, dbTableColumns)}
             pagination={false}
             footer={footer({ dbName })}
           />
