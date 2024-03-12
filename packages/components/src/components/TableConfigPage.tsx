@@ -2,7 +2,7 @@
 
 import React, { useContext } from 'react';
 import { Table, Tabs, Tooltip } from 'antd';
-import type { TabsProps } from 'antd';
+import type { TableColumnsType, TabsProps } from 'antd';
 import { useLocation } from 'react-router-dom';
 
 import PageContext from '../contexts/page';
@@ -20,11 +20,16 @@ import DbColumn, {
 import { Link } from 'react-router-dom';
 import DistinctColumn from './DistinctColumn';
 
-const genColumn = (dbName: string, dbTableColumns: DbColumn[]) => [
+const genColumn = (
+  dbName: string,
+  dbTableColumns: DbColumn[]
+): TableColumnsType<DbColumn> => [
   {
     key: 'id',
     dataIndex: 'id',
     title: 'id',
+    fixed: 'left',
+    width: 150,
     render: (cell: string) => {
       // if this column is string_array, then render a link "?distinct=tags"
       if (
@@ -47,16 +52,19 @@ const genColumn = (dbName: string, dbTableColumns: DbColumn[]) => [
     key: 'name',
     dataIndex: 'name',
     title: 'name',
+    width: 150,
   },
   {
     key: 'type',
     dataIndex: 'type',
     title: 'type',
+    width: 150,
   },
   {
     key: 'primary',
     dataIndex: 'primary',
     title: 'primary',
+    width: 100,
     render: (cell: boolean) => (cell === true ? 'Yes' : 'No'),
   },
   {
@@ -78,6 +86,7 @@ const genColumn = (dbName: string, dbTableColumns: DbColumn[]) => [
     key: 'ui:listPage:isFilter',
     dataIndex: 'ui:listPage:isFilter',
     title: 'ui:listPage:isFilter',
+    width: 170,
     render: (cell: boolean) => (cell === true ? 'Yes' : 'No'),
   },
   {
@@ -180,6 +189,7 @@ export default function TableConfigPage() {
         <div>
           {errMsg && <div>{errMsg}</div>}
           <Table
+            scroll={{ x: 2300 }}
             rowKey='id'
             dataSource={dbTableColumns}
             columns={genColumn(dbName, dbTableColumns)}
