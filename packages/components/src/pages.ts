@@ -21,6 +21,6 @@ export const actionToComponentMapping: {
   create: CreatePage,
   update: UpdatePage,
   get: GetPage,
-  tableConfig: TableConfigPage,
+  schema: TableConfigPage,
   query: QueryPage,
 };
