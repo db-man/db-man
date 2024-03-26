@@ -49,18 +49,22 @@ export const getFormInitialValues = (
   } = {};
   // Initialize form values with default values defined in table schema when form values are empty
   columns.forEach((col: DbColumn) => {
-    if (!formValues[col.id]) {
-      let defaultValue = '';
-      switch (col['type:createUpdatePage']) {
-        case 'RadioGroup':
-          [defaultValue] = col['ui:createUpdatePage:enum']!;
-          break;
-        default:
-          defaultValue = '';
-      }
-      if (defaultValue) {
-        initFormValues[col.id] = defaultValue;
-      }
+    if (formValues[col.id]) {
+      return;
+    }
+    let defaultValue = '';
+    switch (col['type:createUpdatePage']) {
+      case 'RadioGroup':
+        defaultValue = '';
+        if (col['ui:createUpdatePage:enum']) {
+          [defaultValue] = col['ui:createUpdatePage:enum'];
+        }
+        break;
+      default:
+        defaultValue = '';
+    }
+    if (defaultValue) {
+      initFormValues[col.id] = defaultValue;
     }
   });
   return initFormValues;

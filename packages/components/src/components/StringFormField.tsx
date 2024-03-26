@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import { Alert } from 'antd';
 
 import { columnType } from './types';
 import StringFormFieldValue, { InputProps } from './StringFormFieldValue';
@@ -9,6 +8,7 @@ import PageContext from '../contexts/page';
 import PresetsButtons from './PresetsButtons';
 import DbColumn from '../types/DbColumn';
 import { useAppContext } from '../contexts/AppContext';
+import { FieldValueWarning } from './FormValidations';
 
 interface StringFormFieldProps {
   label: string;
@@ -21,19 +21,13 @@ interface StringFormFieldProps {
   onChange: (value: string) => void;
 }
 
+const expectedType = 'string';
+
 export default function StringFormField(props: StringFormFieldProps) {
   const { label, column, value, inputProps, preview, onChange } = props;
   const { dbs } = useAppContext();
   const { dbName } = useContext(PageContext);
-  const renderWarning = () => {
-    if (typeof value === 'string') return null;
-    return (
-      <Alert
-        message={`(This form field type should be string, but current type is ${typeof value})`}
-        type='warning'
-      />
-    );
-  };
+
   return (
     <div className='dbm-form-field dbm-string-form-field'>
       <b>{label}</b>: <PresetsButtons column={column} onChange={onChange} />{' '}
@@ -43,7 +37,7 @@ export default function StringFormField(props: StringFormFieldProps) {
         dbName={dbName}
         value={value}
       />
-      {renderWarning()}
+      <FieldValueWarning expectedType={expectedType} value={value} />
       <StringFormFieldValue
         inputProps={inputProps}
         preview={preview}
