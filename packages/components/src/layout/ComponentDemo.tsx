@@ -1,12 +1,12 @@
 import { useParams } from 'react-router';
 import { Typography } from 'antd';
 
-import {
-  MultiLineInputBox,
-  RadioGroupFormField,
-  TextAreaFormField,
-} from '../lib';
 import { DbColumnType } from '../types/DbColumn';
+import MultiLineInputBox from '../components/MultiLineInputBox';
+import RadioGroupFormField from '../components/RadioGroupFormField';
+import TextAreaFormField from '../components/TextAreaFormField';
+import PhotoList from '../components/PhotoList';
+import { mockPhotos } from '../pages/demos/PhotoListExample';
 
 // Use `Typography` so can apply dark theme to text
 const { Text } = Typography;
@@ -71,17 +71,26 @@ export const MultiLineInputBoxDemo = () => {
   );
 };
 
+export const PhotoListDemo = () => {
+  return <PhotoList photos={mockPhotos} />;
+};
+
 export const ComponentDemoRouter = ({
   componentName,
 }: {
   componentName: string;
 }) => {
-  // render different component based on the componentName
+  // render different component based on the component name
   const demoMap = {
     RadioGroup: <RadioGroupFormFieldDemo />,
     TextArea: <TextAreaFormFieldDemo />,
     MultiLineInputBox: <MultiLineInputBoxDemo />,
+    PhotoList: <PhotoListDemo />,
   };
+
+  if (!Object.keys(demoMap).includes(componentName)) {
+    return <Text>Component not found</Text>;
+  }
 
   return (
     <div className='dbm-component-demo-router'>
