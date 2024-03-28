@@ -59,7 +59,7 @@ const uiType = PropTypes.oneOfType([
 const column = PropTypes.shape({
   name: PropTypes.string,
   type: PropTypes.string,
-  'type:createUpdatePage': uiType,
+  [TYPE_CREATE_UPDATE_PAGE]: uiType,
   [TYPE_GET_PAGE]: uiType,
   [TYPE_LIST_PAGE]: uiType,
 });

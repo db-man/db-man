@@ -66,7 +66,7 @@ const renderFormFieldWrapper = ({
 );
 
 const filterOutHiddenFields = (column: DbColumn) =>
-  column['type:createUpdatePage'] !== 'HIDE';
+  column[constants.TYPE_CREATE_UPDATE_PAGE] !== 'HIDE';
 
 const Form: React.FC<FormProps> = (props) => {
   const { showDelete = true } = props;
@@ -180,7 +180,7 @@ const Form: React.FC<FormProps> = (props) => {
   const renderStringFormField = (column: DbColumn) => {
     const { loading } = props;
     const value = formValues[column.id];
-    if (column['type:createUpdatePage'] === 'TextArea') {
+    if (column[constants.TYPE_CREATE_UPDATE_PAGE] === 'TextArea') {
       return (
         <TextAreaFormField
           key={column.id}
@@ -192,7 +192,7 @@ const Form: React.FC<FormProps> = (props) => {
         />
       );
     }
-    if (column['type:createUpdatePage'] === 'RadioGroup') {
+    if (column[constants.TYPE_CREATE_UPDATE_PAGE] === 'RadioGroup') {
       const radioValue = value || column?.['ui:createUpdatePage:enum']?.[0];
       return renderFormFieldWrapper({
         id: column.id,
@@ -208,7 +208,7 @@ const Form: React.FC<FormProps> = (props) => {
       });
     }
     let preview = false;
-    if (column['type:createUpdatePage'] === 'WithPreview') {
+    if (column[constants.TYPE_CREATE_UPDATE_PAGE] === 'WithPreview') {
       preview = true;
     }
     return (
@@ -233,8 +233,8 @@ const Form: React.FC<FormProps> = (props) => {
 
   const renderStringArrayFormField = (column: DbColumn) => {
     if (
-      !column['type:createUpdatePage'] ||
-      column['type:createUpdatePage'] === 'Select'
+      !column[constants.TYPE_CREATE_UPDATE_PAGE] ||
+      column[constants.TYPE_CREATE_UPDATE_PAGE] === 'Select'
     ) {
       return (
         <div

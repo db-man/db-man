@@ -2,18 +2,19 @@ import React from 'react';
 
 import { getColumnRender } from '../../ddRender/ddRender';
 import { ImageLink } from '../../components/Links';
+import { TYPE_CREATE_UPDATE_PAGE, TYPE_GET_PAGE } from '../../constants';
 
 const Demos = () => {
   const fn = getColumnRender('type:listPage', {
     id: 'photos',
     name: 'Photos',
     type: 'STRING_ARRAY',
-    'type:createUpdatePage': ['MultiLineInputBox', 'WithPreview'],
+    [TYPE_CREATE_UPDATE_PAGE]: ['MultiLineInputBox', 'WithPreview'],
     'type:listPage': [
       'ImageLink',
       '{"url":"{{record.photos.[0]}}","imgSrc":"{{record.photos.[0]}}"}',
     ],
-    'type:getPage': [
+    [TYPE_GET_PAGE]: [
       'ImageLink',
       '{"url":"{{record.photos.[0]}}","imgSrc":"{{record.photos.[0]}}"}',
     ],

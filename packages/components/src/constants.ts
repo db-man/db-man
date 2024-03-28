@@ -22,5 +22,6 @@ export const COL_UI_PRESETS = 'ui:presets';
 // UI type
 export const TYPE_GET_PAGE = 'type:getPage';
 export const TYPE_LIST_PAGE = 'type:listPage';
+export const TYPE_CREATE_UPDATE_PAGE = 'type:createUpdatePage';
 
 export const DB_CFG_FILENAME = 'dbcfg.json';

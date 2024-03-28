@@ -3,19 +3,20 @@ import React from 'react';
 import PhotoList from '../../components/PhotoList';
 import { getColumnRender } from '../../ddRender/ddRender';
 import renderFuncTpl from './renderFuncTpl.json';
+import { TYPE_GET_PAGE } from '../../constants';
 
 const PhotoListExample = () => {
   // To render the 'photo' column on a GetPage using 'PhotoList' component
-  const getPageRenderFn = getColumnRender('type:getPage', {
+  const getPageRenderFn = getColumnRender(TYPE_GET_PAGE, {
     id: 'photos',
     name: 'Photos',
     type: 'STRING_ARRAY',
-    // 'type:createUpdatePage': ['MultiLineInputBox', 'WithPreview'],
+    // [TYPE_CREATE_UPDATE_PAGE]: ['MultiLineInputBox', 'WithPreview'],
     // 'type:listPage': [
     //   'ImageLink',
     //   '{"url":"{{record.photos.[0]}}","imgSrc":"{{record.photos.[0]}}"}',
     // ],
-    'type:getPage': ['PhotoList', renderFuncTpl],
+    [TYPE_GET_PAGE]: ['PhotoList', renderFuncTpl],
   });
 
   const record = {
@@ -29,11 +30,11 @@ const PhotoListExample = () => {
   return (
     <div>
       <h1>Render from ddRender (failed):</h1>
-      {getColumnRender('type:getPage', {
+      {getColumnRender(TYPE_GET_PAGE, {
         id: 'photos',
         name: 'Photos',
         type: 'STRING_ARRAY',
-        'type:getPage': ['PhotoList', '["PhotoList","]'],
+        [TYPE_GET_PAGE]: ['PhotoList', '["PhotoList","]'],
       })(value, record)}
 
       <h1>Render from ddRender:</h1>

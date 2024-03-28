@@ -12,6 +12,8 @@ import {
   LS_KEY_GITHUB_REPO_NAME,
   LS_KEY_GITHUB_REPO_PATH,
   STRING_ARRAY,
+  TYPE_CREATE_UPDATE_PAGE,
+  TYPE_GET_PAGE,
 } from '../constants';
 import DbColumn, {
   TABLE_COLUMN_KEYS,
@@ -104,14 +106,14 @@ const genColumn = (
     title: 'ui:createUpdatePage:placeholder',
   },
   {
-    key: 'type:createUpdatePage',
-    dataIndex: 'type:createUpdatePage',
-    title: 'type:createUpdatePage',
+    key: TYPE_CREATE_UPDATE_PAGE,
+    dataIndex: TYPE_CREATE_UPDATE_PAGE,
+    title: TYPE_CREATE_UPDATE_PAGE,
   },
   {
-    key: 'type:getPage',
-    dataIndex: 'type:getPage',
-    title: 'type:getPage',
+    key: TYPE_GET_PAGE,
+    dataIndex: TYPE_GET_PAGE,
+    title: TYPE_GET_PAGE,
     render: (cell: object) => {
       if (typeof cell === 'object') return JSON.stringify(cell);
       return cell;

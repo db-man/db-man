@@ -1,4 +1,5 @@
 import { ValueType } from '.';
+import { TYPE_CREATE_UPDATE_PAGE } from '../../constants';
 import DbColumn from '../../types/DbColumn';
 import { UiType } from '../../types/UiType';
 
@@ -27,13 +28,13 @@ export const isType = (column: DbColumn, uiType: UiType) => {
   // type="MultiLineInputBox"
   // type=["MultiLineInputBox"]
   // type=["MultiLineInputBox", "WithPreview"]
-  const type = column['type:createUpdatePage'];
+  const type = column[TYPE_CREATE_UPDATE_PAGE];
   if (Array.isArray(type)) {
     const is = type[0] === uiType;
     const preview = type[1] === 'WithPreview';
     return { is, preview };
   }
-  const is = column['type:createUpdatePage'] === uiType;
+  const is = column[TYPE_CREATE_UPDATE_PAGE] === uiType;
   return { is, preview: false };
 };
 
@@ -53,7 +54,7 @@ export const getFormInitialValues = (
       return;
     }
     let defaultValue = '';
-    switch (col['type:createUpdatePage']) {
+    switch (col[TYPE_CREATE_UPDATE_PAGE]) {
       case 'RadioGroup':
         defaultValue = '';
         if (col['ui:createUpdatePage:enum']) {

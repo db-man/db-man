@@ -1,5 +1,6 @@
 import Handlebars from 'handlebars/dist/handlebars';
 import { getRender, getColumnRender } from './ddRender';
+import { TYPE_GET_PAGE } from '../constants';
 
 describe('getColumnRender', () => {
   test('should return proper value', () => {
@@ -75,7 +76,7 @@ describe('getColumnRender', () => {
 
   describe('default render function', () => {
     it('type is STRING', () => {
-      const view = getColumnRender('type:getPage', {
+      const view = getColumnRender(TYPE_GET_PAGE, {
         id: 'name',
         name: 'Name',
         type: 'STRING',
@@ -84,7 +85,7 @@ describe('getColumnRender', () => {
       expect(view(undefined, { name: undefined })).toBe('NO_VALUE');
     });
     it('type is STRING_ARRAY', () => {
-      const view = getColumnRender('type:getPage', {
+      const view = getColumnRender(TYPE_GET_PAGE, {
         id: 'tags',
         name: 'Tags',
         type: 'STRING_ARRAY',
@@ -93,7 +94,7 @@ describe('getColumnRender', () => {
       expect(view(undefined, { tags: undefined })).toBe('NO_VALUE');
     });
     it('type is NUMBER', () => {
-      const view = getColumnRender('type:getPage', {
+      const view = getColumnRender(TYPE_GET_PAGE, {
         id: 'age',
         name: 'Age',
         type: 'NUMBER',
@@ -102,7 +103,7 @@ describe('getColumnRender', () => {
       expect(view(undefined, { age: undefined })).toBe('NO_VALUE');
     });
     it('type is BOOL', () => {
-      const view = getColumnRender('type:getPage', {
+      const view = getColumnRender(TYPE_GET_PAGE, {
         id: 'active',
         name: 'Active',
         type: 'BOOL',
