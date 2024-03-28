@@ -1,7 +1,11 @@
 // @ts-nocheck
 
 import PropTypes from 'prop-types';
-import { TYPE_GET_PAGE, TYPE_LIST_PAGE } from '../constants';
+import {
+  TYPE_CREATE_UPDATE_PAGE,
+  TYPE_GET_PAGE,
+  TYPE_LIST_PAGE,
+} from '../constants';
 
 // Data driven type
 // e.g. "Link"
