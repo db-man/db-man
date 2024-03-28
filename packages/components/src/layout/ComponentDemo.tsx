@@ -1,0 +1,111 @@
+import { useParams } from 'react-router';
+import { Typography } from 'antd';
+
+import {
+  MultiLineInputBox,
+  RadioGroupFormField,
+  TextAreaFormField,
+} from '../lib';
+import { DbColumnType } from '../types/DbColumn';
+
+// Use `Typography` so can apply dark theme to text
+const { Text } = Typography;
+
+export const RadioGroupFormFieldDemo = () => {
+  const column = {
+    id: 'maleOrFemale',
+    name: 'Male or Female',
+    type: 'STRING' as DbColumnType,
+    'type:createUpdatePage': 'RadioGroup',
+    'ui:createUpdatePage:enum': ['male', 'female'],
+  };
+
+  return (
+    <RadioGroupFormField
+      disabled={false}
+      column={column}
+      value='male'
+      onChange={() => {}}
+    />
+  );
+};
+
+export const TextAreaFormFieldDemo = () => {
+  const column = {
+    id: 'notes',
+    name: 'Notes',
+    type: 'STRING',
+    'type:createUpdatePage': 'TextArea',
+  };
+
+  return (
+    <TextAreaFormField
+      key={column.id}
+      label={column.name}
+      rows={2}
+      disabled={false}
+      value='Take a note'
+      onChange={() => {}}
+    />
+  );
+};
+
+export const MultiLineInputBoxDemo = () => {
+  // const column = {
+  //   id: 'photoUrls',
+  //   name: 'Photo URLs',
+  //   type: 'STRING_ARRAY',
+  //   'type:createUpdatePage': 'MultiLineInputBox'
+  // };
+
+  return (
+    <MultiLineInputBox
+      rows={2}
+      disabled={false}
+      value={[
+        'https://example.com/photo1.jpg',
+        'https://example.com/photo2.jpg',
+      ]}
+      onChange={() => {}}
+    />
+  );
+};
+
+export const ComponentDemoRouter = ({
+  componentName,
+}: {
+  componentName: string;
+}) => {
+  // render different component based on the componentName
+  const demoMap = {
+    RadioGroup: <RadioGroupFormFieldDemo />,
+    TextArea: <TextAreaFormFieldDemo />,
+    MultiLineInputBox: <MultiLineInputBoxDemo />,
+  };
+
+  return (
+    <div className='dbm-component-demo-router'>
+      {demoMap[componentName as keyof typeof demoMap]}
+    </div>
+  );
+};
+
+const ComponentDemo = () => {
+  const params = useParams();
+
+  if (params.component === undefined) {
+    return <Text>Component is required</Text>;
+  }
+
+  if (!['RadioGroup'].includes(params.component)) {
+    return <Text>Component not found</Text>;
+  }
+
+  return (
+    <div className='dbm-component-demo'>
+      <ComponentDemoRouter componentName={params.component} />
+    </div>
+  );
+};
+
+export default ComponentDemo;

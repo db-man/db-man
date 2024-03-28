@@ -7,6 +7,7 @@ import Table from './Table';
 import Action from './Action';
 import Settings from '../pages/Settings';
 import Demos from '../pages/Demos';
+import ComponentDemo from './ComponentDemo';
 import PageLayout from './PageLayout';
 
 export default function AppLayout() {
@@ -18,7 +19,9 @@ export default function AppLayout() {
       />
       <Route path='/' element={<PageLayout />}>
         <Route path='settings' element={<Settings />} />
-        <Route path='demos' element={<Demos />} />
+        <Route path='demos' element={<Demos />}>
+          <Route path=':component' element={<ComponentDemo />} />
+        </Route>
         <Route path=':dbName' element={<Database />}>
           <Route path=':tableName' element={<Table />}>
             <Route path=':action' element={<Action />} />

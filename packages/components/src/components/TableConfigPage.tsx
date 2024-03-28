@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 
 import React, { useContext } from 'react';
-import { Table, Tabs, Tooltip } from 'antd';
+import { Modal, Table, Tabs, Tooltip } from 'antd';
 import type { TableColumnsType, TabsProps } from 'antd';
 import { useLocation } from 'react-router-dom';
 
@@ -21,6 +21,8 @@ import DbColumn, {
 } from '../types/DbColumn';
 import { Link } from 'react-router-dom';
 import DistinctColumn from './DistinctColumn';
+import ComponentDemoModal from './ComponentDemoModal';
+import { UiType } from '../types/UiType';
 
 const genColumn = (
   dbName: string,
@@ -109,6 +111,13 @@ const genColumn = (
     key: TYPE_CREATE_UPDATE_PAGE,
     dataIndex: TYPE_CREATE_UPDATE_PAGE,
     title: TYPE_CREATE_UPDATE_PAGE,
+    render: (cell: UiType) => {
+      // simple string, it is the name of the component
+      if (typeof cell === 'string') {
+        return <ComponentDemoModal componentName={cell} />;
+      }
+      return cell;
+    },
   },
   {
     key: TYPE_GET_PAGE,
