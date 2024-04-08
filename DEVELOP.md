@@ -15,6 +15,12 @@ lerna run tdd --scope @db-man/components # start TDD
 lerna publish --no-private
 ```
 
+## Check outdated
+
+```sh
+npm outdated
+```
+
 ### How to debug @db-man/github in @db-man/components
 
 After @db-man/github changed source code, will need this affects @db-man/components.
