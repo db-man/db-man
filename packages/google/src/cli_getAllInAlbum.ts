@@ -17,53 +17,24 @@
  */
 
 import * as fs from 'fs';
-import list from './list';
-import search from './search';
-
-interface GooglePhotoAlbum {
-  id: string;
-  title: string;
-}
+import getAllInAlbum from './getAllInAlbum';
 
 const main = async (albumTitle) => {
   console.time('getAllInAlbum.ts');
 
   const { API_KEY, ACCESS_TOKEN } = process.env;
 
-  const albumsResponse = await list({ API_KEY, ACCESS_TOKEN });
-  const album = albumsResponse.albums.find(
-    (ab: GooglePhotoAlbum) => ab.title === albumTitle // eslint-disable-line @typescript-eslint/comma-dangle
+  const [album, allMediaItems] = await getAllInAlbum(
+    { API_KEY, ACCESS_TOKEN },
+    albumTitle // eslint-disable-line @typescript-eslint/comma-dangle
   );
+  const allPhotosInAlbum = allMediaItems.map((mediaItem) => mediaItem.filename);
 
-  if (!album) {
-    console.error('Album not found');
-    return;
-  }
-
-  console.log('Album:', album.title, album.id);
-
-  let photoFilenames: string[] = [];
-  let pageToken = null;
-  do {
-    console.log('Fetching page:', pageToken);
-    // eslint-disable-next-line no-await-in-loop
-    const searchResponse = await search(
-      { API_KEY, ACCESS_TOKEN },
-      album.id,
-      pageToken // eslint-disable-line @typescript-eslint/comma-dangle
-    );
-    photoFilenames = [
-      ...photoFilenames,
-      ...searchResponse.mediaItems.map((photo) => photo.filename),
-    ];
-    pageToken = searchResponse.nextPageToken;
-  } while (pageToken);
-
-  console.log(photoFilenames);
+  console.log(allPhotosInAlbum);
 
   fs.writeFileSync(
     `${album.title}.json`,
-    JSON.stringify(photoFilenames, null, 2) // eslint-disable-line @typescript-eslint/comma-dangle
+    JSON.stringify(allPhotosInAlbum, null, 2) // eslint-disable-line @typescript-eslint/comma-dangle
   );
 
   console.timeEnd('getAllInAlbum.ts');
