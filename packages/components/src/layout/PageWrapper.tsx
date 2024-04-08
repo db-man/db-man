@@ -100,7 +100,9 @@ const PageWrapper = (props: {
   // then we only use offline data to render
   // compare the offline data with online data, if there is any diff, we show alert
   const getDbSchema = async () => {
-    const offlineDbSchema = getOfflineDbSchema();
+    const offlineDbSchema = JSON.parse(
+      localStorage.getItem(constants.LS_KEY_DBS_SCHEMA) || '{}'
+    )[props.dbName || ''];
     const onlineDbSchema = await githubDbRef.current.getDbTablesSchemaAsync(
       props.dbName
     );
@@ -114,16 +116,6 @@ const PageWrapper = (props: {
         message.warning('Offline and online schema are different!');
       }
     }
-  };
-
-  const getOfflineDbSchema = () => {
-    if (!localStorage.getItem(constants.LS_KEY_DBS_SCHEMA)) {
-      setErrMsg('No DBS schema defined in localStorage!');
-      return;
-    }
-    return JSON.parse(
-      localStorage.getItem(constants.LS_KEY_DBS_SCHEMA) || '{}'
-    )[props.dbName || ''];
   };
 
   const errMsgs = [];
