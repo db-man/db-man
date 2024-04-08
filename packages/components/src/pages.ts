@@ -8,7 +8,6 @@ import QueryPage from './components/QueryPage';
 type PageComponentType = React.ComponentType<{
   dbName: string;
   tableName: string;
-  action: string;
 }>;
 
 // map action to component

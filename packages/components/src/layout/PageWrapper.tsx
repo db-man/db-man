@@ -151,11 +151,7 @@ const PageWrapper = (props: {
     <Provider value={pageInfo()}>
       <div className='dbm-page-v2'>
         {/* Pass tableName down, so child component to rerender according to this props */}
-        <PageComponent
-          dbName={dbName || ''}
-          tableName={tableName || ''}
-          action={action || ''}
-        />
+        <PageComponent dbName={dbName || ''} tableName={tableName || ''} />
         <NavBar />
       </div>
     </Provider>
