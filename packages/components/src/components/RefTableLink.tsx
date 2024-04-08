@@ -26,7 +26,7 @@ function RefTableLink({
   const referenceTablePrimaryKey = getTablePrimaryKey(tables, referenceTable);
   // TODO check existing, when exists then no Create button
   return (
-    <span>
+    <span className='dbm-ref-table-link' data-dbm-component='RefTableLink'>
       <Link
         to={`/${dbName}/${referenceTable}/create?${referenceTablePrimaryKey}=${value}`}
       >
@@ -37,7 +37,7 @@ function RefTableLink({
         to={`/${dbName}/${referenceTable}/update?${referenceTablePrimaryKey}=${value}`}
       >
         Update
-      </Link>
+      </Link>{' '}
       |{' '}
       <Link
         to={`/${dbName}/${referenceTable}/get?${referenceTablePrimaryKey}=${value}`}

@@ -34,7 +34,7 @@ const NavBar = () => {
           <a key='list-link' href={`/${dbName}/${column.referenceTable}/list`}>
             List
           </a>
-          <Text>{`) | `}</Text>
+          <Text>{`)`}</Text>
         </span>
       ));
   };
@@ -106,9 +106,9 @@ const NavBar = () => {
       <span>
         <Text>Ref tables</Text>
         <Text>: </Text>
-        <Text>(</Text>
+        <Text>[</Text>
         <span>{renderReferenceTableLink()}</span>
-        <Text>)</Text>
+        <Text>]</Text>
       </span>
       <Text> | </Text>
       {/* GitHub link of DB table file, e.g. "dbs/iam/users.data.json" */}
