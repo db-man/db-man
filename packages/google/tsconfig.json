@@ -15,10 +15,5 @@
     "strictNullChecks": true
   },
   "exclude": ["node_modules", "**/*.spec.ts"],
-  "include": [
-    "./src/**/*.tsx",
-    "./src/**/*.ts",
-    "src/**/*.test.ts",
-    "cli/getAllInAlbum.ts"
-  ]
+  "include": ["./src/**/*.tsx", "./src/**/*.ts", "src/**/*.test.ts"]
 }

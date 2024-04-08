@@ -17,8 +17,8 @@
  */
 
 import * as fs from 'fs';
-import list from '../src/list';
-import search from '../src/search';
+import list from './list';
+import search from './search';
 
 interface GooglePhotoAlbum {
   id: string;
