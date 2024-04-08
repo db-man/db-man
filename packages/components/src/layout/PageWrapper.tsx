@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { message, Spin } from 'antd';
+import { message } from 'antd';
 import { GithubDb } from '@db-man/github';
 
 import { getColumns, getPrimaryKey, getTablesByDbName } from '../dbs';
@@ -58,7 +58,6 @@ const PageWrapper = (props: {
 }) => {
   // tables is got from db repo db_name/dbcfg.json which contain all tables column definition in current database
   const [tables, setTables] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [errMsg, setErrMsg] = useState('');
   const githubDbRef = useRef(
     new GithubDb({
@@ -99,14 +98,14 @@ const PageWrapper = (props: {
     };
   };
 
+  // get online and offline at the same time
+  // then we only use offline data to render
+  // compare the offline data with online data, if there is any diff, we show alert
   const getDbSchema = async () => {
-    // get online and offline at the same time
-    // then we only use offline data to render
-    // compare the offline data with online data, if there is any diff, we show alert
-
     const offlineDbSchema = getOfflineDbSchema();
-
-    const onlineDbSchema = await getOnlineDbSchema();
+    const onlineDbSchema = await githubDbRef.current.getDbTablesSchemaAsync(
+      props.dbName
+    );
 
     if (offlineDbSchema && onlineDbSchema) {
       const offlineDbSchemaStr = JSON.stringify(offlineDbSchema);
@@ -117,26 +116,6 @@ const PageWrapper = (props: {
         message.warning('Offline and online schema are different!');
       }
     }
-  };
-
-  const getOnlineDbSchema = async () => {
-    try {
-      // setLoading(true);
-      const _tables = await githubDbRef.current.getDbTablesSchemaAsync(
-        props.dbName
-      );
-      console.debug('get online columns', _tables);
-      // setTables(_tables);
-
-      return _tables;
-    } catch (error) {
-      console.error(
-        'Failed to get column JSON file in List component, error:',
-        error
-      );
-      message.error('Failed to get online columns definition!');
-    }
-    // setLoading(false);
   };
 
   const getOfflineDbSchema = () => {
@@ -151,25 +130,6 @@ const PageWrapper = (props: {
 
     return _tables;
   };
-
-  // const renderTableListInDb = () => (
-  //   <div>
-  //     List of tables in DB:
-  //     <TableList dbName={props.dbName || ''} />
-  //   </div>
-  // );
-
-  // const renderActionInTable = () => (
-  //   <ActionList dbName={props.dbName || ''} tableName={props.tableName || ''} />
-  // );
-
-  // if (!tableName) {
-  //   return this.renderTableListInDb();
-  // }
-
-  // if (!action) {
-  //   return this.renderActionInTable();
-  // }
 
   const errMsgs = [];
   if (errMsg) {
@@ -198,10 +158,6 @@ const PageWrapper = (props: {
         <div>{`/${dbName}/${tableName}/${action}`}</div>
       </div>
     );
-  }
-
-  if (loading) {
-    return <Spin tip='loading columns in PageWrapper'>Loading...</Spin>;
   }
 
   return (
