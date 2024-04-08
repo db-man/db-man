@@ -75,15 +75,7 @@ const PageWrapper = (props: {
   const { dbName, tableName, action } = props;
 
   useEffect(() => {
-    // TODO we could get online and offline at the same time
-    // then we only use offline data to render
-    // then we compare the offline data with online data, if there is any diff, we show alert
-    const onlineEnabled = false;
-    if (onlineEnabled) {
-      getOnlineData();
-    } else {
-      getOfflineData();
-    }
+    getDbSchema();
 
     document.title = `${action} ${tableName}`;
   }, []);
@@ -107,14 +99,36 @@ const PageWrapper = (props: {
     };
   };
 
-  const getOnlineData = async () => {
+  const getDbSchema = async () => {
+    // get online and offline at the same time
+    // then we only use offline data to render
+    // compare the offline data with online data, if there is any diff, we show alert
+
+    const offlineDbSchema = getOfflineDbSchema();
+
+    const onlineDbSchema = await getOnlineDbSchema();
+
+    if (offlineDbSchema && onlineDbSchema) {
+      const offlineDbSchemaStr = JSON.stringify(offlineDbSchema);
+      const onlineDbSchemaStr = JSON.stringify(onlineDbSchema);
+
+      if (offlineDbSchemaStr !== onlineDbSchemaStr) {
+        console.warn('Offline and online schema are different!');
+        message.warning('Offline and online schema are different!');
+      }
+    }
+  };
+
+  const getOnlineDbSchema = async () => {
     try {
-      setLoading(true);
+      // setLoading(true);
       const _tables = await githubDbRef.current.getDbTablesSchemaAsync(
         props.dbName
       );
-      console.debug('use online columns', _tables);
-      setTables(_tables);
+      console.debug('get online columns', _tables);
+      // setTables(_tables);
+
+      return _tables;
     } catch (error) {
       console.error(
         'Failed to get column JSON file in List component, error:',
@@ -122,10 +136,10 @@ const PageWrapper = (props: {
       );
       message.error('Failed to get online columns definition!');
     }
-    setLoading(false);
+    // setLoading(false);
   };
 
-  const getOfflineData = () => {
+  const getOfflineDbSchema = () => {
     if (!localStorage.getItem(constants.LS_KEY_DBS_SCHEMA)) {
       setErrMsg('No DBS schema defined in localStorage!');
       return;
@@ -134,6 +148,8 @@ const PageWrapper = (props: {
       localStorage.getItem(constants.LS_KEY_DBS_SCHEMA) || '{}'
     )[props.dbName || ''];
     setTables(_tables);
+
+    return _tables;
   };
 
   // const renderTableListInDb = () => (
