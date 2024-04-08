@@ -56,8 +56,6 @@ const PageWrapper = (props: {
   tableName?: string;
   action?: string;
 }) => {
-  // tables is got from db repo db_name/dbcfg.json which contain all tables column definition in current database
-  const [tables, setTables] = useState([]);
   const [errMsg, setErrMsg] = useState('');
   const githubDbRef = useRef(
     new GithubDb({
@@ -123,12 +121,9 @@ const PageWrapper = (props: {
       setErrMsg('No DBS schema defined in localStorage!');
       return;
     }
-    const _tables = JSON.parse(
+    return JSON.parse(
       localStorage.getItem(constants.LS_KEY_DBS_SCHEMA) || '{}'
     )[props.dbName || ''];
-    setTables(_tables);
-
-    return _tables;
   };
 
   const errMsgs = [];
@@ -168,7 +163,6 @@ const PageWrapper = (props: {
           dbName={dbName || ''}
           tableName={tableName || ''}
           action={action || ''}
-          tables={tables}
         />
         <NavBar />
       </div>

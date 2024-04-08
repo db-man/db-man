@@ -4,13 +4,11 @@ import ListPage from './components/ListPage';
 import GetPage from './components/GetPage';
 import TableConfigPage from './components/TableConfigPage';
 import QueryPage from './components/QueryPage';
-import DbTable from './types/DbTable';
 
 type PageComponentType = React.ComponentType<{
   dbName: string;
   tableName: string;
   action: string;
-  tables: DbTable[];
 }>;
 
 // map action to component
