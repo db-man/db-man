@@ -94,7 +94,7 @@ const NavBar = () => {
       <span> </span>
       <span>
         <Text>{tableName}</Text>
-        <Text>( </Text>
+        <Text>(</Text>
         <span>{createLink}</span>
         <Text>,</Text>
         <span>{updateOrGetLink}</span>

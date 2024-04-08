@@ -16,6 +16,10 @@ export default function App() {
   useEffect(() => {
     const _dbs = JSON.parse(localStorage.getItem(LS_KEY_DBS_SCHEMA) || '{}');
     setDbs(_dbs);
+
+    if (localStorage.getItem('dbm_is_dark_theme') === 'true') {
+      document.body.style.backgroundColor = 'black';
+    }
   }, []);
 
   if (!dbs) return <Settings />;
