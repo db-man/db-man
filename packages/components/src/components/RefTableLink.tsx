@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
 import { columnType, tableType } from './types';
-import { getTablePrimaryKey } from '../utils';
 import DbTable from '../types/DbTable';
 import DbColumn from '../types/DbColumn';
+import { getTablePrimaryKey } from '../dbs';
 
 function RefTableLink({
   dbName,

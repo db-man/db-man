@@ -36,10 +36,10 @@ import {
 import PhotoList from '../components/PhotoList';
 import ErrorAlert from '../components/ErrorAlert';
 import TextAreaFormFieldValue from '../components/TextAreaFormFieldValue';
-import { getTablePrimaryKey } from '../utils';
 import { RowType } from '../types/Data';
 import DbTable from '../types/DbTable';
 import { RenderArgs } from '../types/UiType';
+import { getTablePrimaryKey } from '../dbs';
 
 interface Options {
   fn: (this: any) => string;

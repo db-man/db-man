@@ -5,13 +5,11 @@ import { Link } from 'react-router-dom';
 import { message, Spin } from 'antd';
 import { GithubDb } from '@db-man/github';
 
-import { getTablesByDbName } from '../dbs';
+import { getColumns, getPrimaryKey, getTablesByDbName } from '../dbs';
 import * as constants from '../constants';
-import { getPrimaryKey } from '../utils';
 import PageContext from '../contexts/page';
 import NavBar from '../components/NavBar';
 import { useAppContext } from '../contexts/AppContext';
-import DbTable from '../types/DbTable';
 import { actionToComponentMapping } from '../pages';
 
 const { Provider } = PageContext;
@@ -74,6 +72,8 @@ const PageWrapper = (props: {
     })
   );
 
+  const { dbName, tableName, action } = props;
+
   useEffect(() => {
     // TODO we could get online and offline at the same time
     // then we only use offline data to render
@@ -85,23 +85,13 @@ const PageWrapper = (props: {
       getOfflineData();
     }
 
-    const { action, tableName } = pageInfo();
     document.title = `${action} ${tableName}`;
   }, []);
 
-  const columns = () => {
-    const { dbName, tableName } = props;
-    const tablesOfSelectedDb = getTablesByDbName(dbName);
-    if (!tablesOfSelectedDb) return [];
-    const currentTable = tablesOfSelectedDb.find(
-      (table: DbTable) => table.name === tableName
-    );
-    if (!currentTable) return [];
-    return currentTable.columns;
-  };
+  const columns = getColumns({ dbName, tableName });
+  const primaryKey = getPrimaryKey(columns);
 
   const pageInfo = () => {
-    const { dbName, tableName, action } = props;
     return {
       // e.g. ['split-table']
       appModes: localStorage.getItem(constants.LS_KEY_GITHUB_REPO_MODES)
@@ -110,8 +100,8 @@ const PageWrapper = (props: {
       dbName: dbName || '',
       tableName: tableName || '',
       action: action || '',
-      columns: columns(),
-      primaryKey: getPrimaryKey(columns()),
+      columns,
+      primaryKey,
       tables: getTablesByDbName(dbName),
       githubDb: githubDbRef.current,
     };
@@ -157,8 +147,6 @@ const PageWrapper = (props: {
   //   <ActionList dbName={props.dbName || ''} tableName={props.tableName || ''} />
   // );
 
-  const { dbName, tableName, action } = props;
-
   // if (!tableName) {
   //   return this.renderTableListInDb();
   // }
@@ -174,10 +162,10 @@ const PageWrapper = (props: {
   if (!dbName) {
     errMsgs.push('dbName is undefined!');
   }
-  if (getPrimaryKey(columns()) === null) {
+  if (primaryKey === null) {
     errMsgs.push('Primary key not found on table!');
   }
-  if (columns().length === 0) {
+  if (columns.length === 0) {
     errMsgs.push('No columns found for this table!');
   }
 
