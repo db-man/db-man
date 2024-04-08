@@ -1,13 +1,12 @@
 import axios from 'axios';
-import 'dotenv/config';
 
-const list = async () => {
+const list = async ({ API_KEY, ACCESS_TOKEN }) => {
   const config = {
     method: 'get',
     maxBodyLength: Infinity,
-    url: `https://content-photoslibrary.googleapis.com/v1/albums?key=${process.env.API_KEY}`,
+    url: `https://content-photoslibrary.googleapis.com/v1/albums?key=${API_KEY}`,
     headers: {
-      authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
+      authorization: `Bearer ${ACCESS_TOKEN}`,
       'x-referer': 'https://explorer.apis.google.com',
     },
   };

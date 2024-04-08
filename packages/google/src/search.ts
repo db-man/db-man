@@ -1,13 +1,12 @@
 import axios from 'axios';
-import 'dotenv/config';
 
-const search = async (albumId, pageToken) => {
+const search = async ({ API_KEY, ACCESS_TOKEN }, albumId, pageToken) => {
   const config = {
     method: 'post',
     maxBodyLength: Infinity,
-    url: `https://content-photoslibrary.googleapis.com/v1/mediaItems:search?alt=json&key=${process.env.API_KEY}`,
+    url: `https://content-photoslibrary.googleapis.com/v1/mediaItems:search?alt=json&key=${API_KEY}`,
     headers: {
-      authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
+      authorization: `Bearer ${ACCESS_TOKEN}`,
       'x-referer': 'https://explorer.apis.google.com',
       'content-type': 'application/json',
     },
