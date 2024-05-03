@@ -111,9 +111,9 @@ const Form: React.FC<FormProps> = (props) => {
   };
 
   const handleInputChange = (key: string) => (val: string /* ,event */) => {
-    // if key is primary key, check if has space
-    if (key === context.primaryKey && val.includes(' ')) {
-      message.warning('Primary key cannot contain space');
+    // if key is primary key, check if it contains any whitespace character
+    if (key === context.primaryKey && /\s/.test(val)) {
+      message.warning('Primary key cannot contain whitespace character');
     }
 
     changeBothFormAndJsonEditor({
