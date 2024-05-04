@@ -23,7 +23,7 @@ const getAllInAlbum = async ({ API_KEY, ACCESS_TOKEN }, albumTitle: string) => {
   let allMediaItems: { filename: string }[] = [];
   let pageToken = null;
   do {
-    console.log('Fetching page:', pageToken);
+    console.log('Fetching page:', allMediaItems.length, pageToken);
     // eslint-disable-next-line no-await-in-loop
     const searchResponse = await search(
       { API_KEY, ACCESS_TOKEN },
