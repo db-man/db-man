@@ -11,11 +11,43 @@ How to get api key and access token from Google:
 How to run script
 
 ```bash
-API_KEY=AIzaSyBeo1NGA__U7Xxy-aBE6yFm10pgq8TY-TM ACCESS_TOKEN=ya20.a1Ad52N3-Yc1g0LtyvzGnzUxNKbLhFoRjaLiXSsE_oLjDo7gZMMxIukBVDnmahvHvlrKghM7BrqpTDxLDikDl7kuzEOZt0aZ-kafYV-B0_R-c8GwkYbyfCCs5nKJvt2uZXBrzEurbezKFP21_zs-XDF9e33vXnTRhoxlBX2VOpZGhnawaCgYKATQSARMSFQHGX2MiyXgyYbt_inVUM-O7qcorpQ0182Q ALBUM_TITLE="Test for API" npx ts-node cli/getAllInAlbum.ts
+API_KEY=AI...TM ACCESS_TOKEN=ya...2Q ALBUM_TITLE="Test for API" npx @db-man/google
 ```
 
-OR
+## Options
+
+`WITH_FILE_TYPES=true` to include file types in the output
 
 ```bash
-API_KEY=AIzaSyBeo1NGA__U7Xxy-aBE6yFm10pgq8TY-TM ACCESS_TOKEN=ya20.a1Ad52N3-Yc1g0LtyvzGnzUxNKbLhFoRjaLiXSsE_oLjDo7gZMMxIukBVDnmahvHvlrKghM7BrqpTDxLDikDl7kuzEOZt0aZ-kafYV-B0_R-c8GwkYbyfCCs5nKJvt2uZXBrzEurbezKFP21_zs-XDF9e33vXnTRhoxlBX2VOpZGhnawaCgYKATQSARMSFQHGX2MiyXgyYbt_inVUM-O7qcorpQ0182Q ALBUM_TITLE="Test for API" npx @db-man/google
+API_KEY=AI...TM ACCESS_TOKEN=ya...2Q ALBUM_TITLE="Test for API" WITH_FILE_TYPES=true npx @db-man/google
+```
+
+Without file types:
+
+```json
+[
+  "IMG_20191001_123456.jpg",
+  "IMG_20191001_123457.jpg",
+  "IMG_20191001_123458.jpg"
+]
+```
+
+With file types:
+
+```json
+[
+  {
+    "id": "AF...vw",
+    "productUrl": "https://photos.google.com/...",
+    "baseUrl": "https://lh3.googleusercontent.com/...",
+    "mimeType": "image/jpeg",
+    "mediaMetadata": {
+      "creationTime": "2024-01-23T11:28:53Z",
+      "width": "1376",
+      "height": "442",
+      "photo": {}
+    },
+    "filename": "IMG_20191001_123456.jpg"
+  }
+]
 ```

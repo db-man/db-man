@@ -3,7 +3,7 @@
  * filenames to a JSON file.
  *
  * Usage:
- *  npx ts-node src/getAllInAlbum.ts
+ *  npx ts-node src/cli_getAllInAlbum.ts
  *
  * The output file content:
  * ```json
@@ -28,7 +28,12 @@ const main = async (albumTitle) => {
     { API_KEY, ACCESS_TOKEN },
     albumTitle // eslint-disable-line @typescript-eslint/comma-dangle
   );
-  const allPhotosInAlbum = allMediaItems.map((mediaItem) => mediaItem.filename);
+  // eslint-disable-next-line arrow-body-style
+  const allPhotosInAlbum = allMediaItems.map((mediaItem) => {
+    return process.env.WITH_FILE_TYPES === 'true'
+      ? mediaItem
+      : mediaItem.filename;
+  });
 
   console.log(allPhotosInAlbum);
 
