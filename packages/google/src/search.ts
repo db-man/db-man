@@ -12,7 +12,7 @@ const search = async ({ API_KEY, ACCESS_TOKEN }, albumId, pageToken) => {
     },
     data: JSON.stringify({
       albumId,
-      pageSize: 100,
+      pageSize: 100, // default is 25, max is 100
       pageToken,
     }),
   };
