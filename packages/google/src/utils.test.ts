@@ -1,4 +1,4 @@
-import { foo } from './utils';
+import foo from './utils';
 
 describe('foo', () => {
   it('should return proper value', () => {
