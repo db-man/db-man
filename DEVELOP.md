@@ -12,7 +12,7 @@ lerna run tdd --scope @db-man/components # start TDD
 ## Publish
 
 ```sh
-lerna publish --no-private
+npm run publish
 ```
 
 ## Check outdated
