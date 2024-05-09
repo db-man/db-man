@@ -9,7 +9,7 @@ interface GooglePhotoAlbum {
 const getAllInAlbum = async ({ API_KEY, ACCESS_TOKEN }, albumTitle: string) => {
   const albumsResponse = await list({ API_KEY, ACCESS_TOKEN });
   const album = albumsResponse.albums.find(
-    (ab: GooglePhotoAlbum) => ab.title === albumTitle // eslint-disable-line @typescript-eslint/comma-dangle
+    (ab: GooglePhotoAlbum) => ab.title === albumTitle, // eslint-disable-line @typescript-eslint/comma-dangle
   );
 
   if (!album) {
@@ -28,7 +28,7 @@ const getAllInAlbum = async ({ API_KEY, ACCESS_TOKEN }, albumTitle: string) => {
     const searchResponse = await search(
       { API_KEY, ACCESS_TOKEN },
       album.id,
-      pageToken // eslint-disable-line @typescript-eslint/comma-dangle
+      pageToken,
     );
     allMediaItems = [...allMediaItems, ...searchResponse.mediaItems];
     pageToken = searchResponse.nextPageToken;
