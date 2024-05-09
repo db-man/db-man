@@ -26,7 +26,7 @@ const main = async (albumTitle) => {
 
   const [album, allMediaItems] = await getAllInAlbum(
     { API_KEY, ACCESS_TOKEN },
-    albumTitle // eslint-disable-line @typescript-eslint/comma-dangle
+    albumTitle, // eslint-disable-line @typescript-eslint/comma-dangle
   );
   // eslint-disable-next-line arrow-body-style
   const allPhotosInAlbum = allMediaItems.map((mediaItem) => {
@@ -39,7 +39,7 @@ const main = async (albumTitle) => {
 
   fs.writeFileSync(
     `${album.title}.json`,
-    JSON.stringify(allPhotosInAlbum, null, 2) // eslint-disable-line @typescript-eslint/comma-dangle
+    JSON.stringify(allPhotosInAlbum, null, 2), // eslint-disable-line @typescript-eslint/comma-dangle
   );
 
   console.timeEnd('getAllInAlbum.ts');
