@@ -26,14 +26,6 @@ const defaultValueMapping: {
   [constants.STRING_ARRAY]: [],
 };
 
-export const isAllFilterInvalid = (
-  filter: { [key: string]: string },
-  filterColumnIds: string[]
-) => {
-  const validFilter = filterColumnIds.filter((colId) => !!filter[colId]);
-  return validFilter.length === 0;
-};
-
 /**
  * @param {Object} filterKeyVals
  * @param {Column[]} filterColumns The table columns definitions,
@@ -69,16 +61,43 @@ export const getFilteredData = (
 ) => {
   // The table columns definitions, but only the col which is filterable
   const filterColumns = filterCols(columns);
+  filterColumns.push({
+    id: 'createdAt',
+    name: 'createdAt',
+    type: constants.STRING,
+  });
+  filterColumns.push({
+    id: 'updatedAt',
+    name: 'updatedAt',
+    type: constants.STRING,
+  });
+  // If every filter val is not set, return the original data
   if (
-    isAllFilterInvalid(
-      filterKeyVals,
-      filterColumns.map((column) => column.id)
-    )
+    filterColumns
+      .map((column) => column.id)
+      .every((colId) => !filterKeyVals[colId])
   ) {
     return originalRows;
   }
 
   return originalRows.filter(searchByFilter(filterColumns, filterKeyVals));
+};
+
+export const getFilteredSortedData = (
+  columns: DbColumn[],
+  filter: Record<string, string>,
+  sorter: {
+    // TODO this type is from antd
+    columnKey: string;
+    order: string;
+  },
+  rows: RowType[] | null
+) => {
+  const filteredData = getFilteredData(columns, filter, rows || []);
+  if (sorter.columnKey && sorter.order !== undefined) {
+    return getSortedData(filteredData, sorter);
+  }
+  return filteredData;
 };
 
 export const getSortedData = (

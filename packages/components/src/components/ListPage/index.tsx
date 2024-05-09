@@ -29,7 +29,7 @@ import { getColumnRender } from '../../ddRender/ddRender';
 import {
   findDuplicates,
   getFilteredData,
-  getSortedData,
+  getFilteredSortedData,
   getInitialFilter,
   updateUrl,
   getColumnSortOrder,
@@ -38,7 +38,6 @@ import {
 } from './helpers';
 import RefTableLinks from '../RefTableLinks';
 import * as constants from '../../constants';
-import DbColumn from '../../types/DbColumn';
 import { RowType } from '../../types/Data';
 import ImageCardTable, { CardTablePagination } from './ImageCardTable';
 import RandomList from '../RandomList';
@@ -53,23 +52,6 @@ interface ListPageProps {
 const defaultPage = 1;
 const defaultPageSize = 10;
 const debouncedUpdateUrl = debounce(updateUrl, 500);
-
-const getFilteredSortedData = (
-  columns: DbColumn[],
-  filter: Record<string, string>,
-  sorter: {
-    // TODO this type is from antd
-    columnKey: string;
-    order: string;
-  },
-  rows: RowType[] | null
-) => {
-  const filteredData = getFilteredData(columns, filter, rows || []);
-  if (sorter.columnKey && sorter.order !== undefined) {
-    return getSortedData(filteredData, sorter);
-  }
-  return filteredData;
-};
 
 const TableView = 'table_view';
 const ImageView = 'image_view';
@@ -87,6 +69,9 @@ const ListPage = (props: ListPageProps) => {
   const { columns, tableName, primaryKey, dbName, githubDb } =
     useContext<PageContextType>(PageContext);
 
+  /**
+   * @example filter = { url: 'https://example.com', name: 'John' }
+   */
   const [filter, setFilter] = useState<Record<string, string>>({}); // getInitialFilter(filterCols()), cannot get context in constructor
   const [sorter, setSorter] = useState({
     columnKey: '', // e.g. "url"
@@ -444,7 +429,11 @@ const ListPage = (props: ListPageProps) => {
     <div className='dbm-list-page list-component'>
       <div className='dbm-table-filter'>
         <Row gutter={10}>
-          {filterCols(columns).map((f) => (
+          {[
+            ...filterCols(columns),
+            { id: 'createdAt', name: 'createdAt' },
+            { id: 'updatedAt', name: 'updatedAt' },
+          ].map((f) => (
             <Col key={f.id} span={6}>
               <Text>{f.name}</Text>
               :

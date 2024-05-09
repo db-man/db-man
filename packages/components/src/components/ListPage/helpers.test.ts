@@ -1,12 +1,27 @@
 import { STRING, STRING_ARRAY } from '../../constants';
 import DbColumn from '../../types/DbColumn';
-import { getFilteredData, getSortedData, isAllFilterInvalid } from './helpers';
+import { getFilteredData, getSortedData } from './helpers';
 
 describe('getFilteredData', () => {
   const originalRows = [
-    { id: 'foo1', tags: ['bar', 'bar1'] },
-    { id: 'foo2', tags: ['bar2', 'bar'] },
-    { id: 'foo3', tags: ['bar2', 'bar1'] },
+    {
+      id: 'foo1',
+      tags: ['bar', 'bar1'],
+      createdAt: '2024-01-08 22:45:52',
+      updatedAt: '2024-01-08 22:45:52',
+    },
+    {
+      id: 'foo2',
+      tags: ['bar2', 'bar'],
+      createdAt: '2024-02-08 22:45:52',
+      updatedAt: '2024-02-08 22:45:52',
+    },
+    {
+      id: 'foo3',
+      tags: ['bar2', 'bar1'],
+      createdAt: '2024-04-08 22:45:52',
+      updatedAt: '2024-04-08 22:45:52',
+    },
   ];
   const cols: DbColumn[] = [
     { id: 'name', name: 'Name', type: STRING, 'ui:listPage:isFilter': true },
@@ -19,14 +34,23 @@ describe('getFilteredData', () => {
   ];
   it('should reture 3 rows when fitler by bar1 OR bar2', () => {
     expect(getFilteredData(cols, { tags: 'bar1 bar2' }, originalRows)).toEqual([
-      { id: 'foo1', tags: ['bar', 'bar1'] },
-      { id: 'foo2', tags: ['bar2', 'bar'] },
-      { id: 'foo3', tags: ['bar2', 'bar1'] },
+      ...originalRows,
     ]);
   });
   it('should reture 1 row when fitler by bar1 AND bar2', () => {
     expect(getFilteredData(cols, { tags: 'bar1+bar2' }, originalRows)).toEqual([
-      { id: 'foo3', tags: ['bar2', 'bar1'] },
+      originalRows[2],
+    ]);
+  });
+  test('getFilteredData should return proper value when filtering by createdAt', () => {
+    expect(
+      getFilteredData(cols, { createdAt: '2024-01-08' }, originalRows)
+    ).toEqual([originalRows[0]]);
+    expect(
+      getFilteredData(cols, { createdAt: '2024-02' }, originalRows)
+    ).toEqual([originalRows[1]]);
+    expect(getFilteredData(cols, { createdAt: '2024' }, originalRows)).toEqual([
+      ...originalRows,
     ]);
   });
 });
@@ -146,12 +170,6 @@ test('getFilteredData should return proper value', () => {
       [{ name: 'foo', tags: ['bar'] }]
     )
   ).toEqual([{ name: 'foo', tags: ['bar'] }]);
-});
-
-test('isAllFilterInvalid should return proper value', () => {
-  expect(isAllFilterInvalid({}, ['foo'])).toBe(true);
-  expect(isAllFilterInvalid({ foo: '' }, ['foo'])).toBe(true);
-  expect(isAllFilterInvalid({ foo: '1' }, ['foo'])).toBe(false);
 });
 
 describe('getSortedData', () => {

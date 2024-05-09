@@ -5,6 +5,7 @@
 ```
 npm i
 npm run dev
+npm run tdd
 ```
 
 ## Run cypress test

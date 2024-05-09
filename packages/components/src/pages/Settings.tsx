@@ -25,7 +25,7 @@ const Settings = () => {
 
   return (
     <div>
-      <Title level={1}>Setting</Title>
+      <Title level={1}>Settings</Title>
       <Title level={2}>Theme</Title>
       <Text>Dark Theme: </Text>
       <Switch checked={isDarkTheme} onChange={onChange} />
