@@ -21,7 +21,7 @@ const getAllInAlbum = async ({ API_KEY, ACCESS_TOKEN }, albumTitle: string) => {
 
   // TODO this type from google photo API
   let allMediaItems: { filename: string }[] = [];
-  let pageToken = null;
+  let pageToken: string | null = null;
   do {
     console.log('Fetching page:', allMediaItems.length, pageToken);
     // eslint-disable-next-line no-await-in-loop
