@@ -2,7 +2,6 @@ import {
   searchKeywordInText,
   stringArrayFilter,
   searchStringInArray,
-  searchExactStringNotInArray,
   searchKeywordInNumberText,
 } from './searchUtils';
 
@@ -19,15 +18,6 @@ describe('searchStringInArray', () => {
     expect(searchStringInArray('do', ['dog', 'red', 'short'])).toBe(true);
     expect(searchStringInArray('dog', ['dog', 'red', 'short'])).toBe(true);
     expect(searchStringInArray('dogs', ['dog', 'red', 'short'])).toBe(false);
-  });
-});
-
-describe('searchExactStringNotInArray', () => {
-  it('should return proper value for inverse exact match', () => {
-    expect(searchExactStringNotInArray('dog', ['dog', 'cat', 'fish'])).toBe(
-      false
-    );
-    expect(searchExactStringNotInArray('dog', ['cat', 'fish'])).toBe(true);
   });
 });
 

@@ -21,22 +21,13 @@ export const searchKeywordInNumberText = (
 /**
  * Search string 'do' in string array ['dog', 'cat']
  * @param {string|undefined} keyword - Search keyword
- * @param {string[]} tags - The table cell value
+ * @param {string[]} fieldVal - The table cell value
  * @returns {boolean}
  */
-export const searchStringInArray = (keyword: string, tags: string[]): boolean =>
-  tags.some((tag) => searchKeywordInText(keyword, tag));
-
-/**
- * Search exact keyword 'dog' NOT in string array ['dog', 'cat'] (Inverse exact match)
- * @param {string|undefined} keyword - Search keyword
- * @param {string[]} tags - The table cell value
- * @returns {boolean}
- */
-export const searchExactStringNotInArray = (
+export const searchStringInArray = (
   keyword: string,
-  tags: string[]
-): boolean => tags.every((tag) => !searchKeywordInText(keyword, tag));
+  stringArray: string[]
+): boolean => stringArray.some((item) => searchKeywordInText(keyword, item));
 
 /**
  * Search "a+b" (keyword) in ["a","b"] (fieldVal)
@@ -67,10 +58,11 @@ export const stringArrayFilter = (
       .some((kw) => searchStringInArray(kw, fieldVal));
   }
 
-  // Inverse exact match
+  // Inverse exact match - Search exact keyword 'dog' NOT in string array ['dog', 'cat'] (Inverse exact match)
   if (filterKeyword.startsWith('!')) {
-    const inverseKeyword = filterKeyword.slice(1);
-    return searchExactStringNotInArray(inverseKeyword, fieldVal);
+    return fieldVal.every(
+      (item) => !searchKeywordInText(filterKeyword.slice(1), item)
+    );
   }
 
   return searchStringInArray(filterKeyword, fieldVal);
