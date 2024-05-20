@@ -39,61 +39,39 @@ export const searchExactStringNotInArray = (
 ): boolean => tags.every((tag) => !searchKeywordInText(keyword, tag));
 
 /**
- * Search keywords in tags with logic AND
- * @param {string[]} keywords - Search keywords
- * @param {string[]} tags - The table cell value
- * @returns {boolean}
- */
-export const searchKeywordsInTagsWithLogicAnd = (
-  keywords: string[],
-  tags: string[]
-): boolean =>
-  keywords.reduce((prev, kw) => prev && searchStringInArray(kw, tags), true);
-
-/**
- * Search keywords in tags with logic OR
- * @param {string[]} keywords - Search keywords
- * @param {string[]} tags - The table cell value
- * @returns {boolean}
- */
-export const searchKeywordsInTagsWithLogicOr = (
-  keywords: string[],
-  tags: string[]
-): boolean =>
-  keywords.reduce((prev, kw) => prev || searchStringInArray(kw, tags), false);
-
-/**
- * Search filterKeyword in cellValue
+ * Search "a+b" (keyword) in ["a","b"] (fieldVal)
  * @param {string} filterKeyword - Search keyword
  * - AND: "a+b" to search ["a","b"]
  * - OR : "a b" to search ["a"]
- * @param {string[]} [cellValue] - The table cell value
+ * @param {string[]} fieldVal - The field value of the table row/record
  * @returns {boolean}
  */
 export const stringArrayFilter = (
   filterKeyword: string,
-  cellValue: string[] = []
+  fieldVal: string[] = []
 ): boolean => {
   // first will try to parse operator from filterKeyword
   // choose different search logic based on operator
 
   // AND
   if (filterKeyword.includes('+')) {
-    const keywords = filterKeyword.split('+');
-    return searchKeywordsInTagsWithLogicAnd(keywords, cellValue);
+    return filterKeyword
+      .split('+')
+      .every((kw) => searchStringInArray(kw, fieldVal));
   }
 
   // OR
   if (filterKeyword.includes(' ')) {
-    const keywords = filterKeyword.split(' ');
-    return searchKeywordsInTagsWithLogicOr(keywords, cellValue);
+    return filterKeyword
+      .split(' ')
+      .some((kw) => searchStringInArray(kw, fieldVal));
   }
 
   // Inverse exact match
   if (filterKeyword.startsWith('!')) {
     const inverseKeyword = filterKeyword.slice(1);
-    return searchExactStringNotInArray(inverseKeyword, cellValue);
+    return searchExactStringNotInArray(inverseKeyword, fieldVal);
   }
 
-  return searchStringInArray(filterKeyword, cellValue);
+  return searchStringInArray(filterKeyword, fieldVal);
 };

@@ -2,8 +2,6 @@ import {
   searchKeywordInText,
   stringArrayFilter,
   searchStringInArray,
-  searchKeywordsInTagsWithLogicAnd,
-  searchKeywordsInTagsWithLogicOr,
   searchExactStringNotInArray,
   searchKeywordInNumberText,
 } from './searchUtils';
@@ -30,27 +28,6 @@ describe('searchExactStringNotInArray', () => {
       false
     );
     expect(searchExactStringNotInArray('dog', ['cat', 'fish'])).toBe(true);
-  });
-});
-
-describe('searchKeywordsInTagsWithLogicAnd', () => {
-  it('should return proper value', () => {
-    expect(
-      searchKeywordsInTagsWithLogicAnd(['ap', 'ba'], ['apple', 'banana'])
-    ).toBe(true);
-    expect(
-      searchKeywordsInTagsWithLogicAnd(['ap', 'ba'], ['apple', 'pair'])
-    ).toBe(false);
-  });
-});
-
-describe('searchKeywordsInTagsWithLogicOr', () => {
-  it('should return proper value', () => {
-    expect(searchKeywordsInTagsWithLogicOr(['ap', 'ba'], ['apple'])).toBe(true);
-    expect(
-      searchKeywordsInTagsWithLogicOr(['ap', 'ba'], ['banana', 'pair'])
-    ).toBe(true);
-    expect(searchKeywordsInTagsWithLogicOr(['ap', 'ba'], ['pair'])).toBe(false);
   });
 });
 
