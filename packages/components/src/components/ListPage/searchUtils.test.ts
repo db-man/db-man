@@ -1,6 +1,6 @@
 import {
   searchKeywordInText,
-  stringArrayFilter,
+  searchKeywordInArray,
   searchStringInArray,
   searchKeywordInNumberText,
 } from './searchUtils';
@@ -21,7 +21,7 @@ describe('searchStringInArray', () => {
   });
 });
 
-describe('stringArrayFilter', () => {
+describe('searchKeywordInArray', () => {
   describe('Basic matching', () => {
     test.each([
       {
@@ -45,7 +45,7 @@ describe('stringArrayFilter', () => {
     ])(
       '$description: filter="$filter" array=$array',
       ({ filter, array, expected }) => {
-        expect(stringArrayFilter(filter, array)).toBe(expected);
+        expect(searchKeywordInArray(filter, array)).toBe(expected);
       }
     );
   });
@@ -53,7 +53,7 @@ describe('stringArrayFilter', () => {
   describe('Logical "OR" and "AND"', () => {
     describe('"OR" Matching', () => {
       test('should return true when matching any part of "a b"', () => {
-        expect(stringArrayFilter('a b', ['a'])).toBe(true);
+        expect(searchKeywordInArray('a b', ['a'])).toBe(true);
       });
     });
 
@@ -65,7 +65,7 @@ describe('stringArrayFilter', () => {
       ])(
         'should return %s when "%s" and array is %s',
         (filter, array, expected, description) => {
-          expect(stringArrayFilter(filter, array)).toBe(expected);
+          expect(searchKeywordInArray(filter, array)).toBe(expected);
         }
       );
     });
@@ -100,7 +100,7 @@ describe('stringArrayFilter', () => {
     ])(
       'should return $expected when $description',
       ({ filter, array, expected }) => {
-        expect(stringArrayFilter(filter, array)).toBe(expected);
+        expect(searchKeywordInArray(filter, array)).toBe(expected);
       }
     );
   });

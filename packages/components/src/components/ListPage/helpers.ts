@@ -7,9 +7,8 @@ import { RowType } from '../../types/Data';
 import {
   searchKeywordInText,
   searchKeywordInNumberText,
-  stringArrayFilter,
+  searchKeywordInArray,
 } from './searchUtils';
-import { bool } from 'prop-types';
 
 // For each column type, define the filter function
 const filterFnMapping: {
@@ -17,7 +16,7 @@ const filterFnMapping: {
 } = {
   [constants.NUMBER]: searchKeywordInNumberText,
   [constants.STRING]: searchKeywordInText,
-  [constants.STRING_ARRAY]: stringArrayFilter,
+  [constants.STRING_ARRAY]: searchKeywordInArray,
 };
 
 const defaultValueMapping: {
