@@ -76,6 +76,46 @@ describe('stringArrayFilter', () => {
       expect(stringArrayFilter('a+b', ['a'])).toBe(false);
       expect(stringArrayFilter('a+b', ['b'])).toBe(false);
     });
+    it('should return proper value when inverse exact match', () => {
+      expect(stringArrayFilter('!a', ['a'])).toBe(false);
+      expect(stringArrayFilter('!a', ['a', 'b'])).toBe(false);
+      expect(stringArrayFilter('!a', ['b'])).toBe(true);
+    });
+  });
+
+  describe('when inverse exact match', () => {
+    test.each([
+      {
+        filter: '!a',
+        array: ['b'],
+        expected: true,
+        description: 'array does not contain a',
+      },
+      {
+        filter: '!a',
+        array: ['a'],
+        expected: false,
+        description: 'array contains a only',
+      },
+      {
+        filter: '!a',
+        array: ['a', 'b'],
+        expected: false,
+        description: 'array contains a among others',
+      },
+      {
+        filter: '!a',
+        array: ['c', 'd'],
+        expected: true,
+        description: 'array does not contain a with unrelated elements',
+      },
+      // Potentially add edge case tests here
+    ])(
+      'should return $expected when $description',
+      ({ filter, array, expected }) => {
+        expect(stringArrayFilter(filter, array)).toBe(expected);
+      }
+    );
   });
 });
 
