@@ -9,6 +9,7 @@ import {
   searchKeywordInNumberText,
   stringArrayFilter,
 } from './searchUtils';
+import { bool } from 'prop-types';
 
 // For each column type, define the filter function
 const filterFnMapping: {
@@ -33,8 +34,8 @@ const defaultValueMapping: {
  */
 const searchByFilter =
   (filterColumns: DbColumn[], filterKeyVals: { [key: string]: string }) =>
-  (row: RowType) =>
-    filterColumns.reduce((prev, column: DbColumn) => {
+  (row: RowType): boolean =>
+    filterColumns.reduce<boolean>((prev, column: DbColumn) => {
       const keyword = filterKeyVals[column.id];
       let matched = true;
       if (keyword) {
@@ -46,9 +47,8 @@ const searchByFilter =
       return prev && matched;
     }, true);
 
-export const filterCols = (columns: DbColumn[]) => {
-  return columns.filter((col) => col['ui:listPage:isFilter']);
-};
+export const filterCols = (columns: DbColumn[]): DbColumn[] =>
+  columns.filter((col) => col['ui:listPage:isFilter']);
 
 /**
  * Filter the data by filterKeyVals
