@@ -44,14 +44,14 @@ export const stringArrayFilter = (
   // first will try to parse operator from filterKeyword
   // choose different search logic based on operator
 
-  // AND
+  // AND - Search both 'dog' and 'cat' in string array ['dog', 'cat'] (AND)
   if (filterKeyword.includes('+')) {
     return filterKeyword
       .split('+')
       .every((kw) => searchStringInArray(kw, fieldVal));
   }
 
-  // OR
+  // OR - Search 'dog' or 'cat' in string array ['dog', 'cat'] (OR)
   if (filterKeyword.includes(' ')) {
     return filterKeyword
       .split(' ')
