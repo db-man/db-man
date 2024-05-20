@@ -55,42 +55,68 @@ describe('searchKeywordsInTagsWithLogicOr', () => {
 });
 
 describe('stringArrayFilter', () => {
-  describe('when search with one part', () => {
-    it('should return true when searching with part of the word', () => {
-      expect(stringArrayFilter('f', ['foo'])).toBe(true);
-    });
-    it('should return true when searching with full of the word', () => {
-      expect(stringArrayFilter('foo', ['foo'])).toBe(true);
-    });
-    it('should return true when searching with empty string', () => {
-      expect(stringArrayFilter('', ['foo'])).toBe(true);
-    });
+  describe('when searching with one part', () => {
+    test.each([
+      {
+        filter: 'f',
+        array: ['foo'],
+        expected: true,
+        description: 'part of the word',
+      },
+      {
+        filter: 'foo',
+        array: ['foo'],
+        expected: true,
+        description: 'full of the word',
+      },
+      {
+        filter: '',
+        array: ['foo'],
+        expected: true,
+        description: 'empty string',
+      },
+    ])(
+      'should return $expected when searching with $description',
+      ({ filter, array, expected }) => {
+        expect(stringArrayFilter(filter, array)).toBe(expected);
+      }
+    );
   });
 
   describe('when search with 2 parts', () => {
-    it('should return true when matching a OR b', () => {
-      expect(stringArrayFilter('a b', ['a'])).toBe(true);
-    });
-    it('should return true when matching a AND b', () => {
-      expect(stringArrayFilter('a+b', ['a', 'b'])).toBe(true);
-      expect(stringArrayFilter('a+b', ['a'])).toBe(false);
-      expect(stringArrayFilter('a+b', ['b'])).toBe(false);
-    });
-    it('should return proper value when inverse exact match', () => {
-      expect(stringArrayFilter('!a', ['a'])).toBe(false);
-      expect(stringArrayFilter('!a', ['a', 'b'])).toBe(false);
-      expect(stringArrayFilter('!a', ['b'])).toBe(true);
-    });
-  });
-
-  describe('when inverse exact match', () => {
     test.each([
       {
-        filter: '!a',
-        array: ['b'],
+        filter: 'a b',
+        array: ['a'],
         expected: true,
-        description: 'array does not contain a',
+        description: 'matching a OR b',
       },
+      {
+        filter: 'a+b',
+        array: ['a', 'b'],
+        expected: true,
+        description: 'matching a AND b, both present',
+      },
+      {
+        filter: 'a+b',
+        array: ['a'],
+        expected: false,
+        description: 'matching a AND b, only a present',
+      },
+      {
+        filter: 'a+b',
+        array: ['b'],
+        expected: false,
+        description: 'matching a AND b, only b present',
+      },
+    ])(
+      'should return $expected when $description',
+      ({ filter, array, expected }) => {
+        expect(stringArrayFilter(filter, array)).toBe(expected);
+      }
+    );
+
+    test.each([
       {
         filter: '!a',
         array: ['a'],
@@ -105,18 +131,58 @@ describe('stringArrayFilter', () => {
       },
       {
         filter: '!a',
-        array: ['c', 'd'],
+        array: ['b'],
         expected: true,
-        description: 'array does not contain a with unrelated elements',
+        description: 'array does not contain a',
       },
-      // Potentially add edge case tests here
     ])(
-      'should return $expected when $description',
+      'should return $expected when inverse exact match and $description',
       ({ filter, array, expected }) => {
         expect(stringArrayFilter(filter, array)).toBe(expected);
       }
     );
   });
+
+  // describe('when considering edge cases', () => {
+  //   test.each([
+  //     {
+  //       filter: 'a',
+  //       array: [null, 'a'],
+  //       expected: true,
+  //       description: 'array contains null and matching string',
+  //     },
+  //     {
+  //       filter: 'a',
+  //       array: [undefined, 'a'],
+  //       expected: true,
+  //       description: 'array contains undefined and matching string',
+  //     },
+  //     {
+  //       filter: 'a',
+  //       array: [],
+  //       expected: false,
+  //       description: 'an empty array',
+  //     },
+  //     // Assuming the function should return false for non-string or empty inputs.
+  //     {
+  //       filter: null,
+  //       array: ['a'],
+  //       expected: false,
+  //       description: 'filter is null',
+  //     },
+  //     {
+  //       filter: undefined,
+  //       array: ['a'],
+  //       expected: false,
+  //       description: 'filter is undefined',
+  //     },
+  //   ])(
+  //     'should return $expected when $description',
+  //     ({ filter, array, expected }) => {
+  //       expect(stringArrayFilter(filter, array)).toBe(expected);
+  //     }
+  //   );
+  // });
 });
 
 test('searchKeywordInText should return proper value', () => {
