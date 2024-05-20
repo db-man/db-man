@@ -21,25 +21,25 @@ export const searchKeywordInNumberText = (
 /**
  * Search string 'do' in string array ['dog', 'cat']
  * @param {string|undefined} keyword - Search keyword
- * @param {string[]} fieldVal - The table cell value
+ * @param {string[]} strArr - The table cell value
  * @returns {boolean}
  */
 export const searchStringInArray = (
   keyword: string,
-  stringArray: string[]
-): boolean => stringArray.some((item) => searchKeywordInText(keyword, item));
+  strArr: string[]
+): boolean => strArr.some((item) => searchKeywordInText(keyword, item));
 
 /**
- * Search "a+b" (keyword) in ["a","b"] (fieldVal)
+ * Search "a+b" (keyword) in ["a","b"] (strArr)
  * @param {string} filterKeyword - Search keyword
  * - AND: "a+b" to search ["a","b"]
  * - OR : "a b" to search ["a"]
- * @param {string[]} fieldVal - The field value of the table row/record
+ * @param {string[]} strArr - The field value of the table row/record
  * @returns {boolean}
  */
 export const stringArrayFilter = (
   filterKeyword: string,
-  fieldVal: string[] = []
+  strArr: string[] = []
 ): boolean => {
   // first will try to parse operator from filterKeyword
   // choose different search logic based on operator
@@ -48,22 +48,22 @@ export const stringArrayFilter = (
   if (filterKeyword.includes('+')) {
     return filterKeyword
       .split('+')
-      .every((kw) => searchStringInArray(kw, fieldVal));
+      .every((kw) => searchStringInArray(kw, strArr));
   }
 
   // OR - Search 'dog' or 'cat' in string array ['dog', 'cat'] (OR)
   if (filterKeyword.includes(' ')) {
     return filterKeyword
       .split(' ')
-      .some((kw) => searchStringInArray(kw, fieldVal));
+      .some((kw) => searchStringInArray(kw, strArr));
   }
 
   // Inverse exact match - Search exact keyword 'dog' NOT in string array ['dog', 'cat'] (Inverse exact match)
   if (filterKeyword.startsWith('!')) {
-    return fieldVal.every(
+    return strArr.every(
       (item) => !searchKeywordInText(filterKeyword.slice(1), item)
     );
   }
 
-  return searchStringInArray(filterKeyword, fieldVal);
+  return searchStringInArray(filterKeyword, strArr);
 };
