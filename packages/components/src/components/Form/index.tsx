@@ -71,7 +71,7 @@ const filterOutHiddenFields = (column: DbColumn) =>
 const Form: React.FC<FormProps> = (props) => {
   const { showDelete = true } = props;
 
-  const context = useContext(PageContext);
+  const pageCtx = useContext(PageContext);
   const { dbs } = useAppContext();
 
   const [formValues, setFormValues] = useState({
@@ -84,7 +84,7 @@ const Form: React.FC<FormProps> = (props) => {
   );
 
   useEffect(() => {
-    const initFormValues = getFormInitialValues(context.columns, formValues);
+    const initFormValues = getFormInitialValues(pageCtx.columns, formValues);
     setFormValues((prevFormValues) => ({
       ...prevFormValues,
       ...initFormValues,
@@ -112,7 +112,7 @@ const Form: React.FC<FormProps> = (props) => {
 
   const handleInputChange = (key: string) => (val: string /* ,event */) => {
     // if key is primary key, check if it contains any whitespace character
-    if (key === context.primaryKey && /\s/.test(val)) {
+    if (key === pageCtx.primaryKey && /\s/.test(val)) {
       message.warning('Primary key cannot contain whitespace character');
     }
 
@@ -120,15 +120,28 @@ const Form: React.FC<FormProps> = (props) => {
       ...formValues,
       [key]: val,
     });
-    // When mode is split-table, thats because table file too big.
-    // Will not download big table file, so no checking about duplicated item.
-    if (!isSplitTable()) {
+
+    // When db mode is split-table, download the (big) table file will take a long time.
+    // So will not check about duplicated item, cause we don't have the full table data.
+    if (!pageCtx.appModes.includes('split-table')) {
       // validate the primary field in form, e.g. duplication check
       // TODO maybe do this in antd Form component
       // TODO why do we assume the type of primary column in a table is always `string`?
-      if (key === context.primaryKey) {
-        if (!validatePrimaryKey(val, props.rows, context.primaryKey)) {
+      if (key === pageCtx.primaryKey) {
+        if (!validatePrimaryKey(val, props.rows, pageCtx.primaryKey)) {
           warnPrimaryKeyInvalid(val);
+        }
+      }
+    } else {
+      // When db mode is split-table, single record will be created as a file on filesystem
+      // But on some filesystem, e.g. macOS or Linux, the filename length limit is 255.
+      // So we need to check the length of filename, and warn user if it is too long.
+      if (key === pageCtx.primaryKey) {
+        if (val.length > 255) {
+          message.warning(
+            'Filename length is too long, please keep it under 255 characters',
+            10
+          );
         }
       }
     }
@@ -159,17 +172,12 @@ const Form: React.FC<FormProps> = (props) => {
     props.onDelete && props.onDelete(formValues);
   };
 
-  const isSplitTable = () => {
-    const { appModes } = context;
-    return appModes.indexOf('split-table') !== -1;
-  };
-
   const warnPrimaryKeyInvalid = (value: string) =>
     message.warning(
       <div>
         Found duplicated item in db{' '}
         <a
-          href={`/${context.dbName}/${context.tableName}/update?${context.primaryKey}=${value}`}
+          href={`/${pageCtx.dbName}/${pageCtx.tableName}/update?${pageCtx.primaryKey}=${value}`}
         >
           {value}
         </a>
@@ -216,14 +224,11 @@ const Form: React.FC<FormProps> = (props) => {
         key={column.id}
         inputProps={{
           disabled: loading,
-          autoFocus: column.id === context.primaryKey,
+          autoFocus: column.id === pageCtx.primaryKey,
           onKeyDown: handleKeyDown,
           placeholder: column['ui:createUpdatePage:placeholder'],
         }}
         preview={preview}
-        label={column.name}
-        dbName={context.dbName}
-        primaryKey={context.primaryKey}
         column={column}
         value={value}
         onChange={handleInputChange(column.id)}
@@ -299,8 +304,8 @@ const Form: React.FC<FormProps> = (props) => {
         >
           <b>{column.name}</b>:{' '}
           <RefTableLink
-            dbName={context.dbName}
-            tables={dbs[context.dbName]}
+            dbName={pageCtx.dbName}
+            tables={dbs[pageCtx.dbName]}
             value={formValues[column.id]}
             column={column}
           />
@@ -325,7 +330,7 @@ const Form: React.FC<FormProps> = (props) => {
         <InputNumber
           size='small'
           disabled={loading}
-          autoFocus={column.id === context.primaryKey}
+          autoFocus={column.id === pageCtx.primaryKey}
           value={formValues[column.id]}
           onChange={handleChange(column.id)}
           onKeyDown={handleKeyDown}
@@ -369,7 +374,7 @@ const Form: React.FC<FormProps> = (props) => {
       key: 'form',
       children: (
         <div className='dbm-form'>
-          {context.columns.filter(filterOutHiddenFields).map(fieldRender)}
+          {pageCtx.columns.filter(filterOutHiddenFields).map(fieldRender)}
         </div>
       ),
     },
@@ -419,7 +424,7 @@ const Form: React.FC<FormProps> = (props) => {
         <Text>|</Text>{' '}
         <Button
           type='link'
-          href={`/${context.dbName}/${context.tableName}/create`}
+          href={`/${pageCtx.dbName}/${pageCtx.tableName}/create`}
         >
           Reset
         </Button>{' '}

@@ -1,5 +1,7 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
+import { Popover } from 'antd';
+import { QuestionCircleOutlined } from '@ant-design/icons';
 
 import { columnType } from './types';
 import StringFormFieldValue, { InputProps } from './StringFormFieldValue';
@@ -11,10 +13,7 @@ import { useAppContext } from '../contexts/AppContext';
 import { FieldValueWarning } from './FormValidations';
 
 interface StringFormFieldProps {
-  label: string;
   column: DbColumn;
-  dbName: string;
-  primaryKey: string;
   value?: string;
   inputProps?: InputProps;
   preview?: boolean;
@@ -23,18 +22,45 @@ interface StringFormFieldProps {
 
 const expectedType = 'string';
 
+const popoverContent = (
+  <div>
+    <p>
+      When db mode is split-table, single record will be created as a file on
+      filesystem.
+      <br />
+      But on some filesystem, e.g. macOS or Linux, the filename length limit is
+      255.
+      <br />
+      So we need to check the length of filename, and warn user if it is too
+      long.
+    </p>
+  </div>
+);
+
+/**
+ * To render a form field for table_column.type="STRING"
+ */
 export default function StringFormField(props: StringFormFieldProps) {
-  const { label, column, value, inputProps, preview, onChange } = props;
-  const { dbs } = useAppContext();
-  const { dbName } = useContext(PageContext);
+  const { column, value, inputProps, preview, onChange } = props;
+  const appCtx = useAppContext();
+  const pageCtx = useContext(PageContext);
 
   return (
     <div className='dbm-form-field dbm-string-form-field'>
-      <b>{label}</b>: <PresetsButtons column={column} onChange={onChange} />{' '}
+      <b>{column.name}</b>:{' '}
+      {pageCtx.appModes.includes('split-table') &&
+        column.id === pageCtx.primaryKey && (
+          <>
+            <Popover content={popoverContent} title='Primary Key Info'>
+              <QuestionCircleOutlined />
+            </Popover>{' '}
+          </>
+        )}
+      <PresetsButtons column={column} onChange={onChange} />{' '}
       <RefTableLink
         column={column}
-        tables={dbs[dbName]}
-        dbName={dbName}
+        tables={appCtx.dbs[pageCtx.dbName]}
+        dbName={pageCtx.dbName}
         value={value}
       />
       <FieldValueWarning expectedType={expectedType} value={value} />
@@ -49,7 +75,6 @@ export default function StringFormField(props: StringFormFieldProps) {
 }
 
 StringFormField.propTypes = {
-  label: PropTypes.string.isRequired,
   value: PropTypes.string,
   preview: PropTypes.bool,
   column: columnType.isRequired,

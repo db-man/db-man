@@ -159,13 +159,20 @@ This props will pass to `ImageLink` component.
 }
 ```
 
-## Split table
+## Migrate to split-table mode
+
+### The repo structure for split-table mode
 
 - .github/workflows/merge.yml - https://github.com/db-man/split-table-db/blob/main/.github/workflows/merge.yml
 - .github/workflows/split.yml - https://github.com/db-man/split-table-db/blob/main/.github/workflows/split.yml
 - merge.mjs - https://github.com/db-man/split-table-db/blob/main/merge.mjs
 - split.mjs - https://github.com/db-man/split-table-db/blob/main/split.mjs
 - cli/utils.mjs - https://github.com/db-man/split-table-db/blob/main/cli/utils.mjs
+
+### Need to check
+
+- Primary key value not too long.
+  - For example, if the primary key is `user_id`, one of the record is `user_id=1234567890...1234567890`, and value is more than 255 bytes, then the pipeline will fail because on CI the OS is Linux, and the max file name length is 255 bytes. And also when you git pull on macOS, it will fail because the file name is too long.
 
 ## Database examples
 
