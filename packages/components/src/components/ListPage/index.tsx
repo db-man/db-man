@@ -345,27 +345,32 @@ const ListPage = (props: ListPageProps) => {
       key: 'actions',
       dataIndex: primaryKey,
       title: 'Actions',
-      render: (id: string) => (
-        <div>
-          <Link
-            to={{
-              pathname: `/${dbName}/${tableName}/update`,
-              search: `?${primaryKey}=${id}`,
-            }}
-          >
-            Update
-          </Link>{' '}
-          |{' '}
-          <Link
-            to={{
-              pathname: `/${dbName}/${tableName}/get`,
-              search: `?${primaryKey}=${id}`,
-            }}
-          >
-            Detail
-          </Link>
-        </div>
-      ),
+      render: (id: string) => {
+        // id is the primary key of the row, for sample case the primary key value is 'https://example.com?id=1&name=John'
+        // so need to encodeURI to make it as a valid URL
+        const search = `?${primaryKey}=${encodeURIComponent(id)}`;
+        return (
+          <div>
+            <Link
+              to={{
+                pathname: `/${dbName}/${tableName}/update`,
+                search,
+              }}
+            >
+              Update
+            </Link>{' '}
+            |{' '}
+            <Link
+              to={{
+                pathname: `/${dbName}/${tableName}/get`,
+                search,
+              }}
+            >
+              Detail
+            </Link>
+          </div>
+        );
+      },
     });
     return cols;
   };
