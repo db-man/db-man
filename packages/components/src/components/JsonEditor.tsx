@@ -42,6 +42,7 @@ const JsonEditor: React.FC<JsonEditorProps> = (props) => {
     <div>
       <Input.TextArea
         autoSize
+        status={errMsg ? 'error' : ''}
         value={value}
         onChange={handleChange}
         onKeyDown={handleKeyDown}
