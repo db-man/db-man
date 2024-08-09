@@ -76,17 +76,15 @@ const DistinctColumn = ({ columnKey }: { columnKey: string }) => {
           );
           return (
             <List.Item>
-              <div className='dbm-distinct-column-item'>
-                <Link
-                  to={{
-                    pathname: `/${dbName}/${tableName}/list`,
-                    search: `?filter=${filter}`,
-                  }}
-                >
-                  {item.name}
-                </Link>{' '}
-                : {item.count}
-              </div>
+              <Link
+                to={{
+                  pathname: `/${dbName}/${tableName}/list`,
+                  search: `?filter=${filter}`,
+                }}
+              >
+                {item.name}
+              </Link>{' '}
+              : {item.count}
             </List.Item>
           );
         }}
