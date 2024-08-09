@@ -65,13 +65,16 @@ const NavBar = () => {
   const createLink = (
     <Link to={{ pathname: `/${dbName}/${tableName}/create` }}>Create</Link>
   );
+  // id is primary key value, so it can contain special characters like '#'
+  // but for <Link> component, for the search part, '#' is not allowed
+  // so need to encodeURI the id
   const updateOrGetLink = (
     <Link
       to={{
         pathname: `/${dbName}/${tableName}/${
           action === 'get' ? 'update' : 'get'
         }`,
-        search: `?${primaryKey}=${id}`,
+        search: `?${primaryKey}=${encodeURIComponent(id)}`,
       }}
     >
       {action === 'get' ? 'Update' : 'Get'}
