@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Input, Row, Col } from 'antd';
 
 export interface InputProps {
@@ -65,25 +64,3 @@ const StringFormFieldValue = (props: StringFormFieldValueProps) => {
 };
 
 export default StringFormFieldValue;
-
-StringFormFieldValue.propTypes = {
-  value: PropTypes.string,
-  preview: PropTypes.bool,
-  inputProps: PropTypes.shape({
-    disabled: PropTypes.bool,
-    autoFocus: PropTypes.bool,
-    onKeyDown: PropTypes.func,
-  }),
-  onChange: PropTypes.func,
-};
-StringFormFieldValue.defaultProps = {
-  value: '',
-  // Props to pass directly to antd's Input component
-  inputProps: {
-    // disabled
-    // autoFocus
-    // onKeyDown
-  },
-  preview: false,
-  onChange: () => {},
-};

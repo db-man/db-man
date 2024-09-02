@@ -1,9 +1,7 @@
 import React, { useContext } from 'react';
-import PropTypes from 'prop-types';
 import { message, Popover } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 
-import { columnType } from './types';
 import StringFormFieldValue, { InputProps } from './StringFormFieldValue';
 import RefTableLink from './RefTableLink';
 import PageContext from '../contexts/page';
@@ -125,26 +123,3 @@ export default function StringFormField(props: StringFormFieldProps) {
     </div>
   );
 }
-
-StringFormField.propTypes = {
-  value: PropTypes.string,
-  preview: PropTypes.bool,
-  column: columnType.isRequired,
-  inputProps: PropTypes.shape({
-    disabled: PropTypes.bool,
-    autoFocus: PropTypes.bool,
-    onKeyDown: PropTypes.func,
-  }),
-  onChange: PropTypes.func.isRequired,
-};
-
-StringFormField.defaultProps = {
-  value: '',
-  preview: false,
-  // Props to pass directly to antd's Input component
-  inputProps: {
-    // disabled
-    // autoFocus
-    // onKeyDown
-  },
-};

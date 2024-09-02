@@ -1,5 +1,4 @@
 import React, { useEffect, useContext, useState, ReactNode } from 'react';
-// import PropTypes from 'prop-types';
 import {
   Select,
   Button,
@@ -389,19 +388,5 @@ const Form: React.FC<FormProps> = (props) => {
     </div>
   );
 };
-
-// Form.propTypes = {
-//   rows: PropTypes.array,
-//   defaultValues: PropTypes.object.isRequired,
-//   loading: PropTypes.bool.isRequired,
-//   onSubmit: PropTypes.func,
-//   onDelete: PropTypes.func,
-// };
-
-// Form.defaultProps = {
-//   rows: [],
-//   onSubmit: () => {},
-//   onDelete: () => {},
-// };
 
 export default Form;
