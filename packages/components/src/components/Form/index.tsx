@@ -137,7 +137,7 @@ const Form: React.FC<FormProps> = (props) => {
       // But on some filesystem, e.g. macOS or Linux, the filename length limit is 255.
       // So we need to check the length of filename, and warn user if it is too long.
       if (key === pageCtx.primaryKey) {
-        if (val.length > 255) {
+        if (val.length + '.json'.length > 255) {
           message.warning(
             'Filename length is too long, please keep it under 255 characters',
             10
