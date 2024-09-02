@@ -45,6 +45,8 @@ const popoverContent = (
   </div>
 );
 
+const isFilenameTooLong = (val: string) => (val + '.json').length > 255;
+
 /**
  * To render a form field for table_column.type="STRING"
  */
@@ -85,7 +87,7 @@ export default function StringFormField(props: StringFormFieldProps) {
       // But on some filesystem, e.g. macOS or Linux, the filename length limit is 255.
       // So we need to check the length of filename, and warn user if it is too long.
       if (column.id === pageCtx.primaryKey) {
-        if (val.length + '.json'.length > 255) {
+        if (isFilenameTooLong(val)) {
           message.warning(
             'Filename length is too long, please keep it under 255 characters',
             10
@@ -115,7 +117,10 @@ export default function StringFormField(props: StringFormFieldProps) {
       />
       <FieldValueWarning expectedType={expectedType} value={value} />
       <StringFormFieldValue
-        inputProps={inputProps}
+        inputProps={{
+          ...inputProps,
+          status: isFilenameTooLong(value || '') ? 'error' : undefined,
+        }}
         preview={preview}
         value={value}
         onChange={handleChange}

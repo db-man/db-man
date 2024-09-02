@@ -6,6 +6,7 @@ export interface InputProps {
   readOnly?: boolean;
   autoFocus?: boolean;
   placeholder?: string;
+  status?: 'error' | 'warning';
   onKeyDown?: (event: React.KeyboardEvent) => void;
 }
 
