@@ -4,12 +4,17 @@ import { Button } from 'antd';
 import { COL_UI_PRESETS } from '../constants';
 import DbColumn from '../types/DbColumn';
 
+type OnChangeType = (
+  value: string,
+  event: React.MouseEvent<HTMLElement>
+) => void;
+
 const PresetsButtons = ({
   column,
   onChange,
 }: {
   column: DbColumn;
-  onChange: (value: string, event: React.MouseEvent<HTMLElement>) => void;
+  onChange: OnChangeType;
 }) => (
   <>
     {(column[COL_UI_PRESETS] || []).map((opt) => (

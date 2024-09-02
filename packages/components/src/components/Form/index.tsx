@@ -21,13 +21,7 @@ import PageContext from '../../contexts/page';
 import MultiLineInputBox from '../MultiLineInputBox';
 import * as constants from '../../constants';
 import TextAreaFormField from '../TextAreaFormField';
-import {
-  validatePrimaryKey,
-  isType,
-  obj2str,
-  str2obj,
-  getFormInitialValues,
-} from './helpers';
+import { isType, obj2str, str2obj, getFormInitialValues } from './helpers';
 import FieldWrapperForCreateUpdatePage from '../FieldWrapperForCreateUpdatePage';
 import PresetsButtons from '../PresetsButtons';
 import DbColumn from '../../types/DbColumn';
@@ -120,31 +114,6 @@ const Form: React.FC<FormProps> = (props) => {
       ...formValues,
       [key]: val,
     });
-
-    // When db mode is split-table, download the (big) table file will take a long time.
-    // So will not check about duplicated item, cause we don't have the full table data.
-    if (!pageCtx.appModes.includes('split-table')) {
-      // validate the primary field in form, e.g. duplication check
-      // TODO maybe do this in antd Form component
-      // TODO why do we assume the type of primary column in a table is always `string`?
-      if (key === pageCtx.primaryKey) {
-        if (!validatePrimaryKey(val, props.rows, pageCtx.primaryKey)) {
-          warnPrimaryKeyInvalid(val);
-        }
-      }
-    } else {
-      // When db mode is split-table, single record will be created as a file on filesystem
-      // But on some filesystem, e.g. macOS or Linux, the filename length limit is 255.
-      // So we need to check the length of filename, and warn user if it is too long.
-      if (key === pageCtx.primaryKey) {
-        if (val.length + '.json'.length > 255) {
-          message.warning(
-            'Filename length is too long, please keep it under 255 characters',
-            10
-          );
-        }
-      }
-    }
   };
 
   /**
@@ -171,19 +140,6 @@ const Form: React.FC<FormProps> = (props) => {
   const handleDelete = () => {
     props.onDelete && props.onDelete(formValues);
   };
-
-  const warnPrimaryKeyInvalid = (value: string) =>
-    message.warning(
-      <div>
-        Found duplicated item in db{' '}
-        <a
-          href={`/${pageCtx.dbName}/${pageCtx.tableName}/update?${pageCtx.primaryKey}=${value}`}
-        >
-          {value}
-        </a>
-      </div>,
-      10
-    );
 
   const renderStringFormField = (column: DbColumn) => {
     const { loading } = props;
@@ -230,6 +186,7 @@ const Form: React.FC<FormProps> = (props) => {
         }}
         preview={preview}
         column={column}
+        rows={props.rows}
         value={value}
         onChange={handleInputChange(column.id)}
       />

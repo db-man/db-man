@@ -10,14 +10,16 @@ export interface InputProps {
   onKeyDown?: (event: React.KeyboardEvent) => void;
 }
 
+type OnChangeType = (
+  value: string,
+  event: React.ChangeEvent<HTMLInputElement>
+) => void;
+
 interface StringFormFieldValueProps {
   value?: string;
   preview?: boolean;
   inputProps?: InputProps;
-  onChange?: (
-    value: string,
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => void;
+  onChange?: OnChangeType;
 }
 
 const StringFormFieldValue = (props: StringFormFieldValueProps) => {
@@ -39,7 +41,7 @@ const StringFormFieldValue = (props: StringFormFieldValueProps) => {
 
   const input = renderInput();
 
-  // DELETE
+  // TODO DELETE
   if (!preview) {
     return input;
   }
