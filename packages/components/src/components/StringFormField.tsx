@@ -28,8 +28,6 @@ interface StringFormFieldProps {
   onChange: OnChangeType;
 }
 
-const expectedType = 'string';
-
 const popoverContent = (
   <div>
     <p>
@@ -115,7 +113,10 @@ export default function StringFormField(props: StringFormFieldProps) {
         dbName={pageCtx.dbName}
         value={value}
       />
-      <FieldValueWarning expectedType={expectedType} value={value} />
+      <FieldValueWarning
+        expectedTypes={['string', 'undefined']}
+        value={value}
+      />
       <StringFormFieldValue
         inputProps={{
           ...inputProps,

@@ -2,7 +2,7 @@ import { Alert } from 'antd';
 import { RadioGroupUiTypeEnum } from '../types/UiType';
 
 /**
- * To valid the type of field value, then show warning message if the type is not expected.
+ * To valid the type of form field value, then show warning message if the type is not expected.
  * Here is an example of table schema:
  * ```json
  * {
@@ -17,19 +17,21 @@ import { RadioGroupUiTypeEnum } from '../types/UiType';
  *   "userName": 123
  * }
  * ```
- * The type of `userName` should be `string`, but the current type is `number`.
+ * The type of `userName` should be `string`, but the current type is `number`, will show warning.
  */
 export const FieldValueWarning = ({
-  expectedType,
+  expectedTypes,
   value,
 }: {
-  expectedType: string;
+  expectedTypes: string[];
   value?: string;
 }) => {
-  if (typeof value === expectedType) return null;
+  if (expectedTypes.includes(typeof value)) return null;
   return (
     <Alert
-      message={`The type of this form field value is ${typeof value}, but it should be ${expectedType}`}
+      message={`(The type of this form field value is ${typeof value}, but it should be one of ${expectedTypes.join(
+        ', '
+      )})`}
       type='warning'
     />
   );
