@@ -1,6 +1,6 @@
 {
   "name": "@db-man/components",
-  "version": "0.1.121",
+  "version": "0.1.122",
   "description": "",
   "main": "dist/lib.js",
   "types": "dist/lib.d.ts",
