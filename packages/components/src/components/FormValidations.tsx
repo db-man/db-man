@@ -29,7 +29,7 @@ export const FieldValueWarning = ({
   if (typeof value === expectedType) return null;
   return (
     <Alert
-      message={`(The type of this form field value should be ${expectedType}, but current type is ${typeof value})`}
+      message={`The type of this form field value is ${typeof value}, but it should be ${expectedType}`}
       type='warning'
     />
   );
