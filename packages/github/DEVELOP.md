@@ -12,7 +12,9 @@ npm i
 npm test -- --watch
 ```
 
-## Publish
+## Publish (Only for testing)
+
+**Please use `lerna` in root dir to publish the package**
 
 Start to publish (Change `ghp_123` to your GitHub personal access token)
 
