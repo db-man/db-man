@@ -113,7 +113,12 @@ const PageWrapper = (props: {
 
       if (offlineDbSchemaStr !== onlineDbSchemaStr) {
         console.warn('Offline and online schema are different!');
-        message.warning('Offline and online schema are different!');
+        message.warning(
+          <span>
+            Offline and online schema are different!{' '}
+            <a href='/settings'>Go to Settings</a>
+          </span>
+        );
       }
     }
   };
