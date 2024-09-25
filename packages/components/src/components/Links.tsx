@@ -11,6 +11,11 @@ export function Fragment({ children }: { children: React.ReactNode }) {
   return children;
 }
 
+const isShow = () =>
+  localStorage.getItem(LS_SHOW_DOWNLOAD_BUTTON) === 'true'
+    ? {}
+    : { display: 'none' };
+
 export function Link({
   children,
   href,
@@ -95,13 +100,7 @@ export function ImageLink({
       </a>
       <br />
       {description}
-      <div
-        style={
-          localStorage.getItem(LS_SHOW_DOWNLOAD_BUTTON) === 'true'
-            ? {}
-            : { display: 'none' }
-        }
-      >
+      <div style={isShow()}>
         <Button
           className='dbm-dd-image-link-download-btn'
           onClick={() => {

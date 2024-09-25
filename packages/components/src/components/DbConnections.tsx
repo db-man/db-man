@@ -88,6 +88,7 @@ const DbConnections = ({ storage }: { storage: StorageType }) => {
       <EditableTable storage={storage} onEnable={handleDbConnectionEnable} />
       <Button onClick={handleExport}>Export</Button>{' '}
       <Button onClick={handleImport}>Import</Button>
+      {/* This hidden input tag will handle importing config from a JSON file */}
       <input
         ref={fileInputRef}
         style={{ display: 'none' }}

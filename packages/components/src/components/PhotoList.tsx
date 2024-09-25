@@ -3,6 +3,7 @@ import { List, Button, message } from 'antd';
 
 import { ImageLink } from './Links';
 import { downloadImage } from '../utils';
+import { LS_SHOW_DOWNLOAD_BUTTON } from '../constants';
 
 const listGrid = {
   gutter: 16,
@@ -19,6 +20,11 @@ export type PhotoType = {
   imgSrc: string;
   description: string;
 };
+
+const isShow = () =>
+  localStorage.getItem(LS_SHOW_DOWNLOAD_BUTTON) === 'true'
+    ? {}
+    : { display: 'none' };
 
 const renderItem = (item: PhotoType) => (
   <List.Item>
@@ -72,13 +78,15 @@ const PhotoList = ({ photos }: { photos: PhotoType[] }) => {
     <div>
       {contextHolder}
       {renderDup()}
-      <Button
-        onClick={() => {
-          downloadAll(photos.map((p) => p.url));
-        }}
-      >
-        Download All
-      </Button>
+      <div style={isShow()}>
+        <Button
+          onClick={() => {
+            downloadAll(photos.map((p) => p.url));
+          }}
+        >
+          Download All
+        </Button>
+      </div>
       <List grid={listGrid} dataSource={photos} renderItem={renderItem} />
     </div>
   );

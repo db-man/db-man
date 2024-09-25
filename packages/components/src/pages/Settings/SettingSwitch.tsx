@@ -22,7 +22,8 @@ const SettingSwitch: React.FC<SettingSwitchProps> = ({ label, storageKey }) => {
   return (
     <div>
       <Text>{label}: </Text>
-      <Switch checked={checked} onChange={handleChange} /> (key: {storageKey})
+      <Switch checked={checked} onChange={handleChange} /> (key: {storageKey},
+      default: false)
     </div>
   );
 };
