@@ -3,6 +3,7 @@ import { Outlet, useParams } from 'react-router-dom';
 
 import { TableList } from './PageWrapper';
 import { useAppContext } from '../contexts/AppContext';
+import NotFoundDb from '../components/NotFoundDb';
 
 function Database() {
   const params = useParams();
@@ -12,7 +13,10 @@ function Database() {
   if (!params.dbName) return <div>db name is required</div>;
 
   const selectedDb = dbs[params.dbName];
-  if (!selectedDb) return <div>db not found</div>;
+  if (!selectedDb) {
+    // Normally this is because we dont have db schema in localStorage
+    return <NotFoundDb />;
+  }
 
   return (
     <div>
