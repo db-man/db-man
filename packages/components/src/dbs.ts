@@ -65,16 +65,3 @@ export const getTablePrimaryKey = (
 
 export const setDbs = (val: string) =>
   localStorage.setItem(LS_KEY_DBS_SCHEMA, val);
-
-// TODO Maybe in @db-man/github
-// export const getTable = (dbName: string, tableName: string) => {
-//   if (!dbs) return null;
-//   return dbs[dbName].find(({ name }: DbTable) => name === tableName);
-// };
-
-// TODO Maybe in @db-man/github
-// export const isLargeTable = (dbName: string, tableName: string) => {
-//   const table = getTable(dbName, tableName);
-//   if (!table) return false;
-//   return table.large;
-// };
