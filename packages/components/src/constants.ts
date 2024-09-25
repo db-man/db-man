@@ -15,6 +15,9 @@ export const LS_KEY_GITHUB_REPO_NAME = 'dbm_github_repo_name';
 export const LS_KEY_GITHUB_REPO_PATH = 'dbm_github_repo_path';
 export const LS_KEY_GITHUB_REPO_MODES = 'dbm_github_repo_modes';
 export const LS_KEY_DB_CONNECTIONS = 'dbm_db_connections';
+// dbm_is_dark_theme
+export const LS_IS_DARK_THEME = 'dbm_is_dark_theme';
+export const LS_SHOW_DOWNLOAD_BUTTON = 'dbm_show_download_button';
 
 // Table column definitions
 export const COL_UI_PRESETS = 'ui:presets';

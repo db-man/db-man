@@ -5,7 +5,7 @@ import { ConfigProvider, theme } from 'antd';
 import Settings from '../pages/Settings';
 import AppLayout from './AppLayout';
 import Databases from '../types/Databases';
-import { LS_KEY_DBS_SCHEMA } from '../constants';
+import { LS_IS_DARK_THEME, LS_KEY_DBS_SCHEMA } from '../constants';
 import { AppContext } from '../contexts/AppContext';
 
 const { defaultAlgorithm, darkAlgorithm } = theme;
@@ -17,7 +17,7 @@ export default function App() {
     const _dbs = JSON.parse(localStorage.getItem(LS_KEY_DBS_SCHEMA) || '{}');
     setDbs(_dbs);
 
-    if (localStorage.getItem('dbm_is_dark_theme') === 'true') {
+    if (localStorage.getItem(LS_IS_DARK_THEME) === 'true') {
       document.body.style.backgroundColor = 'black';
     }
   }, []);
@@ -29,7 +29,7 @@ export default function App() {
         <ConfigProvider
           theme={{
             algorithm:
-              localStorage.getItem('dbm_is_dark_theme') === 'true'
+              localStorage.getItem(LS_IS_DARK_THEME) === 'true'
                 ? darkAlgorithm
                 : defaultAlgorithm,
           }}

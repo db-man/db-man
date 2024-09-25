@@ -7,6 +7,7 @@ import { darkTheme } from '@uiw/react-json-view/dark';
 import PageContext from '../contexts/page';
 import ReactSimpleCodeEditor from './ReactSimpleCodeEditor';
 import { RowType } from '../types/Data';
+import { LS_IS_DARK_THEME } from '../constants';
 
 // Use `Typography` so can apply dark theme to text
 const { Text } = Typography;
@@ -64,7 +65,7 @@ export default function QueryPage() {
               value={JSON.parse(result.obj)}
               collapsed={1}
               style={
-                localStorage.getItem('dbm_is_dark_theme') === 'true'
+                localStorage.getItem(LS_IS_DARK_THEME) === 'true'
                   ? darkTheme
                   : lightTheme
               }

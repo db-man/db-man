@@ -5,6 +5,7 @@ import { Button } from 'antd';
 import * as types from './types';
 import { PhotoType } from './PhotoList';
 import { downloadImage } from '../utils';
+import { LS_SHOW_DOWNLOAD_BUTTON } from '../constants';
 
 export function Fragment({ children }: { children: React.ReactNode }) {
   return children;
@@ -94,15 +95,22 @@ export function ImageLink({
       </a>
       <br />
       {description}
-      <br />
-      <Button
-        className='dbm-dd-image-link-download-btn'
-        onClick={() => {
-          downloadImage(url2);
-        }}
+      <div
+        style={
+          localStorage.getItem(LS_SHOW_DOWNLOAD_BUTTON) === 'true'
+            ? {}
+            : { display: 'none' }
+        }
       >
-        Download
-      </Button>
+        <Button
+          className='dbm-dd-image-link-download-btn'
+          onClick={() => {
+            downloadImage(url2);
+          }}
+        >
+          Download
+        </Button>
+      </div>
     </div>
   );
 }
