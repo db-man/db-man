@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { List, Button, message } from 'antd';
 
 import { ImageLink } from './Links';
@@ -84,17 +83,5 @@ const PhotoList = ({ photos }: { photos: PhotoType[] }) => {
     </div>
   );
 };
-
-PhotoList.propTypes = {
-  photos: PropTypes.arrayOf(
-    PropTypes.shape({
-      url: PropTypes.string.isRequired,
-      imgSrc: PropTypes.string.isRequired,
-      description: PropTypes.string,
-    })
-  ),
-};
-
-PhotoList.defaultProps = { photos: [] };
 
 export default PhotoList;
