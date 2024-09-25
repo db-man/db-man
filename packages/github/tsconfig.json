@@ -15,5 +15,5 @@
     "strictNullChecks": true
   },
   "exclude": ["node_modules", "**/*.spec.ts"],
-  "include": ["./src/**/*.tsx", "./src/**/*.ts", "src/**/*.test.ts"]
+  "include": ["./src/**/*.ts", "src/**/*.test.ts"]
 }
