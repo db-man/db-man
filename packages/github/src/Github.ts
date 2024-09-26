@@ -35,9 +35,7 @@ export default class Github {
   }
 
   getGitHubUrl(path) {
-    return `https://github.com/${this.LS_KEY_GITHUB_OWNER}/${
-      this.LS_KEY_GITHUB_REPO_NAME
-    }/${path}`;
+    return `https://github.com/${this.LS_KEY_GITHUB_OWNER}/${this.LS_KEY_GITHUB_REPO_NAME}/${path}`;
   }
 
   /**
@@ -51,12 +49,15 @@ export default class Github {
    * @private
    */
   getBlob(sha, signal) {
-    return octokit(this.LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN).request('GET /repos/{owner}/{repo}/git/blobs/{sha}', {
-      owner: this.LS_KEY_GITHUB_OWNER,
-      repo: this.LS_KEY_GITHUB_REPO_NAME,
-      sha,
-      request: { signal },
-    });
+    return octokit(this.LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN).request(
+      'GET /repos/{owner}/{repo}/git/blobs/{sha}',
+      {
+        owner: this.LS_KEY_GITHUB_OWNER,
+        repo: this.LS_KEY_GITHUB_REPO_NAME,
+        sha,
+        request: { signal },
+      }
+    );
   }
 
   /**
@@ -92,10 +93,14 @@ export default class Github {
         let newErr;
         switch (err.status) {
           case 404:
-            newErr = new Error(`Failed to get path: path not found, path: ${path}`);
+            newErr = new Error(
+              `Failed to get path: path not found, path: ${path}`
+            );
             break;
           case 403:
-            newErr = new Error(`Failed to get path: maybe file too large, path: ${path}`);
+            newErr = new Error(
+              `Failed to get path: maybe file too large, path: ${path}`
+            );
             break;
           default:
             newErr = new Error('Unknow error when getting file.');
@@ -162,29 +167,32 @@ export default class Github {
    * @returns {Promise}
    */
   getFileContentAndSha(path: string, signal?: AbortSignal) {
-    return this.getPath(path, signal)
-      .then((data) => {
-        // when path is a dir, data is an array, this is not expected in getFileContentAndSha
-        if (Array.isArray(data)) {
-          throw new Error('getFileContentAndSha failed, res is an array, the path param should be a file, not a dir.');
-        }
-        // when data is not array, but no content in it, this is not expected in getFileContentAndSha (but no idea why this happens)
-        if (!('content' in data)) {
-          throw new Error('getFileContentAndSha failed, res.content is not in res, check the path param.');
-        }
-        let rows = [];
-        if (data.content === '') {
-          // This is a new empty file, maybe just created
-          // TODO may move to GithubDb, because here we assume the file is table data file, so content should be an array, but if it's other file, content may be object or other JSON type.
-          rows = [];
-        } else {
-          rows = JSON.parse(Base64.decode(data.content));
-        }
-        return {
-          content: rows,
-          sha: data.sha,
-        };
-      });
+    return this.getPath(path, signal).then((data) => {
+      // when path is a dir, data is an array, this is not expected in getFileContentAndSha
+      if (Array.isArray(data)) {
+        throw new Error(
+          'getFileContentAndSha failed, res is an array, the path param should be a file, not a dir.'
+        );
+      }
+      // when data is not array, but no content in it, this is not expected in getFileContentAndSha (but no idea why this happens)
+      if (!('content' in data)) {
+        throw new Error(
+          'getFileContentAndSha failed, res.content is not in res, check the path param.'
+        );
+      }
+      let rows = [];
+      if (data.content === '') {
+        // This is a new empty file, maybe just created
+        // TODO may move to GithubDb, because here we assume the file is table data file, so content should be an array, but if it's other file, content may be object or other JSON type.
+        rows = [];
+      } else {
+        rows = JSON.parse(Base64.decode(data.content));
+      }
+      return {
+        content: rows,
+        sha: data.sha,
+      };
+    });
   }
 
   /**
@@ -197,7 +205,9 @@ export default class Github {
   async updateFile(path, content, sha, msg = 'Update file') {
     const contentEncoded = Base64.encode(content);
     try {
-      const { data } = await octokit(this.LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN).rest.repos.createOrUpdateFileContents({
+      const { data } = await octokit(
+        this.LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN
+      ).rest.repos.createOrUpdateFileContents({
         // replace the owner and email with your own details
         owner: this.LS_KEY_GITHUB_OWNER,
         repo: this.LS_KEY_GITHUB_REPO_NAME,
@@ -232,7 +242,9 @@ export default class Github {
   async deleteFile(path, sha) {
     try {
       // https://octokit.github.io/rest.js/v18#repos-delete-file
-      const { data } = await octokit(this.LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN).rest.repos.deleteFile({
+      const { data } = await octokit(
+        this.LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN
+      ).rest.repos.deleteFile({
         owner: this.LS_KEY_GITHUB_OWNER,
         repo: this.LS_KEY_GITHUB_REPO_NAME,
         path,

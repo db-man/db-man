@@ -21,6 +21,7 @@ module.exports = {
     'no-use-before-define': 'off',
     'no-console': 'off',
     'max-len': 'off',
+    'comma-dangle': 'off',
   },
   ignorePatterns: ['babel.config.js'],
 };
