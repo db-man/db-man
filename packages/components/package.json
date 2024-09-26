@@ -16,17 +16,17 @@
   },
   "homepage": "https://github.com/db-man/components#readme",
   "dependencies": {
-    "@ant-design/icons": "^5.3.6",
+    "@ant-design/icons": "^5.5.1",
     "@db-man/github": "^0.1.37",
-    "@uiw/react-json-view": "^2.0.0-alpha.7",
+    "@uiw/react-json-view": "^2.0.0-alpha.27",
     "eslint-plugin-cypress": "^2.15.1",
-    "handlebars": "^4.7.7",
+    "handlebars": "^4.7.8",
     "lodash.debounce": "^4.0.8",
     "prismjs": "^1.29.0",
     "prop-types": "^15.8.1",
-    "react-router": "^6.6.2",
-    "react-router-dom": "^6.9.0",
-    "react-simple-code-editor": "^0.13.1"
+    "react-router": "^6.26.2",
+    "react-router-dom": "^6.26.2",
+    "react-simple-code-editor": "^0.14.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.21.0",

@@ -4,6 +4,7 @@
 
 ```sh
 lerna bootstrap # install all dependencies (npm install)
+npm run dev # start dev env
 lerna run build # build all packages (github+components)
 lerna run dev --scope @db-man/components # start dev env
 lerna run tdd --scope @db-man/components # start TDD
