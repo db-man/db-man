@@ -6,6 +6,7 @@
     "outDir": "dist",
     "module": "commonjs",
     "target": "es6",
+    "lib": ["es2018", "dom"],
     "moduleResolution": "node",
     "types": ["jest"],
     "baseUrl": "./src",
@@ -14,6 +15,6 @@
     },
     "strictNullChecks": true
   },
-  "exclude": ["node_modules", "**/*.spec.ts"],
-  "include": ["./src/**/*.ts", "src/**/*.test.ts"]
+  "exclude": ["node_modules", "**/*.spec.ts", "src/**/*.test.ts"],
+  "include": ["./src/**/*.ts"]
 }

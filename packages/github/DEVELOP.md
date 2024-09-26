@@ -12,6 +12,12 @@ npm i
 npm test -- --watch
 ```
 
+## Build
+
+```
+npm run build
+```
+
 ## Publish (Only for testing)
 
 **Please use `lerna` in root dir to publish the package**
