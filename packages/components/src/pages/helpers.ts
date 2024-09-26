@@ -1,12 +1,19 @@
 import { message } from 'antd';
+
 import * as constants from '../constants';
 import { errMsg } from '../utils';
 import DbTable from '../types/DbTable';
 import Databases from '../types/Databases';
 
-const loadDbsSchemaAsync = async (github: any, githubDb: any, path: string) => {
+// TODO this type should be from @octokit/rest
+type FileOrDir = {
+  name: string;
+};
+
+const loadDbsSchemaAsync = async (github: any, repoPath: string) => {
   // Get all db names in root dir, db name is sub dir name
-  const files = await github.getPath(path);
+  // e.g. files=[{name: 'iam'}]
+  const files: FileOrDir[] = await github.getPath(repoPath);
 
   const dbsSchema: Databases = {
     /**
@@ -14,18 +21,23 @@ const loadDbsSchemaAsync = async (github: any, githubDb: any, path: string) => {
      * - Top Nav title name
      * - Folder name in https://github.com/{user_name}/{repo_name}/tree/main/{path}
      */
-    // dbName: [{ name: "table_name", columns: [] }]
+    // iam: [{ name: "users", columns: [] }]
   };
 
   // Loop get all table schema
   await Promise.all(
     files
       .map(({ name }: { name: string }) => name)
-      .map((dbName: string) =>
-        githubDb.getDbTablesSchemaAsync(dbName).then((tables: DbTable[]) => {
-          dbsSchema[dbName] = tables;
-        })
-      )
+      .map((dbName: string) => {
+        return github
+          .getFileContentAndSha(
+            `${repoPath}/${dbName}/${constants.DB_CFG_FILENAME}`
+          )
+          .then((res: any) => {
+            const tables: DbTable[] = res.content;
+            dbsSchema[dbName] = tables;
+          });
+      })
   );
 
   return dbsSchema;
@@ -71,23 +83,25 @@ const validateDbsSchame = (dbsSchema: Databases) => {
   return errors.length === 0;
 };
 
-const reloadDbsSchemaAsync = async (github: any, githubDb: any) => {
+const reloadDbsSchemaAsync = async (github: any) => {
   message.info('Start loading DBs schema...');
 
-  const path = localStorage.getItem(constants.LS_KEY_GITHUB_REPO_PATH);
-  if (!path) {
+  const repoPath = localStorage.getItem(constants.LS_KEY_GITHUB_REPO_PATH);
+  if (!repoPath) {
     errMsg('Repo path not found in localStorage!');
     return;
   }
 
   let dbsSchema;
   try {
-    dbsSchema = await loadDbsSchemaAsync(github, githubDb, path);
+    dbsSchema = await loadDbsSchemaAsync(github, repoPath);
   } catch (err) {
     errMsg(
       `Failed to get DB schema! Maybe you need to create this file: https://github.com/${localStorage.getItem(
         constants.LS_KEY_GITHUB_OWNER
-      )}/${localStorage.getItem(constants.LS_KEY_GITHUB_REPO_NAME)}/${path}`,
+      )}/${localStorage.getItem(
+        constants.LS_KEY_GITHUB_REPO_NAME
+      )}/${repoPath}`,
       err as Error
     );
     return;

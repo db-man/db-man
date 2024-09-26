@@ -11,6 +11,6 @@ describe('GithubDb', () => {
     });
     const data = await gd.getTableRows('iam', 'users');
     // console.log('GithubDb getTableRows data:', data);
-    expect((data.sha)).not.toBe('');
+    expect(data.sha).not.toBe('');
   });
 });

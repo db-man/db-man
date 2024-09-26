@@ -74,6 +74,7 @@ export default class Github {
   }
 
   /**
+   * TODO maybe function name should be "getFilesInPath"
    * @param {string} path can be a file or a dir
    * @param {*} signal
    * @returns {Promise<File|Files>}

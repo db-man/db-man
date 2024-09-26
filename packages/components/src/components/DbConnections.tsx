@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 
 import { Button, Typography } from 'antd';
-import { GithubDb } from '@db-man/github';
+import { Github } from '@db-man/github';
 
 import * as constants from '../constants';
 import reloadDbsSchemaAsync from '../pages/helpers';
@@ -30,16 +30,13 @@ const DbConnections = ({ storage }: { storage: StorageType }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleDbConnectionEnable = () => {
-    const githubDb = new GithubDb({
+    const github = new Github({
       personalAccessToken:
         storage.get(constants.LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN) || '',
-      repoPath: storage.get(constants.LS_KEY_GITHUB_REPO_PATH) || '',
       owner: storage.get(constants.LS_KEY_GITHUB_OWNER) || '',
       repoName: storage.get(constants.LS_KEY_GITHUB_REPO_NAME) || '',
-      dbsSchema: storage.get(constants.LS_KEY_DBS_SCHEMA) || '',
     });
-    const { github } = githubDb;
-    reloadDbsSchemaAsync(github, githubDb).then(() => {});
+    reloadDbsSchemaAsync(github).then(() => {});
   };
 
   const handleExport = () => {
