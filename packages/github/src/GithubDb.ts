@@ -4,6 +4,32 @@ import Github from './Github';
 
 const DB_CFG_FILENAME = 'dbcfg.json';
 
+/**
+ * @class
+ * @param {string} personalAccessToken
+ * @param {string} repoPath
+ * @param {string} dbsSchema
+ * @param {string} owner
+ * @param {string} repoName
+ * @example
+ * ```js
+ * const dbsSchema = {
+ *  "iam": [
+ *     {
+ *       "name": "users",
+ *       "large": false
+ *     }
+ *   ]
+ * };
+ * const githubDb = new GithubDb({
+ *   personalAccessToken
+ *   repoPath: 'dbs',
+ *   dbsSchema,
+ *   owner: 'ownerName',
+ *   repoName: 'repoName',
+ * });
+ * ```
+ */
 export default class GithubDb {
   LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN: string;
 
