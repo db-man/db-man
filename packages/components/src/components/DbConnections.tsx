@@ -41,7 +41,6 @@ const DbConnections = ({ storage }: { storage: StorageType }) => {
 
   const handleExport = () => {
     const jsonStrData = JSON.stringify({
-      [constants.LS_KEY_DBS_SCHEMA]: storage.get(constants.LS_KEY_DBS_SCHEMA),
       [constants.LS_KEY_DB_CONNECTIONS]: storage.get(
         constants.LS_KEY_DB_CONNECTIONS
       ),
@@ -64,10 +63,6 @@ const DbConnections = ({ storage }: { storage: StorageType }) => {
       const jsonString = e.target?.result as string;
       const parsedData = JSON.parse(jsonString);
 
-      storage.set(
-        constants.LS_KEY_DBS_SCHEMA,
-        parsedData[constants.LS_KEY_DBS_SCHEMA]
-      );
       storage.set(
         constants.LS_KEY_DB_CONNECTIONS,
         parsedData[constants.LS_KEY_DB_CONNECTIONS]
