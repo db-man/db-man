@@ -2,6 +2,12 @@ import { Base64 } from 'js-base64';
 
 import octokit from './octokit';
 
+type GithubContext = {
+  personalAccessToken: string;
+  owner: string;
+  repoName: string;
+};
+
 const botName = 'db-man-bot';
 const committer = {
   name: botName,
@@ -22,11 +28,7 @@ const author = {
  * });
  */
 export default class Github {
-  LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN: string;
-
-  LS_KEY_GITHUB_OWNER: string;
-
-  LS_KEY_GITHUB_REPO_NAME: string;
+  context: GithubContext;
 
   constructor({ personalAccessToken, owner, repoName }) {
     if (personalAccessToken === undefined || personalAccessToken === null) {
@@ -38,13 +40,16 @@ export default class Github {
     if (!repoName) {
       throw new Error('Input repoName is invalid!');
     }
-    this.LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN = personalAccessToken;
-    this.LS_KEY_GITHUB_OWNER = owner;
-    this.LS_KEY_GITHUB_REPO_NAME = repoName;
+
+    this.context = {
+      personalAccessToken,
+      owner,
+      repoName,
+    };
   }
 
   getGitHubUrl(path) {
-    return `https://github.com/${this.LS_KEY_GITHUB_OWNER}/${this.LS_KEY_GITHUB_REPO_NAME}/${path}`;
+    return `https://github.com/${this.context.owner}/${this.context.repoName}/${path}`;
   }
 
   /**
@@ -58,11 +63,11 @@ export default class Github {
    * @private
    */
   getBlob(sha, signal) {
-    return octokit(this.LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN).request(
+    return octokit(this.context.personalAccessToken).request(
       'GET /repos/{owner}/{repo}/git/blobs/{sha}',
       {
-        owner: this.LS_KEY_GITHUB_OWNER,
-        repo: this.LS_KEY_GITHUB_REPO_NAME,
+        owner: this.context.owner,
+        repo: this.context.repoName,
         sha,
         request: { signal },
       }
@@ -92,10 +97,10 @@ export default class Github {
    * @public
    */
   getPath(path: string, signal?: AbortSignal) {
-    return octokit(this.LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN)
+    return octokit(this.context.personalAccessToken)
       .request('GET /repos/{owner}/{repo}/contents/{path}', {
-        owner: this.LS_KEY_GITHUB_OWNER,
-        repo: this.LS_KEY_GITHUB_REPO_NAME,
+        owner: this.context.owner,
+        repo: this.context.repoName,
         path,
         request: { signal },
       })
@@ -128,10 +133,10 @@ export default class Github {
    * @returns {Promise<[err, File|Files]>}
    */
   getPathV2(path: string, signal?: AbortSignal) {
-    return octokit(this.LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN)
+    return octokit(this.context.personalAccessToken)
       .request('GET /repos/{owner}/{repo}/contents/{path}', {
-        owner: this.LS_KEY_GITHUB_OWNER,
-        repo: this.LS_KEY_GITHUB_REPO_NAME,
+        owner: this.context.owner,
+        repo: this.context.repoName,
         path,
         request: { signal },
       })
@@ -218,11 +223,11 @@ export default class Github {
     const contentEncoded = Base64.encode(content);
     try {
       const { data } = await octokit(
-        this.LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN
+        this.context.personalAccessToken
       ).rest.repos.createOrUpdateFileContents({
         // replace the owner and email with your own details
-        owner: this.LS_KEY_GITHUB_OWNER,
-        repo: this.LS_KEY_GITHUB_REPO_NAME,
+        owner: this.context.owner,
+        repo: this.context.repoName,
         path,
         sha,
         message: `[db-man] ${msg}`,
@@ -255,10 +260,10 @@ export default class Github {
     try {
       // https://octokit.github.io/rest.js/v18#repos-delete-file
       const { data } = await octokit(
-        this.LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN
+        this.context.personalAccessToken
       ).rest.repos.deleteFile({
-        owner: this.LS_KEY_GITHUB_OWNER,
-        repo: this.LS_KEY_GITHUB_REPO_NAME,
+        owner: this.context.owner,
+        repo: this.context.repoName,
         path,
         message: '[db-man] delete file',
         sha,
