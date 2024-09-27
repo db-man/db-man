@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 
-import { Button, Typography } from 'antd';
+import { Button, Tooltip, Typography } from 'antd';
 import { Github } from '@db-man/github';
 
 import * as constants from '../constants';
@@ -83,8 +83,12 @@ const DbConnections = ({ storage }: { storage: StorageType }) => {
     <div className='dbm-db-connections'>
       <Title level={2}>Database Connections</Title>
       <EditableTable storage={storage} onEnable={handleDbConnectionEnable} />
-      <Button onClick={handleExport}>Export</Button>{' '}
-      <Button onClick={handleImport}>Import</Button>
+      <Tooltip title='Export the database connection configs to a JSON file.'>
+        <Button onClick={handleExport}>Export</Button>
+      </Tooltip>{' '}
+      <Tooltip title='Import a JSON file to replace all database connection configs'>
+        <Button onClick={handleImport}>Import</Button>
+      </Tooltip>
       {/* This hidden input tag will handle importing config from a JSON file */}
       <input
         ref={fileInputRef}
