@@ -12,6 +12,15 @@ const author = {
   email: 'bot-email',
 };
 
+/**
+ * Usage:
+ * ```js
+ * const github = new Github({
+ *   personalAccessToken: 'your-personal-access-token',
+ *   owner: 'your-github-username',
+ *   repoName: 'your-repo-name',
+ * });
+ */
 export default class Github {
   LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN: string;
 
