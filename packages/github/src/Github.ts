@@ -84,6 +84,8 @@ export default class Github {
 
   /**
    * TODO maybe function name should be "getFilesInPath"
+   * Given path 'dbs/iam', return all files in this path
+   * Given path 'dbs/iam/dbcfg.json', return this file
    * @param {string} path can be a file or a dir
    * @param {*} signal
    * @returns {Promise<File|Files>}
