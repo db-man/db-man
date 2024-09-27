@@ -9,7 +9,7 @@ module.exports = {
   parserOptions: {
     project: './tsconfig.json',
   },
-  plugins: ['@typescript-eslint'],
+  plugins: ['@typescript-eslint', 'jest'],
   extends: [
     'eslint:recommended',
     'plugin:@typescript-eslint/eslint-recommended',
