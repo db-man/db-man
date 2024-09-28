@@ -4,18 +4,21 @@ import {
   splitTableFileToRecordFiles,
   mergeRecordFilesToTableFile,
 } from './utils.mjs';
+import fs from 'fs';
 
-const dir = process.argv[2];
-const opt = process.argv[3];
-const dbTable = process.argv[4]; // Optional, only process this db table
+const opt = process.argv[2];
+const dbTable = process.argv[3]; // Optional, only process this db table
 
 (() => {
-  if (!dir || !opt) {
+  if (!opt) {
     console.error('Invalid params.');
-    console.error('For example, "$ db-man-cli dbs split".');
+    console.error('For example, "$ db-man-cli split".');
     process.exitCode = 1;
     return;
   }
+
+  const dbsJson = fs.readFileSync('dbs.json', 'utf8');
+  const dir = JSON.parse(dbsJson).repoPath;
 
   if (opt === 'split') {
     (async () => {
@@ -27,6 +30,6 @@ const dbTable = process.argv[4]; // Optional, only process this db table
     })();
   } else {
     console.error('Invalid params, should be "split" or "merge".');
-    console.error('For example, "$ db-man-cli dbs split".');
+    console.error('For example, "$ db-man-cli split".');
   }
 })();
