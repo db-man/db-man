@@ -34,8 +34,8 @@
     "ts-jest": "^29.2.5"
   },
   "scripts": {
-    "build:commonjs": "rm -rf dist && babel src --out-dir dist --extensions '.ts,.js' --copy-files --source-maps && tsc",
-    "build:es6": "rm -rf es6 && tsc --declaration false --emitDeclarationOnly false --target es6 --module es6 --outDir es6",
+    "build:commonjs": "./build.sh commonjs",
+    "build:es6": "./build.sh es6",
     "build": "npm run build:commonjs && npm run build:es6",
     "test": "jest --detectOpenHandles",
     "release": "npm test && npm version patch && git push && git push --tags && npm run build && npm publish --access=public"

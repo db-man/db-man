@@ -3,7 +3,7 @@
   "compilerOptions": {
     "declaration": true,
     "emitDeclarationOnly": true,
-    "outDir": "es6",
+    "outDir": "dist",
     "module": "commonjs",
     "target": "es6",
     "lib": ["es2018", "dom"],
