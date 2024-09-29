@@ -16,6 +16,13 @@ lerna run tdd --scope @db-man/components # start TDD
 npm run publish
 ```
 
+### Only publish one package
+
+```sh
+cd packages/github
+TOKEN=ghp_123 npm run release
+```
+
 ## Check outdated
 
 ```sh
