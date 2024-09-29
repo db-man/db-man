@@ -1,18 +1,18 @@
 import React, { useContext } from 'react';
+
+import { Typography } from 'antd';
 import { Link } from 'react-router-dom';
 import { utils } from '@db-man/github';
 
 import * as constants from '../constants';
 import { getUrlParams } from '../utils';
 import PageContext from '../contexts/page';
-import { Typography } from 'antd';
 
 // Use `Typography` so can apply dark theme to text
 const { Text } = Typography;
 
 /**
  * This component depends on page context, so only used in Application/Page
- * TODO `id` in URL is used in this component, so not all pages could use this component
  */
 const NavBar = () => {
   const { dbName, tableName, action, primaryKey, githubDb, columns } =
@@ -39,42 +39,42 @@ const NavBar = () => {
       ));
   };
 
-  const id = getUrlParams()[primaryKey];
+  const primaryKeyVal = getUrlParams()[primaryKey];
   const filter = encodeURIComponent(
     JSON.stringify({
-      [primaryKey]: id,
+      [primaryKey]: primaryKeyVal,
     })
   );
 
   // Only when appModes have "split-table"
-  const aaa = id ? (
+  const githubFileLink = primaryKeyVal ? (
     <a
       title='GitHub File Path'
       href={githubDb?.getGitHubFullPath(
         `${localStorage.getItem(
           constants.LS_KEY_GITHUB_REPO_PATH
-        )}/${dbName}/${tableName}/${utils.validFilename(id)}.json`
+        )}/${dbName}/${tableName}/${utils.validFilename(primaryKeyVal)}.json`
       )}
       target='_blank'
       rel='noreferrer'
     >
-      {`${utils.validFilename(id)}.json`}
+      {`${utils.validFilename(primaryKeyVal)}.json`}
     </a>
   ) : null;
 
   const createLink = (
     <Link to={{ pathname: `/${dbName}/${tableName}/create` }}>Create</Link>
   );
-  // id is primary key value, so it can contain special characters like '#'
+  // primary key value can contain special characters like '#'
   // but for <Link> component, for the search part, '#' is not allowed
-  // so need to encodeURI the id
+  // so need to encodeURI the primary key value
   const updateOrGetLink = (
     <Link
       to={{
         pathname: `/${dbName}/${tableName}/${
           action === 'get' ? 'update' : 'get'
         }`,
-        search: `?${primaryKey}=${encodeURIComponent(id)}`,
+        search: `?${primaryKey}=${encodeURIComponent(primaryKeyVal)}`,
       }}
     >
       {action === 'get' ? 'Update' : 'Get'}
@@ -93,11 +93,8 @@ const NavBar = () => {
 
   return (
     <div className='dbm-nav-bar'>
-      <Text>NavBar:</Text> <span> </span>
-      <span> </span>
       <span>
-        <Text>{tableName}</Text>
-        <Text>(</Text>
+        <Text>Table: {tableName} (</Text>
         <span>{createLink}</span>
         <Text>,</Text>
         <span>{updateOrGetLink}</span>
@@ -107,9 +104,7 @@ const NavBar = () => {
       </span>
       <Text> | </Text>
       <span>
-        <Text>Ref tables</Text>
-        <Text>: </Text>
-        <Text>[</Text>
+        <Text>Ref tables: [</Text>
         <span>{renderReferenceTableLink()}</span>
         <Text>]</Text>
       </span>
@@ -124,24 +119,12 @@ const NavBar = () => {
       >
         {githubDb?.getDataPath(dbName, tableName)}
       </a>
-      {aaa && (
+      {githubFileLink && (
         <>
           <Text>::</Text>
-          {aaa}
+          {githubFileLink}
         </>
       )}
-      {/* (
-        <a
-          title="Commit History"
-          href={githubUtils.getGitHubHistoryPath(
-            githubDb.getDataPath(dbName, tableName),
-          )}
-          target="_blank"
-          rel="noreferrer"
-        >
-          history
-        </a>
-        ) */}
     </div>
   );
 };
