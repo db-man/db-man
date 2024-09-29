@@ -12,5 +12,6 @@
     "url": "https://github.com/db-man/cli/issues"
   },
   "homepage": "https://github.com/db-man/cli#readme",
-  "bin": "./bin/cli.mjs"
+  "bin": "./bin/cli.mjs",
+  "gitHead": "4943ccff075633a097c80072d4dbf0b9a4f753a2"
 }

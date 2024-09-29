@@ -18,7 +18,12 @@ npm test -- --watch
 npm run build
 ```
 
-## Publish (Only for testing)
+## Publish
+
+**Not use it, except reasons:**
+
+- Only for testing
+- Only want to publish this package (because leran will publish all packages)
 
 **Please use `lerna` in root dir to publish the package**
 

@@ -40,5 +40,5 @@
     "test": "jest --detectOpenHandles",
     "release": "npm test && npm version patch && git push && git push --tags && npm run build && npm publish --access=public"
   },
-  "gitHead": "f238ad93cb9e9496bb96b4c14390cf3dcc18d58c"
+  "gitHead": "4943ccff075633a097c80072d4dbf0b9a4f753a2"
 }
