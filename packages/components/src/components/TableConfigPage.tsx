@@ -9,6 +9,7 @@ import PageContext from '../contexts/page';
 import ReactSimpleCodeEditor from './ReactSimpleCodeEditor';
 import {
   DB_CFG_FILENAME,
+  LS_KEY_GITHUB_OWNER,
   LS_KEY_GITHUB_REPO_NAME,
   LS_KEY_GITHUB_REPO_PATH,
   STRING_ARRAY,
@@ -147,7 +148,7 @@ const footer = ({ dbName }: { dbName: string }) =>
         Table column definition:{' '}
         <a
           href={`https://github.com/${localStorage.getItem(
-            'dbm_github_owner'
+            LS_KEY_GITHUB_OWNER
           )}/${localStorage.getItem(
             LS_KEY_GITHUB_REPO_NAME
           )}/blob/main/${localStorage.getItem(

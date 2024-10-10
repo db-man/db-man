@@ -8,7 +8,4 @@ module.exports = {
       // implement node event listeners here
     },
   },
-
-  // Disable video recording
-  video: false,
 };

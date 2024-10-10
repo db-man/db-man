@@ -42,7 +42,10 @@ function EditableCell({
             },
           ]}
         >
-          <Input placeholder={title === 'modes' ? 'split-table' : ''} />
+          <Input
+            className={`dbm-new-connection-editable-cell-title-${title}`}
+            placeholder={title === 'modes' ? 'split-table' : ''}
+          />
         </Form.Item>
       ) : (
         children
@@ -223,6 +226,7 @@ function EditableTable({
         <div>
           Operation{' '}
           <Button
+            className='dbm-create-connection-btn'
             size='small'
             disabled={editingKey !== ''}
             onClick={handleAddRow}
@@ -237,10 +241,11 @@ function EditableTable({
         return editable ? (
           <span>
             <Typography.Link
-              onClick={() => save(record.key)}
+              className='dbm-save-connection-link'
               style={{
                 marginRight: 8,
               }}
+              onClick={() => save(record.key)}
             >
               Save
             </Typography.Link>
@@ -267,7 +272,11 @@ function EditableTable({
                 Delete
               </Button>
             </Popconfirm>
-            <Button type='link' onClick={() => handleEnable(record)}>
+            <Button
+              className='dbm-enable-connection-btn'
+              type='link'
+              onClick={() => handleEnable(record)}
+            >
               Enable
             </Button>
           </span>

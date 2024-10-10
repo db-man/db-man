@@ -10,8 +10,12 @@ npm run tdd
 
 ## Run cypress test
 
+Create GitHub personal access token for `CYPRESS_DBM_TOKEN`.
+In the Cypress source code, will use `Cypress.env('DBM_TOKEN')` to get this token.
+
 ```sh
-npx cypress run
+CYPRESS_DBM_TOKEN=ghp_123 npx cypress run # run all tests
+CYPRESS_DBM_TOKEN=ghp_123 npx cypress open # open cypress GUI for debugging
 ```
 
 ## Publish
