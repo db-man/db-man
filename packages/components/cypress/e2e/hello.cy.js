@@ -40,35 +40,40 @@ describe('hello', () => {
   });
 });
 
-// Custom command to log in
+// Custom command to enable DB connection
 Cypress.Commands.add('enableDbConnection', () => {
-  cy.visit('http://localhost:3000/settings');
+  // Use cy.session() to keep the session and origin between tests
+  // So that we don't need to run step to enable DB connection for every test
+  cy.session([], () => {
+    // Enable DB connection once before all tests and store the DB schema in localStorage
+    cy.visit('http://localhost:3000/settings');
 
-  // add a new connection row
-  cy.get('.dbm-create-connection-btn').click();
-  cy.get('.ant-table-row > :nth-child(1)').should('have.text', '0');
+    // add a new connection row
+    cy.get('.dbm-create-connection-btn').click();
+    cy.get('.ant-table-row > :nth-child(1)').should('have.text', '0');
 
-  // fill in the connection details
-  cy.get('.dbm-new-connection-editable-cell-title-owner').type(ghOwner);
-  cy.get('.dbm-new-connection-editable-cell-title-token').type(ghToken);
-  cy.get('.dbm-new-connection-editable-cell-title-repo').type(ghRepoName);
-  cy.get('.dbm-new-connection-editable-cell-title-path').type(ghRepoPath);
-  cy.get('.dbm-new-connection-editable-cell-title-modes').type(ghRepoModes);
+    // fill in the connection details
+    cy.get('.dbm-new-connection-editable-cell-title-owner').type(ghOwner);
+    cy.get('.dbm-new-connection-editable-cell-title-token').type(ghToken);
+    cy.get('.dbm-new-connection-editable-cell-title-repo').type(ghRepoName);
+    cy.get('.dbm-new-connection-editable-cell-title-path').type(ghRepoPath);
+    cy.get('.dbm-new-connection-editable-cell-title-modes').type(ghRepoModes);
 
-  // save the connection
-  cy.get('.dbm-save-connection-link').click();
-  // load the connection
-  cy.get('.dbm-enable-connection-btn').click();
+    // save the connection
+    cy.get('.dbm-save-connection-link').click();
+    // load the connection
+    cy.get('.dbm-enable-connection-btn').click();
 
-  // Wait for the Ant Design message to appear
-  // wait DOM ready of antd `message.info('Finish loading DBs schema! Will reload window in 3s!');`
-  cy.contains(
-    'div',
-    'Finish loading DBs schema! Will reload window in 3s!'
-  ).should('be.visible');
+    // Wait for the Ant Design message to appear
+    // wait DOM ready of antd `message.info('Finish loading DBs schema! Will reload window in 3s!');`
+    cy.contains(
+      'div',
+      'Finish loading DBs schema! Will reload window in 3s!'
+    ).should('be.visible');
+  });
 });
 
-describe.only('Settings: Setup DB Connection', () => {
+describe('Settings: Setup DB Connection', () => {
   beforeEach(() => {
     cy.visit('http://localhost:3000/settings');
   });
@@ -132,8 +137,8 @@ describe.only('Settings: Setup DB Connection', () => {
   });
 });
 
-describe('DB Table: iam/users ListPage Test', () => {
-  before(() => {
+describe('DB Table: ListPage Test', () => {
+  beforeEach(() => {
     // Enable DB connection once before all tests and store the DB schema in localStorage
     cy.enableDbConnection().then(() => {});
   });
@@ -144,13 +149,6 @@ describe('DB Table: iam/users ListPage Test', () => {
       'have.text',
       'Table View'
     );
-  });
-});
-
-describe('DB Table: iam/roles ListPage Test', () => {
-  before(() => {
-    // Enable DB connection once before all tests and store the DB schema in localStorage
-    cy.enableDbConnection().then(() => {});
   });
 
   it('displays iam/roles by default', () => {
