@@ -22,7 +22,7 @@ export default function ReactSimpleCodeEditor({
         fontSize: '12px',
         height, // '50em' or undefined
         width: '60em',
-        backgroundColor: 'white',
+        // backgroundColor: 'white',
       }}
       value={value}
       highlight={(c) => highlight(c, languages.js)}

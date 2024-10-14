@@ -2,7 +2,7 @@ import React from 'react';
 
 import DbColumn from '../types/DbColumn';
 import Databases from '../types/Databases';
-import { RowType } from '../types/Data';
+import { GithubDbType } from './commonPage';
 
 export interface PageContextType {
   appModes: string[];
@@ -13,54 +13,7 @@ export interface PageContextType {
   columns: DbColumn[];
   primaryKey: string;
   tables: string[];
-  githubDb: {
-    getTableRows: (
-      dbName: string,
-      tableName: string,
-      signal?: AbortSignal
-    ) => Promise<{ content: RowType[]; sha: string }>;
-    updateTableFile: (
-      dbName: string,
-      tableName: string,
-      content: RowType[],
-      tableFileSha: string | null
-    ) => Promise<{
-      commit: {
-        html_url?: string;
-      };
-    }>;
-    // updateTableFile: any;
-    updateRecordFile: (
-      dbName: string,
-      tableName: string,
-      recordId: string,
-      content: RowType,
-      recordFileSha: string | null
-    ) => Promise<{
-      commit: {
-        html_url?: string;
-      };
-    }>;
-    getDataUrl: (dbName: string, tableName: string) => string;
-    getRecordFileContentAndSha: (
-      dbName: string,
-      tableName: string,
-      recordId: string,
-      signal?: AbortSignal
-    ) => Promise<{ content: RowType; sha: string }>;
-    getGitHubFullPath: (path: string) => string;
-    getDataPath: (dbName: string, tableName: string) => string;
-    deleteRecordFile: (
-      dbName: string,
-      tableName: string,
-      recordId: string,
-      recordFileSha: string | null
-    ) => Promise<{
-      commit: {
-        html_url?: string;
-      };
-    }>;
-  } | null;
+  githubDb: GithubDbType | null;
 }
 
 // Store all page info, include db, table, and columns

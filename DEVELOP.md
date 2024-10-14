@@ -62,6 +62,11 @@ lrwxr-xr-x  1 chenyang  staff    19B Aug 10 23:30 components -> ../../../compone
 
 Root cause: https://stackoverflow.com/questions/44114436/the-create-react-app-imports-restriction-outside-of-src-directory
 
+## TODO
+
+- Feature: Show GitHub Actions pipeline status in the db-man page, so that we can know the latest status of the pipeline.
+- Bug: When updating a record's primary key, a new record will be created, but the old record will be not changed.
+
 ## References
 
 - https://github.com/airbnb/visx/blob/master/packages/visx-axis/package.json

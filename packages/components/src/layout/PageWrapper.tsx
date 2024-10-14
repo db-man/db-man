@@ -50,6 +50,7 @@ export function ActionList({
 
 /**
  * To render list/create/update page for `/db_name/table_name.json`
+ * TODO: Change name to DbTablePageWrapper, so it's more clear that this is not a common page wrapper
  */
 const PageWrapper = (props: {
   dbName?: string;
