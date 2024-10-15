@@ -4,8 +4,8 @@ import { render, screen, act /* waitFor, */ } from '@testing-library/react';
 // import { GithubDb } from '@db-man/github';
 
 // import * as constants from '../constants';
-import { setDbs } from '../dbs';
 import PageWrapper from './PageWrapper';
+import { LS_KEY_DBS_SCHEMA } from '../constants';
 
 // jest.mock('@db-man/github');
 
@@ -55,7 +55,7 @@ describe.skip('PageWrapper', () => {
     // Object.getPrototypeOf(window.localStorage).setItem = jest.fn();
 
     // Prepare db schema in localStorage
-    setDbs(JSON.stringify(dbsSchema));
+    localStorage.setItem(LS_KEY_DBS_SCHEMA, JSON.stringify(dbsSchema));
 
     render(
       <BrowserRouter>
@@ -104,7 +104,7 @@ describe.skip('PageWrapper', () => {
     // githubDb.getTableRows.mockResolvedValue({ content: [{ userId: '123' }] });
 
     // Prepare db schema in localStorage
-    setDbs(JSON.stringify(dbsSchema));
+    localStorage.setItem(LS_KEY_DBS_SCHEMA, JSON.stringify(dbsSchema));
 
     // eslint-disable-next-line testing-library/no-unnecessary-act
     act(() => {

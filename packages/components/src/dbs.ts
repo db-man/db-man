@@ -62,6 +62,3 @@ export const getTablePrimaryKey = (
 
   return getPrimaryKey(foundTable.columns);
 };
-
-export const setDbs = (val: string) =>
-  localStorage.setItem(LS_KEY_DBS_SCHEMA, val);
