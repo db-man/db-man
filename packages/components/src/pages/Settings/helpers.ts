@@ -1,8 +1,8 @@
 import { message } from 'antd';
 import { types } from '@db-man/github';
 
-import * as constants from '../constants';
-import { errMsg } from '../utils';
+import * as constants from '../../constants';
+import { errMsg } from '../../utils';
 
 // TODO this type should be from @octokit/rest
 type FileOrDir = {

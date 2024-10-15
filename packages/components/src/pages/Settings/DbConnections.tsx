@@ -1,10 +1,10 @@
 import React, { useRef } from 'react';
 
-import { Button, Tooltip, Typography } from 'antd';
 import { Github } from '@db-man/github';
+import { Button, Tooltip, Typography } from 'antd';
 
-import * as constants from '../constants';
-import reloadDbsSchemaAsync from '../pages/helpers';
+import * as constants from '../../constants';
+import reloadDbsSchemaAsync from './helpers';
 import EditableTable from './EditableTable';
 
 // Use `Typography` so can apply dark theme to text

@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Typography } from 'antd';
 
-import DbConnections from '../../components/DbConnections';
+import DbConnections from './DbConnections';
 import useTitle from '../../hooks/useTitle';
 import SettingSwitch from './SettingSwitch';
 import { LS_IS_DARK_THEME, LS_SHOW_DOWNLOAD_BUTTON } from '../../constants';
