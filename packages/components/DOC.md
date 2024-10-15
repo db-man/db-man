@@ -55,7 +55,7 @@ An example:
 
 ## Column definition
 
-See `src/types/Column.ts`
+See `src/types/DbColumn.ts`
 
 An example:
 
@@ -74,11 +74,11 @@ An example:
 
 ### `type` (Required)
 
-See `src/types/Column.ts::DbColumnType`
+See `src/types/DbColumn.ts::DbColumnType`
 
 ### `primary`
 
-See `src/types/Column.ts`
+See `src/types/DbColumn.ts`
 
 ### `ui:listPage:isFilter`
 
@@ -86,15 +86,15 @@ TODO add description here
 
 ### `ui:createUpdatePage:placeholder`
 
-See `src/types/Column.ts::ColumnPlaceholder`
+See `src/types/DbColumn.ts::ColumnPlaceholder`
 
 ### `ui:createUpdatePage:enum`
 
-See `src/types/Column.ts::RadioGroupUiTypeEnum`
+See `src/types/DbColumn.ts::RadioGroupUiTypeEnum`
 
 ### `ui:presets`
 
-See `src/types/Column.ts::Column`
+See `src/types/DbColumn.ts::Column`
 
 ### `tableProps`
 

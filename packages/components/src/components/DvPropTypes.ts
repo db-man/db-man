@@ -54,7 +54,7 @@ const ddType = PropTypes.arrayOf(
   }
 );
 
-// See also: UiType in src/types/Column.ts
+// See also: UiType in src/types/DbColumn.ts
 const uiType = PropTypes.oneOfType([
   PropTypes.string, // e.g. "Link"
   ddType, // e.g. ["Link", "https://github.com/{{record.user}}/{{record.repo}}"]
