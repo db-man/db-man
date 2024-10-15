@@ -21,6 +21,7 @@ When a database is set `split-table`, when update a table record, will only upda
 
 ## Database structure
 
+- dbs.json - @db-man/cli will use this file to find which dir contains db files (Only need this file in split-table mode)
 - dbs/iam/dbcfg.json All tables in this database, and all columns in each table
 - dbs/iam/users.data.json Table data file
 - dbs/iam/users/\*.json Table record files. These files are split from `users.data.json` file. (Only in `split-table` mode)
