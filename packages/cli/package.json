@@ -1,6 +1,6 @@
 {
   "name": "@db-man/cli",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "CLI for db-man",
   "repository": {
     "type": "git",
