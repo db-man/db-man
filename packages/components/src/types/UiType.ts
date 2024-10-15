@@ -25,6 +25,12 @@ export type GetPageUiType = RenderArgs;
 
 /**
  * If is 'HIDE', the column will not be shown on the list page.
+ * ```json
+ * {
+ *   "id": "product_id",
+ *   "type:listPage": "HIDE"
+ * }
+ * ```
  */
 export type ListPageUiType = RenderArgs | 'HIDE';
 
@@ -32,5 +38,25 @@ export type ListPageRandomViewUiType = RenderArgs;
 
 type RenderFuncName = string;
 type RenderFuncTpl = string;
-// e.g. "Link" or ["Link", "{{record.url}}"]
+/**
+ * Custom UI component
+ *
+ * For example: "Link" or ["Link", "{{record.url}}"]
+ *
+ * Another example: on list page, choose the UI component to use for this column.
+ *
+ * Below is an example of using `ImageLink` component. The string after "ImageLink" is a template (Handlebars).
+ * It will transform the `record` which passing from antd `Table` component, into a props object like `{url:'',imgSrc:''}`.
+ * This props will pass to `ImageLink` component.
+ *
+ * ```json
+ * {
+ *   "id": "product_id",
+ *   "type:listPage": [
+ *     "ImageLink",
+ *     "{\"url\":\"https://brickset.com/{{record.product_id}}-1\",\"imgSrc\":\"https://img.brickset.com/{{record.product_id}}-1.jpg\"}"
+ *   ]
+ * }
+ * ```
+ */
 export type RenderArgs = string | [RenderFuncName, RenderFuncTpl];

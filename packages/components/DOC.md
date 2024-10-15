@@ -110,34 +110,7 @@ TODO add description here
 
 ### `type:listPage`
 
-#### Hide this column
-
-Set `HIDE` will hide this column in table.
-
-```json
-{
-  "id": "product_id",
-  "type:listPage": "HIDE"
-}
-```
-
-#### Custom UI component
-
-On list page, choose the UI component to use for this column.
-
-Below is an example of using `ImageLink` component. The string after "ImageLink" is a template (Handlebars).
-It will transform the `record` which passing from antd `Table` component, into a props object like `{url:'',imgSrc:''}`.
-This props will pass to `ImageLink` component.
-
-```json
-{
-  "id": "product_id",
-  "type:listPage": [
-    "ImageLink",
-    "{\"url\":\"https://brickset.com/{{record.product_id}}-1\",\"imgSrc\":\"https://img.brickset.com/{{record.product_id}}-1.jpg\"}"
-  ]
-}
-```
+See `src/types/DbColumn.ts::DbColumnExtendsUiType`
 
 ### `ui:listPage:randomView`
 
