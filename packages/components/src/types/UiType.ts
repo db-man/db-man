@@ -31,6 +31,7 @@ export type GetPageUiType = RenderArgs;
  *   "type:listPage": "HIDE"
  * }
  * ```
+ * @example https://github.com/db-man/split-table-db/blob/main/dbs/iam/dbcfg.json (table: users, column: notes)
  */
 export type ListPageUiType = RenderArgs | 'HIDE';
 
@@ -39,7 +40,7 @@ export type ListPageRandomViewUiType = RenderArgs;
 type RenderFuncName = string;
 type RenderFuncTpl = string;
 /**
- * Custom UI component
+ * Use `RenderArgs` to custom UI component
  *
  * For example: "Link" or ["Link", "{{record.url}}"]
  *
@@ -58,5 +59,6 @@ type RenderFuncTpl = string;
  *   ]
  * }
  * ```
+ * @example https://github.com/db-man/split-table-db/blob/main/dbs/iam/dbcfg.json (table: users, column: userId)
  */
 export type RenderArgs = string | [RenderFuncName, RenderFuncTpl];
