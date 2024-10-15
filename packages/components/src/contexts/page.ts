@@ -1,12 +1,13 @@
 import React from 'react';
 
+import { types } from '@db-man/github';
+
 import DbColumn from '../types/DbColumn';
-import Databases from '../types/Databases';
 import { GithubDbType } from './commonPage';
 
 export interface PageContextType {
   appModes: string[];
-  dbs?: Databases;
+  dbs?: types.DatabaseMap;
   dbName: string;
   tableName: string;
   action: string;

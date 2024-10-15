@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
+
+import { UserOutlined } from '@ant-design/icons';
+import { Menu } from 'antd';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { Menu } from 'antd';
-import { UserOutlined } from '@ant-design/icons';
-import Databases from '../types/Databases';
+
 import { useAppContext } from '../contexts/AppContext';
 
 interface LeftSideMenuProps {
@@ -17,12 +18,14 @@ const LeftSideMenu: React.FC<LeftSideMenuProps> = ({
   tableName,
   action,
 }) => {
-  const { dbs }: { dbs: Databases } = useAppContext();
+  const { getTablesByDbName } = useAppContext();
 
   const [openKeys, setOpenKeys] = useState<string[]>(() => {
     // if table name not exist, then collapse all menus
     // if table name exist, then expand the menu of this table
-    const table = dbs[dbName].find(({ name }) => name === tableName);
+    const table = getTablesByDbName(dbName).find(
+      ({ name }) => name === tableName
+    );
     if (!table) {
       return [];
     }
@@ -40,7 +43,7 @@ const LeftSideMenu: React.FC<LeftSideMenuProps> = ({
       openKeys={openKeys}
       style={{ height: '100%', borderRight: 0 }}
       onOpenChange={handleOpenChange}
-      items={dbs[dbName].map(({ name: tName }) => ({
+      items={getTablesByDbName(dbName).map(({ name: tName }) => ({
         key: tName,
         label: tName,
         icon: <UserOutlined />,

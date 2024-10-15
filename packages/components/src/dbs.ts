@@ -22,7 +22,7 @@ export const getTablesByDbName = (dbName = '') => {
   const keyVal = localStorage.getItem(LS_KEY_DBS_SCHEMA);
   if (!keyVal) return [];
   const dbs2 = JSON.parse(localStorage.getItem(LS_KEY_DBS_SCHEMA) || `{}`);
-  return dbs2[dbName] || [];
+  return dbs2[dbName].tables || [];
 };
 
 export const getColumns = ({

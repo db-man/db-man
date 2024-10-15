@@ -15,9 +15,9 @@ import { actionToComponentMapping } from '../pages';
 const { Provider } = PageContext;
 
 export function TableList({ dbName }: { dbName: string }) {
-  const { dbs } = useAppContext();
+  const { dbs, getTablesByDbName } = useAppContext();
   if (!dbs) return null;
-  const tablesOfSelectedDb = dbs[dbName];
+  const tablesOfSelectedDb = getTablesByDbName(dbName);
   return (
     <div>
       {tablesOfSelectedDb.map(({ name: tName }) => (
@@ -114,6 +114,8 @@ const PageWrapper = (props: {
 
       if (offlineDbSchemaStr !== onlineDbSchemaStr) {
         console.warn('Offline and online schema are different!');
+        console.warn('offlineDbSchema:', offlineDbSchema);
+        console.warn('onlineDbSchema:', onlineDbSchema);
         message.warning(
           <span>
             Offline and online schema are different!{' '}

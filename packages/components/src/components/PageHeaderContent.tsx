@@ -18,7 +18,7 @@ const withRouter = (Component: any) => {
 };
 function PageHeaderContent(props: PropsType) {
   const { params } = props;
-  const { dbs } = useAppContext();
+  const { dbs, getTablesByDbName } = useAppContext();
 
   if (!dbs) {
     return null;
@@ -42,7 +42,7 @@ function PageHeaderContent(props: PropsType) {
               key: dbName,
               label: (
                 <Link to={`/${dbName}`}>
-                  {dbName}({dbs[dbName].length})
+                  {dbName}({getTablesByDbName(dbName).length})
                 </Link>
               ),
             })),

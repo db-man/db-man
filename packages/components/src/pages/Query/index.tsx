@@ -24,7 +24,7 @@ return rolesUserCountRow;
 `;
 
 export default function QueryPage() {
-  const { dbs } = useAppContext();
+  const { dbs, getTablesByDbName } = useAppContext();
   const { githubDb } = useContext(CommonPageContext);
   const [selectedDbTableNames, setSelectedDbTableNames] = React.useState<
     string[]
@@ -44,7 +44,7 @@ export default function QueryPage() {
     title: dbName,
     value: dbName,
     key: dbName,
-    children: dbs[dbName].map((table) => ({
+    children: getTablesByDbName(dbName).map((table) => ({
       title: table.name,
       value: `${dbName}/${table.name}`,
       key: `${dbName}/${table.name}`,

@@ -23,7 +23,7 @@ npm run build
 **Not use it, except reasons:**
 
 - Only for testing
-- Only want to publish this package (because leran will publish all packages)
+- Only want to publish this package except other packages like `@db-man/components` (because leran will publish all packages)
 
 **Please use `lerna` in root dir to publish the package**
 

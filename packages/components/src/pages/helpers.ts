@@ -1,9 +1,8 @@
 import { message } from 'antd';
+import { types } from '@db-man/github';
 
 import * as constants from '../constants';
 import { errMsg } from '../utils';
-import DbTable from '../types/DbTable';
-import Databases from '../types/Databases';
 
 // TODO this type should be from @octokit/rest
 type FileOrDir = {
@@ -15,13 +14,13 @@ const loadDbsSchemaAsync = async (github: any, repoPath: string) => {
   // e.g. files=[{name: 'iam'}]
   const files: FileOrDir[] = await github.getPath(repoPath);
 
-  const dbsSchema: Databases = {
+  const dbsSchema: types.DatabaseMap = {
     /**
      * key must be:
      * - Top Nav title name
      * - Folder name in https://github.com/{user_name}/{repo_name}/tree/main/{path}
      */
-    // iam: [{ name: "users", columns: [] }]
+    // iam: {name: 'iam', description: 'iam desc', tables: [{ name: "users", columns: [] }]},
   };
 
   // Loop get all table schema
@@ -34,8 +33,8 @@ const loadDbsSchemaAsync = async (github: any, repoPath: string) => {
             `${repoPath}/${dbName}/${constants.DB_CFG_FILENAME}`
           )
           .then((res: any) => {
-            const tables: DbTable[] = res.content.tables;
-            dbsSchema[dbName] = tables;
+            const databaseSchema: types.DatabaseSchema = res.content;
+            dbsSchema[dbName] = databaseSchema;
           });
       })
   );
@@ -43,10 +42,17 @@ const loadDbsSchemaAsync = async (github: any, repoPath: string) => {
   return dbsSchema;
 };
 
-const validateDbsSchame = (dbsSchema: Databases) => {
+const validateDbsSchame = (dbsSchema: types.DatabaseMap) => {
   const errors: string[] = [];
   Object.keys(dbsSchema).forEach((dbName) => {
-    const tables = dbsSchema[dbName];
+    const dbSchema = dbsSchema[dbName];
+    if (!dbSchema.name) {
+      errors.push(`Missing database name, dbName:${dbName}`);
+    }
+    if (!dbSchema.description) {
+      errors.push(`Missing database description, dbName:${dbName}`);
+    }
+    const tables = dbSchema.tables;
     tables.forEach((table, index) => {
       if (!table.name) {
         errors.push(`Missing table name, dbName:${dbName}, index:${index}`);

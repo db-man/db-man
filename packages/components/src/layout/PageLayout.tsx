@@ -1,17 +1,18 @@
 import React from 'react';
-import { Outlet, useParams } from 'react-router-dom';
+
+import { types } from '@db-man/github';
 import { Layout } from 'antd';
+import { Outlet, useParams } from 'react-router-dom';
 
 import BreadcrumbWrapper from './BreadcrumbWrapper';
 import LeftSideMenu from '../components/LeftSideMenu';
 import PageHeaderContent from '../components/PageHeaderContent';
 import { useAppContext } from '../contexts/AppContext';
-import Databases from '../types/Databases';
 
 const { Header, Content, Sider } = Layout;
 
 export default function PageLayout() {
-  const { dbs }: { dbs: Databases } = useAppContext();
+  const { dbs }: { dbs: types.DatabaseMap } = useAppContext();
   const { dbName, tableName, action } = useParams();
   return (
     <Layout>

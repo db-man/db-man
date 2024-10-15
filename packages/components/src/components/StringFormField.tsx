@@ -109,7 +109,7 @@ export default function StringFormField(props: StringFormFieldProps) {
       <PresetsButtons column={column} onChange={handleChange} />{' '}
       <RefTableLink
         column={column}
-        tables={appCtx.dbs[pageCtx.dbName]}
+        tables={appCtx.getTablesByDbName(pageCtx.dbName)}
         dbName={pageCtx.dbName}
         value={value}
       />

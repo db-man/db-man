@@ -65,7 +65,7 @@ const Form: React.FC<FormProps> = (props) => {
   const { showDelete = true } = props;
 
   const pageCtx = useContext(PageContext);
-  const { dbs } = useAppContext();
+  const { getTablesByDbName } = useAppContext();
 
   const [formValues, setFormValues] = useState({
     ...props.defaultValues,
@@ -261,7 +261,7 @@ const Form: React.FC<FormProps> = (props) => {
           <b>{column.name}</b>:{' '}
           <RefTableLink
             dbName={pageCtx.dbName}
-            tables={dbs[pageCtx.dbName]}
+            tables={getTablesByDbName(pageCtx.dbName)}
             value={formValues[column.id]}
             column={column}
           />

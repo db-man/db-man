@@ -15,7 +15,7 @@ export default function RefTableLinks({
   value: string | string[] | null;
   column: DbColumn;
 }) {
-  const { dbs } = useAppContext();
+  const { getTablesByDbName } = useAppContext();
   const { dbName } = useContext(PageContext);
   // val can be "123" or ["123", "456"]
   let ids = [];
@@ -24,7 +24,7 @@ export default function RefTableLinks({
   } else {
     ids = value === null ? [] : [value];
   }
-  const foundRefTable = dbs[dbName].find(
+  const foundRefTable = getTablesByDbName(dbName).find(
     (tb) => tb.name === column.referenceTable
   );
   if (!foundRefTable) {

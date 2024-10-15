@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter } from 'react-router-dom';
+
+import { types } from '@db-man/github';
 import { ConfigProvider, theme } from 'antd';
+import { BrowserRouter } from 'react-router-dom';
 
 import Settings from '../pages/Settings';
 import AppLayout from './AppLayout';
-import Databases from '../types/Databases';
 import { LS_IS_DARK_THEME, LS_KEY_DBS_SCHEMA } from '../constants';
 import { AppContext } from '../contexts/AppContext';
 
 const { defaultAlgorithm, darkAlgorithm } = theme;
 
 export default function App() {
-  const [dbs, setDbs] = useState<Databases>({});
+  const [dbs, setDbs] = useState<types.DatabaseMap>({});
 
   useEffect(() => {
     const _dbs = JSON.parse(localStorage.getItem(LS_KEY_DBS_SCHEMA) || '{}');
@@ -24,7 +25,14 @@ export default function App() {
 
   if (!dbs) return <Settings />;
   return (
-    <AppContext.Provider value={{ dbs }}>
+    <AppContext.Provider
+      value={{
+        dbs,
+        getTablesByDbName: (dbName: string) => {
+          return dbs[dbName].tables || [];
+        },
+      }}
+    >
       <BrowserRouter>
         <ConfigProvider
           theme={{

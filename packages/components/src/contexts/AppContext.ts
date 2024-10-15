@@ -1,8 +1,10 @@
 import React from 'react';
-import Databases from '../types/Databases';
+
+import { types } from '@db-man/github';
 
 export interface AppContextProps {
-  dbs: Databases;
+  dbs: types.DatabaseMap;
+  getTablesByDbName: (dbName: string) => types.DbTable[];
 }
 
 export const AppContext = React.createContext<AppContextProps | null>(null);

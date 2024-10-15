@@ -25,7 +25,7 @@ const FieldWrapperForDetailPage = ({
   children,
 }: FieldWrapperProps) => {
   const { dbName } = useContext(PageContext);
-  const { dbs } = useAppContext();
+  const { getTablesByDbName } = useAppContext();
   const typeClassName =
     column.type === constants.STRING_ARRAY
       ? 'dbm-string-array-form-field'
@@ -47,7 +47,7 @@ const FieldWrapperForDetailPage = ({
         {column.referenceTable && typeof value === 'string' && (
           <RefTableLink
             dbName={dbName}
-            tables={dbs[dbName]}
+            tables={getTablesByDbName(dbName)}
             value={value}
             column={column}
           />

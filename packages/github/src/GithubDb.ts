@@ -1,4 +1,4 @@
-import { Database } from './types';
+import { DatabaseMap } from './types';
 import { getDataFileName, getRecordFileName } from './utils';
 import Github from './Github';
 
@@ -39,7 +39,7 @@ export default class GithubDb {
 
   LS_KEY_GITHUB_REPO_NAME: string;
 
-  dbs: Database;
+  dbs: DatabaseMap;
 
   github: Github;
 
@@ -139,7 +139,7 @@ export default class GithubDb {
 
   async getDbTablesSchemaAsync(dbName) {
     const { content } = await this.github.getFileContentAndSha(
-      this.getDbTableColDefPath(dbName) // eslint-disable-line @typescript-eslint/comma-dangle
+      this.getDbTableColDefPath(dbName)
     );
     return content;
   }
@@ -153,7 +153,7 @@ export default class GithubDb {
     if (!this.dbs || !this.dbs[dbName]) {
       throw new Error('this.dbs is invalid!');
     }
-    return this.dbs[dbName].find(({ name }) => name === tableName);
+    return this.dbs[dbName].tables.find(({ name }) => name === tableName);
   }
 
   isLargeTable(dbName, tableName) {

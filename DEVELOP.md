@@ -34,8 +34,9 @@ npm outdated
 After @db-man/github changed source code, will need this affects @db-man/components.
 
 ```sh
-lerna run build --scope @db-man/github # build ts to js (in dist dir)
-lerna bootstrap # install the changed @db-man/github dependency
+npx lerna run build --scope @db-man/github # build ts to js (in dist dir)
+npx lerna bootstrap # install the changed @db-man/github dependency
+rm -rf packages/components/node_modules/.cache # remove create-react-app cache
 ```
 
 ## Issue 1

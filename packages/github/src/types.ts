@@ -50,6 +50,13 @@ export interface DbTable {
   large: boolean;
 }
 
+// the structure defined in dbcfg.json
+export type DatabaseSchema = {
+  name: string;
+  description: string;
+  tables: DbTable[];
+};
+
 /**
  * The database object.
  * For example, the following is a database object with two tables: users and posts.
@@ -64,4 +71,4 @@ export interface DbTable {
  *  "posts": [...]
  * }
  */
-export type Database = Record<string, DbTable[]>;
+export type DatabaseMap = Record<string, DatabaseSchema>;

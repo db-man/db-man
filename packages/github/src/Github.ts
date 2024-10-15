@@ -81,10 +81,14 @@ export default class Github {
    * @returns
    */
   getBlobContentAndSha(sha, signal) {
-    return this.getBlob(sha, signal).then((response) => ({
-      content: JSON.parse(Base64.decode(response.data.content)),
-      sha: response.data.sha,
-    }));
+    return this.getBlob(sha, signal).then((response) => {
+      const obj = JSON.parse(Base64.decode(response.data.content));
+      console.debug('@db-man/github getBlobContentAndSha res:', obj);
+      return {
+        content: obj,
+        sha: response.data.sha,
+      };
+    });
   }
 
   /**
@@ -197,6 +201,7 @@ export default class Github {
           'getFileContentAndSha failed, res.content is not in res, check the path param.'
         );
       }
+      // TODO: only in GithubDB we have database concept, so in Gitub.ts, we dont use rows concept, consider to remove it to `content`
       let rows = [];
       if (data.content === '') {
         // This is a new empty file, maybe just created
@@ -204,6 +209,7 @@ export default class Github {
         rows = [];
       } else {
         rows = JSON.parse(Base64.decode(data.content));
+        console.debug('@db-man/github getFileContentAndSha res:', rows);
       }
       return {
         content: rows,
