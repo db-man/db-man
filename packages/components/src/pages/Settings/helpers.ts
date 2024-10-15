@@ -92,11 +92,18 @@ const validateDbsSchame = (dbsSchema: types.DatabaseMap) => {
 const reloadDbsSchemaAsync = async (github: any) => {
   message.info('Start loading DBs schema...');
 
-  const repoPath = localStorage.getItem(constants.LS_KEY_GITHUB_REPO_PATH);
+  // get repo path from dbs.json in repo root dir
+  // in this file will tell where to find all db files
+  // TODO: test this with non split-table mode
+  const res = await github.getFileContentAndSha(constants.DBS_CFG_FILENAME);
+
+  const repoPath = res.content.repoPath;
   if (!repoPath) {
-    errMsg('Repo path not found in localStorage!');
+    errMsg('Repo path not found in dbs.json!');
     return;
   }
+
+  localStorage.setItem(constants.LS_KEY_GITHUB_REPO_PATH, repoPath);
 
   let dbsSchema;
   try {

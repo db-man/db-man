@@ -12,10 +12,10 @@ localStorage.setItem('dbm_is_dark_theme', 'true');
 
 ## Database connections
 
-| key | owner  | token | repo           | path | modes       |
-| --- | ------ | ----- | -------------- | ---- | ----------- |
-| 1   | db-man | ...   | db             | dbs  |             |
-| 2   | db-man | ...   | split-table-db | dbs  | split-table |
+| key | owner  | token | repo           | modes       |
+| --- | ------ | ----- | -------------- | ----------- |
+| 1   | db-man | ...   | db             |             |
+| 2   | db-man | ...   | split-table-db | split-table |
 
 When a database is set `split-table`, when update a table record, will only update the table record file, not the whole table file.
 

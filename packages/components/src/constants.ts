@@ -27,4 +27,5 @@ export const TYPE_GET_PAGE = 'type:getPage';
 export const TYPE_LIST_PAGE = 'type:listPage';
 export const TYPE_CREATE_UPDATE_PAGE = 'type:createUpdatePage';
 
+export const DBS_CFG_FILENAME = 'dbs.json';
 export const DB_CFG_FILENAME = 'dbcfg.json';

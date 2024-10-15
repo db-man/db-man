@@ -56,7 +56,6 @@ Cypress.Commands.add('enableDbConnection', () => {
     cy.get('.dbm-new-connection-editable-cell-title-owner').type(ghOwner);
     cy.get('.dbm-new-connection-editable-cell-title-token').type(ghToken);
     cy.get('.dbm-new-connection-editable-cell-title-repo').type(ghRepoName);
-    cy.get('.dbm-new-connection-editable-cell-title-path').type(ghRepoPath);
     cy.get('.dbm-new-connection-editable-cell-title-modes').type(ghRepoModes);
 
     // save the connection
@@ -91,7 +90,6 @@ describe('Settings: Setup DB Connection', () => {
     cy.get('.dbm-new-connection-editable-cell-title-owner').type(ghOwner);
     cy.get('.dbm-new-connection-editable-cell-title-token').type(ghToken);
     cy.get('.dbm-new-connection-editable-cell-title-repo').type(ghRepoName);
-    cy.get('.dbm-new-connection-editable-cell-title-path').type(ghRepoPath);
     cy.get('.dbm-new-connection-editable-cell-title-modes').type(ghRepoModes);
 
     // save the connection
@@ -109,7 +107,6 @@ describe('Settings: Setup DB Connection', () => {
         owner: ghOwner,
         token: ghToken,
         repo: ghRepoName,
-        path: ghRepoPath,
         modes: ghRepoModes,
       });
 
@@ -117,7 +114,6 @@ describe('Settings: Setup DB Connection', () => {
       expect(ls.getItem(LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN)).to.equal(ghToken);
       expect(ls.getItem(LS_KEY_GITHUB_REPO_MODES)).to.equal(ghRepoModes);
       expect(ls.getItem(LS_KEY_GITHUB_REPO_NAME)).to.equal(ghRepoName);
-      expect(ls.getItem(LS_KEY_GITHUB_REPO_PATH)).to.equal(ghRepoPath);
     });
 
     // Wait for the Ant Design message to appear
@@ -129,6 +125,8 @@ describe('Settings: Setup DB Connection', () => {
 
     // check local storage
     cy.window().then((window) => {
+      const ls = window.localStorage;
+      expect(ls.getItem(LS_KEY_GITHUB_REPO_PATH)).to.equal(ghRepoPath);
       const dbsSchema = JSON.parse(
         window.localStorage.getItem(LS_KEY_DBS_SCHEMA)
       );

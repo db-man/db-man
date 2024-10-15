@@ -86,7 +86,6 @@ function EditableTable({
       owner: '',
       token: '',
       repo: '',
-      path: '',
       modes: '',
     };
     newData.push({
@@ -105,7 +104,6 @@ function EditableTable({
       owner: '',
       token: '',
       repo: '',
-      path: '',
       modes: '',
       ...record,
     });
@@ -171,7 +169,6 @@ function EditableTable({
     storage.set(constants.LS_KEY_GITHUB_OWNER, record.owner);
     storage.set(constants.LS_KEY_GITHUB_REPO_NAME, record.repo);
     storage.set(constants.LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN, record.token);
-    storage.set(constants.LS_KEY_GITHUB_REPO_PATH, record.path);
     storage.set(constants.LS_KEY_GITHUB_REPO_MODES, record.modes);
     onEnable();
   };
@@ -207,12 +204,6 @@ function EditableTable({
     {
       title: 'repo',
       dataIndex: 'repo',
-      width: '10%',
-      editable: true,
-    },
-    {
-      title: 'path',
-      dataIndex: 'path',
       width: '10%',
       editable: true,
     },

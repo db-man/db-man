@@ -32,7 +32,7 @@ const dbsSchema = {
 
 const githubDb = new GithubDb({
   personalAccessToken: 'your personal access token',
-  repoPath: 'dbs',
+  repoPath: 'db_files_dir',
   dbsSchema,
   owner: 'your github username',
   repoName: 'your repo name',
