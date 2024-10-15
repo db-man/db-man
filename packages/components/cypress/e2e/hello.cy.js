@@ -26,7 +26,7 @@ const ghOwner = 'db-man';
 // CYPRESS_DBM_TOKEN=123 npx cypress open
 const ghToken = Cypress.env('DBM_TOKEN');
 const ghRepoName = 'split-table-db';
-const ghRepoPath = 'dbs';
+const ghRepoPath = 'db_files_dir';
 const ghRepoModes = 'split-table';
 
 describe('hello', () => {
@@ -36,7 +36,10 @@ describe('hello', () => {
 
   it('displays Settings by default', () => {
     cy.get('span.ant-menu-title-content').debug();
-    cy.get('span.ant-menu-title-content').should('have.text', 'HomeSettings');
+    cy.get('span.ant-menu-title-content').should(
+      'have.text',
+      'HomeSettingsQuery'
+    );
   });
 });
 
