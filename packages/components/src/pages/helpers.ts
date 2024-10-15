@@ -34,7 +34,7 @@ const loadDbsSchemaAsync = async (github: any, repoPath: string) => {
             `${repoPath}/${dbName}/${constants.DB_CFG_FILENAME}`
           )
           .then((res: any) => {
-            const tables: DbTable[] = res.content;
+            const tables: DbTable[] = res.content.tables;
             dbsSchema[dbName] = tables;
           });
       })

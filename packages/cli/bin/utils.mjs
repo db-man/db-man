@@ -53,7 +53,7 @@ export const getDbs = async (dir) => {
         `./${dir}/${dbName}/${DB_CFG_FILENAME}`,
         'utf8'
       );
-      tables = JSON.parse(fileContent);
+      tables = JSON.parse(fileContent).tables;
     } catch (err) {
       console.error('Failed to read db cfg data file, err:', err);
       return [];
