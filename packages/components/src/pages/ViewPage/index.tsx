@@ -134,6 +134,8 @@ export default function ViewPage() {
                 title: key,
                 dataIndex: key,
                 key,
+                // @ts-ignore
+                sorter: (a, b) => a[key] - b[key],
               }))}
               dataSource={result.obj}
             />
