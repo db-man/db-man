@@ -21,7 +21,7 @@ export default function PageLayout() {
       </Header>
       <Layout>
         <Sider width={300} className='site-layout-background' collapsible>
-          {dbName && dbs[dbName] && tableName ? (
+          {dbName && dbs[dbName] ? (
             <LeftSideMenu
               dbName={dbName}
               tableName={tableName}

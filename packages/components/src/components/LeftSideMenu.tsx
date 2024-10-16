@@ -8,7 +8,7 @@ import { useAppContext } from '../contexts/AppContext';
 
 interface LeftSideMenuProps {
   dbName: string;
-  tableName: string;
+  tableName?: string;
   action?: string;
 }
 
@@ -20,7 +20,11 @@ const LeftSideMenu: React.FC<LeftSideMenuProps> = ({
   const { getTablesByDbName } = useAppContext();
 
   const [openKeys, setOpenKeys] = useState<string[]>(() => {
-    // if table name not exist, then collapse all menus
+    // if table name not given, then collapse all menus
+    if (!tableName) {
+      return [];
+    }
+    // if table name not exist in all tables, then collapse all menus
     // if table name exist, then expand the menu of this table
     const table = getTablesByDbName(dbName).find(
       ({ name }) => name === tableName
@@ -35,10 +39,12 @@ const LeftSideMenu: React.FC<LeftSideMenuProps> = ({
     setOpenKeys(keys);
   };
 
+  // if table name not given, then no menu item should be selected
+  const selectedKeys = tableName ? [`${dbName}-${tableName}-${action}`] : [];
   return (
     <Menu
       mode='inline'
-      selectedKeys={[`${dbName}-${tableName}-${action}`]}
+      selectedKeys={selectedKeys}
       openKeys={openKeys}
       style={{ height: '100%', borderRight: 0 }}
       onOpenChange={handleOpenChange}
