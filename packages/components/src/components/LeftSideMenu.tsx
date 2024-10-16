@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 
 import { UserOutlined } from '@ant-design/icons';
 import { Menu } from 'antd';
-import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
 import { useAppContext } from '../contexts/AppContext';
@@ -68,12 +67,6 @@ const LeftSideMenu: React.FC<LeftSideMenuProps> = ({
       }))}
     />
   );
-};
-
-LeftSideMenu.propTypes = {
-  dbName: PropTypes.string.isRequired,
-  tableName: PropTypes.string.isRequired,
-  action: PropTypes.string,
 };
 
 LeftSideMenu.defaultProps = {
