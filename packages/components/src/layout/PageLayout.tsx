@@ -11,9 +11,11 @@ import { useAppContext } from '../contexts/AppContext';
 
 const { Header, Content, Sider } = Layout;
 
+// PageLayout provides a layout for the page with top nav, a left side menu and right content
+// the right content is defined in <Outlet /> which pass from `element` props in `<Route path='/' element={<PageLayout />}>`
 export default function PageLayout() {
   const { dbs }: { dbs: types.DatabaseMap } = useAppContext();
-  const { dbName, tableName, action } = useParams();
+  const { dbName, tableName, action, viewName } = useParams();
   return (
     <Layout>
       <Header className='header' style={{ height: '30px', lineHeight: '30px' }}>
@@ -26,6 +28,7 @@ export default function PageLayout() {
               dbName={dbName}
               tableName={tableName}
               action={action}
+              viewName={viewName}
             />
           ) : null}
         </Sider>

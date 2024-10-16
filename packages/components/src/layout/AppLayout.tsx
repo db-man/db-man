@@ -4,6 +4,7 @@ import { Routes, Route } from 'react-router-dom';
 import Settings from '../pages/Settings';
 import Demos from '../pages/Demos';
 import QueryPage from '../pages/Query';
+import ViewPage from '../pages/ViewPage';
 import IframePageWrapper from './IframePageWrapper';
 import Database from './Database';
 import Table from './Table';
@@ -12,6 +13,7 @@ import ComponentDemo from './ComponentDemo';
 import PageLayout from './PageLayout';
 import CommonPageWrapper from './CommonPageWrapper';
 
+// TODO: maybe change name to AppRouters or Routes
 export default function AppLayout() {
   return (
     <Routes>
@@ -32,6 +34,15 @@ export default function AppLayout() {
         <Route path='demos' element={<Demos />}>
           <Route path=':component' element={<ComponentDemo />} />
         </Route>
+        <Route
+          path='_views/:dbName/:viewName'
+          element={
+            <CommonPageWrapper>
+              <ViewPage />
+            </CommonPageWrapper>
+          }
+        />
+        {/* example path: /iam/users/list */}
         <Route path=':dbName' element={<Database />}>
           <Route path=':tableName' element={<Table />}>
             <Route path=':action' element={<Action />} />

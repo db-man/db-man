@@ -1,0 +1,145 @@
+import React, { useContext, useEffect } from 'react';
+
+import { Row, Col, Typography, TreeSelect, Table } from 'antd';
+
+import { RowType } from '../../types/Data';
+import { useAppContext } from '../../contexts/AppContext';
+import CommonPageContext from '../../contexts/commonPage';
+import ReactSimpleCodeEditor from '../../components/ReactSimpleCodeEditor';
+import { useParams } from 'react-router';
+
+// Use `Typography` so can apply dark theme to text
+const { Text } = Typography;
+const { SHOW_PARENT } = TreeSelect;
+
+export default function ViewPage() {
+  const { dbs, getTablesByDbName, getViewByDbNameViewName } = useAppContext();
+  const { dbName, viewName } = useParams();
+  const { githubDb } = useContext(CommonPageContext);
+  const [selectedDbTableNames, setSelectedDbTableNames] = React.useState<
+    string[]
+  >(
+    JSON.parse(
+      localStorage.getItem('dbm_query_page_selected_table_names') || '[]'
+    )
+  );
+  const [code, setCode] = React.useState('');
+  const [result, setResult] = React.useState({ obj: [], err: '' });
+  // tablesRows={iam:[...], roles:[...]}
+  const [tablesRows, setTablesRows] = React.useState<{
+    [key: string]: RowType;
+  }>({});
+
+  const treeData = Object.keys(dbs || {}).map((dbName) => ({
+    title: dbName,
+    value: dbName,
+    key: dbName,
+    children: getTablesByDbName(dbName).map((table) => ({
+      title: table.name,
+      value: `${dbName}/${table.name}`,
+      key: `${dbName}/${table.name}`,
+    })),
+  }));
+
+  useEffect(() => {
+    selectedDbTableNames.forEach((dbTableName) => {
+      const [dbName, tableName] = dbTableName.split('/');
+      githubDb?.getTableRows(dbName, tableName).then((response) => {
+        setTablesRows((prev) => ({
+          ...prev,
+          [dbTableName]: response.content,
+        }));
+      });
+    });
+  }, [githubDb, selectedDbTableNames]);
+
+  useEffect(() => {
+    const view = getViewByDbNameViewName(dbName || '', viewName || '');
+    if (!view) {
+      setResult({ obj: [], err: 'View not found' });
+      return;
+    }
+    // TODO: no hard code `query`, should defined in @db-man/github package
+    const code = view.query || '';
+    console.log('code:', code);
+    setCode(code);
+  }, [dbName, viewName, getViewByDbNameViewName]);
+
+  useEffect(() => {
+    try {
+      // eslint-disable-next-line no-new-func
+      const fn = Function('tablesRows', code);
+      const outputRows = fn(tablesRows);
+      setResult({ obj: outputRows, err: '' });
+    } catch (err: any) {
+      // console.log('[ERROR] Failed to eval function!');
+
+      setResult({ obj: [], err: err.message });
+    }
+  }, [tablesRows, code]);
+
+  const handleSelectedTableNamesChange = (newValue: string[]) => {
+    // newValue=['iam/users', 'iam/roles']
+    setSelectedDbTableNames(newValue);
+    localStorage.setItem(
+      'dbm_query_page_selected_table_names',
+      JSON.stringify(newValue)
+    );
+  };
+
+  const tProps = {
+    treeData,
+    value: selectedDbTableNames,
+    onChange: handleSelectedTableNamesChange,
+    treeCheckable: true,
+    showCheckedStrategy: SHOW_PARENT,
+    placeholder: 'Please select',
+    style: {
+      width: '100%',
+    },
+  };
+
+  // TODO: How can we make sure `dbs` is ready for all pages?
+  if (!dbs || !Object.keys(dbs).length) {
+    return null;
+  }
+
+  return (
+    <div className='dbm-query-page'>
+      <div>
+        <TreeSelect {...tProps} />
+      </div>
+      <Row>
+        <Col span={16}>
+          Code:
+          <ReactSimpleCodeEditor
+            height='50em'
+            value={code}
+            onChange={setCode}
+          />
+          <br />
+        </Col>
+        <Col span={8}>
+          <div>
+            <Text>Error:</Text>
+          </div>
+          <div style={{ color: 'red' }}>{result.err}</div>
+          <div>
+            <Text>Result:</Text>
+          </div>
+          {result.obj && result.obj.length > 0 && (
+            <Table
+              rowKey={(record) => JSON.stringify(record)}
+              columns={Object.keys(result.obj[0] || {}).map((key) => ({
+                title: key,
+                dataIndex: key,
+                key,
+              }))}
+              dataSource={result.obj}
+            />
+          )}
+        </Col>
+      </Row>
+    </div>
+  );
+}

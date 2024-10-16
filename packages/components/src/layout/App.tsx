@@ -12,7 +12,7 @@ import { AppContext } from '../contexts/AppContext';
 const { defaultAlgorithm, darkAlgorithm } = theme;
 
 export default function App() {
-  const [dbs, setDbs] = useState<types.DatabaseMap>({});
+  const [dbs, setDbs] = useState<types.DatabaseMap | null>(null);
 
   useEffect(() => {
     const _dbs = JSON.parse(localStorage.getItem(LS_KEY_DBS_SCHEMA) || '{}');
@@ -30,6 +30,16 @@ export default function App() {
         dbs,
         getTablesByDbName: (dbName: string) => {
           return dbs[dbName].tables || [];
+        },
+        getViewsByDbName: (dbName: string) => {
+          return dbs[dbName].views || [];
+        },
+        getViewByDbNameViewName: (dbName: string, viewName: string) => {
+          const { views } = dbs[dbName];
+          if (!views) {
+            return null;
+          }
+          return views.find(({ name }) => name === viewName) || null;
         },
       }}
     >
