@@ -4,15 +4,10 @@ import { types } from '@db-man/github';
 import * as constants from '../../constants';
 import { errMsg } from '../../utils';
 
-// TODO this type should be from @octokit/rest
-type FileOrDir = {
-  name: string;
-};
-
 const loadDbsSchemaAsync = async (github: any, repoPath: string) => {
   // Get all db names in root dir, db name is sub dir name
   // e.g. files=[{name: 'iam'}]
-  const files: FileOrDir[] = await github.getContentByPath(repoPath);
+  const files: types.FileOrDir[] = await github.getContentByPath(repoPath);
 
   const dbsSchema: types.DatabaseMap = {
     /**

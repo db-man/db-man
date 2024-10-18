@@ -1,14 +1,19 @@
+// the result for getContentByPath
+export type FileOrDir = {
+  name: string;
+};
+
 /**
  * One of "STRING", "STRING_ARRAY", "NUMBER" or "BOOL".
-
-| type         | Default UI Component |
-| ------------ | -------------------- |
-| STRING       | Input                |
-| STRING_ARRAY | Select mode="tags"   |
-| NUMBER       | InputNumber          |
-| BOOL         | Switch               |
-
-`{"type": "STRING_ARRAY"}` is the same as `{"type": "STRING_ARRAY","type:createUpdatePage":"Select"}`
+ *
+ * | type         | Default UI Component |
+ * | ------------ | -------------------- |
+ * | STRING       | Input                |
+ * | STRING_ARRAY | Select mode="tags"   |
+ * | NUMBER       | InputNumber          |
+ * | BOOL         | Switch               |
+ *
+ * `{"type": "STRING_ARRAY"}` is the same as `{"type": "STRING_ARRAY","type:createUpdatePage":"Select"}`
  */
 export type DbColumnType = 'STRING' | 'STRING_ARRAY' | 'NUMBER' | 'BOOL';
 
