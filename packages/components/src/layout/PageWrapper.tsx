@@ -57,7 +57,6 @@ const PageWrapper = (props: {
   tableName?: string;
   action?: string;
 }) => {
-  const [errMsg, setErrMsg] = useState('');
   const githubDbRef = useRef(
     new GithubDb({
       personalAccessToken:
@@ -127,9 +126,6 @@ const PageWrapper = (props: {
   };
 
   const errMsgs = [];
-  if (errMsg) {
-    errMsgs.push(errMsg);
-  }
   if (!dbName) {
     errMsgs.push('dbName is undefined!');
   }
