@@ -46,8 +46,8 @@ function PageHeaderContent(props: PropsType) {
                 </Link>
               ),
             })),
-          { key: 'settings', label: <Link to='/settings'>Settings</Link> },
           { key: 'query', label: <Link to='/query'>Query</Link> },
+          { key: 'settings', label: <Link to='/settings'>Settings</Link> },
         ]}
       />
     </div>
