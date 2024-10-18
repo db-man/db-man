@@ -49,10 +49,9 @@ export function ActionList({
 }
 
 /**
- * To render list/create/update page for `/db_name/table_name.json`
- * TODO: Change name to DbTablePageWrapper, so it's more clear that this is not a common page wrapper
+ * To render list/create/update page for a real db table, e.g. `/iam/users.data.json`
  */
-const PageWrapper = (props: {
+const DbTablePageWrapper = (props: {
   dbName?: string;
   tableName?: string;
   action?: string;
@@ -162,4 +161,4 @@ const PageWrapper = (props: {
   );
 };
 
-export default PageWrapper;
+export default DbTablePageWrapper;

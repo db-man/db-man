@@ -1,7 +1,7 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 
-import PageWrapper from './PageWrapper';
+import DbTablePageWrapper from './DbTablePageWrapper';
 import { useAppContext } from '../contexts/AppContext';
 import NotFoundDb from '../components/NotFoundDb';
 
@@ -19,7 +19,9 @@ function IframePageWrapper() {
     return <NotFoundDb />;
   }
 
-  return <PageWrapper dbName={dbName} tableName={tableName} action={action} />;
+  return (
+    <DbTablePageWrapper dbName={dbName} tableName={tableName} action={action} />
+  );
 }
 
 export default IframePageWrapper;

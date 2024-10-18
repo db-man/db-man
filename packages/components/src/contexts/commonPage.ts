@@ -57,7 +57,7 @@ export interface CommonPageContextType {
 }
 
 // Store all page info, include db, table, and columns
-// Setter: src/layout/PageWrapper.tsx
+// Setter: src/layout/DbTablePageWrapper.tsx
 const CommonPageContext = React.createContext<CommonPageContextType>({
   appModes: [], // all app modes: 'split-table'
   githubDb: null, // GitHubDb from @db-man/github

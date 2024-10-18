@@ -43,7 +43,7 @@ export { default as AppLayout } from './layout/AppLayout';
 export { default as BreadcrumbWrapper } from './layout/BreadcrumbWrapper';
 export { default as Database } from './layout/Database';
 export { default as IframePageWrapper } from './layout/IframePageWrapper';
-export { default as PageWrapper } from './layout/PageWrapper';
+export { default as DbTablePageWrapper } from './layout/DbTablePageWrapper';
 export { default as Table } from './layout/Table';
 
 // pages
