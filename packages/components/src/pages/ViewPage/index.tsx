@@ -99,11 +99,6 @@ export default function ViewPage() {
     },
   };
 
-  // TODO: How can we make sure `dbs` is ready for all pages?
-  if (!dbs || !Object.keys(dbs).length) {
-    return null;
-  }
-
   const items: CollapseProps['items'] = [
     {
       key: '1',

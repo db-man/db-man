@@ -97,11 +97,6 @@ export default function QueryPage() {
     },
   };
 
-  // TODO: How can we make sure `dbs` is ready for all pages?
-  if (!dbs || !Object.keys(dbs).length) {
-    return null;
-  }
-
   return (
     <div className='dbm-query-page'>
       <div>
