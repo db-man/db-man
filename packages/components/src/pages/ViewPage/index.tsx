@@ -1,14 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 
-import {
-  Row,
-  Col,
-  Typography,
-  TreeSelect,
-  Table,
-  Collapse,
-  CollapseProps,
-} from 'antd';
+import { Typography, TreeSelect, Table, Collapse, CollapseProps } from 'antd';
 
 import { RowType } from '../../types/Data';
 import { useAppContext } from '../../contexts/AppContext';
