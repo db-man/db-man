@@ -4,7 +4,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 
-import AppLayout from './AppLayout';
+import AppRoutes from './AppRoutes';
 
 beforeEach(() => {
   Object.defineProperty(window, 'matchMedia', {
@@ -25,8 +25,8 @@ beforeEach(() => {
 it.skip('navigates settings page', () => {
   render(
     <MemoryRouter initialEntries={['/settings']}>
-      <AppLayout />
-    </MemoryRouter>,
+      <AppRoutes />
+    </MemoryRouter>
   );
   const linkElement = screen.getByText(/Settings/i);
   expect(linkElement).toBeInTheDocument();
@@ -35,8 +35,8 @@ it.skip('navigates settings page', () => {
 it.skip('navigates db page', () => {
   /* const { asFragment } = */ render(
     <MemoryRouter initialEntries={['/foo']}>
-      <AppLayout />
-    </MemoryRouter>,
+      <AppRoutes />
+    </MemoryRouter>
   );
   // const linkElement = screen.getByText(/List of tables in DB:/i);
   const linkElement = screen.getByText(/Failed to get dbs from localStorage/i);

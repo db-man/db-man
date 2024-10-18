@@ -5,7 +5,7 @@ import { ConfigProvider, theme } from 'antd';
 import { BrowserRouter } from 'react-router-dom';
 
 import Settings from '../pages/Settings';
-import AppLayout from './AppLayout';
+import AppRoutes from './AppRoutes';
 import { LS_IS_DARK_THEME, LS_KEY_DBS_SCHEMA } from '../constants';
 import { AppContext } from '../contexts/AppContext';
 
@@ -52,7 +52,7 @@ export default function App() {
                 : defaultAlgorithm,
           }}
         >
-          <AppLayout />
+          <AppRoutes />
         </ConfigProvider>
       </BrowserRouter>
     </AppContext.Provider>

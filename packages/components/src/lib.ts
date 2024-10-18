@@ -39,7 +39,7 @@ export * as ddRender from './ddRender/ddRender';
 // layout
 export { default as Action } from './layout/Action';
 export { default as App } from './layout/App';
-export { default as AppLayout } from './layout/AppLayout';
+export { default as AppRoutes } from './layout/AppRoutes';
 export { default as BreadcrumbWrapper } from './layout/BreadcrumbWrapper';
 export { default as Database } from './layout/Database';
 export { default as IframePageWrapper } from './layout/IframePageWrapper';

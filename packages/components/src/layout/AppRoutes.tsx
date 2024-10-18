@@ -13,8 +13,7 @@ import ComponentDemo from './ComponentDemo';
 import PageLayout from './PageLayout';
 import CommonPageWrapper from './CommonPageWrapper';
 
-// TODO: maybe change name to AppRouters or Routes
-export default function AppLayout() {
+export default function AppRoutes() {
   return (
     <Routes>
       <Route
