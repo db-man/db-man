@@ -1,6 +1,14 @@
 import React, { useContext, useEffect } from 'react';
 
-import { Row, Col, Typography, TreeSelect, Table } from 'antd';
+import {
+  Row,
+  Col,
+  Typography,
+  TreeSelect,
+  Table,
+  Collapse,
+  CollapseProps,
+} from 'antd';
 
 import { RowType } from '../../types/Data';
 import { useAppContext } from '../../contexts/AppContext';
@@ -104,44 +112,54 @@ export default function ViewPage() {
     return null;
   }
 
-  return (
-    <div className='dbm-query-page'>
-      <div>
-        <TreeSelect {...tProps} />
-      </div>
-      <Row>
-        <Col span={16}>
-          Code:
+  const items: CollapseProps['items'] = [
+    {
+      key: '1',
+      label: 'View Query COde',
+      children: (
+        <div>
           <ReactSimpleCodeEditor
             height='50em'
             value={code}
             onChange={setCode}
           />
-          <br />
-        </Col>
-        <Col span={8}>
-          <div>
-            <Text>Error:</Text>
-          </div>
-          <div style={{ color: 'red' }}>{result.err}</div>
-          <div>
-            <Text>Result:</Text>
-          </div>
-          {result.obj && result.obj.length > 0 && (
-            <Table
-              rowKey={(record) => JSON.stringify(record)}
-              columns={Object.keys(result.obj[0] || {}).map((key) => ({
-                title: key,
-                dataIndex: key,
-                key,
-                // @ts-ignore
-                sorter: (a, b) => a[key] - b[key],
-              }))}
-              dataSource={result.obj}
-            />
-          )}
-        </Col>
-      </Row>
+        </div>
+      ),
+    },
+  ];
+
+  return (
+    <div className='dbm-query-page'>
+      <div>View Name: {viewName}</div>
+      <div>
+        <div>DB Tables Selector:</div>
+        <TreeSelect {...tProps} />
+      </div>
+      <div>
+        <Collapse items={items} defaultActiveKey={['2']} />
+      </div>
+      <div>
+        <div>
+          <Text>Error:</Text>
+        </div>
+        <div style={{ color: 'red' }}>{result.err}</div>
+        <div>
+          <Text>Result:</Text>
+        </div>
+        {result.obj && result.obj.length > 0 && (
+          <Table
+            rowKey={(record) => JSON.stringify(record)}
+            columns={Object.keys(result.obj[0] || {}).map((key) => ({
+              title: key,
+              dataIndex: key,
+              key,
+              // @ts-ignore
+              sorter: (a, b) => a[key] - b[key],
+            }))}
+            dataSource={result.obj}
+          />
+        )}
+      </div>
     </div>
   );
 }
