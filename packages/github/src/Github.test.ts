@@ -20,17 +20,17 @@ describe('Github', () => {
     consoleErrorSpy.mockRestore();
   });
 
-  describe('getPath', () => {
-    it('should return an array with the expected length when calling getPath with a directory path', async () => {
-      const data = await g.getPath('dbs/iam');
-      // console.log('Github.getPath data:', data);
+  describe('getContentByPath', () => {
+    it('should return an array with the expected length when calling getContentByPath with a directory path', async () => {
+      const data = await g.getContentByPath('dbs/iam');
+      // console.log('Github.getContentByPath data:', data);
       // @ts-expect-error why no length?
       expect(data.length).toBe(2);
     });
 
-    it('should return the correct file object when calling getPath with a file path', async () => {
-      const data = await g.getPath('dbs/iam/dbcfg.json');
-      // console.log('Github.getPath data:', data);
+    it('should return the correct file object when calling getContentByPath with a file path', async () => {
+      const data = await g.getContentByPath('dbs/iam/dbcfg.json');
+      // console.log('Github.getContentByPath data:', data);
       if ('content' in data) {
         expect(data.name).toBe('dbcfg.json');
         return;
@@ -39,20 +39,20 @@ describe('Github', () => {
       expect(1).toBe(2);
     });
 
-    it('should throw an error when calling getPath with a non-existent path', async () => {
-      await expect(g.getPath('non-existent-path')).rejects.toThrow();
+    it('should throw an error when calling getContentByPath with a non-existent path', async () => {
+      await expect(g.getContentByPath('non-existent-path')).rejects.toThrow();
     });
   });
 
-  describe('getPathV2', () => {
-    it('should return an array with a non-zero length when calling getPathV2 with a directory path', async () => {
-      const data = await g.getPathV2('dbs/iam');
-      // console.log('Github.getPathV2 data:', data);
+  describe('getContentByPathV2', () => {
+    it('should return an array with a non-zero length when calling getContentByPathV2 with a directory path', async () => {
+      const data = await g.getContentByPathV2('dbs/iam');
+      // console.log('Github.getContentByPathV2 data:', data);
       expect(data.length).not.toBe(0);
     });
 
-    it('should return an error object when calling getPathV2 with a non-existent path', async () => {
-      const [error, data] = await g.getPathV2('non-existent-path');
+    it('should return an error object when calling getContentByPathV2 with a non-existent path', async () => {
+      const [error, data] = await g.getContentByPathV2('non-existent-path');
       expect(error).toBeDefined();
       // Check if the error is an object and has the 'type' property
       if (typeof error === 'object' && 'type' in error!) {

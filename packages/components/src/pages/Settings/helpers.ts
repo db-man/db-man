@@ -12,7 +12,7 @@ type FileOrDir = {
 const loadDbsSchemaAsync = async (github: any, repoPath: string) => {
   // Get all db names in root dir, db name is sub dir name
   // e.g. files=[{name: 'iam'}]
-  const files: FileOrDir[] = await github.getPath(repoPath);
+  const files: FileOrDir[] = await github.getContentByPath(repoPath);
 
   const dbsSchema: types.DatabaseMap = {
     /**

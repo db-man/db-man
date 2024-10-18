@@ -163,7 +163,7 @@ export default class GithubDb {
   }
 
   /**
-   * When table file is more than 1MB, call getPath and then getBlobContentAndSha
+   * When table file is more than 1MB, call getContentByPath to get sha, and then using sha to call getBlobContentAndSha to get content
    * When table file is less than 1MB, call getFileContentAndSha
    * @param {string} path
    * @param {string} dbName
@@ -179,12 +179,12 @@ export default class GithubDb {
       );
     }
 
-    const files = await this.github.getPath(
+    const files = await this.github.getContentByPath(
       `${this.LS_KEY_GITHUB_REPO_PATH}/${dbName}`,
       signal // eslint-disable-line @typescript-eslint/comma-dangle
     );
 
-    // when calling getPath with a file as path param, it returns an object instead of an array
+    // when calling getContentByPath with a file as path param, it returns an object instead of an array
     if (!Array.isArray(files)) {
       throw new Error(
         `getTableRows: Expected an array of files for the path "${this.LS_KEY_GITHUB_REPO_PATH}/${dbName}", but received an object. Please check if the provided path is a directory.` // eslint-disable-line @typescript-eslint/comma-dangle

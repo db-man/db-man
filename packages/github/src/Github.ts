@@ -92,7 +92,6 @@ export default class Github {
   }
 
   /**
-   * TODO maybe function name should be "getFilesInPath"
    * Given path 'dbs/iam', return all files in this path
    * Given path 'dbs/iam/dbcfg.json', return this file
    * @param {string} path can be a file or a dir
@@ -100,7 +99,7 @@ export default class Github {
    * @returns {Promise<File|Files>}
    * @public
    */
-  getPath(path: string, signal?: AbortSignal) {
+  getContentByPath(path: string, signal?: AbortSignal) {
     return octokit(this.context.personalAccessToken)
       .request('GET /repos/{owner}/{repo}/contents/{path}', {
         owner: this.context.owner,
@@ -110,7 +109,7 @@ export default class Github {
       })
       .then(({ data }) => data)
       .catch((err) => {
-        console.error('getPath failed, err:', err);
+        console.error('Github.getContentByPath failed, err:', err);
         let newErr;
         switch (err.status) {
           case 404:
@@ -136,7 +135,7 @@ export default class Github {
    * @param {*} signal
    * @returns {Promise<[err, File|Files]>}
    */
-  getPathV2(path: string, signal?: AbortSignal) {
+  getContentByPathV2(path: string, signal?: AbortSignal) {
     return octokit(this.context.personalAccessToken)
       .request('GET /repos/{owner}/{repo}/contents/{path}', {
         owner: this.context.owner,
@@ -188,7 +187,7 @@ export default class Github {
    * @returns {Promise}
    */
   getFileContentAndSha(path: string, signal?: AbortSignal) {
-    return this.getPath(path, signal).then((data) => {
+    return this.getContentByPath(path, signal).then((data) => {
       // when path is a dir, data is an array, this is not expected in getFileContentAndSha
       if (Array.isArray(data)) {
         throw new Error(
