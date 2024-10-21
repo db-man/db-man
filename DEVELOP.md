@@ -20,7 +20,7 @@ npm run publish
 
 ```sh
 cd packages/github
-TOKEN=ghp_123 npm run release
+GH_TOKEN=ghp_123 npm run release
 ```
 
 ## Check outdated
