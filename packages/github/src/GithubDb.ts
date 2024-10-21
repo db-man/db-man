@@ -150,7 +150,7 @@ export default class GithubDb {
    */
   getTable(dbName, tableName) {
     if (!this.dbsSchema || !this.dbsSchema[dbName]) {
-      throw new Error('this.dbs is invalid!');
+      throw new Error('this.dbsSchema is invalid!');
     }
     return this.dbsSchema[dbName].tables.find(({ name }) => name === tableName);
   }
