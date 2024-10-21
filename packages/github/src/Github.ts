@@ -1,6 +1,12 @@
 import { Base64 } from 'js-base64';
 
 import octokit from './octokit';
+import {
+  DbsCfgContentAndShaType,
+  FileContentAndSha,
+  RawFileContentAndSha,
+} from './types';
+import { DBS_CFG_FILENAME } from './constants';
 
 type GithubContext = {
   personalAccessToken: string;
@@ -107,7 +113,7 @@ export default class Github {
         path,
         request: { signal },
       })
-      .then(({ data }) => data)
+      .then(({ data }) => data as RawFileContentAndSha)
       .catch((err) => {
         console.error('Github.getContentByPath failed, err:', err);
         let newErr;
@@ -186,7 +192,10 @@ export default class Github {
    * @param {string} path
    * @returns {Promise}
    */
-  getFileContentAndSha(path: string, signal?: AbortSignal) {
+  getFileContentAndSha(
+    path: string,
+    signal?: AbortSignal
+  ): Promise<FileContentAndSha> {
     return this.getContentByPath(path, signal).then((data) => {
       // when path is a dir, data is an array, this is not expected in getFileContentAndSha
       if (Array.isArray(data)) {
@@ -195,7 +204,7 @@ export default class Github {
         );
       }
       // when data is not array, but no content in it, this is not expected in getFileContentAndSha (but no idea why this happens)
-      if (!('content' in data)) {
+      if (!('content' in data) || !data.content) {
         throw new Error(
           'getFileContentAndSha failed, res.content is not in res, check the path param.'
         );
@@ -288,5 +297,45 @@ export default class Github {
           throw error;
       }
     }
+  }
+
+  /**
+   * Get content of the "dbs.json" file in the repo root dir
+   * @returns
+   */
+  getDbsCfg(): Promise<DbsCfgContentAndShaType> {
+    // return this.getFileContentAndSha(DBS_CFG_FILENAME).then(
+    //   (res: FileContentAndSha) => {
+    //     return res;
+    //   }
+    // );
+    return this.getContentByPath(DBS_CFG_FILENAME).then((data) => {
+      // when path is a dir, data is an array, this is not expected in getDbsCfg
+      if (Array.isArray(data)) {
+        throw new Error(
+          'getDbsCfg failed, res is an array, the path param should be a file, not a dir.'
+        );
+      }
+      // when data is not array, but no content in it, this is not expected in getDbsCfg (but no idea why this happens)
+      if (!('content' in data) || !data.content) {
+        throw new Error(
+          'getDbsCfg failed, res.content is not in res, check the path param.'
+        );
+      }
+      // TODO: only in GithubDB we have database concept, so in Gitub.ts, we dont use rows concept, consider to remove it to `content`
+      let cfg = {};
+      if (data.content === '') {
+        // This is a new empty file, maybe just created
+        // TODO may move to GithubDb, because here we assume the file is table data file, so content should be an array, but if it's other file, content may be object or other JSON type.
+        cfg = {};
+      } else {
+        cfg = JSON.parse(Base64.decode(data.content));
+        console.debug('@db-man/github getFileContentAndSha res:', cfg);
+      }
+      return {
+        content: cfg,
+        sha: data.sha,
+      };
+    });
   }
 }

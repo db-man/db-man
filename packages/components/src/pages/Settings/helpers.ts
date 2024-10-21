@@ -132,9 +132,8 @@ const reloadDbsSchemaAsync = async (enabledConnection: TableRowType) => {
   // get repo path from dbs.json in repo root dir
   // in this file will tell where to find all db files
   // TODO: test this with non split-table mode
-  const res = await github.getFileContentAndSha(constants.DBS_CFG_FILENAME);
+  const res = await github.getDbsCfg();
 
-  // @ts-ignore
   const repoPath = res.content.repoPath;
   if (!repoPath) {
     errMsg('Repo path not found in dbs.json!');

@@ -1,8 +1,7 @@
 import { DatabaseMap } from './types';
+import { DB_CFG_FILENAME } from './constants';
 import { getDataFileName, getRecordFileName } from './utils';
 import Github from './Github';
-
-const DB_CFG_FILENAME = 'dbcfg.json';
 
 /**
  * @class

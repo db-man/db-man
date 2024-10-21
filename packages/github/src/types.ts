@@ -99,3 +99,25 @@ export type DatabaseSchema = {
  * }
  */
 export type DatabaseMap = Record<string, DatabaseSchema>;
+
+type TableRow = Record<string, any>;
+
+type DbsCfgType = {
+  repoPath?: string;
+};
+
+// raw response from @octokit/rest API
+export interface RawFileContentAndSha {
+  content?: string;
+  sha: string;
+}
+
+export interface FileContentAndSha {
+  content: TableRow[];
+  sha: string;
+}
+
+export interface DbsCfgContentAndShaType {
+  content: DbsCfgType;
+  sha: string;
+}
