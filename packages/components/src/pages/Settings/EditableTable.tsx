@@ -57,18 +57,17 @@ function EditableCell({
 
 function EditableTable({
   storage,
+  defaultData,
   onEnable,
   isConnectionEnabled,
 }: {
   storage: StorageType;
+  defaultData: TableRowType[];
   onEnable: (record: TableRowType) => void;
   isConnectionEnabled: (record: TableRowType) => boolean;
 }) {
   const [form] = Form.useForm();
-  const [data, setData] = useState<TableRowType[]>(() => {
-    const connections = storage.get(constants.LS_KEY_DB_CONNECTIONS);
-    return connections ? JSON.parse(connections) : [];
-  });
+  const [data, setData] = useState<TableRowType[]>(defaultData);
   const [editingKey, setEditingKey] = useState('');
 
   const isEditing = (record: TableRowType) => record.key === editingKey;

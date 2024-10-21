@@ -84,6 +84,9 @@ const DbConnections = ({ storage }: { storage: StorageType }) => {
       <Title level={2}>Database Connections</Title>
       <EditableTable
         storage={storage}
+        defaultData={JSON.parse(
+          storage.get(constants.LS_KEY_DB_CONNECTIONS) || '[]'
+        )}
         isConnectionEnabled={(record: TableRowType) =>
           record.owner === storage.get(constants.LS_KEY_GITHUB_OWNER) &&
           record.repo === storage.get(constants.LS_KEY_GITHUB_REPO_NAME)
