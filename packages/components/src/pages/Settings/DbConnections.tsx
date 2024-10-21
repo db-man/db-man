@@ -5,7 +5,7 @@ import { Button, Tooltip, Typography } from 'antd';
 
 import * as constants from '../../constants';
 import reloadDbsSchemaAsync from './helpers';
-import EditableTable from './EditableTable';
+import EditableTable, { TableRowType } from './EditableTable';
 
 // Use `Typography` so can apply dark theme to text
 const { Title } = Typography;
@@ -29,7 +29,12 @@ const saveToFile = (data: string, filename: string) => {
 const DbConnections = ({ storage }: { storage: StorageType }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleDbConnectionEnable = () => {
+  const handleDbConnectionEnable = (record: TableRowType) => {
+    storage.set(constants.LS_KEY_GITHUB_OWNER, record.owner);
+    storage.set(constants.LS_KEY_GITHUB_REPO_NAME, record.repo);
+    storage.set(constants.LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN, record.token);
+    storage.set(constants.LS_KEY_GITHUB_REPO_MODES, record.modes);
+
     const github = new Github({
       personalAccessToken:
         storage.get(constants.LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN) || '',

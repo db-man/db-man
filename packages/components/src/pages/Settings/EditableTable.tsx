@@ -8,7 +8,7 @@ import { Table, Input, Popconfirm, Form, Typography, Button } from 'antd';
 import * as constants from '../../constants';
 import { StorageType } from './DbConnections';
 
-type TableRowType = {
+export type TableRowType = {
   [key: string]: string;
 };
 
@@ -60,7 +60,7 @@ function EditableTable({
   onEnable,
 }: {
   storage: StorageType;
-  onEnable: () => void;
+  onEnable: (record: TableRowType) => void;
 }) {
   const [form] = Form.useForm();
   const [data, setData] = useState<TableRowType[]>([]);
@@ -166,11 +166,7 @@ function EditableTable({
   };
 
   const handleEnable = (record: TableRowType) => {
-    storage.set(constants.LS_KEY_GITHUB_OWNER, record.owner);
-    storage.set(constants.LS_KEY_GITHUB_REPO_NAME, record.repo);
-    storage.set(constants.LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN, record.token);
-    storage.set(constants.LS_KEY_GITHUB_REPO_MODES, record.modes);
-    onEnable();
+    onEnable(record);
   };
 
   const columns = [
