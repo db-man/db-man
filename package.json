@@ -11,5 +11,8 @@
     "build": "lerna run build",
     "prepublishOnly": "npm run build",
     "publish": "lerna publish --no-private"
-  }
+  },
+  "workspaces": [
+    "packages/*"
+  ]
 }
