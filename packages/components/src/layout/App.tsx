@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import { types } from '@db-man/github';
 import { ConfigProvider, theme } from 'antd';
@@ -12,12 +12,11 @@ import { AppContext } from '../contexts/AppContext';
 const { defaultAlgorithm, darkAlgorithm } = theme;
 
 export default function App() {
-  const [dbs, setDbs] = useState<types.DatabaseMap | null>(null);
+  const dbs: types.DatabaseMap = JSON.parse(
+    localStorage.getItem(LS_KEY_DBS_SCHEMA) || '{}'
+  );
 
   useEffect(() => {
-    const _dbs = JSON.parse(localStorage.getItem(LS_KEY_DBS_SCHEMA) || '{}');
-    setDbs(_dbs);
-
     if (localStorage.getItem(LS_IS_DARK_THEME) === 'true') {
       document.body.style.backgroundColor = 'black';
     }
