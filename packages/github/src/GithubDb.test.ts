@@ -1,12 +1,12 @@
 import GithubDb from './GithubDb';
 
-const mockDbsSchema = JSON.stringify({
+const mockDbsSchema = {
   iam: {
     name: 'iam',
     description: 'iam db',
     tables: [{ name: 'users', large: true }, { name: 'roles' }],
   },
-});
+};
 
 describe('GithubDb', () => {
   it('should return proper value', async () => {

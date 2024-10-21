@@ -52,7 +52,7 @@ export function ActionList({
  * To render list/create/update page for a real db table, e.g. `/iam/users.data.json`
  */
 const DbTablePageWrapper = (props: {
-  dbName?: string;
+  dbName: string;
   tableName?: string;
   action?: string;
 }) => {
@@ -64,7 +64,9 @@ const DbTablePageWrapper = (props: {
       repoPath: localStorage.getItem(constants.LS_KEY_GITHUB_REPO_PATH) || '',
       owner: localStorage.getItem(constants.LS_KEY_GITHUB_OWNER) || '',
       repoName: localStorage.getItem(constants.LS_KEY_GITHUB_REPO_NAME) || '',
-      dbsSchema: localStorage.getItem(constants.LS_KEY_DBS_SCHEMA) || '',
+      dbsSchema: JSON.parse(
+        localStorage.getItem(constants.LS_KEY_DBS_SCHEMA) || '{}'
+      ),
     })
   );
 

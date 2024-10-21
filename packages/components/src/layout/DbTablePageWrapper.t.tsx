@@ -13,7 +13,7 @@ describe.skip('DbTablePageWrapper', () => {
   it('renders err when dbName is undefined', () => {
     render(
       <BrowserRouter>
-        <DbTablePageWrapper />
+        <DbTablePageWrapper dbName='iam' tableName='users' action='list' />
       </BrowserRouter>
     );
     const el = screen.getByText(/dbName is undefined/i);
@@ -33,7 +33,7 @@ describe.skip('DbTablePageWrapper', () => {
 
     render(
       <BrowserRouter>
-        <DbTablePageWrapper />
+        <DbTablePageWrapper dbName='iam' tableName='users' action='list' />
       </BrowserRouter>
     );
     // screen.debug();

@@ -21,7 +21,9 @@ const CommonPageWrapper = (props: Props) => {
       repoPath: localStorage.getItem(constants.LS_KEY_GITHUB_REPO_PATH) || '',
       owner: localStorage.getItem(constants.LS_KEY_GITHUB_OWNER) || '',
       repoName: localStorage.getItem(constants.LS_KEY_GITHUB_REPO_NAME) || '',
-      dbsSchema: localStorage.getItem(constants.LS_KEY_DBS_SCHEMA) || '',
+      dbsSchema: JSON.parse(
+        localStorage.getItem(constants.LS_KEY_DBS_SCHEMA) || '{}'
+      ),
     })
   );
 

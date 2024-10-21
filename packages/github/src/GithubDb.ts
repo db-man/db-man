@@ -13,12 +13,16 @@ import Github from './Github';
  * @example
  * ```js
  * const dbsSchema = {
- *  "iam": [
- *     {
- *       "name": "users",
- *       "large": false
- *     }
- *   ]
+ *  "iam": {
+ *     "name": "iam",
+ *     "description": "iam db",
+ *     tables: [
+ *       {
+ *         "name": "users",
+ *         "large": false
+ *       }
+ *     ]
+ *   }
  * };
  * const githubDb = new GithubDb({
  *   personalAccessToken
@@ -42,6 +46,9 @@ export default class GithubDb {
 
   github: Github;
 
+  /**
+   * Cache dbsSchema in this class, so that we don't need to get it from GitHub API every time
+   */
   constructor({
     personalAccessToken,
     repoPath,
@@ -51,7 +58,7 @@ export default class GithubDb {
   }: {
     personalAccessToken: string;
     repoPath: string;
-    dbsSchema: string;
+    dbsSchema: DatabaseMap;
     owner: string;
     repoName: string;
   }) {
@@ -74,7 +81,7 @@ export default class GithubDb {
     this.LS_KEY_GITHUB_REPO_PATH = repoPath;
     this.LS_KEY_GITHUB_OWNER = owner;
     this.LS_KEY_GITHUB_REPO_NAME = repoName;
-    this.dbsSchema = JSON.parse(dbsSchema);
+    this.dbsSchema = dbsSchema;
 
     this.github = new Github({
       personalAccessToken: this.LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN,
@@ -132,11 +139,11 @@ export default class GithubDb {
    * @return {string} e.g. "dbs/dbName/dbcfg.json"
    * @private
    */
-  getDbTableColDefPath(dbName) {
+  getDbTableColDefPath(dbName: string) {
     return `${this.LS_KEY_GITHUB_REPO_PATH}/${dbName}/${DB_CFG_FILENAME}`;
   }
 
-  async getDbTablesSchemaAsync(dbName) {
+  async getDbTablesSchemaAsync(dbName: string) {
     const { content } = await this.github.getFileContentAndSha(
       this.getDbTableColDefPath(dbName)
     );
@@ -144,19 +151,18 @@ export default class GithubDb {
   }
 
   /**
-   * @param {string} dbName
-   * @param {string} tableName
-   * @returns {Object|null} Returns null when table not found
+   * Get table schema from dbSchema
+   * Returns null when table not found
    */
-  getTable(dbName, tableName) {
+  getTableSchema(dbName: string, tableName: string) {
     if (!this.dbsSchema || !this.dbsSchema[dbName]) {
       throw new Error('this.dbsSchema is invalid!');
     }
     return this.dbsSchema[dbName].tables.find(({ name }) => name === tableName);
   }
 
-  isLargeTable(dbName, tableName) {
-    const table = this.getTable(dbName, tableName);
+  isLargeTable(dbName: string, tableName: string) {
+    const table = this.getTableSchema(dbName, tableName);
     if (!table) return false;
     return table.large;
   }

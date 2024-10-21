@@ -22,12 +22,16 @@ How to use `GithubDb` class:
 import { GithubDb } from '@db-man/github';
 
 const dbsSchema = {
-  iam: [
-    {
-      name: 'users',
-      large: false,
-    },
-  ],
+  iam: {
+    name: 'iam',
+    description: 'iam db',
+    tables: [
+      {
+        name: 'users',
+        large: false,
+      },
+    ],
+  },
 };
 
 const githubDb = new GithubDb({
