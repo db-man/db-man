@@ -23,4 +23,4 @@ jobs:
         run: npx lerna@4 bootstrap
 
       - name: Run tests
-        run: npm test
+        run: lerna --version; npm test
