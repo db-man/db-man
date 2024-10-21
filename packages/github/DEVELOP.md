@@ -30,5 +30,5 @@ npm run build
 Start to publish (Change `ghp_123` to your GitHub personal access token)
 
 ```
-TOKEN=ghp_123 npm run release
+GH_TOKEN=ghp_123 npm run release
 ```
