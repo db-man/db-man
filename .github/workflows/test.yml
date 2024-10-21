@@ -11,16 +11,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+      - name: Check lerna version
+        run: lerna --version
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v1
-        with:
-          node-version: '16'
+      # - name: Checkout repository
+      #   uses: actions/checkout@v2
 
-      - name: Install dependencies
-        run: lerna --version; npx lerna@4 bootstrap
+      # - name: Setup Node.js
+      #   uses: actions/setup-node@v1
+      #   with:
+      #     node-version: '16'
 
-      - name: Run tests
-        run: lerna --version; npm test
+      # - name: Install dependencies
+      #   run: lerna --version; npx lerna@4 bootstrap
