@@ -38,7 +38,7 @@ export default class GithubDb {
 
   LS_KEY_GITHUB_REPO_NAME: string;
 
-  dbs: DatabaseMap;
+  dbsSchema: DatabaseMap;
 
   github: Github;
 
@@ -74,7 +74,7 @@ export default class GithubDb {
     this.LS_KEY_GITHUB_REPO_PATH = repoPath;
     this.LS_KEY_GITHUB_OWNER = owner;
     this.LS_KEY_GITHUB_REPO_NAME = repoName;
-    this.dbs = JSON.parse(dbsSchema);
+    this.dbsSchema = JSON.parse(dbsSchema);
 
     this.github = new Github({
       personalAccessToken: this.LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN,
@@ -149,10 +149,10 @@ export default class GithubDb {
    * @returns {Object|null} Returns null when table not found
    */
   getTable(dbName, tableName) {
-    if (!this.dbs || !this.dbs[dbName]) {
+    if (!this.dbsSchema || !this.dbsSchema[dbName]) {
       throw new Error('this.dbs is invalid!');
     }
-    return this.dbs[dbName].tables.find(({ name }) => name === tableName);
+    return this.dbsSchema[dbName].tables.find(({ name }) => name === tableName);
   }
 
   isLargeTable(dbName, tableName) {
