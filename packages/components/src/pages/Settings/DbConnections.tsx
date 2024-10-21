@@ -82,7 +82,14 @@ const DbConnections = ({ storage }: { storage: StorageType }) => {
   return (
     <div className='dbm-db-connections'>
       <Title level={2}>Database Connections</Title>
-      <EditableTable storage={storage} onEnable={handleDbConnectionEnable} />
+      <EditableTable
+        storage={storage}
+        isConnectionEnabled={(record: TableRowType) =>
+          record.owner === storage.get(constants.LS_KEY_GITHUB_OWNER) &&
+          record.repo === storage.get(constants.LS_KEY_GITHUB_REPO_NAME)
+        }
+        onEnable={handleDbConnectionEnable}
+      />
       <Tooltip title='Export the database connection configs to a JSON file.'>
         <Button onClick={handleExport}>Export</Button>
       </Tooltip>{' '}

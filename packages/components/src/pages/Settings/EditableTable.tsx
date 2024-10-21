@@ -58,9 +58,11 @@ function EditableCell({
 function EditableTable({
   storage,
   onEnable,
+  isConnectionEnabled,
 }: {
   storage: StorageType;
   onEnable: (record: TableRowType) => void;
+  isConnectionEnabled: (record: TableRowType) => boolean;
 }) {
   const [form] = Form.useForm();
   const [data, setData] = useState<TableRowType[]>([]);
@@ -278,13 +280,11 @@ function EditableTable({
       if (col.dataIndex !== 'key') {
         return col;
       }
+      // render the "key" column with a check icon if it's the current connection
       return {
         ...col,
         render: (text: string, record: TableRowType) => {
-          if (
-            record.owner === storage.get(constants.LS_KEY_GITHUB_OWNER) &&
-            record.repo === storage.get(constants.LS_KEY_GITHUB_REPO_NAME)
-          ) {
+          if (isConnectionEnabled(record)) {
             return (
               <span>
                 {text} <CheckCircleOutlined style={{ color: 'red' }} />
