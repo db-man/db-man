@@ -16,7 +16,7 @@ jobs:
           node-version: '16'
 
       - name: Install dependencies
-        run: npx lerna bootstrap
+        run: npx lerna@4 bootstrap
 
       - name: Run tests
         run: npm test
