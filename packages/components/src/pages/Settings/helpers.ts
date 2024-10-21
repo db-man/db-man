@@ -1,8 +1,9 @@
 import { message } from 'antd';
-import { types } from '@db-man/github';
+import { Github, types } from '@db-man/github';
 
 import * as constants from '../../constants';
 import { errMsg } from '../../utils';
+import { TableRowType } from './EditableTable';
 
 const loadDbsSchemaAsync = async (github: any, repoPath: string) => {
   // Get all db names in root dir, db name is sub dir name
@@ -84,14 +85,56 @@ const validateDbsSchame = (dbsSchema: types.DatabaseMap) => {
   return errors.length === 0;
 };
 
-const reloadDbsSchemaAsync = async (github: any) => {
+const reloadDbsSchemaAsync = async (enabledConnection: TableRowType) => {
   message.info('Start loading DBs schema...');
+
+  console.debug(
+    'Saved to localStorage:',
+    constants.LS_KEY_GITHUB_OWNER,
+    enabledConnection.owner
+  );
+  console.debug(
+    'Saved to localStorage:',
+    constants.LS_KEY_GITHUB_REPO_NAME,
+    enabledConnection.repo
+  );
+  console.debug(
+    'Saved to localStorage:',
+    constants.LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN,
+    enabledConnection.token
+  );
+  console.debug(
+    'Saved to localStorage:',
+    constants.LS_KEY_GITHUB_REPO_MODES,
+    enabledConnection.modes
+  );
+
+  localStorage.setItem(constants.LS_KEY_GITHUB_OWNER, enabledConnection.owner);
+  localStorage.setItem(
+    constants.LS_KEY_GITHUB_REPO_NAME,
+    enabledConnection.repo
+  );
+  localStorage.setItem(
+    constants.LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN,
+    enabledConnection.token
+  );
+  localStorage.setItem(
+    constants.LS_KEY_GITHUB_REPO_MODES,
+    enabledConnection.modes
+  );
+
+  const github = new Github({
+    personalAccessToken: enabledConnection.token || '',
+    owner: enabledConnection.owner || '',
+    repoName: enabledConnection.repo || '',
+  });
 
   // get repo path from dbs.json in repo root dir
   // in this file will tell where to find all db files
   // TODO: test this with non split-table mode
   const res = await github.getFileContentAndSha(constants.DBS_CFG_FILENAME);
 
+  // @ts-ignore
   const repoPath = res.content.repoPath;
   if (!repoPath) {
     errMsg('Repo path not found in dbs.json!');
