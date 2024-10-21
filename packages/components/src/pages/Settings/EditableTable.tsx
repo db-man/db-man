@@ -65,15 +65,11 @@ function EditableTable({
   isConnectionEnabled: (record: TableRowType) => boolean;
 }) {
   const [form] = Form.useForm();
-  const [data, setData] = useState<TableRowType[]>([]);
-  const [editingKey, setEditingKey] = useState('');
-
-  useEffect(() => {
+  const [data, setData] = useState<TableRowType[]>(() => {
     const connections = storage.get(constants.LS_KEY_DB_CONNECTIONS);
-    if (connections) {
-      setData(JSON.parse(connections));
-    }
-  }, []);
+    return connections ? JSON.parse(connections) : [];
+  });
+  const [editingKey, setEditingKey] = useState('');
 
   const isEditing = (record: TableRowType) => record.key === editingKey;
 
