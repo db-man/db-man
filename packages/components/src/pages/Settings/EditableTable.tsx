@@ -56,14 +56,14 @@ function EditableCell({
 }
 
 function EditableTable({
-  storage,
   defaultData,
   onEnable,
+  onSave,
   isConnectionEnabled,
 }: {
-  storage: StorageType;
   defaultData: TableRowType[];
   onEnable: (record: TableRowType) => void;
+  onSave: (data: TableRowType[]) => void;
   isConnectionEnabled: (record: TableRowType) => boolean;
 }) {
   const [form] = Form.useForm();
@@ -74,7 +74,7 @@ function EditableTable({
 
   const saveData = (d: TableRowType[]) => {
     setData(d);
-    storage.set(constants.LS_KEY_DB_CONNECTIONS, JSON.stringify(d));
+    onSave(d);
   };
 
   const handleAddRow = () => {

@@ -44,6 +44,10 @@ const DbConnections = ({ storage }: { storage: StorageType }) => {
     reloadDbsSchemaAsync(github).then(() => {});
   };
 
+  const handleDbConnectionSave = (connections: TableRowType[]) => {
+    storage.set(constants.LS_KEY_DB_CONNECTIONS, JSON.stringify(connections));
+  };
+
   const handleExport = () => {
     const jsonStrData = JSON.stringify({
       [constants.LS_KEY_DB_CONNECTIONS]: storage.get(
@@ -83,7 +87,6 @@ const DbConnections = ({ storage }: { storage: StorageType }) => {
     <div className='dbm-db-connections'>
       <Title level={2}>Database Connections</Title>
       <EditableTable
-        storage={storage}
         defaultData={JSON.parse(
           storage.get(constants.LS_KEY_DB_CONNECTIONS) || '[]'
         )}
@@ -92,6 +95,7 @@ const DbConnections = ({ storage }: { storage: StorageType }) => {
           record.repo === storage.get(constants.LS_KEY_GITHUB_REPO_NAME)
         }
         onEnable={handleDbConnectionEnable}
+        onSave={handleDbConnectionSave}
       />
       <Tooltip title='Export the database connection configs to a JSON file.'>
         <Button onClick={handleExport}>Export</Button>
