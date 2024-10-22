@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { act } from 'react';
 import { BrowserRouter } from 'react-router-dom';
-import { render, act /* screen,  waitFor, */ } from '@testing-library/react';
+import { render /* screen,  waitFor, */ } from '@testing-library/react';
 
 import ListPageBody from './index';
 import PageContext, { PageContextType } from '../../contexts/page';
@@ -58,7 +58,6 @@ describe.skip('ListPageBody', () => {
 
     // githubDb.getTableRows.mockResolvedValue({ content: [{ id: '123', email: 'foo@abc.com' }] });
 
-    // eslint-disable-next-line
     act(() => {
       render(
         <BrowserRouter>

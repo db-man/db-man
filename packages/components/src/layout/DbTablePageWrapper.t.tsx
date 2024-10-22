@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { act } from 'react';
 import { BrowserRouter } from 'react-router-dom';
-import { render, screen, act /* waitFor, */ } from '@testing-library/react';
+import { render, screen /* waitFor, */ } from '@testing-library/react';
 // import { GithubDb } from '@db-man/github';
 
 // import * as constants from '../constants';
@@ -106,7 +106,6 @@ describe.skip('DbTablePageWrapper', () => {
     // Prepare db schema in localStorage
     localStorage.setItem(LS_KEY_DBS_SCHEMA, JSON.stringify(dbsSchema));
 
-    // eslint-disable-next-line testing-library/no-unnecessary-act
     act(() => {
       render(
         <BrowserRouter>
