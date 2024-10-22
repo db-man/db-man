@@ -24,6 +24,7 @@ jobs:
 
       - name: Run tests
         run: |
+          ls -l
           ls -l packages/components/node_modules
           ls -l packages/components/node_modules/@db-man
           ls -l packages/components/node_modules/@db-man/github
