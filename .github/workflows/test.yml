@@ -20,13 +20,12 @@ jobs:
           node-version: '18'
           cache: 'npm'
 
-      - name: Cache npm dependencies
+      - name: Cache NPM deps
         uses: actions/cache@v2
         with:
-          path: '~/.npm'
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: ${{ runner.os }}-npm-
 
       - name: Install dependencies
         run: npm i
