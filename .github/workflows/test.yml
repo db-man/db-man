@@ -22,11 +22,10 @@ jobs:
       - name: Cache npm dependencies
         uses: actions/cache@v2
         with:
-          path: |
-            **/node_modules
-            !**/node_modules/**/node_modules
+          path: '**/node_modules'
           key: ${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
+            ${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-
             ${{ runner.os }}-
 
       - name: Install dependencies
