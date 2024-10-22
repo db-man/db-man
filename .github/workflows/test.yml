@@ -22,10 +22,10 @@ jobs:
       - name: Install dependencies
         run: npm i
 
+      - name: Build
+        run: npm run build
+
       - name: Run tests
         run: |
-          ls -l
-          ls -l packages/components/node_modules
-          ls -l packages/components/node_modules/@db-man
-          ls -l packages/components/node_modules/@db-man/github
+          ls -l node_modules/@db-man
           npm test

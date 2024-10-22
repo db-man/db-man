@@ -13,9 +13,6 @@
     "publish": "lerna publish --no-private"
   },
   "workspaces": [
-    "packages/cli",
-    "packages/components",
-    "packages/github",
-    "packages/google"
+    "packages/*"
   ]
 }
