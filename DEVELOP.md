@@ -3,16 +3,6 @@
 ## Develop
 
 ```sh
-# npm i # install dependencies for all packages
-# npm run dev # start dev env
-# npx lerna run build # build all packages (github+components)
-# npx lerna run dev --scope @db-man/components # start dev env
-# npx lerna run tdd --scope @db-man/components # start TDD
-```
-
-TODO: Use npm workspace
-
-```sh
 npm i # install dependencies for all packages
 npm run build -w packages/github # Build this package first, because it's a dependency of @db-man/components
 npm run dev # start dev env
