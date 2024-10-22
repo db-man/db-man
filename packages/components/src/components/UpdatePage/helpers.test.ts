@@ -1,4 +1,12 @@
+import { utils as githubUtils } from '@db-man/github';
+
 import { getNewRows } from './helpers';
+
+jest.mock('@db-man/github', () => ({
+  utils: {
+    formatDate: jest.fn(() => '2021-07-04 09:16:01'),
+  },
+}));
 
 test('getNewRows should return proper value', () => {
   const formValues = { itemId: 'foo', name: 'Foo (Changed)' };
