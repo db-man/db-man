@@ -3,11 +3,27 @@
 ## Develop
 
 ```sh
-lerna bootstrap # install all dependencies (npm install)
+npm i # install dependencies for all packages
 npm run dev # start dev env
-lerna run build # build all packages (github+components)
-lerna run dev --scope @db-man/components # start dev env
-lerna run tdd --scope @db-man/components # start TDD
+npx lerna run build # build all packages (github+components)
+npx lerna run dev --scope @db-man/components # start dev env
+npx lerna run tdd --scope @db-man/components # start TDD
+```
+
+## Testing
+
+```sh
+npm test
+```
+
+If "existing outputs match the cache, left as is" message found, please use `npx nx reset` to reset the cache.
+
+### CI
+
+To make sure the test case for `formatDate` in `@db-man/github` always use local time, we set the `TZ` environment variable to `Asia/Shanghai` in the CI.
+
+```json
+"test": "TZ=Asia/Shanghai lerna run test"
 ```
 
 ## Publish
@@ -35,7 +51,7 @@ After @db-man/github changed source code, will need this affects @db-man/compone
 
 ```sh
 npx lerna run build --scope @db-man/github # build ts to js (in dist dir)
-npx lerna bootstrap # install the changed @db-man/github dependency
+npm i # install the changed @db-man/github dependency
 rm -rf packages/components/node_modules/.cache # remove create-react-app cache
 ```
 

@@ -2,14 +2,17 @@
   "name": "root",
   "private": true,
   "devDependencies": {
-    "lerna": "^4.0.0",
-    "nx": "^14.5.2"
+    "lerna": "^8.1.8",
+    "nx": "^20.0.3"
   },
   "scripts": {
     "dev": "lerna run dev --scope @db-man/components",
-    "test": "lerna run test",
+    "test": "TZ=Asia/Shanghai lerna run test",
     "build": "lerna run build",
     "prepublishOnly": "npm run build",
     "publish": "lerna publish --no-private"
-  }
+  },
+  "workspaces": [
+    "packages/*"
+  ]
 }

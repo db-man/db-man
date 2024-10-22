@@ -1,6 +1,6 @@
 # db-man
 
 ```sh
-lerna bootstrap
+npm i
 npm run dev
 ```

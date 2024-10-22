@@ -17,10 +17,10 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: '16'
+          node-version: '18'
 
       - name: Install dependencies
-        run: npx lerna@4 bootstrap
+        run: npm i
 
       - name: Run tests
-        run: npm test
+        run: ls -l packages/components/node_modules/@db-man/github; npm test
