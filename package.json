@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "lerna run dev --scope @db-man/components",
-    "test": "lerna run test",
+    "test": "TZ=Asia/Shanghai lerna run test",
     "build": "lerna run build",
     "prepublishOnly": "npm run build",
     "publish": "lerna publish --no-private"

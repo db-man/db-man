@@ -10,6 +10,22 @@ npx lerna run dev --scope @db-man/components # start dev env
 npx lerna run tdd --scope @db-man/components # start TDD
 ```
 
+## Testing
+
+```sh
+npm test
+```
+
+If "existing outputs match the cache, left as is" message found, please use `npx nx reset` to reset the cache.
+
+### CI
+
+To make sure the test case for `formatDate` in `@db-man/github` always use local time, we set the `TZ` environment variable to `Asia/Shanghai` in the CI.
+
+```json
+"test": "TZ=Asia/Shanghai lerna run test"
+```
+
 ## Publish
 
 ```sh
