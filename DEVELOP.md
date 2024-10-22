@@ -4,19 +4,16 @@
 
 ```sh
 npm i # install dependencies for all packages
+npm run build -w packages/github # Build this package first, because it's a dependency of @db-man/components
 npm run dev # start dev env
-npx lerna run build # build all packages (github+components)
-npx lerna run dev --scope @db-man/components # start dev env
-npx lerna run tdd --scope @db-man/components # start TDD
 ```
 
 ## Testing
 
 ```sh
-npm test
+npm run test --workspaces # test all packages
+npm run test -w packages/components # test only single package
 ```
-
-If "existing outputs match the cache, left as is" message found, please use `npx nx reset` to reset the cache.
 
 ### CI
 
@@ -24,6 +21,13 @@ To make sure the test case for `formatDate` in `@db-man/github` always use local
 
 ```json
 "test": "TZ=Asia/Shanghai lerna run test"
+```
+
+## Build
+
+```sh
+npm run build # build all packages
+npm run build -w packages/components # build only single package
 ```
 
 ## Publish

@@ -6,9 +6,9 @@
     "nx": "^20.0.3"
   },
   "scripts": {
-    "dev": "lerna run dev --scope @db-man/components",
-    "test": "TZ=Asia/Shanghai lerna run test",
-    "build": "lerna run build",
+    "dev": "npm run dev -w packages/components",
+    "test": "TZ=Asia/Shanghai npm run test --workspaces",
+    "build": "npm run build --workspaces",
     "prepublishOnly": "npm run build",
     "publish": "lerna publish --no-private"
   },
