@@ -10,6 +10,14 @@ npx lerna run dev --scope @db-man/components # start dev env
 npx lerna run tdd --scope @db-man/components # start TDD
 ```
 
+TODO: Use npm workspace
+
+```sh
+npm run build -w @db-man/components # build only single package
+npm run build -w packages/components # another way to build only single package
+npm run test --workspaces # test all packages
+```
+
 ## Testing
 
 ```sh
