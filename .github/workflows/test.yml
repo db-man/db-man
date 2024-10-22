@@ -23,4 +23,4 @@ jobs:
         run: npm i
 
       - name: Run tests
-        run: npm test
+        run: ls -l packages/components/node_modules/@db-man/github; npm test
