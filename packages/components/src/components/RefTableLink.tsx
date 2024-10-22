@@ -10,7 +10,7 @@ import { getTablePrimaryKey } from '../dbs';
 function RefTableLink({
   dbName,
   tables,
-  value,
+  value = null,
   column,
 }: {
   dbName: string;
@@ -58,8 +58,4 @@ RefTableLink.propTypes = {
     PropTypes.string,
     PropTypes.arrayOf(PropTypes.string),
   ]),
-};
-
-RefTableLink.defaultProps = {
-  value: null,
 };

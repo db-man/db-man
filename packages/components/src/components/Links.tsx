@@ -17,9 +17,9 @@ const isShow = () =>
     : { display: 'none' };
 
 export function Link({
-  children,
-  href,
-  text,
+  children = '',
+  href = '',
+  text = '',
 }: {
   children?: string;
   href?: string;
@@ -44,14 +44,9 @@ export function Link({
   );
 }
 Link.propTypes = types.linkShape;
-Link.defaultProps = {
-  children: '',
-  href: '',
-  text: '',
-};
 
 export function Links({
-  links,
+  links = [],
 }: {
   links: {
     href?: string;
@@ -70,19 +65,16 @@ export function Links({
 Links.propTypes = {
   links: PropTypes.arrayOf(types.link),
 };
-Links.defaultProps = {
-  links: [],
-};
 
 /**
  * @param {string|string[]|undefined} props.description
  * @returns
  */
 export function ImageLink({
-  children,
-  url,
-  imgSrc,
-  description,
+  children = '',
+  url = '',
+  imgSrc = '',
+  description = '',
 }: {
   children?: string;
 } & PhotoType) {
@@ -118,12 +110,6 @@ ImageLink.propTypes = {
   url: PropTypes.string,
   imgSrc: PropTypes.string,
   description: PropTypes.string,
-};
-ImageLink.defaultProps = {
-  children: '',
-  url: '',
-  imgSrc: '',
-  description: '',
 };
 
 // eslint-disable-next-line react/prop-types

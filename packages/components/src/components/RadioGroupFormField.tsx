@@ -11,7 +11,7 @@ function RadioGroupFormField(props: {
   column: DbColumn;
   onChange: (value: string) => void;
 }) {
-  const { value, disabled, column, onChange } = props;
+  const { value, disabled, column, onChange = () => {} } = props;
   const handleChange = (e: RadioChangeEvent) => {
     onChange(e.target.value);
   };
@@ -42,8 +42,4 @@ RadioGroupFormField.propTypes = {
   disabled: PropTypes.bool.isRequired,
   column: columnType.isRequired,
   onChange: PropTypes.func,
-};
-
-RadioGroupFormField.defaultProps = {
-  onChange: () => {},
 };

@@ -12,7 +12,12 @@ interface MultiLineInputBoxProps {
   onChange?: (value: string[]) => void;
 }
 
-export default function MultiLineInputBox(props: MultiLineInputBoxProps) {
+export default function MultiLineInputBox(
+  props: MultiLineInputBoxProps = {
+    value: [],
+    onChange: () => {},
+  }
+) {
   const { value = [], onChange = () => {} } = props;
   const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     onChange(str2arr(event.target.value));
@@ -30,8 +35,4 @@ export default function MultiLineInputBox(props: MultiLineInputBoxProps) {
 MultiLineInputBox.propTypes = {
   value: PropTypes.arrayOf(PropTypes.string),
   onChange: PropTypes.func,
-};
-MultiLineInputBox.defaultProps = {
-  value: [],
-  onChange: () => {},
 };

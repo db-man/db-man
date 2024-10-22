@@ -111,6 +111,4 @@ Detail.propTypes = {
   defaultValues: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
 };
 
-Detail.defaultProps = {};
-
 export default Detail;

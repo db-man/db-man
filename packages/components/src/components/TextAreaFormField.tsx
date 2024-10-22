@@ -12,7 +12,7 @@ interface TextAreaFormFieldProps {
 }
 
 export default function TextAreaFormField(props: TextAreaFormFieldProps) {
-  const { label, value, onChange } = props;
+  const { label, value = '', onChange = () => {} } = props;
   return (
     <div className='dbm-form-field dbm-string-form-field'>
       <b>{label}</b>:{' '}
@@ -29,9 +29,4 @@ TextAreaFormField.propTypes = {
   label: PropTypes.string.isRequired,
   value: PropTypes.string,
   onChange: PropTypes.func,
-};
-
-TextAreaFormField.defaultProps = {
-  value: '',
-  onChange: () => {},
 };

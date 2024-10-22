@@ -43,10 +43,6 @@ FieldWrapperForCreateUpdatePage.propTypes = {
   // ]),
   children: PropTypes.node,
 };
-FieldWrapperForCreateUpdatePage.defaultProps = {
-  // value: '',
-  children: null,
-};
 // FieldWrapper2.contextType = PageContext;
 
 export default FieldWrapperForCreateUpdatePage;

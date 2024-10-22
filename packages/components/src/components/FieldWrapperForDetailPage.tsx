@@ -21,7 +21,7 @@ interface FieldWrapperProps {
  */
 const FieldWrapperForDetailPage = ({
   column,
-  value,
+  value = '',
   children,
 }: FieldWrapperProps) => {
   const { dbName } = useContext(PageContext);
@@ -67,10 +67,6 @@ FieldWrapperForDetailPage.propTypes = {
     PropTypes.arrayOf(PropTypes.string),
   ]),
   children: PropTypes.node,
-};
-FieldWrapperForDetailPage.defaultProps = {
-  value: '',
-  children: null,
 };
 
 export default FieldWrapperForDetailPage;

@@ -8,7 +8,7 @@ export default function BreadcrumbWrapper(props: {
   tableName: string;
   action: string;
 }) {
-  const { dbName, tableName, action } = props;
+  const { dbName = '', tableName = '', action = '' } = props;
   return (
     <Breadcrumb
       style={{ margin: '16px 0' }}
@@ -34,9 +34,4 @@ BreadcrumbWrapper.propTypes = {
   dbName: PropTypes.string,
   tableName: PropTypes.string,
   action: PropTypes.string,
-};
-BreadcrumbWrapper.defaultProps = {
-  dbName: '',
-  tableName: '',
-  action: '',
 };

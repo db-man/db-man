@@ -25,8 +25,8 @@ const encodeTableActionKey = (
 
 const LeftSideMenu: React.FC<LeftSideMenuProps> = ({
   dbName,
-  tableName,
-  action,
+  tableName = '',
+  action = '',
   viewName,
 }) => {
   const { getTablesByDbName, getViewsByDbName } = useAppContext();
@@ -104,11 +104,6 @@ const LeftSideMenu: React.FC<LeftSideMenuProps> = ({
       ]}
     />
   );
-};
-
-LeftSideMenu.defaultProps = {
-  tableName: '',
-  action: '',
 };
 
 export default LeftSideMenu;

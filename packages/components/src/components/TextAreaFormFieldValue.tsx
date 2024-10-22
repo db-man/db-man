@@ -9,7 +9,7 @@ const TextAreaFormFieldValue = (props: {
   const handleChange: React.ChangeEventHandler<HTMLTextAreaElement> = (
     event
   ) => {
-    const { onChange } = props;
+    const { onChange = () => {} } = props;
     onChange(event.target.value);
   };
 
@@ -27,11 +27,6 @@ const TextAreaFormFieldValue = (props: {
 TextAreaFormFieldValue.propTypes = {
   value: PropTypes.string,
   onChange: PropTypes.func,
-};
-
-TextAreaFormFieldValue.defaultProps = {
-  value: '',
-  onChange: () => {},
 };
 
 export default TextAreaFormFieldValue;
