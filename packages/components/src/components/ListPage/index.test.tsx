@@ -29,7 +29,7 @@ const context: PageContextType = {
   appModes: [],
   dbs: {},
 };
-jest.mock('@db-man/github');
+// jest.mock('@db-man/github');
 
 beforeEach(() => {
   (context.githubDb?.getTableRows as any).mockReset();
