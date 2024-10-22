@@ -17,20 +17,11 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
-          cache: 'npm'
-          node-version-file: 'package.json'
-          cache-dependency-path: 'package-lock.json'
-
-      - name: Restore cached node_modules
-        uses: actions/cache@v4
-        id: node_modules
-        with:
-          path: '**/node_modules'
-          key: runtime-node_modules-${{ runner.arch }}-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          node-version: 18
+          cache: npm
 
       - name: Install dependencies
-        run: npm i
+        run: npm ci
 
       # Build this package first, because it's a dependency of @db-man/components
       - name: Build @db-man/github
