@@ -13,6 +13,7 @@ const { Title } = Typography;
 export type StorageType = {
   set: (k: string, v: string) => void;
   get: (k: string) => string | null;
+  remove: (k: string) => void;
 };
 
 const saveToFile = (data: string, filename: string) => {
@@ -48,6 +49,22 @@ const DbConnections = ({ storage }: { storage: StorageType }) => {
 
   const handleImport = () => {
     fileInputRef.current?.click();
+  };
+
+  const handleReset = () => {
+    // remove db info
+    storage.remove(constants.LS_KEY_DB_CONNECTIONS);
+    storage.remove(constants.LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN);
+    storage.remove(constants.LS_KEY_GITHUB_OWNER);
+    storage.remove(constants.LS_KEY_GITHUB_REPO_NAME);
+    storage.remove(constants.LS_KEY_GITHUB_REPO_MODES);
+    storage.remove(constants.LS_KEY_GITHUB_REPO_PATH);
+    storage.remove(constants.LS_KEY_DBS_SCHEMA);
+    // remove switches
+    storage.remove(constants.LS_IS_DARK_THEME);
+    storage.remove(constants.LS_SHOW_DOWNLOAD_BUTTON);
+
+    alert('Finish reset, refresh the webpage.');
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -91,6 +108,9 @@ const DbConnections = ({ storage }: { storage: StorageType }) => {
       </Tooltip>{' '}
       <Tooltip title='Import a JSON file to replace all database connection configs'>
         <Button onClick={handleImport}>Import</Button>
+      </Tooltip>{' '}
+      <Tooltip title='Reset all settings in localStorage, e.g. DB connections, DB schemas'>
+        <Button onClick={handleReset}>Reset</Button>
       </Tooltip>
       {/* This hidden input tag will handle importing config from a JSON file */}
       <input

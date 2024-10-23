@@ -29,6 +29,7 @@ const Settings = () => {
         storage={{
           set: (k, v) => window.localStorage.setItem(k, v),
           get: (k) => window.localStorage.getItem(k),
+          remove: (k) => window.localStorage.removeItem(k),
         }}
       />
     </div>

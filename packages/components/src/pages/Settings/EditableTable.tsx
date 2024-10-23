@@ -174,12 +174,6 @@ function EditableTable({
       editable: false,
     },
     {
-      title: 'owner',
-      dataIndex: 'owner',
-      width: '10%',
-      editable: true,
-    },
-    {
       title: 'token',
       dataIndex: 'token',
       width: '10%',
@@ -192,6 +186,12 @@ function EditableTable({
           defaultValue={token}
         />
       ),
+      editable: true,
+    },
+    {
+      title: 'owner',
+      dataIndex: 'owner',
+      width: '10%',
       editable: true,
     },
     {

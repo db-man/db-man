@@ -7,15 +7,16 @@ export const NUMBER = 'NUMBER';
 export const BOOL = 'BOOL';
 
 // Localstorage keys
-export const LS_KEY_DBS_SCHEMA = 'dbm_dbs_schema';
-export const LS_KEY_GITHUB_OWNER = 'dbm_github_owner';
+// DB info
+export const LS_KEY_DB_CONNECTIONS = 'dbm_db_connections';
 export const LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN =
   'dbm_github_personal_access_token';
-export const LS_KEY_GITHUB_REPO_NAME = 'dbm_github_repo_name';
+export const LS_KEY_GITHUB_OWNER = 'dbm_github_owner'; // owner: db-man
+export const LS_KEY_GITHUB_REPO_NAME = 'dbm_github_repo_name'; // repo: split-table-db
+export const LS_KEY_GITHUB_REPO_MODES = 'dbm_github_repo_modes'; // modes: split-table // TODO: Should put in the dbs.json
 export const LS_KEY_GITHUB_REPO_PATH = 'dbm_github_repo_path';
-export const LS_KEY_GITHUB_REPO_MODES = 'dbm_github_repo_modes';
-export const LS_KEY_DB_CONNECTIONS = 'dbm_db_connections';
-// dbm_is_dark_theme
+export const LS_KEY_DBS_SCHEMA = 'dbm_dbs_schema';
+// other switches
 export const LS_IS_DARK_THEME = 'dbm_is_dark_theme';
 export const LS_SHOW_DOWNLOAD_BUTTON = 'dbm_show_download_button';
 
