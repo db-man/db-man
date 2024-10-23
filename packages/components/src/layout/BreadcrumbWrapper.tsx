@@ -4,9 +4,9 @@ import { Link } from 'react-router-dom';
 import { Breadcrumb } from 'antd';
 
 export default function BreadcrumbWrapper(props: {
-  dbName: string;
-  tableName: string;
-  action: string;
+  dbName?: string;
+  tableName?: string;
+  action?: string;
 }) {
   const { dbName = '', tableName = '', action = '' } = props;
   return (

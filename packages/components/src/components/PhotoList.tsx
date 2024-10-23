@@ -18,7 +18,7 @@ const listGrid = {
 export type PhotoType = {
   url: string;
   imgSrc: string;
-  description: string;
+  description?: string;
 };
 
 const isShow = () =>

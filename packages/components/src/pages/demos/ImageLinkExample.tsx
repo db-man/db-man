@@ -28,7 +28,10 @@ const Demos = () => {
         photos: ['https://docs.mapbox.com/mapbox-gl-js/assets/cat.png'],
       })}
       Render from component:
-      <ImageLink>https://docs.mapbox.com/mapbox-gl-js/assets/cat.png</ImageLink>
+      <ImageLink
+        imgSrc='https://docs.mapbox.com/mapbox-gl-js/assets/cat.png'
+        url='https://docs.mapbox.com/mapbox-gl-js/assets/cat.png'
+      />
     </>
   );
 };

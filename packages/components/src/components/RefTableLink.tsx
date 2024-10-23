@@ -10,12 +10,12 @@ import { getTablePrimaryKey } from '../dbs';
 function RefTableLink({
   dbName,
   tables,
-  value = null,
+  value,
   column,
 }: {
   dbName: string;
   tables: DbTable[];
-  value: string | string[] | null;
+  value?: string;
   column: DbColumn;
 }) {
   const { referenceTable } = column;
