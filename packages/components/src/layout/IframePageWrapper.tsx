@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 
 import DbTablePageWrapper from './DbTablePageWrapper';
 import { useAppContext } from '../contexts/AppContext';
-import NotFoundDb from '../components/NotFoundDb';
+import NotFound from '../components/NotFound';
 
 function IframePageWrapper() {
   const { dbName, tableName, action } = useParams();
@@ -16,7 +16,7 @@ function IframePageWrapper() {
   const selectedDb = dbs[dbName];
   if (!selectedDb) {
     // Normally this is because we dont have db schema in localStorage
-    return <NotFoundDb />;
+    return <NotFound name='db' />;
   }
 
   return (

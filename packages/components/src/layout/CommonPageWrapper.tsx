@@ -4,6 +4,7 @@ import { GithubDb } from '@db-man/github';
 import * as constants from '../constants';
 import CommonPageContext from '../contexts/commonPage';
 import NavBar from '../components/NavBar';
+import NotFound from '../components/NotFound';
 
 const { Provider } = CommonPageContext;
 
@@ -13,6 +14,11 @@ type Props = {
 
 // TODO: Because this file is copied from DbTablePageWrapper.tsx, so some of the codes are duplicated
 const CommonPageWrapper = (props: Props) => {
+  if (!localStorage.getItem(constants.LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN)) {
+    // Normally this is because we dont enable any db connection
+    return <NotFound name='enabled db connection' />;
+  }
+
   const githubDbRef = useRef(
     new GithubDb({
       personalAccessToken:
