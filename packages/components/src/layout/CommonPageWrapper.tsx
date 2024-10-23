@@ -14,24 +14,23 @@ type Props = {
 
 // TODO: Because this file is copied from DbTablePageWrapper.tsx, so some of the codes are duplicated
 const CommonPageWrapper = (props: Props) => {
+  const githubDbRef = useRef<GithubDb | null>(null);
+
   if (!localStorage.getItem(constants.LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN)) {
     // Normally this is because we dont enable any db connection
     return <NotFound name='enabled db connection' />;
   }
 
-  const githubDbRef = useRef(
-    new GithubDb({
-      personalAccessToken:
-        localStorage.getItem(constants.LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN) ||
-        '',
-      repoPath: localStorage.getItem(constants.LS_KEY_GITHUB_REPO_PATH) || '',
-      owner: localStorage.getItem(constants.LS_KEY_GITHUB_OWNER) || '',
-      repoName: localStorage.getItem(constants.LS_KEY_GITHUB_REPO_NAME) || '',
-      dbsSchema: JSON.parse(
-        localStorage.getItem(constants.LS_KEY_DBS_SCHEMA) || '{}'
-      ),
-    })
-  );
+  githubDbRef.current = new GithubDb({
+    personalAccessToken:
+      localStorage.getItem(constants.LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN) || '',
+    repoPath: localStorage.getItem(constants.LS_KEY_GITHUB_REPO_PATH) || '',
+    owner: localStorage.getItem(constants.LS_KEY_GITHUB_OWNER) || '',
+    repoName: localStorage.getItem(constants.LS_KEY_GITHUB_REPO_NAME) || '',
+    dbsSchema: JSON.parse(
+      localStorage.getItem(constants.LS_KEY_DBS_SCHEMA) || '{}'
+    ),
+  });
 
   const pageInfo = () => {
     return {
