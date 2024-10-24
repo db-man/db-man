@@ -4,8 +4,8 @@ import { insightsUtils } from '@db-man/github';
 // Function to execute git log command
 function getGitLogAsync(dir, dbTable) {
   return new Promise((resolve, reject) => {
-    // git log --follow --numstat --pretty="%H %ad" --date=short -- db_files_dir/iam/roles.data.json
-    const cmd = `git log --follow --numstat --pretty="%H %ad" --date=short -- ${dir}/${dbTable}.data.json`;
+    // git --no-pager log --follow --numstat --pretty="%H %ad" --date=short -- db_files_dir/iam/roles.data.json
+    const cmd = `git --no-pager log --follow --numstat --pretty="%H %ad" --date=short -- ${dir}/${dbTable}.data.json`;
     console.log(`Executing git log command: ${cmd}`);
     exec(cmd, (error, stdout, stderr) => {
       if (error) {
