@@ -1,6 +1,6 @@
 {
   "name": "@db-man/cli",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "CLI for db-man",
   "repository": {
     "type": "git",
@@ -14,7 +14,7 @@
   "homepage": "https://github.com/db-man/cli#readme",
   "bin": "./bin/cli.mjs",
   "dependencies": {
-    "@db-man/github": "^0.1.48"
+    "@db-man/github": "^0.1.49"
   },
   "gitHead": "4943ccff075633a097c80072d4dbf0b9a4f753a2"
 }
