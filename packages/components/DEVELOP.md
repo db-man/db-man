@@ -63,3 +63,5 @@ export const FieldValueWarning = ({ expectedType, value }) => {
 
 - Why `dist` dir should be pushed to repo?
   - Because in github.com/db-man/db-man.github.io, it depends current package from direct GitHub repo like this: `... "dependencies": { "@db-man/components": "github:db-man/components", ...`
+- Why has `eslint-config-react-app` in `devDependencies`?
+  - Acutally `react-script` already has this package as `dependencies`, but npm workspace didn't support it very well, so if not install it in `devDependencies`, will see error `[eslint] Failed to load config "react-app" to extend from`. https://github.com/db-man/db-man/issues/7
