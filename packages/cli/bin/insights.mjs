@@ -2,10 +2,10 @@ import { exec } from 'child_process';
 import { insightsUtils } from '@db-man/github';
 
 // Function to execute git log command
-function getGitLogAsync(dbTable) {
+function getGitLogAsync(dir, dbTable) {
   return new Promise((resolve, reject) => {
     // git log --follow --numstat --pretty="%H %ad" --date=short -- db_files_dir/iam/roles.data.json
-    const cmd = `git log --follow --numstat --pretty="%H %ad" --date=short -- db_files_dir/${dbTable}.data.json`;
+    const cmd = `git log --follow --numstat --pretty="%H %ad" --date=short -- ${dir}/${dbTable}.data.json`;
     console.log(`Executing git log command: ${cmd}`);
     exec(cmd, (error, stdout, stderr) => {
       if (error) {
@@ -22,8 +22,8 @@ function getGitLogAsync(dbTable) {
   });
 }
 
-const insightsAsync = async (dbTable) => {
-  const rawLog = await getGitLogAsync(dbTable);
+const insightsAsync = async (dir, dbTable) => {
+  const rawLog = await getGitLogAsync(dir, dbTable);
   console.log('rawLog:', rawLog);
 
   let tmp = insightsUtils.convertCommitData(rawLog);

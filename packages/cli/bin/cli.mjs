@@ -48,7 +48,7 @@ const dbTable = process.argv[3]; // Optional, only process this db table, e.g. "
       await processDbs(mergeRecordFilesToTableFile, dir, dbTable);
     })();
   } else if (opt === 'insights') {
-    insightsAsync(dbTable);
+    insightsAsync(dir, dbTable);
   } else {
     console.error('Invalid params, should be "split" or "merge".');
     console.error('For example, "$ db-man-cli split".');
