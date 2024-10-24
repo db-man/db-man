@@ -26,7 +26,7 @@ import insightsAsync from './insights.mjs';
  */
 
 const opt = process.argv[2];
-const dbTable = process.argv[3]; // Optional, only process this db table
+const dbTable = process.argv[3]; // Optional, only process this db table, e.g. "iam/users".
 
 (() => {
   if (!opt) {
@@ -48,7 +48,7 @@ const dbTable = process.argv[3]; // Optional, only process this db table
       await processDbs(mergeRecordFilesToTableFile, dir, dbTable);
     })();
   } else if (opt === 'insights') {
-    insightsAsync();
+    insightsAsync(dbTable);
   } else {
     console.error('Invalid params, should be "split" or "merge".');
     console.error('For example, "$ db-man-cli split".');
