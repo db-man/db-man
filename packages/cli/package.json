@@ -13,5 +13,8 @@
   },
   "homepage": "https://github.com/db-man/cli#readme",
   "bin": "./bin/cli.mjs",
+  "dependencies": {
+    "@db-man/github": "^0.1.48"
+  },
   "gitHead": "4943ccff075633a097c80072d4dbf0b9a4f753a2"
 }

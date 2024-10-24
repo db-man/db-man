@@ -1,10 +1,29 @@
 #! /usr/bin/env node
+
+import fs from 'fs';
+
 import {
   processDbs,
   splitTableFileToRecordFiles,
   mergeRecordFilesToTableFile,
 } from './utils.mjs';
-import fs from 'fs';
+import insightsAsync from './insights.mjs';
+
+/**
+ * This script is used to:
+ * - Split a large table file into multiple record files.
+ * - Merge multiple record files into a large table file.
+ * - Convert git log commit data to csv format which shows the total number of lines in a file on each date
+ *
+ * This script need to run in the root of the db repo.
+ *
+ * Usage:
+ * ```sh
+ * npx @db-man/cli split
+ * npx @db-man/cli split iam/users
+ * npx @db-man/cli insights iam/users
+ * ```
+ */
 
 const opt = process.argv[2];
 const dbTable = process.argv[3]; // Optional, only process this db table
@@ -28,6 +47,8 @@ const dbTable = process.argv[3]; // Optional, only process this db table
     (async () => {
       await processDbs(mergeRecordFilesToTableFile, dir, dbTable);
     })();
+  } else if (opt === 'insights') {
+    insightsAsync();
   } else {
     console.error('Invalid params, should be "split" or "merge".');
     console.error('For example, "$ db-man-cli split".');
