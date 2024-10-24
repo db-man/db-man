@@ -14,9 +14,9 @@ export function convertCommitData(input: string): string[] {
 
   for (let i = 0; i < lines.length; i += 3) {
     // lines[i]="commit_hash_1 2024-10-01"
-    // lines[i + 1]="1\t0\ta.txt"
+    // lines[i + 2]="1\t0\ta.txt"
     const date = lines[i].split(' ')[1];
-    const [num1, num2] = lines[i + 1].split('\t').slice(0, 2);
+    const [num1, num2] = lines[i + 2].split('\t').slice(0, 2);
     result.push(`${date},${num1},${num2}`);
   }
 
