@@ -33,7 +33,7 @@ const insightsAsync = async (dbTable) => {
   console.log('after processCSVData:', tmp);
 
   // Write the converted data to stdout
-  console.log(tmp);
+  console.log(tmp.join('\n'));
 };
 
 export default insightsAsync;

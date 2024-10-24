@@ -8,7 +8,7 @@
 /**
  * Convert git log commit data to csv format which has 3 columns: date, added_line_count, deleted_line_count
  */
-export function convertCommitData(input: string): string {
+export function convertCommitData(input: string): string[] {
   const lines = input.trim().split('\n');
   const result: string[] = [];
 
@@ -20,16 +20,13 @@ export function convertCommitData(input: string): string {
     result.push(`${date},${num1},${num2}`);
   }
 
-  return result.join('\n');
+  return result;
 }
 
 /**
  * Process CSV data to show the total number of lines in a file on each date.
  */
-export function processCSVData(data) {
-  // Split the data into lines
-  const lines = data.trim().split('\n');
-
+export function processCSVData(lines: string[]): string[] {
   // Initialize an object to store the aggregated data
   const aggregatedData = {};
 
@@ -56,5 +53,5 @@ export function processCSVData(data) {
     output.push(`${date},${totalLines}`);
   }
 
-  return output.join('\n');
+  return output;
 }
