@@ -7,6 +7,7 @@
 
 /**
  * Convert git log commit data to csv format which has 3 columns: date, added_line_count, deleted_line_count
+ * The input is generated from `git --no-pager log --follow --numstat --pretty="%H %ad" --date=short -- db_files_dir/iam/roles.data.json`
  */
 export function convertCommitData(input: string): string[] {
   const lines = input.trim().split('\n');
@@ -26,32 +27,28 @@ export function convertCommitData(input: string): string[] {
 /**
  * Process CSV data to show the total number of lines in a file on each date.
  */
-export function processCSVData(lines: string[]): string[] {
-  // Initialize an object to store the aggregated data
-  const aggregatedData = {};
+export function processCSVData(gitChangeLogs: string[]): string[] {
+  const result: string[] = [];
+  let totalLines = 0;
 
-  // Process each line
-  lines.forEach((line) => {
-    const [date, added, deleted] = line.split(',').map((item) => item.trim());
-    const addedLines = parseInt(added, 10);
-    const deletedLines = parseInt(deleted, 10);
+  // Iterate over the git change logs
+  for (let i = gitChangeLogs.length - 1; i >= 0; i--) {
+    const [date, added, deleted] = gitChangeLogs[i].split(',');
+    const addedLines = parseInt(added);
+    const deletedLines = parseInt(deleted);
 
-    // If the date is not in the aggregatedData object, initialize it
-    if (!aggregatedData[date]) {
-      aggregatedData[date] = 0;
+    if (i === gitChangeLogs.length - 1) {
+      // If it's the first entry, it's the creation of the file
+      totalLines = addedLines;
+    } else {
+      totalLines += addedLines - deletedLines;
     }
 
-    // Update the total lines for the date
-    aggregatedData[date] += addedLines + deletedLines;
-  });
-
-  // Convert the aggregated data to a more meaningful format that shows the total number of lines in a file on each date.
-  const output = ['date,total_lines_of_file_on_this_day'];
-  let totalLines = 0;
-  for (const date in aggregatedData) {
-    totalLines += aggregatedData[date];
-    output.push(`${date},${totalLines}`);
+    result.unshift(`${date},${totalLines}`);
   }
 
-  return output;
+  // Add header to the result
+  result.unshift('date,total_lines_of_file_on_this_day');
+
+  return result;
 }
