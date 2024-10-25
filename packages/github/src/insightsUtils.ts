@@ -9,7 +9,7 @@
  * Convert git log commit data to csv format which has 3 columns: date, added_line_count, deleted_line_count
  * The input is generated from `git --no-pager log --follow --numstat --pretty="%H %ad" --date=short -- db_files_dir/iam/roles.data.json`
  */
-export function convertCommitData(input: string): string[] {
+export function parseGitCommitDataToCSV(input: string): string[] {
   const lines = input.trim().split('\n');
   const result: string[] = [];
 

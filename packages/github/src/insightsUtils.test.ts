@@ -1,16 +1,16 @@
 import {
-  convertCommitData,
+  parseGitCommitDataToCSV,
   calcTotalLinesByDateFromGitLogs,
 } from './insightsUtils';
 
-// change logs generated from `git --no-pager log --follow --numstat --pretty="%H %ad" --date=short -- db_files_dir/iam/roles.data.json`, and format into CSV with `convertCommitData` function
+// change logs generated from `git --no-pager log --follow --numstat --pretty="%H %ad" --date=short -- db_files_dir/iam/roles.data.json`, and format into CSV with `parseGitCommitDataToCSV` function
 const gitChangeLogs = [
   '2024-06-17,6,0', // added 6 lines of code, and deleted 0 lines of code
   '2023-08-24,13,7', // added 13 lines of code, and deleted 7 lines of code
   '2023-08-24,8,0', // role.data.json is created on 2023-08-24, and has 8 lines of code added
 ];
 
-describe('convertCommitData', () => {
+describe('parseGitCommitDataToCSV', () => {
   it('should convert commit data correctly', () => {
     const input = `aa952ec79a059ef8a23ca1688568cec997441230 2024-06-17
 
@@ -22,7 +22,7 @@ c20789949d09621e8db0e90c9d09cc6a9052d6fb 2023-08-24
 
 8\t0\tdbs/iam/roles.data.json`;
 
-    const actualOutput = convertCommitData(input);
+    const actualOutput = parseGitCommitDataToCSV(input);
     expect(actualOutput[0]).toBe(gitChangeLogs[0]);
     expect(actualOutput[1]).toBe(gitChangeLogs[1]);
     expect(actualOutput[2]).toBe(gitChangeLogs[2]);
