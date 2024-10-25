@@ -4,7 +4,10 @@ const mockDbsSchema = {
   iam: {
     name: 'iam',
     description: 'iam db',
-    tables: [{ name: 'users', large: true }, { name: 'roles' }],
+    tables: [
+      { name: 'users', large: true, columns: [] },
+      { name: 'roles', columns: [] },
+    ],
   },
 };
 

@@ -81,7 +81,7 @@ export type DatabaseSchema = {
   name: string;
   description: string;
   tables: DbTable[];
-  views: DbView[];
+  views?: DbView[];
 };
 
 /**
