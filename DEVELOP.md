@@ -92,6 +92,7 @@ Root cause: https://stackoverflow.com/questions/44114436/the-create-react-app-im
 ## References
 
 - https://github.com/airbnb/visx/blob/master/packages/visx-axis/package.json
-- Other repo which use GitHub as a database:
+- Other repo/product which use GitHub as a database:
   - https://github.com/issue-db/issue-db
   - https://github.com/DavidBruant/github-as-a-database
+  - https://gitrows.com/
