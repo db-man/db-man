@@ -41,3 +41,5 @@ Run the following commands:
 ```sh
 npx @db-man/cli insights iam/users
 ```
+
+Copy the output to a file `lines.csv`, then use https://csvplot.com/ to plot the chart.
