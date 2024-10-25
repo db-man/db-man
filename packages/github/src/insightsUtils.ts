@@ -25,9 +25,14 @@ export function convertCommitData(input: string): string[] {
 }
 
 /**
- * Process CSV data to show the total number of lines in a file on each date.
+ * Processes git change logs and calculates the total lines of code for each date.
+ *
+ * @param {string[]} gitChangeLogs - Array of strings representing git change logs in the format 'YYYY-MM-DD,added,deleted'.
+ * @returns {string[]} - Array of strings representing the processed CSV data with total lines of code for each date.
  */
-export function processCSVData(gitChangeLogs: string[]): string[] {
+export function calcTotalLinesByDateFromGitLogs(
+  gitChangeLogs: string[]
+): string[] {
   const result: string[] = [];
   let totalLines = 0;
 

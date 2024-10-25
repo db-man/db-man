@@ -1,4 +1,7 @@
-import { convertCommitData, processCSVData } from './insightsUtils';
+import {
+  convertCommitData,
+  calcTotalLinesByDateFromGitLogs,
+} from './insightsUtils';
 
 // change logs generated from `git --no-pager log --follow --numstat --pretty="%H %ad" --date=short -- db_files_dir/iam/roles.data.json`, and format into CSV with `convertCommitData` function
 const gitChangeLogs = [
@@ -26,7 +29,7 @@ c20789949d09621e8db0e90c9d09cc6a9052d6fb 2023-08-24
   });
 });
 
-describe('processCSVData', () => {
+describe('calcTotalLinesByDateFromGitLogs', () => {
   it('should process CSV data correctly', () => {
     const expectedOutput: string[] = [
       'date,total_lines_of_file_on_this_day',
@@ -34,7 +37,7 @@ describe('processCSVData', () => {
       '2023-08-24,14', // 8+(13-7) = 14
       '2023-08-24,8', // new file started from 8 lines of code
     ];
-    const actualOutput = processCSVData(gitChangeLogs);
+    const actualOutput = calcTotalLinesByDateFromGitLogs(gitChangeLogs);
     expect(actualOutput[0]).toBe(expectedOutput[0]);
     expect(actualOutput[1]).toBe(expectedOutput[1]);
     expect(actualOutput[2]).toBe(expectedOutput[2]);

@@ -29,8 +29,8 @@ const insightsAsync = async (dir, dbTable) => {
   let tmp = insightsUtils.convertCommitData(rawLog);
   console.log('after convertCommitData:', tmp);
 
-  tmp = insightsUtils.processCSVData(tmp);
-  console.log('after processCSVData:', tmp);
+  tmp = insightsUtils.calcTotalLinesByDateFromGitLogs(tmp);
+  console.log('after calcTotalLinesByDateFromGitLogs:', tmp);
 
   // Write the converted data to stdout
   console.log(tmp.join('\n'));
