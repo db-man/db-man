@@ -104,7 +104,7 @@ type TableRow = Record<string, any>;
 
 type DbsCfgType = {
   repoPath?: string;
-  dbModes?: string[];
+  dbModes?: string;
 };
 
 // raw response from @octokit/rest API
