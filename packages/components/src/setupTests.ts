@@ -13,7 +13,7 @@ const localStorageMock = (function mock() {
     dbm_dbs_schema:
       '{"iam":[{"name":"users","columns":[{"id":"userId","name":"User ID","primary":true},{"id":"name","name":"Name"},{"id":"age","name":"Age","type":"NUMBER"},{"id":"active","name":"Active","type":"BOOL"},{"id":"tags","name":"Tags","type":"STRING_ARRAY"}]}]}',
     dbm_db_connections:
-      '[{"key":"1","owner":"db-man","token":"123","repo":"db","path":"dbs","modes":""}]',
+      '[{"key":"1","owner":"db-man","token":"123","repo":"db","path":"dbs"}]',
   };
 
   return {

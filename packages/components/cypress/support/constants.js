@@ -7,5 +7,5 @@ export const ghConfig = {
   repoOwner: 'db-man',
   repoName: 'split-table-db',
   repoPath: 'db_files_dir',
-  repoModes: 'split-table',
+  dbModes: 'split-table',
 };

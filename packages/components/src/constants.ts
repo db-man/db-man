@@ -13,8 +13,8 @@ export const LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN =
   'dbm_github_personal_access_token';
 export const LS_KEY_GITHUB_OWNER = 'dbm_github_owner'; // owner: db-man
 export const LS_KEY_GITHUB_REPO_NAME = 'dbm_github_repo_name'; // repo: split-table-db
-export const LS_KEY_GITHUB_REPO_MODES = 'dbm_github_repo_modes'; // modes: split-table // TODO: Should put in the dbs.json
-export const LS_KEY_GITHUB_REPO_PATH = 'dbm_github_repo_path';
+export const LS_KEY_GITHUB_REPO_PATH = 'dbm_github_repo_path'; // repoPath: db_files_dir
+export const LS_KEY_GITHUB_REPO_MODES = 'dbm_github_repo_modes'; // dbModes: split-table
 export const LS_KEY_DBS_SCHEMA = 'dbm_dbs_schema';
 // other switches
 export const LS_IS_DARK_THEME = 'dbm_is_dark_theme';

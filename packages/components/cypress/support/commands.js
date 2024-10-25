@@ -47,7 +47,7 @@ Cypress.Commands.add('enableDbConnection', () => {
       ghConfig.repoName
     );
     cy.get('.dbm-new-connection-editable-cell-title-modes').type(
-      ghConfig.repoModes
+      ghConfig.dbModes
     );
 
     // save the connection

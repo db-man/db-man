@@ -57,8 +57,8 @@ const DbConnections = ({ storage }: { storage: StorageType }) => {
     storage.remove(constants.LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN);
     storage.remove(constants.LS_KEY_GITHUB_OWNER);
     storage.remove(constants.LS_KEY_GITHUB_REPO_NAME);
-    storage.remove(constants.LS_KEY_GITHUB_REPO_MODES);
     storage.remove(constants.LS_KEY_GITHUB_REPO_PATH);
+    storage.remove(constants.LS_KEY_GITHUB_REPO_MODES);
     storage.remove(constants.LS_KEY_DBS_SCHEMA);
     // remove switches
     storage.remove(constants.LS_IS_DARK_THEME);

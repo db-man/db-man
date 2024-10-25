@@ -45,9 +45,6 @@ describe('Settings: Setup DB Connection', () => {
     cy.get('.dbm-new-connection-editable-cell-title-repo').type(
       ghConfig.repoName
     );
-    cy.get('.dbm-new-connection-editable-cell-title-modes').type(
-      ghConfig.repoModes
-    );
 
     // save the connection
     cy.get('.dbm-save-connection-link').click();
@@ -64,12 +61,10 @@ describe('Settings: Setup DB Connection', () => {
         owner: ghConfig.repoOwner,
         token: ghToken,
         repo: ghConfig.repoName,
-        modes: ghConfig.repoModes,
       });
 
-      expect(ls.getItem(LS_KEY_GITHUB_OWNER)).to.equal(ghConfig.repoOwner);
       expect(ls.getItem(LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN)).to.equal(ghToken);
-      expect(ls.getItem(LS_KEY_GITHUB_REPO_MODES)).to.equal(ghConfig.repoModes);
+      expect(ls.getItem(LS_KEY_GITHUB_OWNER)).to.equal(ghConfig.repoOwner);
       expect(ls.getItem(LS_KEY_GITHUB_REPO_NAME)).to.equal(ghConfig.repoName);
     });
 
@@ -84,6 +79,7 @@ describe('Settings: Setup DB Connection', () => {
     cy.window().then((window) => {
       const ls = window.localStorage;
       expect(ls.getItem(LS_KEY_GITHUB_REPO_PATH)).to.equal(ghConfig.repoPath);
+      expect(ls.getItem(LS_KEY_GITHUB_REPO_MODES)).to.equal(ghConfig.dbModes);
       const dbsSchema = JSON.parse(
         window.localStorage.getItem(LS_KEY_DBS_SCHEMA)
       );

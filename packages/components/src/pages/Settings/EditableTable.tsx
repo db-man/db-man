@@ -38,14 +38,14 @@ function EditableCell({
           }}
           rules={[
             {
-              required: title !== 'modes',
+              required: true,
               message: `Please Input ${title}!`,
             },
           ]}
         >
           <Input
             className={`dbm-new-connection-editable-cell-title-${title}`}
-            placeholder={title === 'modes' ? 'split-table' : ''}
+            placeholder=''
           />
         </Form.Item>
       ) : (
@@ -80,10 +80,9 @@ function EditableTable({
   const handleAddRow = () => {
     const newData = [...data];
     const newRow = {
-      owner: '',
       token: '',
+      owner: '',
       repo: '',
-      modes: '',
     };
     newData.push({
       key: '0', // tmp row added, will delete when cancel
@@ -98,10 +97,9 @@ function EditableTable({
 
   const edit = (record: TableRowType) => {
     form.setFieldsValue({
-      owner: '',
       token: '',
+      owner: '',
       repo: '',
-      modes: '',
       ...record,
     });
     setEditingKey(record.key);
@@ -197,12 +195,6 @@ function EditableTable({
     {
       title: 'repo',
       dataIndex: 'repo',
-      width: '10%',
-      editable: true,
-    },
-    {
-      title: 'modes',
-      dataIndex: 'modes',
       width: '10%',
       editable: true,
     },

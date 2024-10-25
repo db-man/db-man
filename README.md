@@ -15,3 +15,7 @@ npm i
 npm run build -w packages/github
 npm run dev
 ```
+
+Tutorial:
+
+- How to create a new database. ([DOC](DOC.md))

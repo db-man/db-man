@@ -103,11 +103,6 @@ const reloadDbsSchemaAsync = async (enabledConnection: TableRowType) => {
     constants.LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN,
     enabledConnection.token
   );
-  console.debug(
-    'Saved to localStorage:',
-    constants.LS_KEY_GITHUB_REPO_MODES,
-    enabledConnection.modes
-  );
 
   localStorage.setItem(constants.LS_KEY_GITHUB_OWNER, enabledConnection.owner);
   localStorage.setItem(
@@ -117,10 +112,6 @@ const reloadDbsSchemaAsync = async (enabledConnection: TableRowType) => {
   localStorage.setItem(
     constants.LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN,
     enabledConnection.token
-  );
-  localStorage.setItem(
-    constants.LS_KEY_GITHUB_REPO_MODES,
-    enabledConnection.modes
   );
 
   const github = new Github({
@@ -139,8 +130,14 @@ const reloadDbsSchemaAsync = async (enabledConnection: TableRowType) => {
     errMsg('Repo path not found in dbs.json!');
     return;
   }
-
   localStorage.setItem(constants.LS_KEY_GITHUB_REPO_PATH, repoPath);
+
+  const dbModes = res.content.dbModes;
+  if (!dbModes) {
+    errMsg('DB modes not found in dbs.json!');
+    return;
+  }
+  localStorage.setItem(constants.LS_KEY_GITHUB_REPO_MODES, dbModes);
 
   let dbsSchema;
   try {
