@@ -39,15 +39,12 @@ Cypress.Commands.add('enableDbConnection', () => {
     cy.get('.ant-table-row > :nth-child(1)').should('have.text', '0');
 
     // fill in the connection details
+    cy.get('.dbm-new-connection-editable-cell-title-token').type(ghToken);
     cy.get('.dbm-new-connection-editable-cell-title-owner').type(
       ghConfig.repoOwner
     );
-    cy.get('.dbm-new-connection-editable-cell-title-token').type(ghToken);
     cy.get('.dbm-new-connection-editable-cell-title-repo').type(
       ghConfig.repoName
-    );
-    cy.get('.dbm-new-connection-editable-cell-title-modes').type(
-      ghConfig.dbModes
     );
 
     // save the connection
