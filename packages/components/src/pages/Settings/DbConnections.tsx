@@ -1,6 +1,5 @@
 import React, { useRef } from 'react';
 
-import { Github } from '@db-man/github';
 import { Button, Tooltip, Typography } from 'antd';
 
 import * as constants from '../../constants';
