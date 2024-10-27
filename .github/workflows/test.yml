@@ -34,5 +34,7 @@ jobs:
         run: npm run build -w packages/github
 
       - name: Run tests
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           npm run test --workspaces
