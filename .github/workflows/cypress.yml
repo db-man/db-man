@@ -15,8 +15,6 @@ jobs:
         uses: actions/checkout@v4
       - name: Setup
         run: |
-          npm -v
-          node -v
           npm i
           npm run build -w packages/github
       - name: Cypress run
