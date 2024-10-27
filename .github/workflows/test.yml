@@ -33,9 +33,6 @@ jobs:
       - name: Build @db-man/github
         run: npm run build -w packages/github
 
-      # - name: Run tests
-      #   run: |
-      #     ls node_modules/@db-man/github
-      #     ls packages/github/dist
-      #     ls packages/github/es6
-      #     npm test
+      - name: Run tests
+        run: |
+          npm run test --workspaces
