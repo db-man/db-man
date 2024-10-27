@@ -29,7 +29,8 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "react-jsx",
-    "baseUrl": "./src"
+    "baseUrl": "./src",
+    "types": ["cypress"]
   },
-  "include": ["src"]
+  "include": ["src", "./cypress.d.ts"]
 }
