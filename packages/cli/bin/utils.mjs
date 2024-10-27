@@ -69,7 +69,7 @@ export const getDbs = async (dir) => {
 
 /**
  *
- * @param {Function} _processTable One of splitTableFileToRecordFiles, mergeRecordFilesToTableFile, integrate
+ * @param {Function} _processTable One of splitTableFileToRecordFiles, mergeRecordFilesToTableFile, testDbIntegrity
  * @param {*} dir
  * @param {string} dbTable Optional, only process this db table, e.g. "iam/users"
  */
@@ -205,7 +205,11 @@ export const mergeRecordFilesToTableFile = async (
   );
 };
 
-export const integrate = async (dir, dbName, tableName, primaryKey) => {
+/**
+ * db integrity testing
+ * TODO check the db data (integrity, etc.), need a single GitHub action to run this regularly
+ */
+export const testDbIntegrity = async (dir, dbName, tableName, primaryKey) => {
   let files = null;
   try {
     files = await readdir(`./${dir}/${dbName}/${tableName}`);
