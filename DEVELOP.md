@@ -88,6 +88,8 @@ Root cause: https://stackoverflow.com/questions/44114436/the-create-react-app-im
 - Feature: Show GitHub Actions pipeline status in the db-man page, so that we can know the latest status of the pipeline.
 - Bug: When updating a record's primary key, a new record will be created, but the old record will be not changed.
 - Why GitHub Action has `lerna` installed by default: https://github.com/db-man/db-man/pull/3
+- After merge action, save git log to a file.
+  - `git --no-pager log --follow --numstat --pretty="%H %ad" --date=short -- db_files_dir/iam/roles.data.json`
 
 ## References
 
