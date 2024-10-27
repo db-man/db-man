@@ -1,12 +1,9 @@
 /* eslint-disable react/prop-types, react/jsx-props-no-spreading */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 import { CheckCircleOutlined } from '@ant-design/icons';
 import { Table, Input, Popconfirm, Form, Typography, Button } from 'antd';
-
-import * as constants from '../../constants';
-import { StorageType } from './DbConnections';
 
 export type TableRowType = {
   [key: string]: string;
