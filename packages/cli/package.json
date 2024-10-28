@@ -16,5 +16,13 @@
   "dependencies": {
     "@db-man/github": "^0.1.57"
   },
+  "devDependencies": {
+    "babel-jest": "^29.4.3",
+    "jest": "^29.6.0"
+  },
+  "scripts": {
+    "test": "jest --detectOpenHandles",
+    "tdd": "jest --detectOpenHandles --watch"
+  },
   "gitHead": "4943ccff075633a097c80072d4dbf0b9a4f753a2"
 }

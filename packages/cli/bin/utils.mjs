@@ -235,3 +235,7 @@ export const testDbIntegrity = async (dir, dbName, tableName, primaryKey) => {
 
   console.log('count:', files.length, rows.length);
 };
+
+export function foo() {
+  return 'bar';
+}
