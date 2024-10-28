@@ -1,5 +1,8 @@
 import GithubDb from './GithubDb';
 
+// no print console.debug
+jest.spyOn(console, 'debug').mockImplementation(() => undefined);
+
 const mockDbsSchema = {
   iam: {
     name: 'iam',
