@@ -25,7 +25,7 @@ export { default as StringFormField } from './components/StringFormField';
 export { default as StringFormFieldValue } from './components/StringFormFieldValue';
 export { default as SuccessMessage } from './components/SuccessMessage';
 export { default as DistinctColumn } from './components/DistinctColumn';
-export { default as QueryPage } from './components/QueryPage';
+export { default as QueryPage } from './pages/DbTablePage/QueryPage';
 export { default as TextAreaFormField } from './components/TextAreaFormField';
 export { default as TextAreaFormFieldValue } from './components/TextAreaFormFieldValue';
 export { default as UpdatePage } from './pages/DbTablePage/UpdatePage';

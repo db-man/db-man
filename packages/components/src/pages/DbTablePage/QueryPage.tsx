@@ -5,10 +5,10 @@ import { lightTheme } from '@uiw/react-json-view/light';
 import { darkTheme } from '@uiw/react-json-view/dark';
 import { Row, Col, Typography } from 'antd';
 
-import PageContext from '../contexts/page';
-import ReactSimpleCodeEditor from './ReactSimpleCodeEditor';
-import { RowType } from '../types/Data';
-import { LS_IS_DARK_THEME } from '../constants';
+import { RowType } from '../../types/Data';
+import { LS_IS_DARK_THEME } from '../../constants';
+import PageContext from '../../contexts/page';
+import ReactSimpleCodeEditor from '../../components/ReactSimpleCodeEditor';
 
 // Use `Typography` so can apply dark theme to text
 const { Text } = Typography;

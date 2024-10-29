@@ -3,10 +3,14 @@
 import React, { useContext } from 'react';
 import { Table, Tabs, Tooltip } from 'antd';
 import type { TableColumnsType, TabsProps } from 'antd';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 
-import PageContext from '../contexts/page';
-import ReactSimpleCodeEditor from './ReactSimpleCodeEditor';
+import { GetPageUiType, UiType } from '../../types/UiType';
+import DbColumn, {
+  TABLE_COLUMN_KEYS,
+  TableColumnKeyType,
+} from '../../types/DbColumn';
+import PageContext from '../../contexts/page';
 import {
   DB_CFG_FILENAME,
   LS_KEY_GITHUB_OWNER,
@@ -15,15 +19,10 @@ import {
   STRING_ARRAY,
   TYPE_CREATE_UPDATE_PAGE,
   TYPE_GET_PAGE,
-} from '../constants';
-import DbColumn, {
-  TABLE_COLUMN_KEYS,
-  TableColumnKeyType,
-} from '../types/DbColumn';
-import { Link } from 'react-router-dom';
-import DistinctColumn from './DistinctColumn';
-import ComponentDemoModal from './ComponentDemoModal';
-import { GetPageUiType, UiType } from '../types/UiType';
+} from '../../constants';
+import DistinctColumn from '../../components/DistinctColumn';
+import ComponentDemoModal from '../../components/ComponentDemoModal';
+import ReactSimpleCodeEditor from '../../components/ReactSimpleCodeEditor';
 
 const genColumn = (
   dbName: string,

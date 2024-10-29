@@ -1,52 +1,17 @@
 /* eslint-disable react/prop-types, react/destructuring-assignment, max-len, no-console, react/no-unused-class-component-methods */
 
 import { useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
-import { message } from 'antd';
+
 import { GithubDb } from '@db-man/github';
+import { message } from 'antd';
 
 import { getColumns, getPrimaryKey, getTablesByDbName } from '../../dbs';
 import * as constants from '../../constants';
 import PageContext from '../../contexts/page';
-import NavBar from './NavBar';
-import { useAppContext } from '../../contexts/AppContext';
 import { actionToComponentMapping } from './pages';
+import NavBar from './NavBar';
 
 const { Provider } = PageContext;
-
-export function TableList({ dbName }: { dbName: string }) {
-  const { dbs, getTablesByDbName } = useAppContext();
-  if (!dbs) return null;
-  const tablesOfSelectedDb = getTablesByDbName(dbName);
-  return (
-    <div>
-      {tablesOfSelectedDb.map(({ name: tName }) => (
-        <li key={tName}>
-          <Link to={`/${dbName}/${tName}`}>{tName}</Link>
-        </li>
-      ))}
-    </div>
-  );
-}
-
-export function ActionList({
-  dbName,
-  tableName,
-}: {
-  dbName: string;
-  tableName: string;
-}) {
-  return (
-    <div>
-      List of actions in table:
-      {['list', 'create'].map((action) => (
-        <li key={action}>
-          <Link to={`/${dbName}/${tableName}/${action}`}>{action}</Link>
-        </li>
-      ))}
-    </div>
-  );
-}
 
 /**
  * To render list/create/update page for a real db table, e.g. `/iam/users.data.json`
