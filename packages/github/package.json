@@ -1,6 +1,6 @@
 {
   "name": "@db-man/github",
-  "version": "0.1.57",
+  "version": "0.1.58",
   "description": "@db-man/github",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
