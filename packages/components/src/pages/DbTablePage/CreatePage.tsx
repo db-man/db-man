@@ -4,13 +4,13 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { message, Spin, Alert } from 'antd';
 import { utils as githubUtils } from '@db-man/github';
 
-import { validatePrimaryKey } from './Form/helpers';
-import SuccessMessage from './SuccessMessage';
-import * as utils from '../utils';
-import Form, { ValueType } from './Form';
-import PageContext from '../contexts/page';
-import * as constants from '../constants';
-import { RowType } from '../types/Data';
+import { validatePrimaryKey } from '../../components/Form/helpers';
+import SuccessMessage from '../../components/SuccessMessage';
+import * as utils from '../../utils';
+import Form, { ValueType } from '../../components/Form';
+import PageContext from '../../contexts/page';
+import * as constants from '../../constants';
+import { RowType } from '../../types/Data';
 
 const CreatePage = () => {
   const { appModes, githubDb, dbName, tableName, primaryKey, columns } =

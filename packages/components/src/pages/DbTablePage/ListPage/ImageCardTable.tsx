@@ -2,8 +2,9 @@ import React, { useContext } from 'react';
 
 import { Alert, Card, Empty, Pagination } from 'antd';
 import { Link } from 'react-router-dom';
-import { ImageLink } from '../Links';
-import PageContext from '../../contexts/page';
+
+import PageContext from '../../../contexts/page';
+import { ImageLink } from '../../../components/Links';
 
 const gridStyle: React.CSSProperties = {
   width: '25%',

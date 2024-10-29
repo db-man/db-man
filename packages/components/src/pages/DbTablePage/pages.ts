@@ -1,9 +1,9 @@
-import CreatePage from './components/CreatePage';
-import UpdatePage from './components/UpdatePage';
-import ListPage from './components/ListPage';
-import GetPage from './components/GetPage';
-import TableConfigPage from './components/TableConfigPage';
-import QueryPage from './components/QueryPage';
+import CreatePage from './CreatePage';
+import UpdatePage from './UpdatePage';
+import ListPage from './ListPage';
+import GetPage from './GetPage';
+import TableConfigPage from './TableConfigPage';
+import QueryPage from './QueryPage';
 
 type PageComponentType = React.ComponentType<{
   dbName: string;

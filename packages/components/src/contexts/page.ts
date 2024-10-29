@@ -18,7 +18,7 @@ export interface PageContextType {
 }
 
 // Store all page info, include db, table, and columns
-// Setter: src/layout/DbTablePageWrapper.tsx
+// Setter: src/layout/DbTablePage.tsx
 const PageContext = React.createContext<PageContextType>({
   // TODO: change appModes to dbModes to align with the key name in dbs.json
   appModes: [], // all db modes: 'split-table'

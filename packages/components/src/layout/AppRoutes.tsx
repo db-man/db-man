@@ -6,9 +6,9 @@ import Demos from '../pages/Demos';
 import QueryPage from '../pages/Query';
 import ViewPage from '../pages/ViewPage';
 import IframePageWrapper from './IframePageWrapper';
-import Database from './Database';
-import Table from './Table';
-import Action from './Action';
+import Database from './DbTableLayout/Database';
+import Table from './DbTableLayout/Table';
+import Action from './DbTableLayout/Action';
 import ComponentDemo from './ComponentDemo';
 import PageLayout from './PageLayout';
 import CommonPageWrapper from './CommonPageWrapper';
@@ -45,6 +45,11 @@ export default function AppRoutes() {
         <Route path=':dbName' element={<Database />}>
           <Route path=':tableName' element={<Table />}>
             <Route path=':action' element={<Action />} />
+            {/**
+             TODO: try split the action to different route
+             <Route path='/list' element={<ListPage />} />
+             <Route path='/create' element={<CreatePage />} />
+             */}
           </Route>
         </Route>
       </Route>
