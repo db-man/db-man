@@ -1,8 +1,8 @@
 import React from 'react';
 import { Outlet, Link, useParams } from 'react-router-dom';
 
-import { useAppContext } from '../contexts/AppContext';
-import NotFound from '../components/NotFound';
+import { useAppContext } from '../../contexts/AppContext';
+import NotFound from '../../components/NotFound';
 
 function Database() {
   const params = useParams();
