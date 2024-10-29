@@ -45,6 +45,11 @@ export default function AppRoutes() {
         <Route path=':dbName' element={<Database />}>
           <Route path=':tableName' element={<Table />}>
             <Route path=':action' element={<Action />} />
+            {/**
+             TODO: try split the action to different route
+             <Route path='/list' element={<ListPage />} />
+             <Route path='/create' element={<CreatePage />} />
+             */}
           </Route>
         </Route>
       </Route>
