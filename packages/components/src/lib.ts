@@ -43,7 +43,7 @@ export { default as AppRoutes } from './layout/AppRoutes';
 export { default as BreadcrumbWrapper } from './layout/BreadcrumbWrapper';
 export { default as Database } from './layout/DbTableLayout/Database';
 export { default as IframePageWrapper } from './layout/IframePageWrapper';
-export { default as DbTablePageWrapper } from './pages/DbTablePage/DbTablePageWrapper';
+export { default as DbTablePage } from './pages/DbTablePage/DbTablePage';
 export { default as Table } from './layout/DbTableLayout/Table';
 
 // pages

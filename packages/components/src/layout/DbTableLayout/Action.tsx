@@ -1,7 +1,7 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 
-import DbTablePageWrapper from '../../pages/DbTablePage/DbTablePageWrapper';
+import DbTablePage from '../../pages/DbTablePage/DbTablePage';
 
 function Action() {
   const params = useParams();
@@ -9,7 +9,7 @@ function Action() {
   if (!params.tableName) return <div>table name is required</div>;
   if (!params.action) return <div>action is required</div>;
   return (
-    <DbTablePageWrapper
+    <DbTablePage
       dbName={params.dbName}
       tableName={params.tableName}
       action={params.action}

@@ -12,7 +12,7 @@ type Props = {
   children: React.ReactNode;
 };
 
-// TODO: Because this file is copied from DbTablePageWrapper.tsx, so some of the codes are duplicated
+// TODO: Because this file is copied from DbTablePage.tsx, so some of the codes are duplicated
 const CommonPageWrapper = (props: Props) => {
   const githubDbRef = useRef<GithubDb | null>(null);
 

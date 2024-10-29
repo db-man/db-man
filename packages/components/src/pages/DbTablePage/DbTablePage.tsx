@@ -16,7 +16,7 @@ const { Provider } = PageContext;
 /**
  * To render list/create/update page for a real db table, e.g. `/iam/users.data.json`
  */
-const DbTablePageWrapper = (props: {
+const DbTablePage = (props: {
   dbName: string;
   tableName?: string;
   action?: string;
@@ -128,4 +128,4 @@ const DbTablePageWrapper = (props: {
   );
 };
 
-export default DbTablePageWrapper;
+export default DbTablePage;

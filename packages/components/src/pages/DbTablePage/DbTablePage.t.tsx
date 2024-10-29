@@ -4,16 +4,16 @@ import { render, screen /* waitFor, */ } from '@testing-library/react';
 // import { GithubDb } from '@db-man/github';
 
 // import * as constants from '../constants';
-import DbTablePageWrapper from './DbTablePageWrapper';
+import DbTablePage from './DbTablePage';
 import { LS_KEY_DBS_SCHEMA } from '../../constants';
 
 // jest.mock('@db-man/github');
 
-describe.skip('DbTablePageWrapper', () => {
+describe.skip('DbTablePage', () => {
   it('renders err when dbName is undefined', () => {
     render(
       <BrowserRouter>
-        <DbTablePageWrapper dbName='iam' tableName='users' action='list' />
+        <DbTablePage dbName='iam' tableName='users' action='list' />
       </BrowserRouter>
     );
     const el = screen.getByText(/dbName is undefined/i);
@@ -33,7 +33,7 @@ describe.skip('DbTablePageWrapper', () => {
 
     render(
       <BrowserRouter>
-        <DbTablePageWrapper dbName='iam' tableName='users' action='list' />
+        <DbTablePage dbName='iam' tableName='users' action='list' />
       </BrowserRouter>
     );
     // screen.debug();
@@ -59,7 +59,7 @@ describe.skip('DbTablePageWrapper', () => {
 
     render(
       <BrowserRouter>
-        <DbTablePageWrapper dbName='iam' tableName='users' action='list' />
+        <DbTablePage dbName='iam' tableName='users' action='list' />
       </BrowserRouter>
     );
     const el = screen.getByText(/No columns found for this table!/i);
@@ -109,7 +109,7 @@ describe.skip('DbTablePageWrapper', () => {
     act(() => {
       render(
         <BrowserRouter>
-          <DbTablePageWrapper dbName='iam' tableName='users' action='list' />
+          <DbTablePage dbName='iam' tableName='users' action='list' />
         </BrowserRouter>
       );
     });
