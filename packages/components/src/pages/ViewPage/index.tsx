@@ -12,6 +12,9 @@ import { useParams } from 'react-router';
 const { Text } = Typography;
 const { SHOW_PARENT } = TreeSelect;
 
+/**
+ * A virutal view for a db table, can be used to join with other tables to construct a complex query
+ */
 export default function ViewPage() {
   const { dbs, getTablesByDbName, getViewByDbNameViewName } = useAppContext();
   const { dbName, viewName } = useParams();
