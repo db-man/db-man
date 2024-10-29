@@ -1,29 +1,44 @@
 import React from 'react';
-import { Outlet, useParams } from 'react-router-dom';
+import { Outlet, Link, useParams } from 'react-router-dom';
 
-import TableList from '../components/TableList';
 import { useAppContext } from '../contexts/AppContext';
 import NotFound from '../components/NotFound';
 
 function Database() {
   const params = useParams();
-  const { dbs } = useAppContext();
+  const { dbs, getTablesByDbName } = useAppContext();
 
   if (!dbs) return <div>Failed to get dbs from localStorage</div>;
   if (!params.dbName) return <div>db name is required</div>;
 
-  const selectedDb = dbs[params.dbName];
+  const { dbName, tableName } = params;
+
+  const selectedDb = dbs[dbName];
   if (!selectedDb) {
     // Normally this is because we dont have db schema in localStorage
     return <NotFound name='db' />;
   }
 
+  const renderTableList = () => {
+    if (!dbs) return null;
+    const tablesOfSelectedDb = getTablesByDbName(dbName);
+    return (
+      <div>
+        {tablesOfSelectedDb.map(({ name: tName }) => (
+          <li key={tName}>
+            <Link to={`/${dbName}/${tName}`}>{tName}</Link>
+          </li>
+        ))}
+      </div>
+    );
+  };
+
   return (
     <div>
-      {!params.tableName && (
+      {!tableName && (
         <div>
           List of tables in DB:
-          <TableList dbName={params.dbName} />
+          {renderTableList()}
         </div>
       )}
       <Outlet />
