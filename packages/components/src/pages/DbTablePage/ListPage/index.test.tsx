@@ -2,9 +2,9 @@ import React, { act } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { render /* screen,  waitFor, */ } from '@testing-library/react';
 
+import { STRING } from '../../../constants';
+import PageContext, { PageContextType } from '../../../contexts/page';
 import ListPageBody from './index';
-import PageContext, { PageContextType } from '../../contexts/page';
-import { STRING } from '../../constants';
 
 const context: PageContextType = {
   dbName: 'db-man',

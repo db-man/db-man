@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 
-import DbTablePageWrapper from './DbTablePageWrapper';
+import DbTablePageWrapper from '../pages/DbTablePage/DbTablePageWrapper';
 import { useAppContext } from '../contexts/AppContext';
 import NotFound from '../components/NotFound';
 

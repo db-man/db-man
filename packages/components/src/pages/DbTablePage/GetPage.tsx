@@ -1,6 +1,6 @@
 import React from 'react';
 
-import GetPageBody from './GetPageBody';
+import GetPageBody from '../../components/GetPageBody';
 
 export default function GetPage({
   dbName,

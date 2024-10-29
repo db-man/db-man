@@ -1,7 +1,7 @@
 import React from 'react';
 import { Outlet, useParams } from 'react-router-dom';
 
-import { ActionList } from './DbTablePageWrapper';
+import { ActionList } from '../pages/DbTablePage/DbTablePageWrapper';
 
 function Table() {
   const params = useParams();

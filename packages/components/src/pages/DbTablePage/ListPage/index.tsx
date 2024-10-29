@@ -24,8 +24,13 @@ import { RightSquareFilled } from '@ant-design/icons';
 // @ts-ignore TODO: fix types for lodash
 import debounce from 'lodash.debounce';
 
-import PageContext, { PageContextType } from '../../contexts/page';
-import { getColumnRender } from '../../ddRender/ddRender';
+import { RowType } from '../../../types/Data';
+import PageContext, { PageContextType } from '../../../contexts/page';
+import { getColumnRender } from '../../../ddRender/ddRender';
+import * as constants from '../../../constants';
+import RefTableLinks from '../../../components/RefTableLinks';
+import ImageCardTable, { CardTablePagination } from './ImageCardTable';
+import RandomList from '../../../components/RandomList';
 import {
   findDuplicates,
   getFilteredData,
@@ -36,11 +41,6 @@ import {
   getInitialSorter,
   filterCols,
 } from './helpers';
-import RefTableLinks from '../RefTableLinks';
-import * as constants from '../../constants';
-import { RowType } from '../../types/Data';
-import ImageCardTable, { CardTablePagination } from './ImageCardTable';
-import RandomList from '../RandomList';
 
 // Use `Typography` so can apply dark theme to text
 const { Text } = Typography;

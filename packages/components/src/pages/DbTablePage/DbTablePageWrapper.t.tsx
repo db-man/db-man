@@ -5,7 +5,7 @@ import { render, screen /* waitFor, */ } from '@testing-library/react';
 
 // import * as constants from '../constants';
 import DbTablePageWrapper from './DbTablePageWrapper';
-import { LS_KEY_DBS_SCHEMA } from '../constants';
+import { LS_KEY_DBS_SCHEMA } from '../../constants';
 
 // jest.mock('@db-man/github');
 

@@ -5,12 +5,12 @@ import { Link } from 'react-router-dom';
 import { message } from 'antd';
 import { GithubDb } from '@db-man/github';
 
-import { getColumns, getPrimaryKey, getTablesByDbName } from '../dbs';
-import * as constants from '../constants';
-import PageContext from '../contexts/page';
-import NavBar from '../components/NavBar';
-import { useAppContext } from '../contexts/AppContext';
-import { actionToComponentMapping } from '../pages';
+import { getColumns, getPrimaryKey, getTablesByDbName } from '../../dbs';
+import * as constants from '../../constants';
+import PageContext from '../../contexts/page';
+import NavBar from './NavBar';
+import { useAppContext } from '../../contexts/AppContext';
+import { actionToComponentMapping } from './pages';
 
 const { Provider } = PageContext;
 

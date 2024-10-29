@@ -2,12 +2,12 @@ import React, { useContext, useEffect, useState } from 'react';
 import { message, Alert, Spin, Skeleton } from 'antd';
 import { utils as githubUtils } from '@db-man/github';
 
-import SuccessMessage from '../SuccessMessage';
-import * as utils from '../../utils';
-import Form from '../Form';
-import PageContext from '../../contexts/page';
+import SuccessMessage from '../../../components/SuccessMessage';
+import * as utils from '../../../utils';
+import Form from '../../../components/Form';
+import PageContext from '../../../contexts/page';
 import { getNewRows } from './helpers';
-import { RowType } from '../../types/Data';
+import { RowType } from '../../../types/Data';
 
 const UpdatePage = () => {
   const { primaryKey, appModes, dbName, tableName, githubDb } =

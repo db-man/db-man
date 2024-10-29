@@ -1,9 +1,11 @@
 /* eslint-disable max-len */
 
 import { SortOrder } from 'antd/es/table/interface';
-import * as constants from '../../constants';
-import DbColumn from '../../types/DbColumn';
-import { RowType } from '../../types/Data';
+
+import DbColumn from '../../../types/DbColumn';
+import { RowType } from '../../../types/Data';
+import * as constants from '../../../constants';
+
 import {
   searchKeywordInText,
   searchKeywordInNumberText,

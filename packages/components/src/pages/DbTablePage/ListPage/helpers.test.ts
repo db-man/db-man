@@ -1,5 +1,5 @@
-import { STRING, STRING_ARRAY } from '../../constants';
-import DbColumn from '../../types/DbColumn';
+import DbColumn from '../../../types/DbColumn';
+import { STRING, STRING_ARRAY } from '../../../constants';
 import { getFilteredData, getSortedData } from './helpers';
 
 describe('getFilteredData', () => {

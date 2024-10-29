@@ -2,12 +2,12 @@
 export { default as DbConnections } from './pages/Settings/DbConnections';
 export { default as Form } from './components/Form';
 export { default as GetPageBody } from './components/GetPageBody';
-export { default as ListPage } from './components/ListPage';
-export { default as CreatePage } from './components/CreatePage';
+export { default as ListPage } from './pages/DbTablePage/ListPage';
+export { default as CreatePage } from './pages/DbTablePage/CreatePage';
 export { default as DvPropTypes } from './components/DvPropTypes';
 export { default as ErrorAlert } from './components/ErrorAlert';
 export { default as FieldWrapperForDetailPage } from './components/FieldWrapperForDetailPage';
-export { default as GetPage } from './components/GetPage';
+export { default as GetPage } from './pages/DbTablePage/GetPage';
 export { default as JsonEditor } from './components/JsonEditor';
 export { default as LeftSideMenu } from './components/LeftSideMenu';
 export { ImageLink } from './components/Links';
@@ -16,7 +16,7 @@ export { Link } from './components/Links';
 export { Links } from './components/Links';
 export { Fragment } from './components/Links';
 export { default as MultiLineInputBox } from './components/MultiLineInputBox';
-export { default as NavBar } from './components/NavBar';
+export { default as NavBar } from './pages/DbTablePage/NavBar';
 export { default as PageHeaderContent } from './components/PageHeaderContent';
 export { default as RadioGroupFormField } from './components/RadioGroupFormField';
 export { default as RefTableLink } from './components/RefTableLink';
@@ -28,7 +28,7 @@ export { default as DistinctColumn } from './components/DistinctColumn';
 export { default as QueryPage } from './components/QueryPage';
 export { default as TextAreaFormField } from './components/TextAreaFormField';
 export { default as TextAreaFormFieldValue } from './components/TextAreaFormFieldValue';
-export { default as UpdatePage } from './components/UpdatePage';
+export { default as UpdatePage } from './pages/DbTablePage/UpdatePage';
 
 // contexts
 export * as contexts from './contexts/page';
@@ -43,7 +43,7 @@ export { default as AppRoutes } from './layout/AppRoutes';
 export { default as BreadcrumbWrapper } from './layout/BreadcrumbWrapper';
 export { default as Database } from './layout/Database';
 export { default as IframePageWrapper } from './layout/IframePageWrapper';
-export { default as DbTablePageWrapper } from './layout/DbTablePageWrapper';
+export { default as DbTablePageWrapper } from './pages/DbTablePage/DbTablePageWrapper';
 export { default as Table } from './layout/Table';
 
 // pages

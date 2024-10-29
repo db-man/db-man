@@ -1,7 +1,7 @@
 import React from 'react';
 import { Outlet, useParams } from 'react-router-dom';
 
-import { TableList } from './DbTablePageWrapper';
+import { TableList } from '../pages/DbTablePage/DbTablePageWrapper';
 import { useAppContext } from '../contexts/AppContext';
 import NotFound from '../components/NotFound';
 

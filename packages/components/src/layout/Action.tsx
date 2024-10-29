@@ -1,7 +1,7 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 
-import DbTablePageWrapper from './DbTablePageWrapper';
+import DbTablePageWrapper from '../pages/DbTablePage/DbTablePageWrapper';
 
 function Action() {
   const params = useParams();

@@ -3,7 +3,7 @@ import { GithubDb } from '@db-man/github';
 
 import * as constants from '../constants';
 import CommonPageContext from '../contexts/commonPage';
-import NavBar from '../components/NavBar';
+import NavBar from '../pages/DbTablePage/NavBar';
 import NotFound from '../components/NotFound';
 
 const { Provider } = CommonPageContext;

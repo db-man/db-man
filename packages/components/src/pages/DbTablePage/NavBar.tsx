@@ -4,9 +4,9 @@ import { Typography } from 'antd';
 import { Link } from 'react-router-dom';
 import { utils } from '@db-man/github';
 
-import * as constants from '../constants';
-import { getUrlParams } from '../utils';
-import PageContext from '../contexts/page';
+import * as constants from '../../constants';
+import { getUrlParams } from '../../utils';
+import PageContext from '../../contexts/page';
 
 // Use `Typography` so can apply dark theme to text
 const { Text } = Typography;

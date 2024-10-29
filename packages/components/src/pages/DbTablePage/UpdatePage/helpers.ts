@@ -1,6 +1,6 @@
 import { utils as githubUtils } from '@db-man/github';
-import { ValueType } from '../Form';
-import { RowType } from '../../types/Data';
+import { ValueType } from '../../../components/Form';
+import { RowType } from '../../../types/Data';
 
 export const getNewRows = (
   formValues: ValueType,
