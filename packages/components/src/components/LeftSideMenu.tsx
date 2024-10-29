@@ -90,6 +90,10 @@ const LeftSideMenu: React.FC<LeftSideMenuProps> = ({
               key: encodeTableActionKey(dbName, tName, 'query'),
               label: <Link to={`/${dbName}/${tName}/query`}>Query</Link>,
             },
+            {
+              key: encodeTableActionKey(dbName, tName, 'insights'),
+              label: <Link to={`/${dbName}/${tName}/insights`}>Insights</Link>,
+            },
           ],
         })),
         {

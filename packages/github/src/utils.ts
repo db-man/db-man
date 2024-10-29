@@ -29,9 +29,10 @@ export function validFilename(oldStr: string) {
   return oldStr.replace(/[^a-zA-Z0-9._-]/g, '_');
 }
 
-export function getDataFileName(tableName: string) {
-  return `${tableName}.data.json`;
-}
+export const getDataFileName = (tableName: string) => `${tableName}.data.json`;
+
+export const getInsightsFileName = (tableName: string) =>
+  `${tableName}.insights.gitlog`;
 
 export const getRecordFileName = (primaryKeyVal: string | number) => {
   if (typeof primaryKeyVal === 'number') {

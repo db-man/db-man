@@ -110,7 +110,7 @@ type DbsCfgType = {
 // raw response from @octokit/rest API
 export interface RawFileContentAndSha {
   name: string; // file name
-  content?: string;
+  content?: string; // file content in base64 format
   sha: string;
 }
 

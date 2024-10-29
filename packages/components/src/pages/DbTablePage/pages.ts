@@ -4,6 +4,7 @@ import ListPage from './ListPage';
 import GetPage from './GetPage';
 import TableConfigPage from './TableConfigPage';
 import QueryPage from './QueryPage';
+import InsightsPage from './InsightsPage';
 
 type PageComponentType = React.ComponentType<{
   dbName: string;
@@ -20,4 +21,5 @@ export const actionToComponentMapping: {
   get: GetPage,
   schema: TableConfigPage,
   query: QueryPage,
+  insights: InsightsPage,
 };

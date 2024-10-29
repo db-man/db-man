@@ -18,6 +18,7 @@ const context: PageContextType = {
   tables: [],
   githubDb: {
     getTableRows: jest.fn(),
+    getTableInsights: jest.fn(),
     updateTableFile: jest.fn(),
     updateRecordFile: jest.fn(),
     getDataUrl: jest.fn(),

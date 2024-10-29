@@ -1,6 +1,12 @@
+import { Base64 } from 'js-base64';
+
 import { DatabaseMap } from './types';
 import { DB_CFG_FILENAME } from './constants';
-import { getDataFileName, getRecordFileName } from './utils';
+import {
+  getDataFileName,
+  getInsightsFileName,
+  getRecordFileName,
+} from './utils';
 import Github from './Github';
 
 /**
@@ -77,6 +83,7 @@ export default class GithubDb {
     if (!repoName) {
       throw new Error('Input repoName is invalid!');
     }
+    // TODO: can put all these keys into a single object, like `context` in GitHub.ts
     this.LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN = personalAccessToken;
     this.LS_KEY_GITHUB_REPO_PATH = repoPath;
     this.LS_KEY_GITHUB_OWNER = owner;
@@ -123,6 +130,17 @@ export default class GithubDb {
   getDataPath(dbName, tableName) {
     return `${this.LS_KEY_GITHUB_REPO_PATH}/${dbName}/${getDataFileName(
       tableName // eslint-disable-line @typescript-eslint/comma-dangle
+    )}`;
+  }
+
+  /**
+   * @param {string} dbName
+   * @param {string} tableName
+   * @returns Path for GitHub, e.g. dbs/dbName/tableName.insights.json
+   */
+  getInsightsPath(dbName, tableName) {
+    return `${this.LS_KEY_GITHUB_REPO_PATH}/${dbName}/${getInsightsFileName(
+      tableName
     )}`;
   }
 
@@ -203,6 +221,40 @@ export default class GithubDb {
       }
     });
     return this.github.getBlobContentAndSha(sha, signal);
+  }
+
+  /**
+   * Get the git log for insights
+   */
+  async getTableInsights(
+    dbName: string,
+    tableName: string,
+    signal?: AbortSignal
+  ) {
+    return this.github
+      .getContentByPath(this.getInsightsPath(dbName, tableName), signal)
+      .then((data) => {
+        // when path is a dir, data is an array, this is not expected in getTableInsights
+        if (Array.isArray(data)) {
+          throw new Error(
+            'getTableInsights failed, res is an array, the path param should be a file, not a dir.'
+          );
+        }
+        // when data is not array, but no content in it, this is not expected in getTableInsights (but no idea why this happens)
+        if (!('content' in data) || !data.content) {
+          throw new Error(
+            'getTableInsights failed, res.content is not in res, check the path param.'
+          );
+        }
+        if (data.content === '') {
+          // This is a new empty file, maybe just created
+          return '';
+        } else {
+          const ret = Base64.decode(data.content);
+          console.debug('@db-man/github getTableInsights ret:', ret);
+          return ret;
+        }
+      });
   }
 
   /**

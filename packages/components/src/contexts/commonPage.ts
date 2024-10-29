@@ -2,12 +2,18 @@ import React from 'react';
 
 import { RowType } from '../types/Data';
 
+// TODO: move this to @db-man/github
 export interface GithubDbType {
   getTableRows: (
     dbName: string,
     tableName: string,
     signal?: AbortSignal
   ) => Promise<{ content: RowType[]; sha: string }>;
+  getTableInsights: (
+    dbName: string,
+    tableName: string,
+    signal?: AbortSignal
+  ) => Promise<string>;
   updateTableFile: (
     dbName: string,
     tableName: string,
