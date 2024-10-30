@@ -1,5 +1,5 @@
-import { exec } from 'child_process';
 import { insightsUtils } from '@db-man/github';
+import { exec } from 'child_process';
 
 // Function to execute git log command
 function getGitLogAsync(dir, dbTable) {

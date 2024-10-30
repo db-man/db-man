@@ -1,7 +1,7 @@
 import path from 'path';
 import { readFile, writeFile, readdir } from 'fs/promises';
 
-const DB_CFG_FILENAME = 'dbcfg.json';
+import { DB_CFG_FILENAME, ERR_NO_PRIMARY_KEY } from './constants.mjs';
 
 /**
  * Get valid file name
@@ -22,7 +22,14 @@ export const convert = (data) => {
 /**
  *
  * @param {*} dir Dir for all databases
- * @returns
+ * @returns example:
+ * ```
+ * dbs = [
+ *   { name: 'iam', tables:
+ *     [{ name: 'users', columns: [{id: 'id', type: 'string', primary: true}]
+ *   }
+ * ]
+ * ```
  */
 export const getDbs = async (dir) => {
   const dbs = [];
@@ -69,7 +76,24 @@ export const getDbs = async (dir) => {
 
 /**
  *
- * @param {Function} _processTable One of splitTableFileToRecordFiles, mergeRecordFilesToTableFile, testDbIntegrity
+ * @param {*} table
+ * @returns
+ */
+const getPrimaryKey = (table) => {
+  const primaryCol = table.columns.find((col) => col.primary);
+  if (!primaryCol) {
+    console.error('No primary key found in table!', table.columns);
+    process.exitCode = ERR_NO_PRIMARY_KEY;
+    process.exit();
+  }
+
+  const primaryKey = primaryCol.id;
+  return primaryKey;
+};
+
+/**
+ *
+ * @param {Function} _processTable One of splitTableFileToRecordFilesAsync, mergeRecordFilesToTableFileAsync, testDbIntegrity
  * @param {*} dir
  * @param {string} dbTable Optional, only process this db table, e.g. "iam/users"
  */
@@ -79,33 +103,22 @@ export const processDbs = async (_processTable, dir, dbTable) => {
   for (const db of dbs) {
     for (const table of db.tables) {
       if (dbTable && `${db.name}/${table.name}` !== dbTable) {
-        console.log('skip table:', db.name, table.name);
+        console.debug('skip table:', db.name, table.name);
         continue;
       }
 
-      const primaryCol = table.columns.find((col) => col.primary);
-      if (!primaryCol) {
-        console.error('No primary key found in table!', table.columns);
-        continue;
-      }
-      console.log('start process table:', db.name, table.name, primaryCol.id);
-      await _processTable(dir, db.name, table.name, primaryCol.id, table);
-      console.log('finish process table:', db.name, table.name);
+      console.debug('start process table:', db.name, table.name);
+      await _processTable(dir, db.name, table);
+      console.debug('finish process table:', db.name, table.name);
     }
   }
 };
 
 // split one big file to small files
-export const splitTableFileToRecordFiles = async (
-  dir,
-  dbName,
-  tableName,
-  primaryKey,
-  table
-) => {
+export const splitTableFileToRecordFilesAsync = async (dir, dbName, table) => {
   let data = null;
   try {
-    data = await readFile(`./${dir}/${dbName}/${tableName}.data.json`, 'utf8');
+    data = await readFile(`./${dir}/${dbName}/${table.name}.data.json`, 'utf8');
   } catch (err) {
     console.error('Failed to read table data file, err:', err);
     return;
@@ -118,7 +131,7 @@ export const splitTableFileToRecordFiles = async (
 
   const rows = convert(data);
 
-  console.debug(`Split ${dbName}/${tableName} rows count: ${rows.length}`);
+  console.debug(`Split ${dbName}/${table.name} rows count: ${rows.length}`);
 
   const primaryColumn = table.columns.find((col) => col.primary);
 
@@ -132,7 +145,7 @@ export const splitTableFileToRecordFiles = async (
       }
 
       await writeFile(
-        `./${dir}/${dbName}/${tableName}/${filename}.json`,
+        `./${dir}/${dbName}/${table.name}/${filename}.json`,
         JSON.stringify(row, null, '  '),
         'utf8'
       );
@@ -143,16 +156,12 @@ export const splitTableFileToRecordFiles = async (
 };
 
 // merge multiple small files into one big file
-export const mergeRecordFilesToTableFile = async (
-  dir,
-  dbName,
-  tableName,
-  primaryKey,
-  table
-) => {
+export const mergeRecordFilesToTableFileAsync = async (dir, dbName, table) => {
+  const primaryKey = getPrimaryKey(table);
+
   let files = null;
   try {
-    files = await readdir(`./${dir}/${dbName}/${tableName}`);
+    files = await readdir(`./${dir}/${dbName}/${table.name}`);
   } catch (err) {
     console.error('Failed to list table dir files, err:', err);
     return;
@@ -169,7 +178,7 @@ export const mergeRecordFilesToTableFile = async (
 
     let data = null;
     try {
-      data = await readFile(`./${dir}/${dbName}/${tableName}/${file}`, 'utf8');
+      data = await readFile(`./${dir}/${dbName}/${table.name}/${file}`, 'utf8');
     } catch (err) {
       console.error('Failed to read record file, err:', err);
       continue;
@@ -191,7 +200,7 @@ export const mergeRecordFilesToTableFile = async (
 
   try {
     await writeFile(
-      `./${dir}/${dbName}/${tableName}.data.json`,
+      `./${dir}/${dbName}/${table.name}.data.json`,
       JSON.stringify(rows, null, ' '),
       'utf8'
     );
@@ -200,8 +209,8 @@ export const mergeRecordFilesToTableFile = async (
     return;
   }
 
-  console.log(
-    `Merged ${rows.length} rows into ${dbName}/${tableName} table file.`
+  console.debug(
+    `Merged ${rows.length} rows into ${dbName}/${table.name} table file.`
   );
 };
 
@@ -233,7 +242,7 @@ export const testDbIntegrity = async (dir, dbName, tableName, primaryKey) => {
 
   const rows = convert(data);
 
-  console.log('count:', files.length, rows.length);
+  console.debug('count:', files.length, rows.length);
 };
 
 export function foo() {
