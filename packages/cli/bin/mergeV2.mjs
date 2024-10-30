@@ -72,7 +72,6 @@ const mergeV2 = async (dir, sha) => {
 
   const changedFiles = await getChangedFilesBySha(sha);
   const changedTables = getChangedDbTables(changedFiles);
-  console.debug('changedTables:', changedTables);
 
   // multiple tables can process in parallel, no need to wait for the previous table to finish
   changedTables.forEach((dbTable) => {
