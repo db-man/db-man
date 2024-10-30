@@ -35,7 +35,7 @@ export function getChangedFilesBySha(sha) {
         console.error(`stderr: ${stderr}`);
         return;
       }
-      // console.debug(`Git log output:\n${stdout}`);
+      console.debug(`Git command output:\n${stdout}`);
       resolve(stdout);
     });
   });
@@ -69,9 +69,11 @@ export function getChangedDbTables(gitLog) {
  */
 const mergeV2 = async (dir, sha) => {
   const dbs = await getDbs(dir);
+  console.debug('dbs:', dbs);
 
   const changedFiles = await getChangedFilesBySha(sha);
   const changedTables = getChangedDbTables(changedFiles);
+  console.debug('changedTables:', changedTables);
 
   // multiple tables can process in parallel, no need to wait for the previous table to finish
   changedTables.forEach((dbTable) => {
