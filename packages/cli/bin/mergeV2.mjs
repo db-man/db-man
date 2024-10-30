@@ -52,8 +52,10 @@ export function getChangedDbTables(gitLog) {
 
   // Extract the directory paths (excluding the file names)
   const tablePaths = filePaths.map((filePath) => {
+    // in code repo, for testing, filePath='cli/__test_dbs_dir__/iam/users/1.json'
+    // in real-world, filePath='iam/users/2.json'
     const parts = filePath.split('/');
-    return parts.slice(1, parts.length - 1).join('/');
+    return parts.slice(parts.length - 3, parts.length - 1).join('/');
   });
 
   // Return unique table paths
@@ -70,6 +72,7 @@ const mergeV2 = async (dir, sha) => {
 
   const changedFiles = await getChangedFilesBySha(sha);
   const changedTables = getChangedDbTables(changedFiles);
+  console.debug('changedTables:', changedTables);
 
   // multiple tables can process in parallel, no need to wait for the previous table to finish
   changedTables.forEach((dbTable) => {
