@@ -1,5 +1,8 @@
 import { exec } from 'child_process';
-import { getChangedFilesBySha, getChangedDbTables } from './mergeV2.mjs';
+import {
+  getChangedFilesBySha,
+  getChangedDbTables,
+} from './mergeUpdatedTables.mjs';
 
 // Mock the child_process module
 jest.mock('child_process', () => ({

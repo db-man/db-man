@@ -8,13 +8,13 @@ import {
   mergeRecordFilesToTableFileAsync,
 } from './utils.mjs';
 import insightsAsync from './insights.mjs';
-import mergeV2 from './mergeV2.mjs';
+import mergeUpdatedTables from './mergeUpdatedTables.mjs';
 
 /**
  * This script is used to:
  * - split Split a large table file into multiple record files.
  * - merge - Merge multiple record files into a large table file.
- * - mergeV2 - According to the given Git SHA, merge the changed record files into the corresponding table files.
+ * - mergeUpdatedTables - According to the given Git SHA, merge the changed record files into the corresponding table files.
  * - insights - Convert git log commit data to csv format which shows the total number of lines in a file on each date
  *
  * This script need to run in the root of the db repo.
@@ -24,7 +24,7 @@ import mergeV2 from './mergeV2.mjs';
  * npx @db-man/cli split
  * npx @db-man/cli split iam/users
  * npx @db-man/cli insights iam/users
- * npx @db-man/cli mergeV2 8a44b1f55509cd033fd9ac000c218c623f21f6d4
+ * npx @db-man/cli mergeUpdatedTables 8a44b1f55509cd033fd9ac000c218c623f21f6d4
  * ```
  */
 
@@ -52,11 +52,11 @@ const opt = process.argv[2];
       const dbTable = process.argv[3]; // Optional, only process this db table, e.g. "iam/users".
       await processDbs(mergeRecordFilesToTableFileAsync, dir, dbTable);
     })();
-  } else if (opt === 'mergeV2') {
+  } else if (opt === 'mergeUpdatedTables') {
     (async () => {
       // sha is from GitHub Actions pipeline env var $GITHUB_SHA
       const sha = process.argv[3];
-      await mergeV2(dir, sha);
+      await mergeUpdatedTables(dir, sha);
     })();
   } else if (opt === 'insights') {
     const dbTable = process.argv[3]; // Optional, only process this db table, e.g. "iam/users".

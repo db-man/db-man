@@ -34,12 +34,12 @@ npx @db-man/cli merge
 npx @db-man/cli merge iam/users # If only process one table file at a time.
 ```
 
-### mergeV2
+### mergeUpdatedTables
 
 Run the following commands:
 
 ```sh
-node bin/cli.mjs mergeV2 787fc97a43ff53b42288527b28fdb810a519c524
+node bin/cli.mjs mergeUpdatedTables 787fc97a43ff53b42288527b28fdb810a519c524
 ```
 
 The sha is from GitHub Actions pipeline env var `GITHUB_SHA`.

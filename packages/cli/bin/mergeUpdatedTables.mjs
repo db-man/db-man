@@ -69,7 +69,7 @@ export function getChangedDbTables(gitLog) {
  * @param {string} dir e.g. "db_files_dir"
  * @param {string} sha e.g. "2eab0c1df07639dd0d82a342f8f3a1e2a112a6e7"
  */
-const mergeV2 = async (dir, sha) => {
+const mergeUpdatedTables = async (dir, sha) => {
   const dbs = await getDbs(dir);
   console.debug('dbs:', dbs);
 
@@ -94,4 +94,4 @@ const mergeV2 = async (dir, sha) => {
   });
 };
 
-export default mergeV2;
+export default mergeUpdatedTables;
