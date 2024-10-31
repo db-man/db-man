@@ -89,7 +89,7 @@ Root cause: https://stackoverflow.com/questions/44114436/the-create-react-app-im
 - Bug: When updating a record's primary key, a new record will be created, but the old record will be not changed.
 - Why GitHub Action has `lerna` installed by default: https://github.com/db-man/db-man/pull/3
 - After merge action, save git log to a file.
-  - `git --no-pager log --follow --numstat --pretty="%H %ad" --date=short -- db_files_dir/iam/roles.data.json`
+  - `git --no-pager log --follow --numstat --pretty="%H %ad" --date=short -- db_files_dir/iam/users.data.json`
 - Move some parts of @db-man/cli to a new GitHub Action (like `actions/checkout`), because most of the scripts are only used in the CI.
 
 ## References
