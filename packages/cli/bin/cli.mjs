@@ -24,7 +24,7 @@ import mergeV2 from './mergeV2.mjs';
  * npx @db-man/cli split
  * npx @db-man/cli split iam/users
  * npx @db-man/cli insights iam/users
- * npx @db-man/cli mergeV2 0392fb65486180f2071b0cbdcc94ebc3f591e0b4
+ * npx @db-man/cli mergeV2 8a44b1f55509cd033fd9ac000c218c623f21f6d4
  * ```
  */
 

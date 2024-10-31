@@ -18,10 +18,13 @@ import { getDbs, mergeRecordFilesToTableFileAsync } from './utils.mjs';
  * db_files_dir/iam/users/789900000005.json
  * db_files_dir/iam/users/789900000006.json
  *
+ * !!! This function need a reasonable depth of git clone, otherwise the given sha is not in the history
+ * !!! Especially on GitHub Actions, the default depth is 1 by default
+ *
  * @param {string} sha
  * @returns
  */
-export function getChangedFilesBySha(sha) {
+export async function getChangedFilesBySha(sha) {
   return new Promise((resolve, reject) => {
     // git diff-tree --no-commit-id --name-only -r 2eab0c1df07639dd0d82a342f8f3a1e2a112a6e7
     const cmd = `git diff-tree --no-commit-id --name-only -r ${sha}`;
@@ -29,14 +32,13 @@ export function getChangedFilesBySha(sha) {
     exec(cmd, (error, stdout, stderr) => {
       if (error) {
         console.error(`Error executing git: ${error}`);
-        return;
+        return reject(error);
       }
       if (stderr) {
-        console.error(`stderr: ${stderr}`);
-        return;
+        console.error(`Git stderr: ${stderr}`);
+        return reject(new Error(stderr));
       }
-      console.debug(`Git command output:\n${stdout}`);
-      resolve(stdout);
+      resolve(stdout.trim());
     });
   });
 }
@@ -48,7 +50,7 @@ export function getChangedFilesBySha(sha) {
  */
 export function getChangedDbTables(gitLog) {
   // Split the git log into individual file paths
-  const filePaths = gitLog.trim().split('\n');
+  const filePaths = gitLog.split('\n');
 
   // Extract the directory paths (excluding the file names)
   const tablePaths = filePaths.map((filePath) => {
