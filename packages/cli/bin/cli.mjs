@@ -61,6 +61,8 @@ const opt = process.argv[2];
   } else if (opt === 'insights') {
     const dbTable = process.argv[3]; // Optional, only process this db table, e.g. "iam/users".
     insightsAsync(dir, dbTable);
+  } else if (opt === 'generateInsightsForAllDbTables') {
+    generateInsightsForAllDbTablesAsync(dir);
   } else {
     console.error('Invalid params, should be "split" or "merge".');
     console.error('For example, "$ db-man-cli split".');
