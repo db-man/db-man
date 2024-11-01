@@ -1,6 +1,9 @@
 # .github/workflows/reusable-workflow.yml
 name: Reusable Workflow
 
+on:
+  workflow_call:
+
 jobs:
   # Create insights for db table
   insights-db-table:
