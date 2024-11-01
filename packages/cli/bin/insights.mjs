@@ -1,6 +1,6 @@
 import { insightsUtils } from '@db-man/github';
 import { exec } from 'child_process';
-import fs from 'fs';
+import { writeFile } from 'fs/promises';
 
 import { getDbs } from './utils.mjs';
 
@@ -77,7 +77,7 @@ export const generateInsightsForAllDbTablesAsync = async (dir) => {
       // save to `db_files_dir/iam/users.insights.gitlog`
       const gitLogFilePath = `${dir}/${db.name}/${table.name}.insights.gitlog`;
       console.log(`Writing git log to ${gitLogFilePath}`);
-      fs.writeFile(gitLogFilePath, rawLog);
+      writeFile(gitLogFilePath, rawLog, 'utf8');
     });
   });
 };
