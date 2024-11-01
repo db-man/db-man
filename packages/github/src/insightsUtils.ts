@@ -29,6 +29,15 @@ export function parseGitCommitDataToCSV(input: string): string[] {
  *
  * @param {string[]} gitChangeLogs - Array of strings representing git change logs in the format 'YYYY-MM-DD,added,deleted'.
  * @returns {string[]} - Array of strings representing the processed CSV data with total lines of code for each date.
+ *
+ * Example output:
+ * ```json
+ * [
+ *   "date,total_lines_of_file_on_this_day",
+ *   "2024-10-01,1",
+ *   "2024-10-02,2"
+ * ]
+ * ```
  */
 export function calcTotalLinesByDateFromGitLogs(
   gitChangeLogs: string[]

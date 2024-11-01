@@ -49,7 +49,7 @@ The sha is from GitHub Actions pipeline env var `GITHUB_SHA`.
 Run the following commands:
 
 ```sh
-npx @db-man/cli insights iam/users
+npx @db-man/cli printInsights iam/users
 ```
 
 Copy the output to a file `lines.csv`, then use https://csvplot.com/ to plot the chart.

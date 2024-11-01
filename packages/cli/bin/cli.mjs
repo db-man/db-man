@@ -7,7 +7,10 @@ import {
   splitTableFileToRecordFilesAsync,
   mergeRecordFilesToTableFileAsync,
 } from './utils.mjs';
-import insightsAsync from './insights.mjs';
+import {
+  printInsightsAsync,
+  generateInsightsForAllDbTablesAsync,
+} from './insights.mjs';
 import mergeUpdatedTables from './mergeUpdatedTables.mjs';
 
 /**
@@ -15,7 +18,8 @@ import mergeUpdatedTables from './mergeUpdatedTables.mjs';
  * - split Split a large table file into multiple record files.
  * - merge - Merge multiple record files into a large table file.
  * - mergeUpdatedTables - According to the given Git SHA, merge the changed record files into the corresponding table files.
- * - insights - Convert git log commit data to csv format which shows the total number of lines in a file on each date
+ * - printInsights - Convert git log commit data to csv format which shows the total number of lines in a file on each date
+ * - generateInsightsForAllDbTables - Generate insights for all db tables
  *
  * This script need to run in the root of the db repo.
  *
@@ -23,7 +27,8 @@ import mergeUpdatedTables from './mergeUpdatedTables.mjs';
  * ```sh
  * npx @db-man/cli split
  * npx @db-man/cli split iam/users
- * npx @db-man/cli insights iam/users
+ * npx @db-man/cli printInsights iam/users # Print insights for a db table
+ * npx @db-man/cli generateInsightsForAllDbTables # Generate insights for all db tables
  * npx @db-man/cli mergeUpdatedTables 8a44b1f55509cd033fd9ac000c218c623f21f6d4
  * ```
  */
@@ -58,9 +63,9 @@ const opt = process.argv[2];
       const sha = process.argv[3];
       await mergeUpdatedTables(dir, sha);
     })();
-  } else if (opt === 'insights') {
+  } else if (opt === 'printInsights') {
     const dbTable = process.argv[3]; // Optional, only process this db table, e.g. "iam/users".
-    insightsAsync(dir, dbTable);
+    printInsightsAsync(dir, dbTable);
   } else if (opt === 'generateInsightsForAllDbTables') {
     generateInsightsForAllDbTablesAsync(dir);
   } else {
