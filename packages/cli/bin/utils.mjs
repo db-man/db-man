@@ -116,6 +116,8 @@ export const processDbs = async (_processTable, dir, dbTable) => {
 
 // split one big file to small files
 export const splitTableFileToRecordFilesAsync = async (dir, dbName, table) => {
+  const primaryKey = getPrimaryKey(table);
+
   let data = null;
   try {
     data = await readFile(`./${dir}/${dbName}/${table.name}.data.json`, 'utf8');
