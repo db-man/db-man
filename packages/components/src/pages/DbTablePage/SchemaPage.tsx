@@ -178,7 +178,7 @@ const checkValidTableColumns = (dbTableColumns: DbColumn[]) => {
   return msg;
 };
 
-export default function TableConfigPage() {
+export default function SchemaPage() {
   const { dbName, columns: dbTableColumns } = useContext(PageContext);
   const location = useLocation();
 
@@ -227,6 +227,7 @@ export default function TableConfigPage() {
 
   return (
     <div className='table-config-page'>
+      Table Schema:
       <Tabs defaultActiveKey='table' items={items} />
     </div>
   );

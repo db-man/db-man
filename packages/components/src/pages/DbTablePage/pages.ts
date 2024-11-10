@@ -2,7 +2,7 @@ import CreatePage from './CreatePage';
 import UpdatePage from './UpdatePage';
 import ListPage from './ListPage';
 import GetPage from './GetPage';
-import TableConfigPage from './TableConfigPage';
+import SchemaPage from './SchemaPage';
 import QueryPage from './QueryPage';
 import InsightsPage from './InsightsPage';
 
@@ -19,7 +19,7 @@ export const actionToComponentMapping: {
   create: CreatePage,
   update: UpdatePage,
   get: GetPage,
-  schema: TableConfigPage,
+  schema: SchemaPage,
   query: QueryPage,
   insights: InsightsPage,
 };
