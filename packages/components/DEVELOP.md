@@ -37,6 +37,7 @@ lerna publish --no-private # will include `lerna version patch --no-private -y`
 
 - http://localhost:3000/ - The whole App example
 - http://localhost:3000/demos - Other examples
+  - http://localhost:3000/demos/RadioGroup - demo for one component
 - http://localhost:3000/?example=dbconnections - Access example one by one
 
 ## Test build results
