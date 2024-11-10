@@ -128,5 +128,11 @@ export function ImageLinks({
     results = imgs.slice(0, limit);
   }
   // eslint-disable-next-line react/no-array-index-key, react/jsx-props-no-spreading
-  return results.map((img, index) => <ImageLink key={index} {...img} />);
+  return (
+    <div className='dbm-dd-image-links'>
+      {results.map((img, index) => (
+        <ImageLink key={index} {...img} />
+      ))}
+    </div>
+  );
 }

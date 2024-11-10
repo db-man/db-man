@@ -6,6 +6,7 @@ import MultiLineInputBox from '../components/MultiLineInputBox';
 import RadioGroupFormField from '../components/RadioGroupFormField';
 import TextAreaFormField from '../components/TextAreaFormField';
 import PhotoList from '../components/PhotoList';
+import { ImageLinks } from '../components/Links';
 import { mockPhotos } from '../pages/demos/PhotoListExample';
 
 // Use `Typography` so can apply dark theme to text
@@ -75,6 +76,25 @@ export const PhotoListDemo = () => {
   return <PhotoList photos={mockPhotos} />;
 };
 
+export const ImageLinksDemo = () => {
+  return (
+    <ImageLinks
+      imgs={[
+        {
+          url: 'https://img.alicdn.com/imgextra/i1/2653100434/O1CN01DnSgMw1F4oi1b7cnk_!!2653100434.png',
+          imgSrc:
+            'https://img.alicdn.com/imgextra/i1/2653100434/O1CN01DnSgMw1F4oi1b7cnk_!!2653100434.png',
+        },
+        {
+          url: 'https://gw.alicdn.com/imgextra/i1/1049653664/O1CN01JOh4B71cw9zq0WiK9_!!0-item_pic.jpg',
+          imgSrc:
+            'https://gw.alicdn.com/imgextra/i1/1049653664/O1CN01JOh4B71cw9zq0WiK9_!!0-item_pic.jpg',
+        },
+      ]}
+    />
+  );
+};
+
 export const ComponentDemoRouter = ({
   componentName,
 }: {
@@ -86,6 +106,7 @@ export const ComponentDemoRouter = ({
     TextArea: <TextAreaFormFieldDemo />,
     MultiLineInputBox: <MultiLineInputBoxDemo />,
     PhotoList: <PhotoListDemo />,
+    ImageLinks: <ImageLinksDemo />,
   };
 
   if (!Object.keys(demoMap).includes(componentName)) {

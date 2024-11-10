@@ -19,6 +19,7 @@ import {
   STRING_ARRAY,
   TYPE_CREATE_UPDATE_PAGE,
   TYPE_GET_PAGE,
+  TYPE_LIST_PAGE,
 } from '../../constants';
 import DistinctColumn from '../../components/DistinctColumn';
 import ComponentDemoModal from '../../components/ComponentDemoModal';
@@ -84,6 +85,14 @@ const genColumn = (
           {referenceTableName}
         </Link>
       );
+    },
+  },
+  {
+    key: TYPE_LIST_PAGE,
+    dataIndex: TYPE_LIST_PAGE,
+    title: TYPE_LIST_PAGE,
+    render: (renderArg: UiType) => {
+      return !renderArg ? '' : <ComponentDemoModal renderArg={renderArg} />;
     },
   },
   {
