@@ -20,7 +20,7 @@ export interface GithubDbType {
     dbName: string,
     tableName: string,
     content: RowType[],
-    tableFileSha: types.ShaType
+    tableFileSha: types.UpdateFileType['sha']
   ) => Promise<{
     commit: {
       html_url?: string;

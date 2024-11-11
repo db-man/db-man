@@ -3,9 +3,10 @@ import { Base64 } from 'js-base64';
 import octokit from './octokit';
 import {
   DbsCfgContentAndShaType,
+  DeleteFileType,
   FileContentAndSha,
   RawFileContentAndSha,
-  ShaType,
+  UpdateFileType,
 } from './types';
 import { DBS_CFG_FILENAME } from './constants';
 
@@ -235,12 +236,12 @@ export default class Github {
    * response.commit.html_url https://github.com/username/reponame/commit/a7f...04d
    * response.content
    */
-  async updateFile(
-    path: string,
+  async updateFile({
+    path,
     content,
-    sha: ShaType,
-    message = 'Update file'
-  ) {
+    sha,
+    message = 'Update file',
+  }: UpdateFileType) {
     const contentEncoded = Base64.encode(content);
     try {
       const { data } = await octokit(
@@ -277,7 +278,7 @@ export default class Github {
    * response.commit.html_url https://github.com/username/reponame/commit/a7f...04d
    * response.content
    */
-  async deleteFile(path, sha) {
+  async deleteFile({ path, sha, message = 'Delete file' }: DeleteFileType) {
     try {
       // https://octokit.github.io/rest.js/v18#repos-delete-file
       const { data } = await octokit(
@@ -286,7 +287,7 @@ export default class Github {
         owner: this.context.owner,
         repo: this.context.repoName,
         path,
-        message: '[db-man] delete file',
+        message,
         sha,
         committer,
         author,

@@ -22,7 +22,8 @@ const CreatePage = () => {
   const [tableFileLoading, setTableFileLoading] = useState(false);
   // all rows in whole table, in split table mode, it's empty
   const [rows, setRows] = useState<RowType[]>([]);
-  const [tableFileSha, setTableFileSha] = useState<types.ShaType>(undefined);
+  const [tableFileSha, setTableFileSha] =
+    useState<types.UpdateFileType['sha']>(undefined);
   const [defaultFormValues, setDefaultFormValues] = useState<ValueType | null>(
     null
   );

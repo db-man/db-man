@@ -126,5 +126,15 @@ export interface DbsCfgContentAndShaType {
   sha: string;
 }
 
-export type ShaType =
-  RestEndpointMethodTypes['repos']['createOrUpdateFileContents']['parameters']['sha'];
+export type UpdateFileType = {
+  path: string;
+  content: any;
+  sha: RestEndpointMethodTypes['repos']['createOrUpdateFileContents']['parameters']['sha'];
+  message?: string;
+};
+
+export type DeleteFileType = {
+  path: string;
+  sha: RestEndpointMethodTypes['repos']['deleteFile']['parameters']['sha'];
+  message: string;
+};

@@ -1,6 +1,6 @@
 import { Base64 } from 'js-base64';
 
-import { DatabaseMap, ShaType } from './types';
+import { DatabaseMap, UpdateFileType } from './types';
 import { DB_CFG_FILENAME } from './constants';
 import {
   getDataFileName,
@@ -280,15 +280,15 @@ export default class GithubDb {
     dbName: string,
     tableName: string,
     content,
-    sha: ShaType
+    sha: UpdateFileType['sha']
   ) {
     const path = this.getDataPath(dbName, tableName);
-    return this.github.updateFile(
+    return this.github.updateFile({
       path,
-      JSON.stringify(content, null, 1),
+      content: JSON.stringify(content, null, 1),
       sha,
-      `[db-man] Update table file (${dbName}/${tableName})`
-    );
+      message: `[db-man] Update table file (${dbName}/${tableName})`,
+    });
   }
 
   /**
@@ -300,12 +300,12 @@ export default class GithubDb {
    */
   async updateRecordFile(dbName, tableName, primaryKey, record, sha) {
     const path = this.getRecordPath(dbName, tableName, record[primaryKey]);
-    return this.github.updateFile(
+    return this.github.updateFile({
       path,
-      JSON.stringify(record, null, '  '),
+      content: JSON.stringify(record, null, '  '),
       sha,
-      `[db-man] Update record file (${dbName}/${tableName})`
-    );
+      message: `[db-man] Update record file (${dbName}/${tableName})`,
+    });
   }
 
   /**
@@ -316,6 +316,10 @@ export default class GithubDb {
    */
   async deleteRecordFile(dbName, tableName, primaryKeyVal, sha) {
     const path = this.getRecordPath(dbName, tableName, primaryKeyVal);
-    return this.github.deleteFile(path, sha);
+    return this.github.deleteFile({
+      path,
+      sha,
+      message: `[db-man] Delete file (${dbName}/${tableName})`,
+    });
   }
 }

@@ -19,7 +19,8 @@ const UpdatePage = () => {
   // all rows in table data file
   const [tableFileLoading, setTableFileLoading] = useState('');
   const [rows, setRows] = useState<RowType[]>([]);
-  const [tableFileSha, setTableFileSha] = useState<types.ShaType>(undefined);
+  const [tableFileSha, setTableFileSha] =
+    useState<types.UpdateFileType['sha']>(undefined);
 
   const [recordFileLoading, setRecordFileLoading] = useState('');
   const [record, setRecord] = useState<RowType>({});
