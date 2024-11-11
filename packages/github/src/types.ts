@@ -1,3 +1,5 @@
+import { RestEndpointMethodTypes } from '@octokit/rest';
+
 // the result for getContentByPath
 export type FileOrDir = {
   name: string;
@@ -123,3 +125,6 @@ export interface DbsCfgContentAndShaType {
   content: DbsCfgType;
   sha: string;
 }
+
+export type ShaType =
+  RestEndpointMethodTypes['repos']['createOrUpdateFileContents']['parameters']['sha'];

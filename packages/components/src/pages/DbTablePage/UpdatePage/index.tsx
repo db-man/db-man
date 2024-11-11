@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
+
+import { utils as githubUtils, types } from '@db-man/github';
 import { message, Alert, Spin, Skeleton } from 'antd';
-import { utils as githubUtils } from '@db-man/github';
 
 import SuccessMessage from '../../../components/SuccessMessage';
 import * as utils from '../../../utils';
@@ -18,7 +19,7 @@ const UpdatePage = () => {
   // all rows in table data file
   const [tableFileLoading, setTableFileLoading] = useState('');
   const [rows, setRows] = useState<RowType[]>([]);
-  const [tableFileSha, setTableFileSha] = useState<string | null>(null);
+  const [tableFileSha, setTableFileSha] = useState<types.ShaType>(undefined);
 
   const [recordFileLoading, setRecordFileLoading] = useState('');
   const [record, setRecord] = useState<RowType>({});

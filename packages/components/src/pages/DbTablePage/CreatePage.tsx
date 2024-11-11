@@ -1,8 +1,9 @@
 /* eslint-disable react/destructuring-assignment, no-console, max-len, react/no-unused-class-component-methods */
 
 import React, { useCallback, useContext, useEffect, useState } from 'react';
+
+import { utils as githubUtils, types } from '@db-man/github';
 import { message, Spin, Alert } from 'antd';
-import { utils as githubUtils } from '@db-man/github';
 
 import { validatePrimaryKey } from '../../components/Form/helpers';
 import SuccessMessage from '../../components/SuccessMessage';
@@ -21,7 +22,7 @@ const CreatePage = () => {
   const [tableFileLoading, setTableFileLoading] = useState(false);
   // all rows in whole table, in split table mode, it's empty
   const [rows, setRows] = useState<RowType[]>([]);
-  const [tableFileSha, setTableFileSha] = useState<string | null>(null);
+  const [tableFileSha, setTableFileSha] = useState<types.ShaType>(undefined);
   const [defaultFormValues, setDefaultFormValues] = useState<ValueType | null>(
     null
   );

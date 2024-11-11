@@ -5,6 +5,7 @@ import {
   DbsCfgContentAndShaType,
   FileContentAndSha,
   RawFileContentAndSha,
+  ShaType,
 } from './types';
 import { DBS_CFG_FILENAME } from './constants';
 
@@ -234,7 +235,12 @@ export default class Github {
    * response.commit.html_url https://github.com/username/reponame/commit/a7f...04d
    * response.content
    */
-  async updateFile(path, content, sha, msg = 'Update file') {
+  async updateFile(
+    path: string,
+    content,
+    sha: ShaType,
+    message = 'Update file'
+  ) {
     const contentEncoded = Base64.encode(content);
     try {
       const { data } = await octokit(
@@ -245,7 +251,7 @@ export default class Github {
         repo: this.context.repoName,
         path,
         sha,
-        message: `[db-man] ${msg}`,
+        message,
         content: contentEncoded,
         committer,
         author,

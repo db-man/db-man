@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { types } from '@db-man/github';
+
 import { RowType } from '../types/Data';
 
 // TODO: move this to @db-man/github
@@ -18,7 +20,7 @@ export interface GithubDbType {
     dbName: string,
     tableName: string,
     content: RowType[],
-    tableFileSha: string | null
+    tableFileSha: types.ShaType
   ) => Promise<{
     commit: {
       html_url?: string;

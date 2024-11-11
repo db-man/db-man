@@ -1,6 +1,6 @@
 import { Base64 } from 'js-base64';
 
-import { DatabaseMap } from './types';
+import { DatabaseMap, ShaType } from './types';
 import { DB_CFG_FILENAME } from './constants';
 import {
   getDataFileName,
@@ -276,13 +276,18 @@ export default class GithubDb {
    * response.commit.html_url https://github.com/username/reponame/commit/a7f...04d
    * response.content
    */
-  async updateTableFile(dbName, tableName, content, sha) {
+  async updateTableFile(
+    dbName: string,
+    tableName: string,
+    content,
+    sha: ShaType
+  ) {
     const path = this.getDataPath(dbName, tableName);
     return this.github.updateFile(
       path,
       JSON.stringify(content, null, 1),
       sha,
-      'Update table file' // eslint-disable-line @typescript-eslint/comma-dangle
+      `[db-man] Update table file (${dbName}/${tableName})`
     );
   }
 
@@ -299,7 +304,7 @@ export default class GithubDb {
       path,
       JSON.stringify(record, null, '  '),
       sha,
-      'Update record file' // eslint-disable-line @typescript-eslint/comma-dangle
+      `[db-man] Update record file (${dbName}/${tableName})`
     );
   }
 
