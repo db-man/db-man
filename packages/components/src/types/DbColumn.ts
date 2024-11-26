@@ -21,12 +21,14 @@ export type RenderKeyType =
   | 'type:listPage'
   | 'ui:listPage:randomView';
 
+// TODO: how to sync this whitelist with `DbColumn` defined in @db-man/github?
 export const TABLE_COLUMN_KEYS = [
   'id',
   'name',
   'type',
   'primary',
-  'ui:listPage:isFilter',
+  'description', // Description of the column
+  'ui:listPage:isFilter', // If true, on the list page, the field/column will be shown in the filter section above the table.
   'ui:createUpdatePage:enum',
   'ui:createUpdatePage:placeholder',
   'type:createUpdatePage',

@@ -6,6 +6,7 @@
 npm i
 npm run dev
 npm run tdd
+npm run tdd src/pages/DbTablePage/helpers.test.ts
 ```
 
 ## Run cypress test

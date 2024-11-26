@@ -1,15 +1,12 @@
 /* eslint-disable react/prop-types */
 
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import { Table, Tabs, Tooltip } from 'antd';
 import type { TableColumnsType, TabsProps } from 'antd';
 import { useLocation, Link } from 'react-router-dom';
 
 import { GetPageUiType, UiType } from '../../types/UiType';
-import DbColumn, {
-  TABLE_COLUMN_KEYS,
-  TableColumnKeyType,
-} from '../../types/DbColumn';
+import DbColumn from '../../types/DbColumn';
 import PageContext from '../../contexts/page';
 import {
   DB_CFG_FILENAME,
@@ -24,6 +21,7 @@ import {
 import DistinctColumn from '../../components/DistinctColumn';
 import ComponentDemoModal from '../../components/ComponentDemoModal';
 import ReactSimpleCodeEditor from '../../components/ReactSimpleCodeEditor';
+import { checkValidTableColumns } from './helpers';
 
 const genColumn = (
   dbName: string,
@@ -170,22 +168,6 @@ const footer = ({ dbName }: { dbName: string }) =>
       </div>
     );
   };
-
-const checkValidTableColumns = (dbTableColumns: DbColumn[]) => {
-  let msg = '';
-  if (dbTableColumns.length === 0) {
-    msg += 'No columns defined in the table. ';
-  }
-  dbTableColumns.forEach((col) => {
-    // check every properties of col, should in this list TABLE_COLUMN_KEYS
-    Object.keys(col).forEach((key) => {
-      if (TABLE_COLUMN_KEYS.indexOf(key as TableColumnKeyType) < 0) {
-        msg += `Invalid key: ${key} in column: ${col.id}. `;
-      }
-    });
-  });
-  return msg;
-};
 
 export default function SchemaPage() {
   const { dbName, columns: dbTableColumns } = useContext(PageContext);

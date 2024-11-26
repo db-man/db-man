@@ -37,6 +37,10 @@ export interface DbColumn {
    * `true` to indicate this column is an uniq key of this table.
    */
   primary?: boolean;
+  /**
+   * Description of the column
+   */
+  description?: string;
 }
 
 export interface DbTable {
