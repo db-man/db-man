@@ -1,8 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import {
-  Fragment, Link, Links, ImageLink, ImageLinks,
-} from './Links';
+import { Fragment, Link, Links, ImageLink, ImageLinks } from './Links';
 
 describe('Fragment', () => {
   it('renders "foo" text', () => {
@@ -24,7 +22,7 @@ describe('Link', () => {
 
   describe('given a text to props', () => {
     it('renders link with "bar" text', () => {
-      render(<Link href="https://foo.com/" text="bar" />);
+      render(<Link href='https://foo.com/' text='bar' />);
       const linkElement = screen.getByText(/bar/i);
       expect(linkElement).toBeInTheDocument();
     });
@@ -41,7 +39,7 @@ describe('Links', () => {
 
 describe('ImageLink', () => {
   it('renders one image', () => {
-    render(<ImageLink url="" imgSrc="" />);
+    render(<ImageLink url='' imgSrc='' />);
     const imgElement = screen.getByRole('img');
     expect(imgElement).toBeInTheDocument();
   });
@@ -59,7 +57,7 @@ describe('ImageLinks', () => {
           { url: '', imgSrc: '' },
           { url: '', imgSrc: '' },
         ]}
-      />,
+      />
     );
     const imgElements = screen.getAllByRole('img');
     expect(imgElements[0]).toBeInTheDocument();
@@ -73,7 +71,7 @@ describe('ImageLinks', () => {
           { url: '', imgSrc: '' },
         ]}
         limit={1}
-      />,
+      />
     );
     const imgElements = screen.getAllByRole('img');
     expect(imgElements[0]).toBeInTheDocument();
