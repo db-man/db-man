@@ -75,7 +75,7 @@ An example:
 
 ### `type` (Required)
 
-See `src/types/DbColumn.ts::DbColumnType`
+See `@db-man/github::DbColumnType`
 
 ### `primary`
 

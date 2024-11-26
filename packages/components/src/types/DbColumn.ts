@@ -12,9 +12,6 @@ import { types } from '@db-man/github';
 // Only used in CreatePage or UpdatePage, only used in Input component (of type=STRING).
 type ColumnPlaceholder = string;
 
-// DEPRECATED: Use types.DbColumnType from @db-man/github instead
-export type DbColumnType = 'STRING' | 'STRING_ARRAY' | 'NUMBER' | 'BOOL';
-
 export type RenderKeyType =
   | 'type:createUpdatePage'
   | 'type:getPage'

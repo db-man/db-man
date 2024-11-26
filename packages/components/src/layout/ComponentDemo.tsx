@@ -1,7 +1,7 @@
+import { types } from '@db-man/github';
 import { useParams } from 'react-router';
 import { Typography } from 'antd';
 
-import { DbColumnType } from '../types/DbColumn';
 import MultiLineInputBox from '../components/MultiLineInputBox';
 import RadioGroupFormField from '../components/RadioGroupFormField';
 import TextAreaFormField from '../components/TextAreaFormField';
@@ -16,7 +16,7 @@ export const RadioGroupFormFieldDemo = () => {
   const column = {
     id: 'maleOrFemale',
     name: 'Male or Female',
-    type: 'STRING' as DbColumnType,
+    type: 'STRING' as types.DbColumnType,
     'type:createUpdatePage': 'RadioGroup',
     'ui:createUpdatePage:enum': ['male', 'female'],
   };

@@ -1,8 +1,8 @@
-import { DbColumnType } from './types/DbColumn';
+import { types } from '@db-man/github';
 
 // types
-export const STRING_ARRAY: DbColumnType = 'STRING_ARRAY';
-export const STRING: DbColumnType = 'STRING';
+export const STRING_ARRAY: types.DbColumnType = 'STRING_ARRAY';
+export const STRING: types.DbColumnType = 'STRING';
 export const NUMBER = 'NUMBER';
 export const BOOL = 'BOOL';
 
