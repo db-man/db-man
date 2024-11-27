@@ -92,35 +92,6 @@ const genColumn = (
     },
   },
   {
-    key: TYPE_LIST_PAGE,
-    dataIndex: TYPE_LIST_PAGE,
-    title: TYPE_LIST_PAGE,
-    render: (renderArg: UiType) => {
-      return !renderArg ? '' : <ComponentDemoModal renderArg={renderArg} />;
-    },
-  },
-  {
-    key: 'ui:listPage:isFilter',
-    dataIndex: 'ui:listPage:isFilter',
-    title: 'ui:listPage:isFilter',
-    width: 170,
-    render: (cell: boolean) => (cell === true ? 'Yes' : 'No'),
-  },
-  {
-    key: 'ui:createUpdatePage:enum',
-    dataIndex: 'ui:createUpdatePage:enum',
-    title: 'ui:createUpdatePage:enum',
-    render: (cell: string[]) => {
-      if (!cell) return 'None';
-      return cell.join(', ');
-    },
-  },
-  {
-    key: 'ui:createUpdatePage:placeholder',
-    dataIndex: 'ui:createUpdatePage:placeholder',
-    title: 'ui:createUpdatePage:placeholder',
-  },
-  {
     key: TYPE_CREATE_UPDATE_PAGE,
     dataIndex: TYPE_CREATE_UPDATE_PAGE,
     title: TYPE_CREATE_UPDATE_PAGE,
@@ -137,6 +108,41 @@ const genColumn = (
     },
   },
   {
+    key: TYPE_LIST_PAGE,
+    dataIndex: TYPE_LIST_PAGE,
+    title: TYPE_LIST_PAGE,
+    render: (renderArg: UiType) => {
+      return !renderArg ? '' : <ComponentDemoModal renderArg={renderArg} />;
+    },
+  },
+  {
+    key: 'ui:createUpdatePage:enum',
+    dataIndex: 'ui:createUpdatePage:enum',
+    title: 'ui:createUpdatePage:enum',
+    render: (cell: string[]) => {
+      if (!cell) return 'None';
+      return cell.join(', ');
+    },
+  },
+  {
+    key: 'ui:createUpdatePage:placeholder',
+    dataIndex: 'ui:createUpdatePage:placeholder',
+    title: 'ui:createUpdatePage:placeholder',
+  },
+  {
+    key: 'ui:listPage:isFilter',
+    dataIndex: 'ui:listPage:isFilter',
+    title: 'ui:listPage:isFilter',
+    width: 170,
+    render: (cell: boolean) => (cell === true ? 'Yes' : 'No'),
+  },
+  {
+    key: 'ui:listPage:isImageViewKey',
+    dataIndex: 'ui:listPage:isImageViewKey',
+    title: 'ui:listPage:isImageViewKey',
+    render: (cell: boolean) => (cell === true ? 'Yes' : 'No'),
+  },
+  {
     key: 'ui:listPage:randomView',
     dataIndex: 'ui:listPage:randomView',
     title: 'ui:listPage:randomView',
@@ -146,10 +152,9 @@ const genColumn = (
     },
   },
   {
-    key: 'ui:listPage:isImageViewKey',
-    dataIndex: 'ui:listPage:isImageViewKey',
-    title: 'ui:listPage:isImageViewKey',
-    render: (cell: boolean) => (cell === true ? 'Yes' : 'No'),
+    key: 'ui:presets',
+    dataIndex: 'ui:presets',
+    title: 'ui:presets',
   },
 ];
 
