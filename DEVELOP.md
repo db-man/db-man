@@ -92,6 +92,7 @@ Root cause: https://stackoverflow.com/questions/44114436/the-create-react-app-im
   - `git --no-pager log --follow --numstat --pretty="%H %ad" --date=short -- db_files_dir/iam/users.data.json`
 - Move some parts of @db-man/cli to a new GitHub Action (like `actions/checkout`), because most of the scripts are only used in the CI.
 - How to easy write table schema (maybe with a preview demo)
+- Add `"ui:presets": ["spike", "cookie"]` to split-table-db.
 
 ## References
 

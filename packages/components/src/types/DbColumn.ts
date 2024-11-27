@@ -20,20 +20,23 @@ export type RenderKeyType =
 
 // TODO: how to sync this whitelist with `DbColumn` defined in @db-man/github?
 export const TABLE_COLUMN_KEYS = [
+  // data column from @db-man/github
   'id',
   'name',
   'type',
   'primary',
   'description', // Description of the column
-  'ui:listPage:isFilter', // If true, on the list page, the field/column will be shown in the filter section above the table.
-  'ui:createUpdatePage:enum',
-  'ui:createUpdatePage:placeholder',
+  // extend UI column
   'type:createUpdatePage',
   'type:getPage',
   'type:listPage',
-  'ui:listPage:randomView',
-  'referenceTable',
+  'ui:createUpdatePage:enum',
+  'ui:createUpdatePage:placeholder',
+  'ui:listPage:isFilter', // If true, on the list page, the field/column will be shown in the filter section above the table.
   'ui:listPage:isImageViewKey',
+  'ui:listPage:randomView',
+  'ui:presets',
+  'referenceTable',
 ] as const; // "as const" makes TypeScript treat this as a readonly tuple
 type TableColumnKeysType = typeof TABLE_COLUMN_KEYS;
 export type TableColumnKeyType = TableColumnKeysType[number];
@@ -42,6 +45,19 @@ type DbColumnExtendsUiType = {
   'type:createUpdatePage'?: UiType;
   'type:getPage'?: GetPageUiType;
   'type:listPage'?: ListPageUiType;
+  /**
+   * In the Form page, e.g. to create a new user, use it to show a dropdown list with "Maintainer" and "Developer".
+   */
+  'ui:createUpdatePage:enum'?: RadioGroupUiTypeEnum;
+  /**
+   * Only used in CreatePage or UpdatePage, only used in Input component (of type=STRING).
+   */
+  'ui:createUpdatePage:placeholder'?: ColumnPlaceholder;
+  /**
+   * If true, on the list page, the field/column will be shown in the filter section above the table.
+   */
+  'ui:listPage:isFilter'?: boolean;
+  'ui:listPage:isImageViewKey'?: string;
   'ui:listPage:randomView'?: ListPageRandomViewUiType;
   /**
    * - Only used on create/update page.
@@ -51,18 +67,6 @@ type DbColumnExtendsUiType = {
    *     - To render some buttons on top of the input box, click button to quick input a new text into the input box.
    */
   'ui:presets'?: string[];
-  /**
-   * If true, on the list page, the field/column will be shown in the filter section above the table.
-   */
-  'ui:listPage:isFilter'?: boolean;
-  /**
-   * In the Form page, e.g. to create a new user, use it to show a dropdown list with "Maintainer" and "Developer".
-   */
-  'ui:createUpdatePage:enum'?: RadioGroupUiTypeEnum;
-  /**
-   * Only used in CreatePage or UpdatePage, only used in Input component (of type=STRING).
-   */
-  'ui:createUpdatePage:placeholder'?: ColumnPlaceholder;
   /**
    * Pass to the Column of Ant Design Table.
    * TODO maybe we should use `tableColProps` instead of `tableProps`?
@@ -92,7 +96,6 @@ type DbColumnExtendsUiType = {
    * }
    */
   referenceTable?: string;
-  'ui:listPage:isImageViewKey'?: string;
 };
 
 // export default interface DbColumn extends AntdColumnType<RowType> {
