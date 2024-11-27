@@ -210,14 +210,14 @@ export default function SchemaPage() {
 
   if (distinctParam) {
     return (
-      <div className='table-config-page'>
+      <div className='table-schema-page'>
         <DistinctColumn columnKey={distinctParam} />
       </div>
     );
   }
 
   return (
-    <div className='table-config-page'>
+    <div className='table-schema-page'>
       Table Schema:
       <Tabs defaultActiveKey='table' items={items} />
     </div>
