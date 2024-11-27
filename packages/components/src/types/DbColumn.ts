@@ -25,7 +25,8 @@ export const TABLE_COLUMN_KEYS = [
   'name',
   'type',
   'primary',
-  'description', // Description of the column
+  'description',
+  'referenceTable',
   // extend UI column
   'type:createUpdatePage',
   'type:getPage',
@@ -36,7 +37,6 @@ export const TABLE_COLUMN_KEYS = [
   'ui:listPage:isImageViewKey',
   'ui:listPage:randomView',
   'ui:presets',
-  'referenceTable',
 ] as const; // "as const" makes TypeScript treat this as a readonly tuple
 type TableColumnKeysType = typeof TABLE_COLUMN_KEYS;
 export type TableColumnKeyType = TableColumnKeysType[number];
@@ -72,30 +72,6 @@ type DbColumnExtendsUiType = {
    * TODO maybe we should use `tableColProps` instead of `tableProps`?
    */
   tableProps?: any;
-  /**
-   * The value in this column is a reference to another table.
-   * For example
-   *
-   * `users` table:
-   * | id | name | role_code |
-   * | -- | ---- | --------- |
-   * | 1  | John | ADMIN     |
-   *
-   * `roles` table:
-   * | code   | name |
-   * | ------ | ---- |
-   * | ADMIN  | Administrator |
-   *
-   * `users.role_code` is a reference to `roles.code`.
-   * So the column definition of `users.role_code` is:
-   * ```json
-   * {
-   *   "id": "role_code",
-   *   "name": "Role",
-   *   "referenceTable": "roles"
-   * }
-   */
-  referenceTable?: string;
 };
 
 // export default interface DbColumn extends AntdColumnType<RowType> {
