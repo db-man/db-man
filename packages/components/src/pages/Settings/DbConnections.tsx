@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 
-import { Button, Tooltip, Typography } from 'antd';
+import { Button, message, Tooltip, Typography } from 'antd';
 
 import * as constants from '../../constants';
 import reloadDbsSchemaAsync from './helpers';
@@ -27,10 +27,11 @@ const saveToFile = (data: string, filename: string) => {
  * To save online db tables schema in the local db, then pages could load faster
  */
 const DbConnections = ({ storage }: { storage: StorageType }) => {
+  const [messageApi, contextHolder] = message.useMessage();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleDbConnectionEnable = (enabledConnection: TableRowType) => {
-    reloadDbsSchemaAsync(enabledConnection).then(() => {});
+    reloadDbsSchemaAsync(enabledConnection, messageApi).then(() => {});
   };
 
   const handleDbConnectionSave = (connections: TableRowType[]) => {
@@ -90,6 +91,7 @@ const DbConnections = ({ storage }: { storage: StorageType }) => {
 
   return (
     <div className='dbm-db-connections'>
+      {contextHolder}
       <Title level={2}>Database Connections</Title>
       <EditableTable
         defaultData={JSON.parse(

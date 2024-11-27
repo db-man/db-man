@@ -1,5 +1,6 @@
-import { message } from 'antd';
 import { Github, types } from '@db-man/github';
+import { message } from 'antd';
+import { MessageInstance } from 'antd/es/message/interface';
 
 import * as constants from '../../constants';
 import { errMsg } from '../../utils';
@@ -85,8 +86,11 @@ const validateDbsSchame = (dbsSchema: types.DatabaseMap) => {
   return errors.length === 0;
 };
 
-const reloadDbsSchemaAsync = async (enabledConnection: TableRowType) => {
-  message.info('Start loading DBs schema...');
+const reloadDbsSchemaAsync = async (
+  enabledConnection: TableRowType,
+  messageApi: MessageInstance
+) => {
+  messageApi.info('Start loading DBs schema...');
 
   console.debug(
     'Saved to localStorage:',
@@ -155,12 +159,12 @@ const reloadDbsSchemaAsync = async (enabledConnection: TableRowType) => {
   }
 
   if (!validateDbsSchame(dbsSchema)) {
-    message.error('DB schema is invalid! Will not save to localStorage!');
+    messageApi.error('DB schema is invalid! Will not save to localStorage!');
     return;
   }
 
   localStorage.setItem(constants.LS_KEY_DBS_SCHEMA, JSON.stringify(dbsSchema));
-  message.info('Finish loading DBs schema! Will reload window in 3s!');
+  messageApi.info('Finish loading DBs schema! Will reload window in 3s!');
   setTimeout(() => {
     window.location.reload();
   }, 3000);
