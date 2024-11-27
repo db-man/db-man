@@ -41,6 +41,10 @@ export const TABLE_COLUMN_KEYS = [
 type TableColumnKeysType = typeof TABLE_COLUMN_KEYS;
 export type TableColumnKeyType = TableColumnKeysType[number];
 
+/**
+ * Extend UI type for DbColumn.
+ * Need to sync with columns in `SchemaPage.tsx`.
+ */
 type DbColumnExtendsUiType = {
   'type:createUpdatePage'?: UiType;
   'type:getPage'?: GetPageUiType;
