@@ -71,6 +71,12 @@ const genColumn = (
     render: (cell: boolean) => (cell === true ? 'Yes' : 'No'),
   },
   {
+    key: 'description',
+    dataIndex: 'description',
+    title: 'description',
+    width: 200,
+  },
+  {
     key: 'referenceTable',
     dataIndex: 'referenceTable',
     title: 'referenceTable',
