@@ -21,6 +21,8 @@ const DbTablePage = (props: {
   tableName?: string;
   action?: string;
 }) => {
+  const [messageApi, contextHolder] = message.useMessage();
+
   const githubDbRef = useRef(
     new GithubDb({
       personalAccessToken:
@@ -81,7 +83,7 @@ const DbTablePage = (props: {
         console.warn('Offline and online schema are different!');
         console.warn('offlineDbSchema:', offlineDbSchema);
         console.warn('onlineDbSchema:', onlineDbSchema);
-        message.warning(
+        messageApi.warning(
           <span>
             Offline and online schema are different!{' '}
             <a href='/settings'>Go to Settings</a>
@@ -120,6 +122,7 @@ const DbTablePage = (props: {
   return (
     <Provider value={pageInfo()}>
       <div className='dbm-page-v2'>
+        {contextHolder}
         {/* Pass tableName down, so child component to rerender according to this props */}
         <PageComponent dbName={dbName || ''} tableName={tableName || ''} />
         <NavBar />
