@@ -27,13 +27,13 @@ CYPRESS_DBM_TOKEN=ghp_123 npx cypress run # run all tests
 CYPRESS_DBM_TOKEN=ghp_123 npx cypress open # open cypress GUI for debugging
 ```
 
-## Publish
+## Publish (deprecated, check out `DEVELOP.md` in root dir)
 
-```
+```sh
 npm run release
 ```
 
-## Publish (with lerna)
+## Publish (with lerna) (deprecated, check out `DEVELOP.md` in root dir)
 
 ```sh
 CI=true lerna run test-cra --scope @db-man/components
