@@ -15,9 +15,7 @@ npm run test --workspaces # test all packages
 npm run test -w packages/components # test only single package
 ```
 
-### CI
-
-To make sure the test case for `formatDate` in `@db-man/github` always use local time, we set the `TZ` environment variable to `Asia/Shanghai` in the CI.
+Reminder for testing on CI: To make sure the test case for `formatDate` in `@db-man/github` always use local time, we set the `TZ` environment variable to `Asia/Shanghai` in the CI.
 
 ```json
 "test": "TZ=Asia/Shanghai lerna run test"
@@ -32,11 +30,13 @@ npm run build -w packages/components # build only single package
 
 ## Publish
 
+Publish all packages.
+
 ```sh
 npm run publish
 ```
 
-### Only publish one package
+Only publish one package.
 
 ```sh
 cd packages/github
@@ -49,7 +49,7 @@ GH_TOKEN=ghp_123 npm run release
 npm outdated
 ```
 
-### How to debug @db-man/github in @db-man/components
+## How to debug @db-man/github in @db-man/components
 
 After @db-man/github changed source code, will need this affects @db-man/components.
 
