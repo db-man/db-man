@@ -9,7 +9,15 @@ npm run tdd
 npm run tdd src/pages/DbTablePage/helpers.test.ts
 ```
 
-## Run cypress test
+## Run tests
+
+### Run unit tests
+
+```sh
+npm run test
+```
+
+### Run cypress test
 
 Create GitHub personal access token for `CYPRESS_DBM_TOKEN`.
 In the Cypress source code, will use `Cypress.env('DBM_TOKEN')` to get this token.
