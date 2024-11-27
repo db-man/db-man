@@ -48,6 +48,7 @@ describe('ImageLink', () => {
 describe('ImageLinks', () => {
   it('invalid inputs', () => {
     const { container } = render(<ImageLinks />);
+    // eslint-disable-next-line testing-library/no-node-access
     expect(container.children).toHaveLength(0);
   });
   it('renders 2 images', () => {
