@@ -9,6 +9,7 @@ import { GetPageUiType, UiType } from '../../types/UiType';
 import DbColumn from '../../types/DbColumn';
 import PageContext from '../../contexts/page';
 import {
+  COL_UI_PRESETS,
   DB_CFG_FILENAME,
   LS_KEY_GITHUB_OWNER,
   LS_KEY_GITHUB_REPO_NAME,
@@ -152,9 +153,9 @@ const genColumn = (
     },
   },
   {
-    key: 'ui:presets',
-    dataIndex: 'ui:presets',
-    title: 'ui:presets',
+    key: COL_UI_PRESETS,
+    dataIndex: COL_UI_PRESETS,
+    title: COL_UI_PRESETS,
   },
 ];
 

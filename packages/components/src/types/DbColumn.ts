@@ -36,7 +36,7 @@ export const TABLE_COLUMN_KEYS = [
   'ui:listPage:isFilter', // If true, on the list page, the field/column will be shown in the filter section above the table.
   'ui:listPage:isImageViewKey',
   'ui:listPage:randomView',
-  'ui:presets',
+  'ui:createUpdatePage:presets',
 ] as const; // "as const" makes TypeScript treat this as a readonly tuple
 type TableColumnKeysType = typeof TABLE_COLUMN_KEYS;
 export type TableColumnKeyType = TableColumnKeysType[number];
@@ -70,7 +70,7 @@ type DbColumnExtendsUiType = {
    *   - When `type="STRING"`, and default UI component `Input` is used.
    *     - To render some buttons on top of the input box, click button to quick input a new text into the input box.
    */
-  'ui:presets'?: string[];
+  'ui:createUpdatePage:presets'?: string[];
   /**
    * Pass to the Column of Ant Design Table.
    * TODO maybe we should use `tableColProps` instead of `tableProps`?

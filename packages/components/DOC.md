@@ -93,7 +93,7 @@ See `src/types/DbColumn.ts::ColumnPlaceholder`
 
 See `src/types/DbColumn.ts::RadioGroupUiTypeEnum`
 
-### `ui:presets`
+### `ui:createUpdatePage:presets`
 
 See `src/types/DbColumn.ts::Column`
 

@@ -21,7 +21,7 @@ export const LS_IS_DARK_THEME = 'dbm_is_dark_theme';
 export const LS_SHOW_DOWNLOAD_BUTTON = 'dbm_show_download_button';
 
 // Table column definitions
-export const COL_UI_PRESETS = 'ui:presets';
+export const COL_UI_PRESETS = 'ui:createUpdatePage:presets';
 
 // UI type
 export const TYPE_CREATE_UPDATE_PAGE = 'type:createUpdatePage';
