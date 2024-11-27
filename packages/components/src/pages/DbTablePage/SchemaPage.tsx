@@ -131,6 +131,11 @@ const genColumn = (
     title: 'ui:createUpdatePage:placeholder',
   },
   {
+    key: COL_UI_PRESETS,
+    dataIndex: COL_UI_PRESETS,
+    title: COL_UI_PRESETS,
+  },
+  {
     key: 'ui:listPage:isFilter',
     dataIndex: 'ui:listPage:isFilter',
     title: 'ui:listPage:isFilter',
@@ -151,11 +156,6 @@ const genColumn = (
       if (typeof cell === 'object') return JSON.stringify(cell);
       return cell;
     },
-  },
-  {
-    key: COL_UI_PRESETS,
-    dataIndex: COL_UI_PRESETS,
-    title: COL_UI_PRESETS,
   },
 ];
 

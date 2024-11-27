@@ -33,10 +33,10 @@ export const TABLE_COLUMN_KEYS = [
   'type:listPage',
   'ui:createUpdatePage:enum',
   'ui:createUpdatePage:placeholder',
+  'ui:createUpdatePage:presets',
   'ui:listPage:isFilter', // If true, on the list page, the field/column will be shown in the filter section above the table.
   'ui:listPage:isImageViewKey',
   'ui:listPage:randomView',
-  'ui:createUpdatePage:presets',
 ] as const; // "as const" makes TypeScript treat this as a readonly tuple
 type TableColumnKeysType = typeof TABLE_COLUMN_KEYS;
 export type TableColumnKeyType = TableColumnKeysType[number];
@@ -58,12 +58,6 @@ type DbColumnExtendsUiType = {
    */
   'ui:createUpdatePage:placeholder'?: ColumnPlaceholder;
   /**
-   * If true, on the list page, the field/column will be shown in the filter section above the table.
-   */
-  'ui:listPage:isFilter'?: boolean;
-  'ui:listPage:isImageViewKey'?: string;
-  'ui:listPage:randomView'?: ListPageRandomViewUiType;
-  /**
    * - Only used on create/update page.
    *   - When `type="STRING_ARRAY"`, and default UI component `Select` is used.
    *     - To render some buttons on top of the dropdown, click button to quick append a new tag into the dropdown.
@@ -71,6 +65,12 @@ type DbColumnExtendsUiType = {
    *     - To render some buttons on top of the input box, click button to quick input a new text into the input box.
    */
   'ui:createUpdatePage:presets'?: string[];
+  /**
+   * If true, on the list page, the field/column will be shown in the filter section above the table.
+   */
+  'ui:listPage:isFilter'?: boolean;
+  'ui:listPage:isImageViewKey'?: string;
+  'ui:listPage:randomView'?: ListPageRandomViewUiType;
   /**
    * Pass to the Column of Ant Design Table.
    * TODO maybe we should use `tableColProps` instead of `tableProps`?
