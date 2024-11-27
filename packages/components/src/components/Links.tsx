@@ -8,7 +8,7 @@ import { downloadImage } from '../utils';
 import { LS_SHOW_DOWNLOAD_BUTTON } from '../constants';
 
 export function Fragment({ children }: { children: React.ReactNode }) {
-  return children;
+  return <React.Fragment>{children}</React.Fragment>;
 }
 
 const isShow = () =>
