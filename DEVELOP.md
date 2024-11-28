@@ -91,6 +91,7 @@ Root cause: https://stackoverflow.com/questions/44114436/the-create-react-app-im
 - Move some parts of @db-man/cli to a new GitHub Action (like `actions/checkout`), because most of the scripts are only used in the CI.
 - How to easy write table schema (maybe with a preview demo)
 - Add `"ui:createUpdatePage:presets": ["spike", "cookie"]` to split-table-db.
+- Can use antd Form to make the form more beautiful, for example the label and input in the same line.
 
 ## References
 
