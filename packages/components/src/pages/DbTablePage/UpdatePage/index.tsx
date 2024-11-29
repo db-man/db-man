@@ -11,6 +11,7 @@ import { getNewRows } from './helpers';
 import { RowType } from '../../../types/Data';
 
 const UpdatePage = () => {
+  const [messageApi, contextHolder] = message.useMessage();
   const { primaryKey, appModes, dbName, tableName, githubDb } =
     useContext(PageContext);
 
@@ -51,7 +52,7 @@ const UpdatePage = () => {
     if (isSplitTable()) {
       deleteRecordFileAsync(formValues);
     } else {
-      message.info('Only supported in split-table mode!');
+      messageApi.info('Only supported in split-table mode!');
     }
   };
 
@@ -118,7 +119,7 @@ const UpdatePage = () => {
         recordFileSha
       );
 
-      message.success(<SuccessMessage url={commit.html_url} />, 10);
+      messageApi.success(<SuccessMessage url={commit.html_url} />, 10);
     } catch (err) {
       console.error('updateRecordFile, err:', err);
       setErrorMessage('Failed to update record file on server!');
@@ -137,7 +138,7 @@ const UpdatePage = () => {
         recordFileSha
       );
 
-      message.success(<SuccessMessage url={commit.html_url} />, 10);
+      messageApi.success(<SuccessMessage url={commit.html_url} />, 10);
     } catch (err) {
       console.error('deleteRecordFile, err:', err);
       setErrorMessage('Failed to delete record file on server!');
@@ -218,6 +219,7 @@ const UpdatePage = () => {
 
   return (
     <div className='dbm-page update-page-body-component'>
+      {contextHolder}
       <Skeleton loading={tips().length > 0}>
         {renderAlert()}
         {renderForm()}
