@@ -1,5 +1,5 @@
-# .github/workflows/reusable-workflow.yml
-name: Reusable Workflow
+# .github/workflows/insights-reusable-workflow.yml
+name: Insights Reusable Workflow
 
 on:
   workflow_call:
