@@ -22,6 +22,7 @@ export const LS_SHOW_DOWNLOAD_BUTTON = 'dbm_show_download_button';
 
 // Table column definitions
 export const COL_UI_PRESETS = 'ui:createUpdatePage:presets';
+export const COL_UI_LISTPAGE_RANDOMVIEW = 'ui:listPage:randomView';
 
 // UI type
 export const TYPE_CREATE_UPDATE_PAGE = 'type:createUpdatePage';

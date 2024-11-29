@@ -9,6 +9,7 @@ import { GetPageUiType, UiType } from '../../types/UiType';
 import DbColumn from '../../types/DbColumn';
 import PageContext from '../../contexts/page';
 import {
+  COL_UI_LISTPAGE_RANDOMVIEW,
   COL_UI_PRESETS,
   DB_CFG_FILENAME,
   LS_KEY_GITHUB_OWNER,
@@ -149,9 +150,9 @@ const genColumn = (
     render: (cell: boolean) => (cell === true ? 'Yes' : 'No'),
   },
   {
-    key: 'ui:listPage:randomView',
-    dataIndex: 'ui:listPage:randomView',
-    title: 'ui:listPage:randomView',
+    key: COL_UI_LISTPAGE_RANDOMVIEW,
+    dataIndex: COL_UI_LISTPAGE_RANDOMVIEW,
+    title: COL_UI_LISTPAGE_RANDOMVIEW,
     render: (cell: object) => {
       if (typeof cell === 'object') return JSON.stringify(cell);
       return cell;

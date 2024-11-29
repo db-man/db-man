@@ -1,10 +1,12 @@
 /* eslint-disable react/destructuring-assignment, no-console, max-len */
 
-import React, { useContext, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { List, Card } from 'antd';
+import { useContext, useEffect, useState } from 'react';
 
 // import { contexts as PageContext, ddRender } from '@db-man/components';
+import { List, Card } from 'antd';
+import { Link } from 'react-router-dom';
+
+import { COL_UI_LISTPAGE_RANDOMVIEW } from '../constants';
 import PageContext from '../contexts/page';
 import * as ddRender from '../ddRender/ddRender';
 import { RowType } from '../types/Data';
@@ -53,7 +55,7 @@ export default function RandomList({ rows }: { rows: RowType[] }) {
   const renderItem = (item: RowType) => {
     const column = columns.find((col) => col.id === primaryKey);
     if (!column) return <div>No primary column found</div>;
-    const args = column['ui:listPage:randomView'] || '';
+    const args = column[COL_UI_LISTPAGE_RANDOMVIEW] || '';
     const fn = ddRender.getRender(args) || ((val: any) => val);
     return (
       <List.Item>
