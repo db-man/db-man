@@ -1,4 +1,3 @@
-import React from 'react';
 import { List, Button, message } from 'antd';
 
 import { ImageLink } from './Links';

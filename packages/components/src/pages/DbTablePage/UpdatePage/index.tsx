@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
 import { utils as githubUtils, types } from '@db-man/github';
 import { message, Alert, Spin, Skeleton } from 'antd';
