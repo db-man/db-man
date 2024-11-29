@@ -70,6 +70,25 @@ type DbColumnExtendsUiType = {
    */
   'ui:listPage:isFilter'?: boolean;
   'ui:listPage:isImageViewKey'?: string;
+  /**
+   * On the List Page, Random View, choose the UI component to use for one of the list item.
+   *
+   * Below is an example of using `ImageLink` component. The string after "ImageLink" is a template (Handlebars).
+   * It will transform the `record` which passing from antd `Table` component, into a props object like `{url:'',imgSrc:''}`.
+   * This props will pass to `ImageLink` component.
+   *
+   * ```json
+   * {
+   *   "id": "product_id",
+   *   "ui:listPage:randomView": [
+   *     [
+   *       "ImageLink",
+   *       "{\"url\":\"{{record.photos.[0]}}\",\"imgSrc\":\"{{record.photos.[0]}}\"}"
+   *     ]
+   *   ]
+   * }
+   * ```
+   */
   'ui:listPage:randomView'?: ListPageRandomViewUiType;
   /**
    * Pass to the Column of Ant Design Table.
