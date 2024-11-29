@@ -1,4 +1,3 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 
 function SuccessMessage({ url }: { url: string | undefined }) {
@@ -6,7 +5,7 @@ function SuccessMessage({ url }: { url: string | undefined }) {
 
   return (
     <div>
-      Item saved.{' '}
+      Record saved.{' '}
       <a href={url} target='_blank' rel='noreferrer'>
         Commit link
       </a>
