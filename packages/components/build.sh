@@ -8,11 +8,11 @@ babel src --out-dir dist --extensions '.ts,.tsx,.js,.jsx,.snap' --copy-files --i
 
 # lib
 rm -rf lib
-babel src --out-dir lib --env-name commonjs --extensions '.js,.jsx,.ts,.tsx' --ignore 'src/**/*.js.snap,src/index.tsx'
+babel src --out-dir lib --env-name commonjs --extensions '.js,.jsx,.ts,.tsx' --copy-files --ignore 'src/**/*.js.snap,src/index.tsx'
 
 # es
 rm -rf es
-babel src --out-dir es --env-name es --extensions '.js,.jsx,.ts,.tsx' --ignore 'src/**/*.js.snap,src/index.tsx'
+babel src --out-dir es --env-name es --extensions '.js,.jsx,.ts,.tsx' --copy-files --ignore 'src/**/*.js.snap,src/index.tsx'
 
 # gen types in lib/ dir
 tsc
