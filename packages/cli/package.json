@@ -22,7 +22,8 @@
   },
   "scripts": {
     "test": "jest --detectOpenHandles",
-    "tdd": "jest --detectOpenHandles --watch"
+    "tdd": "jest --detectOpenHandles --watch",
+    "build": "echo 'Build script not implemented'"
   },
   "gitHead": "4943ccff075633a097c80072d4dbf0b9a4f753a2"
 }
