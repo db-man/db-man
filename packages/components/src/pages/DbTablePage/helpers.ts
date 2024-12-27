@@ -1,7 +1,7 @@
 import DbColumn, {
   TABLE_COLUMN_KEYS,
   TableColumnKeyType,
-} from 'types/DbColumn';
+} from '../../types/DbColumn';
 
 export const checkValidTableColumns = (dbTableColumns: DbColumn[]) => {
   let msg = '';

@@ -1,4 +1,4 @@
-import DbColumn from 'types/DbColumn';
+import DbColumn from '../../types/DbColumn';
 
 import { checkValidTableColumns } from './helpers';
 
