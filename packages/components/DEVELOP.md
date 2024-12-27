@@ -57,6 +57,12 @@ lerna publish --no-private # will include `lerna version patch --no-private -y`
   - http://localhost:3000/demos/RadioGroup - demo for one component
 - http://localhost:3000/?example=dbconnections - Access example one by one
 
+## Dirs
+
+- `dist/`: UMD build for maximum compatibility across different environments.
+- `es/`: ES module build for modern JavaScript environments and bundlers.
+- `lib/`: CommonJS module build for Node.js and other CommonJS environments.
+
 ## Test build results
 
 ```sh
