@@ -1,3 +1,5 @@
+#!/bin/bash -ex
+
 # Cannot call `./build.sh` directly, otherwise you will see an error "tsc: command not found"
 # Instead, call `npm run build` to run this script
 

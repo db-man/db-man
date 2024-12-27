@@ -1,3 +1,5 @@
+#!/bin/bash -ex
+
 # Build source code to commonjs or es6
 
 if [ "$1" = "commonjs" ]; then

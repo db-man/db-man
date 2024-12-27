@@ -1,3 +1,5 @@
+#!/bin/bash -ex
+
 # test the package
 CI=true npm run test-cra
 
