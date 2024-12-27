@@ -27,6 +27,12 @@ CYPRESS_DBM_TOKEN=ghp_123 npx cypress run # run all tests
 CYPRESS_DBM_TOKEN=ghp_123 npx cypress open # open cypress GUI for debugging
 ```
 
+## Build
+
+```sh
+npm run build
+```
+
 ## Publish
 
 Publish (deprecated, check out `DEVELOP.md` in root dir)
