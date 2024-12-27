@@ -2,8 +2,8 @@
   "name": "@db-man/components",
   "version": "0.1.155",
   "description": "",
-  "main": "dist/lib.js",
-  "types": "dist/lib.d.ts",
+  "main": "lib/lib.js",
+  "types": "lib/lib.d.ts",
   "private": false,
   "repository": {
     "type": "git",
