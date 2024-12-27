@@ -10,7 +10,8 @@
     "test": "npm run test --workspaces",
     "build": "npm run build --workspaces",
     "prepublishOnly": "npm run build",
-    "publish": "lerna publish --no-private ; open 'https://github.com/db-man/db-man.github.io/actions/workflows/upgrade.yml'"
+    "publish": "lerna publish --no-private ; open 'https://github.com/db-man/db-man.github.io/actions/workflows/upgrade.yml'",
+    "release": "npm run test --workspaces && npm run build && npm run publish"
   },
   "workspaces": [
     "packages/*"
