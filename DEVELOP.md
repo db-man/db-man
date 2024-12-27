@@ -43,6 +43,12 @@ cd packages/github
 GH_TOKEN=ghp_123 npm run release
 ```
 
+## Release all packages
+
+```sh
+npm run release
+```
+
 ## Check outdated
 
 ```sh
