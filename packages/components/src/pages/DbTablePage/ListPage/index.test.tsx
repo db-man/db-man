@@ -23,6 +23,7 @@ const context: PageContextType = {
     updateRecordFile: jest.fn(),
     getDataUrl: jest.fn(),
     getRecordFileContentAndSha: jest.fn(),
+    getGitHubRepoPath: jest.fn(),
     getGitHubFullPath: jest.fn(),
     getDataPath: jest.fn(),
     deleteRecordFile: jest.fn(),

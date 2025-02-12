@@ -45,6 +45,7 @@ export interface GithubDbType {
     recordId: string,
     signal?: AbortSignal
   ) => Promise<{ content: RowType; sha: string }>;
+  getGitHubRepoPath: () => string;
   getGitHubFullPath: (path: string) => string;
   getDataPath: (dbName: string, tableName: string) => string;
   deleteRecordFile: (

@@ -98,15 +98,23 @@ export default class GithubDb {
   }
 
   /**
+   * Get the GitHub repo path
+   * @returns
+   */
+  getGitHubRepoPath() {
+    return `https://github.com/${this.LS_KEY_GITHUB_OWNER}/${this.LS_KEY_GITHUB_REPO_NAME}`;
+  }
+
+  /**
    *
    * @param {string} path e.g. dbsDir/dbName/tableName.data.json
    * @returns
    */
-  getGitHubFullPath(path) {
+  getGitHubFullPath(path: string) {
     return `https://github.com/${this.LS_KEY_GITHUB_OWNER}/${this.LS_KEY_GITHUB_REPO_NAME}/blob/main/${path}`;
   }
 
-  getGitHubHistoryPath(path) {
+  getGitHubHistoryPath(path: string) {
     return `https://github.com/${this.LS_KEY_GITHUB_OWNER}/${this.LS_KEY_GITHUB_REPO_NAME}/commits/main/${path}`;
   }
 
