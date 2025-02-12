@@ -3,6 +3,9 @@ import { TYPE_CREATE_UPDATE_PAGE } from '../../constants';
 import DbColumn from '../../types/DbColumn';
 import { UiType } from '../../types/UiType';
 
+export const FILENAME_TOO_LONG =
+  'Filename length is too long, please keep it under 255 characters';
+
 /**
  * Check duplicated primary key
  * For example, if `id` is primary key, then there should not be two id=1 record in table
@@ -69,4 +72,31 @@ export const getFormInitialValues = (
     }
   });
   return initFormValues;
+};
+
+const isFilenameTooLong = (val: string) => (val + '.json').length > 255;
+
+/**
+ *
+ * @param param0
+ * @returns error message if the value is invalid, otherwise return true
+ */
+export const checkFieldValue = ({
+  column,
+  primaryKey,
+  value,
+}: {
+  column: DbColumn;
+  primaryKey: string;
+  value: string;
+}) => {
+  // When db mode is split-table, single record will be created as a file on filesystem
+  // But on some filesystem, e.g. macOS or Linux, the filename length limit is 255.
+  // So we need to check the length of filename, and warn user if it is too long.
+  if (column.id === primaryKey) {
+    if (isFilenameTooLong(value)) {
+      return FILENAME_TOO_LONG;
+    }
+  }
+  return '';
 };

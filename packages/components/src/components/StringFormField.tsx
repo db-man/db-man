@@ -9,7 +9,7 @@ import PresetsButtons from './PresetsButtons';
 import DbColumn from '../types/DbColumn';
 import { useAppContext } from '../contexts/AppContext';
 import { FieldValueWarning } from './FormValidations';
-import { validatePrimaryKey } from './Form/helpers';
+import { checkFieldValue, validatePrimaryKey } from './Form/helpers';
 import { RowType } from '../types/Data';
 
 type OnChangeType = (
@@ -42,8 +42,6 @@ const popoverContent = (
     </p>
   </div>
 );
-
-const isFilenameTooLong = (val: string) => (val + '.json').length > 255;
 
 /**
  * To render a form field for table_column.type="STRING"
@@ -81,16 +79,13 @@ export default function StringFormField(props: StringFormFieldProps) {
         }
       }
     } else {
-      // When db mode is split-table, single record will be created as a file on filesystem
-      // But on some filesystem, e.g. macOS or Linux, the filename length limit is 255.
-      // So we need to check the length of filename, and warn user if it is too long.
-      if (column.id === pageCtx.primaryKey) {
-        if (isFilenameTooLong(val)) {
-          message.warning(
-            'Filename length is too long, please keep it under 255 characters',
-            10
-          );
-        }
+      const errMsg = checkFieldValue({
+        column,
+        primaryKey: pageCtx.primaryKey,
+        value: val,
+      });
+      if (errMsg) {
+        message.warning(errMsg, 10);
       }
     }
   };
@@ -120,7 +115,13 @@ export default function StringFormField(props: StringFormFieldProps) {
       <StringFormFieldValue
         inputProps={{
           ...inputProps,
-          status: isFilenameTooLong(value || '') ? 'error' : undefined,
+          status: checkFieldValue({
+            column,
+            primaryKey: pageCtx.primaryKey,
+            value: value || '',
+          })
+            ? 'error'
+            : undefined,
         }}
         preview={preview}
         value={value}
