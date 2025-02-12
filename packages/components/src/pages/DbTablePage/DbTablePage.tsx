@@ -60,6 +60,7 @@ const DbTablePage = (props: {
       columns,
       primaryKey,
       tables: getTablesByDbName(dbName),
+      // TODO: move this to app context
       githubDb: githubDbRef.current,
     };
   };
