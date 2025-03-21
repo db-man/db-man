@@ -92,22 +92,6 @@ const reloadDbsSchemaAsync = async (
 ) => {
   messageApi.info('Start loading DBs schema...');
 
-  console.debug(
-    'Saved to localStorage:',
-    constants.LS_KEY_GITHUB_OWNER,
-    enabledConnection.owner
-  );
-  console.debug(
-    'Saved to localStorage:',
-    constants.LS_KEY_GITHUB_REPO_NAME,
-    enabledConnection.repo
-  );
-  console.debug(
-    'Saved to localStorage:',
-    constants.LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN,
-    enabledConnection.token
-  );
-
   localStorage.setItem(constants.LS_KEY_GITHUB_OWNER, enabledConnection.owner);
   localStorage.setItem(
     constants.LS_KEY_GITHUB_REPO_NAME,
@@ -124,10 +108,20 @@ const reloadDbsSchemaAsync = async (
     repoName: enabledConnection.repo || '',
   });
 
-  // get repo path from dbs.json in repo root dir
-  // in this file will tell where to find all db files
-  // TODO: test this with non split-table mode
-  const res = await github.getDbsCfg();
+  let res;
+  try {
+    // get repo path from dbs.json in repo root dir
+    // in this file will tell where to find all db files
+    // TODO: test this with non split-table mode
+    res = await github.getDbsCfg();
+  } catch (err) {
+    errMsg(
+      `Failed to get dbs.json! Reason: ${
+        err instanceof Error ? err.message : 'Unknown error'
+      }.`
+    );
+    return;
+  }
 
   const repoPath = res.content.repoPath;
   if (!repoPath) {

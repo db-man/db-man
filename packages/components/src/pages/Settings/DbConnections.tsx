@@ -31,7 +31,7 @@ const DbConnections = ({ storage }: { storage: StorageType }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleDbConnectionEnable = (enabledConnection: TableRowType) => {
-    reloadDbsSchemaAsync(enabledConnection, messageApi).then(() => {});
+    reloadDbsSchemaAsync(enabledConnection, messageApi);
   };
 
   const handleDbConnectionSave = (connections: TableRowType[]) => {
@@ -90,7 +90,7 @@ const DbConnections = ({ storage }: { storage: StorageType }) => {
   };
 
   return (
-    <div className='dbm-db-connections'>
+    <div className="dbm-db-connections">
       {contextHolder}
       <Title level={2}>Database Connections</Title>
       <EditableTable
@@ -104,20 +104,20 @@ const DbConnections = ({ storage }: { storage: StorageType }) => {
         onEnable={handleDbConnectionEnable}
         onSave={handleDbConnectionSave}
       />
-      <Tooltip title='Export the database connection configs to a JSON file.'>
+      <Tooltip title="Export the database connection configs to a JSON file.">
         <Button onClick={handleExport}>Export</Button>
       </Tooltip>{' '}
-      <Tooltip title='Import a JSON file to replace all database connection configs'>
+      <Tooltip title="Import a JSON file to replace all database connection configs">
         <Button onClick={handleImport}>Import</Button>
       </Tooltip>{' '}
-      <Tooltip title='Reset all settings in localStorage, e.g. DB connections, DB schemas'>
+      <Tooltip title="Reset all settings in localStorage, e.g. DB connections, DB schemas">
         <Button onClick={handleReset}>Reset</Button>
       </Tooltip>
       {/* This hidden input tag will handle importing config from a JSON file */}
       <input
         ref={fileInputRef}
         style={{ display: 'none' }}
-        type='file'
+        type="file"
         onChange={handleFileChange}
       />
     </div>

@@ -121,18 +121,25 @@ export default class Github {
         console.error('Github.getContentByPath failed, err:', err);
         let newErr;
         switch (err.status) {
-          case 404:
+          case 401:
             newErr = new Error(
-              `Failed to get path: path not found, path: ${path}`
+              `Failed to get content by path, maybe personal access token is invalid, path: ${path}.`
             );
             break;
           case 403:
             newErr = new Error(
-              `Failed to get path: maybe file too large, path: ${path}`
+              `Failed to get content by path, maybe file too large, path: ${path}.`
+            );
+            break;
+          case 404:
+            newErr = new Error(
+              `Failed to get content by path, path not found, path: ${path}.`
             );
             break;
           default:
-            newErr = new Error('Unknow error when getting file.');
+            newErr = new Error(
+              `Failed to get content by path, unknow error, path: ${path}.`
+            );
         }
         newErr.cause = err;
         throw newErr;

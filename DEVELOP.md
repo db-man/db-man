@@ -57,10 +57,11 @@ npm outdated
 
 ## How to debug @db-man/github in @db-man/components
 
-After @db-man/github changed source code, will need this affects @db-man/components.
+After @db-man/github changed source code, call script to rebuild `@db-man/github` source code, then restart dev server to make sure `@db-man/components` to load the new code.
 
 ```sh
 ./rebuild_github.sh
+npm run dev
 ```
 
 ## Issue 1
