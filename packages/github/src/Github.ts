@@ -337,16 +337,18 @@ export default class Github {
           'getDbsCfg failed, res.content is not in res, check the path param.'
         );
       }
-      // TODO: only in GithubDB we have database concept, so in Gitub.ts, we dont use rows concept, consider to remove it to `content`
-      let cfg = {};
+
       if (data.content === '') {
         // This is a new empty file, maybe just created
+        // But file format is not valid, so we need to throw an error
         // TODO may move to GithubDb, because here we assume the file is table data file, so content should be an array, but if it's other file, content may be object or other JSON type.
-        cfg = {};
-      } else {
-        cfg = JSON.parse(Base64.decode(data.content));
-        console.debug('@db-man/github getFileContentAndSha res:', cfg);
+        throw new Error('getDbsCfg failed, dbs.json file content is empty.');
       }
+
+      // TODO: only in GithubDB we have database concept, so in Gitub.ts, we dont use rows concept, consider to remove it to `content`
+      const cfg = JSON.parse(Base64.decode(data.content));
+      console.debug('@db-man/github getFileContentAndSha res:', cfg);
+
       return {
         content: cfg,
         sha: data.sha,

@@ -134,7 +134,7 @@ type TableRow = Record<string, any>;
 
 type DbsCfgType = {
   repoPath?: string;
-  dbModes?: string;
+  dbModes: string; // one of 'normal' or 'split-table'
 };
 
 // raw response from @octokit/rest API
