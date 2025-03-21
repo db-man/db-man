@@ -32,6 +32,22 @@ const loadDbsSchemaAsync = async (github: any, repoPath: string) => {
           .then((res: any) => {
             const databaseSchema: types.DatabaseSchema = res.content;
             dbsSchema[dbName] = databaseSchema;
+          })
+          .catch((err: unknown) => {
+            if (
+              err &&
+              typeof err === 'object' &&
+              'cause' in err &&
+              typeof err.cause === 'object' &&
+              err.cause &&
+              'status' in err.cause &&
+              err.cause.status === 404
+            ) {
+              throw new Error(
+                `Database config file ${constants.DB_CFG_FILENAME} not found for database "${dbName}"`
+              );
+            }
+            throw err;
           });
       })
   );
@@ -142,11 +158,9 @@ const reloadDbsSchemaAsync = async (
     dbsSchema = await loadDbsSchemaAsync(github, repoPath);
   } catch (err) {
     errMsg(
-      `Failed to get DB schema! Maybe you need to create this file: https://github.com/${localStorage.getItem(
-        constants.LS_KEY_GITHUB_OWNER
-      )}/${localStorage.getItem(
-        constants.LS_KEY_GITHUB_REPO_NAME
-      )}/${repoPath}`,
+      `Failed to get DB schema! ${
+        err instanceof Error ? err.message : 'Unknown error'
+      }.`,
       err as Error
     );
     return;

@@ -7,7 +7,7 @@ export const getUrlParams = () => {
 
 export const errMsg = (msg: string, err?: Error) => {
   console.error(`[db-man] ${msg}`, err); // eslint-disable-line no-console
-  message.error(msg);
+  message.error(msg, 10);
 };
 
 // Copy from https://stackoverflow.com/questions/49474775/chrome-65-blocks-cross-origin-a-download-client-side-workaround-to-force-down
