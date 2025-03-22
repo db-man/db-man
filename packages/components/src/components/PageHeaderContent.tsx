@@ -33,19 +33,19 @@ function PageHeaderContent(props: PropsType) {
   }
 
   return (
-    <div className='dbm-page-header'>
-      <div key='logo' className='logo' />
+    <div className="dbm-page-header">
+      <div key="logo" className="logo" />
       <Row>
         <Col span={20}>
           <Menu
-            key='menu'
-            theme='dark'
-            mode='horizontal'
-            className='dbm-top-navbar-menu'
+            key="menu"
+            theme="dark"
+            mode="horizontal"
+            className="dbm-top-navbar-menu"
             defaultSelectedKeys={['home']}
             selectedKeys={[params?.dbName || '']}
             items={[
-              { key: 'home', label: <Link to='/'>Home</Link> },
+              { key: 'home', label: <Link to="/">Home</Link> },
               ...Object.keys(dbs || {})
                 .sort((dbNameA, dbNameB) => dbNameA.localeCompare(dbNameB))
                 .map((dbName) => ({
@@ -56,13 +56,13 @@ function PageHeaderContent(props: PropsType) {
                     </Link>
                   ),
                 })),
-              { key: 'query', label: <Link to='/query'>Query</Link> },
-              { key: 'settings', label: <Link to='/settings'>Settings</Link> },
+              { key: 'query', label: <Link to="/query">Query</Link> },
+              { key: 'settings', label: <Link to="/settings">Settings</Link> },
             ]}
           />
         </Col>
         <Col span={4} style={{ textAlign: 'right' }}>
-          <a href={getGitHubRepoPath()} target='_blank' rel='noreferrer'>
+          <a href={getGitHubRepoPath()} target="_blank" rel="noreferrer">
             <GithubOutlined />
           </a>
         </Col>
