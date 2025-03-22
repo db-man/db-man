@@ -57,6 +57,10 @@ function PageHeaderContent(props: PropsType) {
                   ),
                 })),
               { key: 'query', label: <Link to="/query">Query</Link> },
+              {
+                key: 'create-db',
+                label: <Link to="/create-db">Create DB</Link>,
+              },
               { key: 'settings', label: <Link to="/settings">Settings</Link> },
             ]}
           />

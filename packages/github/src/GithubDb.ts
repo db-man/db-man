@@ -1,6 +1,6 @@
 import { Base64 } from 'js-base64';
 
-import { DatabaseMap, UpdateFileType } from './types';
+import { DatabaseMap, DatabaseSchema, UpdateFileType } from './types';
 import { DB_CFG_FILENAME } from './constants';
 import {
   getDataFileName,
@@ -116,6 +116,14 @@ export default class GithubDb {
 
   getGitHubHistoryPath(path: string) {
     return `https://github.com/${this.LS_KEY_GITHUB_OWNER}/${this.LS_KEY_GITHUB_REPO_NAME}/commits/main/${path}`;
+  }
+
+  /**
+   * @param {string} dbName
+   * @returns Path for GitHub, e.g. dbs/dbName/dbcfg.json
+   */
+  getDbConfigPath(dbName: string) {
+    return `${this.LS_KEY_GITHUB_REPO_PATH}/${dbName}/${DB_CFG_FILENAME}`;
   }
 
   /**
@@ -313,6 +321,15 @@ export default class GithubDb {
       content: JSON.stringify(record, null, '  '),
       sha,
       message: `[db-man] Update record file (${dbName}/${tableName})`,
+    });
+  }
+
+  async createDatabase(dbConfig: DatabaseSchema) {
+    return this.github.updateFile({
+      path: this.getDbConfigPath(dbConfig.name),
+      content: JSON.stringify(dbConfig, null, '  '),
+      message: `[db-man] Create database (${dbConfig.name})`,
+      sha: undefined,
     });
   }
 

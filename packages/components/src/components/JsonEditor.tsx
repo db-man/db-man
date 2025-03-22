@@ -1,13 +1,14 @@
 import React, { useState, ChangeEvent } from 'react';
 import { Input } from 'antd';
 
-import { ValueType } from './Form';
 import { str2obj } from './Form/helpers';
+
+export type FormValueType = Record<string, any>;
 
 interface JsonEditorProps {
   value: string;
   onChange: (value: string) => void;
-  onFormValueChange: (value: ValueType) => void;
+  onFormValueChange: (value: FormValueType) => void;
   onSave?: () => void;
 }
 

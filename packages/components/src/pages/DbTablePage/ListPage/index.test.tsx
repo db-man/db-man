@@ -21,6 +21,7 @@ const context: PageContextType = {
     getTableInsights: jest.fn(),
     updateTableFile: jest.fn(),
     updateRecordFile: jest.fn(),
+    createDatabase: jest.fn(),
     getDataUrl: jest.fn(),
     getRecordFileContentAndSha: jest.fn(),
     getGitHubRepoPath: jest.fn(),
@@ -64,7 +65,7 @@ describe.skip('ListPageBody', () => {
       render(
         <BrowserRouter>
           <PageContext.Provider value={context}>
-            <ListPageBody tableName='users' />
+            <ListPageBody tableName="users" />
           </PageContext.Provider>
         </BrowserRouter>
       );

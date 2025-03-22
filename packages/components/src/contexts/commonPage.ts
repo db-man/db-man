@@ -38,6 +38,11 @@ export interface GithubDbType {
       html_url?: string;
     };
   }>;
+  createDatabase: (dbConfig: types.DatabaseSchema) => Promise<{
+    commit: {
+      html_url?: string;
+    };
+  }>;
   getDataUrl: (dbName: string, tableName: string) => string;
   getRecordFileContentAndSha: (
     dbName: string,

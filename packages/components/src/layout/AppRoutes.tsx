@@ -4,6 +4,7 @@ import { Routes, Route } from 'react-router-dom';
 import Settings from '../pages/Settings';
 import Demos from '../pages/Demos';
 import QueryPage from '../pages/Query';
+import CreateDbPage from '../pages/CreateDb';
 import ViewPage from '../pages/ViewPage';
 import IframePageWrapper from './IframePageWrapper';
 import Database from './DbTableLayout/Database';
@@ -27,6 +28,14 @@ export default function AppRoutes() {
           element={
             <CommonPageWrapper>
               <QueryPage />
+            </CommonPageWrapper>
+          }
+        />
+        <Route
+          path="create-db"
+          element={
+            <CommonPageWrapper>
+              <CreateDbPage />
             </CommonPageWrapper>
           }
         />
