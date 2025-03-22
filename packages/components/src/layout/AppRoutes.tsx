@@ -17,24 +17,24 @@ export default function AppRoutes() {
   return (
     <Routes>
       <Route
-        path='/iframe/:dbName/:tableName/:action'
+        path="/iframe/:dbName/:tableName/:action"
         element={<IframePageWrapper />}
       />
-      <Route path='/' element={<PageLayout />}>
-        <Route path='settings' element={<Settings />} />
+      <Route path="/" element={<PageLayout />}>
+        <Route path="settings" element={<Settings />} />
         <Route
-          path='query'
+          path="query"
           element={
             <CommonPageWrapper>
               <QueryPage />
             </CommonPageWrapper>
           }
         />
-        <Route path='demos' element={<Demos />}>
-          <Route path=':component' element={<ComponentDemo />} />
+        <Route path="demos" element={<Demos />}>
+          <Route path=":component" element={<ComponentDemo />} />
         </Route>
         <Route
-          path='_views/:dbName/:viewName'
+          path="_views/:dbName/:viewName"
           element={
             <CommonPageWrapper>
               <ViewPage />
@@ -42,9 +42,9 @@ export default function AppRoutes() {
           }
         />
         {/* example path: /iam/users/list */}
-        <Route path=':dbName' element={<Database />}>
-          <Route path=':tableName' element={<Table />}>
-            <Route path=':action' element={<Action />} />
+        <Route path=":dbName" element={<Database />}>
+          <Route path=":tableName" element={<Table />}>
+            <Route path=":action" element={<Action />} />
             {/**
              TODO: try split the action to different route
              <Route path='/list' element={<ListPage />} />
