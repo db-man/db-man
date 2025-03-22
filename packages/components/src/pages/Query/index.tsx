@@ -7,12 +7,13 @@ import { useAppContext } from '../../contexts/AppContext';
 import CommonPageContext from '../../contexts/commonPage';
 import ReactSimpleCodeEditor from '../../components/ReactSimpleCodeEditor';
 import { LS_QUERY_PAGE_SELECTED_TABLE_NAMES } from '../../constants';
+import DrawerButton from 'components/DrawerButton';
 
 // Use `Typography` so can apply dark theme to text
 const { Text } = Typography;
 const { SHOW_PARENT } = TreeSelect;
 
-const defaultCode = `
+const sampleCode = `
 const rolesUserCountRow = tablesRows['iam/roles'].map((role) => {
   const users = tablesRows['iam/users'].filter((user) => user.roleCode === role.code);
   return {
@@ -24,6 +25,18 @@ console.log('rolesUserCountRow:', rolesUserCountRow);
 return rolesUserCountRow;
 `;
 
+const getColumns = (obj: any) => {
+  // When code box is empty, `obj` is undefined
+  if (!obj || obj.length === 0) {
+    return [];
+  }
+  return Object.keys(obj[0] || {}).map((key) => ({
+    title: key,
+    dataIndex: key,
+    key,
+  }));
+};
+
 export default function QueryPage() {
   const { dbs, getTablesByDbName } = useAppContext();
   const { githubDb } = useContext(CommonPageContext);
@@ -32,8 +45,11 @@ export default function QueryPage() {
   >(
     JSON.parse(localStorage.getItem(LS_QUERY_PAGE_SELECTED_TABLE_NAMES) || '[]')
   );
-  const [code, setCode] = React.useState(defaultCode);
-  const [result, setResult] = React.useState({ obj: [], err: '' });
+  const [code, setCode] = React.useState('return [];');
+  const [result, setResult] = React.useState<{ obj: any; err: string }>({
+    obj: [],
+    err: '',
+  });
   // tablesRows={iam:[...], roles:[...]}
   const [tablesRows, setTablesRows] = React.useState<{
     [key: string]: RowType;
@@ -67,6 +83,11 @@ export default function QueryPage() {
       // eslint-disable-next-line no-new-func
       const fn = Function('tablesRows', code);
       const outputRows = fn(tablesRows);
+      // if outputRows is not an array, then print error
+      if (!Array.isArray(outputRows)) {
+        setResult({ obj: outputRows, err: 'Output is not an array!' });
+        return;
+      }
       setResult({ obj: outputRows, err: '' });
     } catch (err: any) {
       // console.log('[ERROR] Failed to eval function!');
@@ -103,7 +124,19 @@ export default function QueryPage() {
       </div>
       <Row>
         <Col span={16}>
-          Code:
+          Code:{' '}
+          <DrawerButton
+            title="Help"
+            buttonText="Help"
+            buttonProps={{ size: 'small' }}
+            content={
+              <div>
+                <p>Usage</p>
+                <p>Sample query:</p>
+                <pre>{sampleCode}</pre>
+              </div>
+            }
+          />
           <ReactSimpleCodeEditor
             height="50em"
             value={code}
@@ -121,11 +154,7 @@ export default function QueryPage() {
           </div>
           <Table
             rowKey={(record) => JSON.stringify(record)}
-            columns={Object.keys(result.obj[0] || {}).map((key) => ({
-              title: key,
-              dataIndex: key,
-              key,
-            }))}
+            columns={getColumns(result.obj)}
             dataSource={result.obj}
           />
         </Col>
