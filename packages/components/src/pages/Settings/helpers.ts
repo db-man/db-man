@@ -102,15 +102,9 @@ const validateDbsSchame = (dbsSchema: types.DatabaseMap) => {
   return errors.length === 0;
 };
 
-const reloadDbsSchemaAsync = async (
-  enabledConnection: TableRowType,
-  messageApi: MessageInstance
+export const saveConnectionToLocalStorage = (
+  enabledConnection: TableRowType
 ) => {
-  messageApi.info('Start loading DBs schema...');
-
-  // Clear UI state
-  localStorage.removeItem(constants.LS_QUERY_PAGE_SELECTED_TABLE_NAMES);
-
   // Set db connection info
   localStorage.setItem(constants.LS_KEY_GITHUB_OWNER, enabledConnection.owner);
   localStorage.setItem(
@@ -121,11 +115,20 @@ const reloadDbsSchemaAsync = async (
     constants.LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN,
     enabledConnection.token
   );
+};
+
+export const reloadDbsSchemaAsync = async (
+  token: string,
+  owner: string,
+  repoName: string,
+  messageApi: MessageInstance
+) => {
+  messageApi.info('Start loading DBs schema...');
 
   const github = new Github({
-    personalAccessToken: enabledConnection.token || '',
-    owner: enabledConnection.owner || '',
-    repoName: enabledConnection.repo || '',
+    personalAccessToken: token,
+    owner,
+    repoName,
   });
 
   let res;
@@ -176,10 +179,9 @@ const reloadDbsSchemaAsync = async (
   }
 
   localStorage.setItem(constants.LS_KEY_DBS_SCHEMA, JSON.stringify(dbsSchema));
+
   messageApi.info('Finish loading DBs schema! Will reload window in 3s!');
   setTimeout(() => {
     window.location.reload();
   }, 3000);
 };
-
-export default reloadDbsSchemaAsync;

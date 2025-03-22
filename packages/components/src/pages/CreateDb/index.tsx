@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react';
 
-import { Tabs, Button, Alert, message } from 'antd';
+import { Tabs, Button, Alert, message, Typography } from 'antd';
 import { types } from '@db-man/github';
 
 import CommonPageContext from 'contexts/commonPage';
@@ -8,6 +8,12 @@ import JsonEditor, { FormValueType } from 'components/JsonEditor';
 import { obj2str } from 'components/Form/helpers';
 import StringFormFieldValue from 'components/StringFormFieldValue';
 import SuccessMessage from 'components/SuccessMessage';
+import { reloadDbsSchemaAsync } from 'pages/Settings/helpers';
+
+import * as constants from '../../constants';
+
+// Use `Typography` so can apply dark theme to text
+const { Text } = Typography;
 
 const defaultFormValues: FormValueType = {
   name: '',
@@ -17,6 +23,7 @@ const defaultFormValues: FormValueType = {
 
 const CreateDbPage = () => {
   const { githubDb } = useContext(CommonPageContext);
+  const [messageApi, contextHolder] = message.useMessage();
 
   const [formValues, setFormValues] = useState(defaultFormValues);
   const [jsonStr, setJsonStr] = useState(obj2str(defaultFormValues));
@@ -53,6 +60,15 @@ const CreateDbPage = () => {
     }
 
     setSaveLoading(false);
+  };
+
+  const handleReloadDbsSchema = () => {
+    reloadDbsSchemaAsync(
+      localStorage.getItem(constants.LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN) || '',
+      localStorage.getItem(constants.LS_KEY_GITHUB_OWNER) || '',
+      localStorage.getItem(constants.LS_KEY_GITHUB_REPO_NAME) || '',
+      messageApi
+    );
   };
 
   const tabsItems = [
@@ -96,6 +112,7 @@ const CreateDbPage = () => {
 
   return (
     <div className="create-db-page">
+      {contextHolder}
       <h1>Create Database</h1>
       {errorMessage && <Alert message={errorMessage} type="error" />}
       <Tabs defaultActiveKey="form" items={tabsItems} />
@@ -107,7 +124,9 @@ const CreateDbPage = () => {
           onClick={handleFormSubmit}
         >
           Create
-        </Button>
+        </Button>{' '}
+        <Text>|</Text>{' '}
+        <Button onClick={handleReloadDbsSchema}>Reload DBs Schema</Button>
       </div>
     </div>
   );

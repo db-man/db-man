@@ -3,7 +3,7 @@ import React, { useRef } from 'react';
 import { Button, message, Tooltip, Typography } from 'antd';
 
 import * as constants from '../../constants';
-import reloadDbsSchemaAsync from './helpers';
+import { saveConnectionToLocalStorage, reloadDbsSchemaAsync } from './helpers';
 import EditableTable, { TableRowType } from './EditableTable';
 
 // Use `Typography` so can apply dark theme to text
@@ -30,8 +30,18 @@ const DbConnections = ({ storage }: { storage: StorageType }) => {
   const [messageApi, contextHolder] = message.useMessage();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleDbConnectionEnable = (enabledConnection: TableRowType) => {
-    reloadDbsSchemaAsync(enabledConnection, messageApi);
+  const handleDbConnectionEnable = async (enabledConnection: TableRowType) => {
+    // Clear UI state
+    localStorage.removeItem(constants.LS_QUERY_PAGE_SELECTED_TABLE_NAMES);
+
+    saveConnectionToLocalStorage(enabledConnection);
+
+    await reloadDbsSchemaAsync(
+      enabledConnection.token,
+      enabledConnection.owner,
+      enabledConnection.repo,
+      messageApi
+    );
   };
 
   const handleDbConnectionSave = (connections: TableRowType[]) => {
