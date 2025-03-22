@@ -6,6 +6,7 @@ import { RowType } from '../../types/Data';
 import { useAppContext } from '../../contexts/AppContext';
 import CommonPageContext from '../../contexts/commonPage';
 import ReactSimpleCodeEditor from '../../components/ReactSimpleCodeEditor';
+import { LS_QUERY_PAGE_SELECTED_TABLE_NAMES } from '../../constants';
 
 // Use `Typography` so can apply dark theme to text
 const { Text } = Typography;
@@ -29,9 +30,7 @@ export default function QueryPage() {
   const [selectedDbTableNames, setSelectedDbTableNames] = React.useState<
     string[]
   >(
-    JSON.parse(
-      localStorage.getItem('dbm_query_page_selected_table_names') || '[]'
-    )
+    JSON.parse(localStorage.getItem(LS_QUERY_PAGE_SELECTED_TABLE_NAMES) || '[]')
   );
   const [code, setCode] = React.useState(defaultCode);
   const [result, setResult] = React.useState({ obj: [], err: '' });
@@ -80,7 +79,7 @@ export default function QueryPage() {
     // newValue=['iam/users', 'iam/roles']
     setSelectedDbTableNames(newValue);
     localStorage.setItem(
-      'dbm_query_page_selected_table_names',
+      LS_QUERY_PAGE_SELECTED_TABLE_NAMES,
       JSON.stringify(newValue)
     );
   };
@@ -98,7 +97,7 @@ export default function QueryPage() {
   };
 
   return (
-    <div className='dbm-query-page'>
+    <div className="dbm-query-page">
       <div>
         <TreeSelect {...tProps} />
       </div>
@@ -106,7 +105,7 @@ export default function QueryPage() {
         <Col span={16}>
           Code:
           <ReactSimpleCodeEditor
-            height='50em'
+            height="50em"
             value={code}
             onChange={setCode}
           />

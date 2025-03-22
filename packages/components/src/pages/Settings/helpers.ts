@@ -108,6 +108,10 @@ const reloadDbsSchemaAsync = async (
 ) => {
   messageApi.info('Start loading DBs schema...');
 
+  // Clear UI state
+  localStorage.removeItem(constants.LS_QUERY_PAGE_SELECTED_TABLE_NAMES);
+
+  // Set db connection info
   localStorage.setItem(constants.LS_KEY_GITHUB_OWNER, enabledConnection.owner);
   localStorage.setItem(
     constants.LS_KEY_GITHUB_REPO_NAME,

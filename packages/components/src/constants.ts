@@ -19,6 +19,9 @@ export const LS_KEY_DBS_SCHEMA = 'dbm_dbs_schema';
 // other switches
 export const LS_IS_DARK_THEME = 'dbm_is_dark_theme';
 export const LS_SHOW_DOWNLOAD_BUTTON = 'dbm_show_download_button';
+// UI state
+export const LS_QUERY_PAGE_SELECTED_TABLE_NAMES =
+  'dbm_query_page_selected_table_names';
 
 // Table column definitions
 export const COL_UI_PRESETS = 'ui:createUpdatePage:presets';

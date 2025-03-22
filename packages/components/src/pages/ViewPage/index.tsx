@@ -7,6 +7,7 @@ import { useAppContext } from '../../contexts/AppContext';
 import CommonPageContext from '../../contexts/commonPage';
 import ReactSimpleCodeEditor from '../../components/ReactSimpleCodeEditor';
 import { useParams } from 'react-router';
+import { LS_QUERY_PAGE_SELECTED_TABLE_NAMES } from '../../constants';
 
 // Use `Typography` so can apply dark theme to text
 const { Text } = Typography;
@@ -22,9 +23,7 @@ export default function ViewPage() {
   const [selectedDbTableNames, setSelectedDbTableNames] = React.useState<
     string[]
   >(
-    JSON.parse(
-      localStorage.getItem('dbm_query_page_selected_table_names') || '[]'
-    )
+    JSON.parse(localStorage.getItem(LS_QUERY_PAGE_SELECTED_TABLE_NAMES) || '[]')
   );
   const [code, setCode] = React.useState('');
   const [result, setResult] = React.useState({ obj: [], err: '' });
@@ -85,7 +84,7 @@ export default function ViewPage() {
     // newValue=['iam/users', 'iam/roles']
     setSelectedDbTableNames(newValue);
     localStorage.setItem(
-      'dbm_query_page_selected_table_names',
+      LS_QUERY_PAGE_SELECTED_TABLE_NAMES,
       JSON.stringify(newValue)
     );
   };
@@ -109,7 +108,7 @@ export default function ViewPage() {
       children: (
         <div>
           <ReactSimpleCodeEditor
-            height='50em'
+            height="50em"
             value={code}
             onChange={setCode}
           />
@@ -119,7 +118,7 @@ export default function ViewPage() {
   ];
 
   return (
-    <div className='dbm-query-page'>
+    <div className="dbm-view-page">
       <div>View Name: {viewName}</div>
       <div>
         <div>DB Tables Selector:</div>
