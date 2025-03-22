@@ -169,17 +169,9 @@ export default class GithubDb {
     return this.getGitHubFullPath(this.getDataPath(dbName, tableName));
   }
 
-  /**
-   * @return {string} e.g. "dbs/dbName/dbcfg.json"
-   * @private
-   */
-  getDbTableColDefPath(dbName: string) {
-    return `${this.LS_KEY_GITHUB_REPO_PATH}/${dbName}/${DB_CFG_FILENAME}`;
-  }
-
   async getDbTablesSchemaAsync(dbName: string) {
     const { content } = await this.github.getFileContentAndSha(
-      this.getDbTableColDefPath(dbName)
+      this.getDbConfigPath(dbName)
     );
     return content;
   }
