@@ -102,7 +102,9 @@ export default class Github {
   /**
    * Given path 'dbs/iam', return all files in this path
    * Given path 'dbs/iam/dbcfg.json', return this file
-   * TODO: change name from getContentByPath to getRawContentByPath, because content is in base64 format
+   * TODO:
+   *   - change name from getContentByPath to getRawContentByPath, because content is in base64 format
+   *   - should have a better name, for example sometimess this function is used to get all files under a dir
    * @param {string} path can be a file or a dir
    * @param {*} signal
    * @returns {Promise<File|Files>}

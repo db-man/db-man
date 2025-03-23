@@ -63,7 +63,7 @@ const LeftSideMenu: React.FC<LeftSideMenuProps> = ({
   }
   return (
     <Menu
-      mode='inline'
+      mode="inline"
       selectedKeys={selectedKeys}
       openKeys={openKeys}
       style={{ height: '100%', borderRight: 0 }}
@@ -104,6 +104,18 @@ const LeftSideMenu: React.FC<LeftSideMenuProps> = ({
             key: encodeViewKey(dbName, vName),
             label: <Link to={`/_views/${dbName}/${vName}`}>{vName}</Link>,
           })),
+        },
+        // create table
+        {
+          key: 'management',
+          label: 'Management',
+          icon: <UserOutlined />,
+          children: [
+            {
+              key: 'create-table',
+              label: <Link to={`/_management/${dbName}/create`}>Create</Link>,
+            },
+          ],
         },
       ]}
     />

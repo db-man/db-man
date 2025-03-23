@@ -5,6 +5,7 @@ import Settings from '../pages/Settings';
 import Demos from '../pages/Demos';
 import QueryPage from '../pages/Query';
 import CreateDbPage from '../pages/CreateDb';
+import CreateTablePage from '../pages/CreateTable';
 import ViewPage from '../pages/ViewPage';
 import IframePageWrapper from './IframePageWrapper';
 import Database from './DbTableLayout/Database';
@@ -47,6 +48,14 @@ export default function AppRoutes() {
           element={
             <CommonPageWrapper>
               <ViewPage />
+            </CommonPageWrapper>
+          }
+        />
+        <Route
+          path="_management/:dbName/create"
+          element={
+            <CommonPageWrapper>
+              <CreateTablePage />
             </CommonPageWrapper>
           }
         />

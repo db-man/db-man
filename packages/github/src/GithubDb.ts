@@ -1,6 +1,6 @@
 import { Base64 } from 'js-base64';
 
-import { DatabaseMap, DatabaseSchema, UpdateFileType } from './types';
+import { DatabaseMap, DatabaseSchema, UpdateFileType, DbTable } from './types';
 import { DB_CFG_FILENAME } from './constants';
 import {
   getDataFileName,
@@ -176,6 +176,24 @@ export default class GithubDb {
     return content;
   }
 
+  async getDbTablesSchemaV2Async(dbName: string) {
+    const { content, sha } = await this.github.getContentByPath(
+      this.getDbConfigPath(dbName)
+    );
+
+    // when no content in dbcfg.json, this is not expected
+    if (!content) {
+      throw new Error(
+        'getDbTablesSchemaV2Async failed, file content is empty.'
+      );
+    }
+
+    return {
+      obj: JSON.parse(Base64.decode(content)),
+      sha,
+    };
+  }
+
   /**
    * Get table schema from dbSchema
    * Returns null when table not found
@@ -272,7 +290,12 @@ export default class GithubDb {
    * @param {new AbortController().signal} signal
    * @returns {Promise}
    */
-  getRecordFileContentAndSha(dbName, tableName, primaryKeyVal, signal) {
+  getRecordFileContentAndSha(
+    dbName: string,
+    tableName: string,
+    primaryKeyVal: string,
+    signal?: AbortSignal
+  ) {
     const path = this.getRecordPath(dbName, tableName, primaryKeyVal);
     return this.github.getFileContentAndSha(path, signal);
   }
@@ -316,12 +339,30 @@ export default class GithubDb {
     });
   }
 
+  /**
+   * @param {Object} dbConfig JSON object of database config `dbcfg.json`
+   * @return {Promise<Response>}
+   */
   async createDatabase(dbConfig: DatabaseSchema) {
     return this.github.updateFile({
       path: this.getDbConfigPath(dbConfig.name),
       content: JSON.stringify(dbConfig, null, '  '),
       message: `[db-man] Create database (${dbConfig.name})`,
       sha: undefined,
+    });
+  }
+
+  async createTable(dbName: string, tableConfig: DbTable) {
+    const { obj, sha } = await this.getDbTablesSchemaV2Async(dbName);
+    const newObj = {
+      ...obj,
+      columns: [...obj.columns, tableConfig],
+    };
+    return this.github.updateFile({
+      path: this.getDbConfigPath(dbName),
+      content: JSON.stringify(newObj, null, '  '),
+      message: `[db-man] Create table (${tableConfig.name})`,
+      sha,
     });
   }
 

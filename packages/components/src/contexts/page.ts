@@ -1,9 +1,9 @@
 import React from 'react';
 
-import { types } from '@db-man/github';
+import { types, GithubDb } from '@db-man/github';
 
 import DbColumn from '../types/DbColumn';
-import { GithubDbType } from './commonPage';
+// import { GithubDbType } from './commonPage';
 
 export interface PageContextType {
   appModes: string[];
@@ -14,7 +14,8 @@ export interface PageContextType {
   columns: DbColumn[];
   primaryKey: string;
   tables: string[];
-  githubDb: GithubDbType | null;
+  // githubDb: GithubDbType | null;
+  githubDb: GithubDb | null;
 }
 
 // Store all page info, include db, table, and columns
