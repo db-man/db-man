@@ -34,20 +34,22 @@ describe('Settings: Setup DB Connection', () => {
 
   it('click button to create new connection', () => {
     // add a new connection row
-    cy.get('.dbm-create-connection-btn').click();
+    cy.get('.dbm-editable-table-add-row-btn').click();
     cy.get('.ant-table-row > :nth-child(1)').should('have.text', '0');
 
     // fill in the connection details
-    cy.get('.dbm-new-connection-editable-cell-title-owner').type(
+    cy.get('.dbm-editable-table-new-row-editable-cell-title--owner').type(
       ghConfig.repoOwner
     );
-    cy.get('.dbm-new-connection-editable-cell-title-token').type(ghToken);
-    cy.get('.dbm-new-connection-editable-cell-title-repo').type(
+    cy.get('.dbm-editable-table-new-row-editable-cell-title--token').type(
+      ghToken
+    );
+    cy.get('.dbm-editable-table-new-row-editable-cell-title--repo').type(
       ghConfig.repoName
     );
 
     // save the connection
-    cy.get('.dbm-save-connection-link').click();
+    cy.get('.dbm-editable-table-save-link').click();
     // load the connection
     cy.get('.dbm-enable-connection-btn').click();
 

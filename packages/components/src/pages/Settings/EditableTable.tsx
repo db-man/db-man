@@ -41,7 +41,7 @@ function EditableCell({
           ]}
         >
           <Input
-            className={`dbm-new-connection-editable-cell-title-${title}`}
+            className={`dbm-editable-table-new-row-editable-cell-title--${title}`}
             placeholder=""
           />
         </Form.Item>
@@ -200,7 +200,7 @@ function EditableTable({
         <div>
           Operation{' '}
           <Button
-            className="dbm-create-connection-btn"
+            className="dbm-editable-table-add-row-btn"
             size="small"
             disabled={editingKey !== ''}
             onClick={handleAddRow}
@@ -215,7 +215,7 @@ function EditableTable({
         return editable ? (
           <span>
             <Typography.Link
-              className="dbm-save-connection-link"
+              className="dbm-editable-table-save-link"
               style={{
                 marginRight: 8,
               }}
