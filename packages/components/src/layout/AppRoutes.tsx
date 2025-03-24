@@ -14,6 +14,7 @@ import Action from './DbTableLayout/Action';
 import ComponentDemo from './ComponentDemo';
 import PageLayout from './PageLayout';
 import CommonPageWrapper from './CommonPageWrapper';
+import TableManagementPage from '../pages/TableManagement';
 
 export default function AppRoutes() {
   return (
@@ -56,6 +57,14 @@ export default function AppRoutes() {
           element={
             <CommonPageWrapper>
               <CreateTablePage />
+            </CommonPageWrapper>
+          }
+        />
+        <Route
+          path="_management/:dbName/:tableName"
+          element={
+            <CommonPageWrapper>
+              <TableManagementPage />
             </CommonPageWrapper>
           }
         />

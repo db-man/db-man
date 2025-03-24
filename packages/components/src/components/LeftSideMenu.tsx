@@ -113,7 +113,9 @@ const LeftSideMenu: React.FC<LeftSideMenuProps> = ({
           children: [
             {
               key: 'create-table',
-              label: <Link to={`/_management/${dbName}/create`}>Create</Link>,
+              label: (
+                <Link to={`/_management/${dbName}/create`}>Create Table</Link>
+              ),
             },
           ],
         },
