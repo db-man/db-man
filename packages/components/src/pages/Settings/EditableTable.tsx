@@ -42,7 +42,7 @@ function EditableCell({
         >
           <Input
             className={`dbm-new-connection-editable-cell-title-${title}`}
-            placeholder=''
+            placeholder=""
           />
         </Form.Item>
       ) : (
@@ -200,8 +200,8 @@ function EditableTable({
         <div>
           Operation{' '}
           <Button
-            className='dbm-create-connection-btn'
-            size='small'
+            className="dbm-create-connection-btn"
+            size="small"
             disabled={editingKey !== ''}
             onClick={handleAddRow}
           >
@@ -215,7 +215,7 @@ function EditableTable({
         return editable ? (
           <span>
             <Typography.Link
-              className='dbm-save-connection-link'
+              className="dbm-save-connection-link"
               style={{
                 marginRight: 8,
               }}
@@ -224,10 +224,10 @@ function EditableTable({
               Save
             </Typography.Link>
             <Popconfirm
-              title='Sure to cancel?'
+              title="Sure to cancel?"
               onConfirm={() => cancel(record)}
             >
-              <Button type='link'>Cancel</Button>
+              <Button type="link">Cancel</Button>
             </Popconfirm>
           </span>
         ) : (
@@ -239,16 +239,16 @@ function EditableTable({
               Edit
             </Typography.Link>
             <Popconfirm
-              title='Sure to delete?'
+              title="Sure to delete?"
               onConfirm={() => handleDelete(record)}
             >
-              <Button type='link' danger>
+              <Button type="link" danger>
                 Delete
               </Button>
             </Popconfirm>
             <Button
-              className='dbm-enable-connection-btn'
-              type='link'
+              className="dbm-enable-connection-btn"
+              type="link"
               onClick={() => handleEnable(record)}
             >
               Enable
@@ -294,7 +294,7 @@ function EditableTable({
   return (
     <Form form={form} component={false}>
       <Table
-        size='small'
+        size="small"
         components={{
           body: {
             cell: EditableCell,
@@ -303,7 +303,7 @@ function EditableTable({
         bordered
         dataSource={data}
         columns={mergedColumns}
-        rowClassName='editable-row'
+        rowClassName="editable-row"
         pagination={
           {
             // onChange: cancel,
