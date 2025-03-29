@@ -52,7 +52,10 @@ const CreateTableForm = ({ dbName }: { dbName: string }) => {
       const _result = await githubDb?.createTableSchema(dbName, tableConfig);
 
       if (_result) {
-        message.success(<SuccessMessage url={_result.commit.html_url} />, 10);
+        messageApi.success(
+          <SuccessMessage url={_result.commit.html_url} />,
+          10
+        );
       }
     } catch (err) {
       console.error('githubDb.createTableSchema, err:', err);

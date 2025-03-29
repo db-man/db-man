@@ -95,7 +95,7 @@ const UpdatePage = () => {
         tableFileSha
       );
 
-      message.success(<SuccessMessage url={commit.html_url} />, 10);
+      messageApi.success(<SuccessMessage url={commit.html_url} />, 10);
     } catch (err) {
       console.error('updateTableFile, err:', err);
       setErrorMessage('Failed to update table file on server!');

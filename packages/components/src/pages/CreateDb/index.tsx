@@ -52,7 +52,10 @@ const CreateDbPage = () => {
       const _result = await githubDb?.createDatabaseSchema(dbConfig);
 
       if (_result) {
-        message.success(<SuccessMessage url={_result.commit.html_url} />, 10);
+        messageApi.success(
+          <SuccessMessage url={_result.commit.html_url} />,
+          10
+        );
       }
     } catch (err) {
       console.error('createDatabaseSchema, err:', err);
