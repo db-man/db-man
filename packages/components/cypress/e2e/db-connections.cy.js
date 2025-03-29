@@ -35,9 +35,10 @@ describe('Settings: Setup DB Connection', () => {
   it('click button to create new connection', () => {
     // add a new connection row
     cy.get('.dbm-editable-table-add-row-btn').click();
-    cy.get('.ant-table-row > :nth-child(1)').should('have.text', '0');
-
+    // the column of the new row is an input box, and the context is empty string
+    cy.get('.ant-table-row > :nth-child(1) input').should('have.value', '');
     // fill in the connection details
+    cy.get('.dbm-editable-table-new-row-editable-cell-title--key').type('1');
     cy.get('.dbm-editable-table-new-row-editable-cell-title--owner').type(
       ghConfig.repoOwner
     );

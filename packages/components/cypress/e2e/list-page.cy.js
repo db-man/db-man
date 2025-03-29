@@ -20,7 +20,7 @@ describe('hello', () => {
     cy.get('span.ant-menu-title-content').debug();
     cy.get('span.ant-menu-title-content').should(
       'have.text',
-      'HomeQuerySettings'
+      'HomeQueryCreate DBSettings'
     );
   });
 });
