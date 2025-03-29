@@ -96,6 +96,7 @@ function EditableTable({
   getColumns,
   getFooter,
   getAdditionalOperationButtons,
+  loading,
 }: {
   rowKey: string;
   defaultData: TableRowType[];
@@ -108,6 +109,7 @@ function EditableTable({
   ) => editableTableColumnType[];
   getFooter?: (tableData: TableRowType[]) => React.ReactNode;
   getAdditionalOperationButtons?: (record: TableRowType) => React.ReactNode;
+  loading?: boolean;
 }) {
   const [form] = Form.useForm();
   const [tableData, setData] = useState<TableRowType[]>(defaultData);
@@ -259,6 +261,7 @@ function EditableTable({
           },
         }}
         rowKey={rowKey}
+        loading={loading}
         dataSource={tableData}
         columns={mergedColumns}
         pagination={

@@ -23,8 +23,10 @@ const TableManagementContainer = ({
   const [databaseSchemaSha, setDatabaseSchemaSha] = useState<string | null>(
     null
   );
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    setIsLoading(true);
     githubDb
       ?.getDbTablesSchemaV2Async(dbName)
       .then(({ obj, sha }) => {
@@ -33,6 +35,9 @@ const TableManagementContainer = ({
       })
       .catch((err) => {
         messageApi.error('Failed to load database schema');
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   }, [dbName, githubDb, messageApi]);
 
@@ -61,6 +66,7 @@ const TableManagementContainer = ({
       ),
     };
 
+    setIsLoading(true);
     githubDb
       ?.updateDatabaseSchema(newDbSchema, databaseSchemaSha)
       .then(() => {
@@ -69,6 +75,9 @@ const TableManagementContainer = ({
       .catch((err) => {
         console.error('Failed to update table schema', err);
         messageApi.error('Failed to update table schema');
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
 
@@ -79,6 +88,7 @@ const TableManagementContainer = ({
       <div>Table Name: {defaultTableSchema.name}</div>
       <div>Table Description: {defaultTableSchema.description}</div>
       <TableManagementForm
+        isLoading={isLoading}
         defaultTableSchema={defaultTableSchema}
         onUpdateTableSchema={handleUpdateTableSchema}
       />

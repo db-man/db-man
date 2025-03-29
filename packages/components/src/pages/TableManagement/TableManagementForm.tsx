@@ -62,9 +62,11 @@ const dbTableColumns = [
  * Create new columns for an existing table (manage the table schema)
  */
 const TableManagementForm = ({
+  isLoading,
   defaultTableSchema,
   onUpdateTableSchema,
 }: {
+  isLoading: boolean;
   defaultTableSchema: types.DbTable;
   onUpdateTableSchema: (tableSchema: types.DbTable) => void;
 }) => {
@@ -109,7 +111,7 @@ const TableManagementForm = ({
     };
     return (
       <div>
-        <Button type="primary" onClick={handleSaveColumns}>
+        <Button type="primary" disabled={isLoading} onClick={handleSaveColumns}>
           Save columns
         </Button>
       </div>
@@ -119,6 +121,7 @@ const TableManagementForm = ({
   return (
     <EditableTable
       rowKey="id"
+      loading={isLoading}
       columns={dbTableColumns}
       getColumns={getColumns}
       defaultData={convertDbColumnToTableRowType(defaultTableSchema.columns)}
