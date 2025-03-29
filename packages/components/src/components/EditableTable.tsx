@@ -264,11 +264,7 @@ function EditableTable({
         loading={loading}
         dataSource={tableData}
         columns={mergedColumns}
-        pagination={
-          {
-            // onChange: cancel,
-          }
-        }
+        pagination={false}
       />
       {getFooter && getFooter(tableData)}
     </Form>
