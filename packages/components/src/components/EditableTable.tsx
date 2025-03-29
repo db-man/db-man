@@ -10,6 +10,7 @@ import {
   Typography,
   Button,
   Checkbox,
+  Select,
 } from 'antd';
 
 export type TableRowType = {
@@ -22,6 +23,7 @@ export type editableTableColumnType = {
   dataIndex: string;
   editable?: boolean;
   'ui:type'?: string;
+  'ui:options'?: { label: string; value: string }[];
   'form:required'?: boolean;
   'form:valueType'?: string; // 'boolean' or 'string', default is 'string'
   width?: string;
@@ -38,6 +40,7 @@ function EditableCell({
   index,
   children,
   'ui:type': uiType,
+  'ui:options': uiOptions,
   'form:required': formRequired,
   'form:valueType': formValueType,
   ...restProps
@@ -49,6 +52,7 @@ function EditableCell({
   index: number;
   children: any;
   'ui:type': string;
+  'ui:options': { label: string; value: string }[];
   'form:required': boolean;
   'form:valueType': string;
 }) {
@@ -62,6 +66,10 @@ function EditableCell({
   if (uiType === 'checkbox') {
     input = <Checkbox />;
     valuePropName = 'checked';
+  }
+  if (uiType === 'select') {
+    input = <Select options={uiOptions} />;
+    // valuePropName = 'value';
   }
   return (
     <td {...restProps}>

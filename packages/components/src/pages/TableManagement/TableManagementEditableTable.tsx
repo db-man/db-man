@@ -27,7 +27,7 @@ const convertTableRowTypeToDbColumn = (
     id: row.id as string,
     name: row.name as string,
     type: row.type as types.DbColumnType,
-    primary: row.primary as boolean,
+    primary: row.primary as boolean | undefined,
     description: row.description as string,
   }));
 };
@@ -51,6 +51,14 @@ const dbTableColumns = [
     dataIndex: 'type',
     editable: true,
     'form:required': true,
+    'ui:type': 'select',
+    'ui:options': [
+      // one of DbColumnType in @db-man/github
+      { label: 'STRING', value: 'STRING' },
+      { label: 'STRING_ARRAY', value: 'STRING_ARRAY' },
+      { label: 'NUMBER', value: 'NUMBER' },
+      { label: 'BOOL', value: 'BOOL' },
+    ],
   },
   {
     title: 'primary',
@@ -101,6 +109,7 @@ const TableManagementEditableTable = ({
           title: col.title,
           editing: isEditing(record),
           'ui:type': col['ui:type'],
+          'ui:options': col['ui:options'],
           'form:required': col['form:required'],
           'form:valueType': col['form:valueType'],
         }),
