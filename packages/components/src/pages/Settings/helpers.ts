@@ -103,18 +103,14 @@ const validateDbsSchame = (dbsSchema: types.DatabaseMap) => {
 };
 
 export const saveConnectionToLocalStorage = (
-  enabledConnection: TableRowType
+  token: string,
+  owner: string,
+  repo: string
 ) => {
   // Set db connection info
-  localStorage.setItem(constants.LS_KEY_GITHUB_OWNER, enabledConnection.owner);
-  localStorage.setItem(
-    constants.LS_KEY_GITHUB_REPO_NAME,
-    enabledConnection.repo
-  );
-  localStorage.setItem(
-    constants.LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN,
-    enabledConnection.token
-  );
+  localStorage.setItem(constants.LS_KEY_GITHUB_OWNER, owner);
+  localStorage.setItem(constants.LS_KEY_GITHUB_REPO_NAME, repo);
+  localStorage.setItem(constants.LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN, token);
 };
 
 export const reloadDbsSchemaAsync = async (

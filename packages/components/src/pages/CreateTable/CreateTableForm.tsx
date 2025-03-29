@@ -49,13 +49,13 @@ const CreateTableForm = ({ dbName }: { dbName: string }) => {
 
     setSaveLoading(true);
     try {
-      const _result = await githubDb?.createTable(dbName, tableConfig);
+      const _result = await githubDb?.createTableSchema(dbName, tableConfig);
 
       if (_result) {
         message.success(<SuccessMessage url={_result.commit.html_url} />, 10);
       }
     } catch (err) {
-      console.error('createTable, err:', err);
+      console.error('githubDb.createTableSchema, err:', err);
       setErrorMessage('Failed to create table on server!');
     }
 

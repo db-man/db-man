@@ -169,31 +169,6 @@ export default class GithubDb {
     return this.getGitHubFullPath(this.getDataPath(dbName, tableName));
   }
 
-  async getDbTablesSchemaAsync(dbName: string) {
-    const { content } = await this.github.getFileContentAndSha(
-      this.getDbConfigPath(dbName)
-    );
-    return content;
-  }
-
-  async getDbTablesSchemaV2Async(dbName: string) {
-    const { content, sha } = await this.github.getContentByPath(
-      this.getDbConfigPath(dbName)
-    );
-
-    // when no content in dbcfg.json, this is not expected
-    if (!content) {
-      throw new Error(
-        'getDbTablesSchemaV2Async failed, file content is empty.'
-      );
-    }
-
-    return {
-      obj: JSON.parse(Base64.decode(content)),
-      sha,
-    };
-  }
-
   /**
    * Get table schema from dbSchema
    * Returns null when table not found
@@ -339,31 +314,71 @@ export default class GithubDb {
     });
   }
 
+  // Schema management
+
   /**
    * @param {Object} dbConfig JSON object of database config `dbcfg.json`
    * @return {Promise<Response>}
    */
-  async createDatabase(dbConfig: DatabaseSchema) {
+  async createDatabaseSchema(databaseSchema: DatabaseSchema) {
+    const databaseName = databaseSchema.name;
     return this.github.updateFile({
-      path: this.getDbConfigPath(dbConfig.name),
-      content: JSON.stringify(dbConfig, null, '  '),
-      message: `[db-man] Create database (${dbConfig.name})`,
+      path: this.getDbConfigPath(databaseName),
+      content: JSON.stringify(databaseSchema, null, '  '),
+      message: `[db-man] Create database schema (${databaseName})`,
       sha: undefined,
     });
   }
 
-  async createTable(dbName: string, tableConfig: DbTable) {
+  async updateDatabaseSchema(databaseSchema: DatabaseSchema, sha: string) {
+    const databaseName = databaseSchema.name;
+    return this.github.updateFile({
+      path: this.getDbConfigPath(databaseName),
+      content: JSON.stringify(databaseSchema, null, '  '),
+      message: `[db-man] Update database schema (${databaseName})`,
+      sha,
+    });
+  }
+
+  // Append a new table schema to dbcfg.json
+  async createTableSchema(dbName: string, tableConfig: DbTable) {
     const { obj, sha } = await this.getDbTablesSchemaV2Async(dbName);
     const newObj = {
       ...obj,
-      columns: [...obj.columns, tableConfig],
+      tables: [...obj.tables, tableConfig],
     };
     return this.github.updateFile({
       path: this.getDbConfigPath(dbName),
       content: JSON.stringify(newObj, null, '  '),
-      message: `[db-man] Create table (${tableConfig.name})`,
+      message: `[db-man] Create table schema (${tableConfig.name})`,
       sha,
     });
+  }
+
+  async getDbTablesSchemaAsync(dbName: string) {
+    const { content } = await this.github.getFileContentAndSha(
+      this.getDbConfigPath(dbName)
+    );
+    return content;
+  }
+
+  // Get one db schema from dbcfg.json
+  async getDbTablesSchemaV2Async(dbName: string) {
+    const { content, sha } = await this.github.getContentByPath(
+      this.getDbConfigPath(dbName)
+    );
+
+    // when no content in dbcfg.json, this is not expected
+    if (!content) {
+      throw new Error(
+        'getDbTablesSchemaV2Async failed, file content is empty.'
+      );
+    }
+
+    return {
+      obj: JSON.parse(Base64.decode(content)),
+      sha,
+    };
   }
 
   /**

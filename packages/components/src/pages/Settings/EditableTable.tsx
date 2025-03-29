@@ -2,12 +2,33 @@
 
 import React, { useState } from 'react';
 
-import { CheckCircleOutlined } from '@ant-design/icons';
-import { Table, Input, Popconfirm, Form, Typography, Button } from 'antd';
+import {
+  Table,
+  Input,
+  Popconfirm,
+  Form,
+  Typography,
+  Button,
+  Checkbox,
+} from 'antd';
 
 export type TableRowType = {
-  [key: string]: string;
+  [key: string]: string | boolean;
 };
+
+// This is extanding from ant design table column type
+export type editableTableColumnType = {
+  title: React.ReactNode;
+  dataIndex: string;
+  editable?: boolean;
+  'ui:type'?: string;
+  'form:required'?: boolean;
+  'form:valueType'?: string; // 'boolean' or 'string', default is 'string'
+  width?: string;
+  render?: (text: string, record: TableRowType) => React.ReactNode;
+};
+
+export type isEditingType = (record: TableRowType) => boolean;
 
 function EditableCell({
   editing,
@@ -16,6 +37,9 @@ function EditableCell({
   record,
   index,
   children,
+  'ui:type': uiType,
+  'form:required': formRequired,
+  'form:valueType': formValueType,
   ...restProps
 }: {
   editing: boolean;
@@ -24,26 +48,38 @@ function EditableCell({
   record: any;
   index: number;
   children: any;
+  'ui:type': string;
+  'form:required': boolean;
+  'form:valueType': string;
 }) {
+  let input = (
+    <Input
+      className={`dbm-editable-table-new-row-editable-cell-title--${title}`}
+      placeholder=""
+    />
+  );
+  let valuePropName = undefined;
+  if (uiType === 'checkbox') {
+    input = <Checkbox />;
+    valuePropName = 'checked';
+  }
   return (
     <td {...restProps}>
       {editing ? (
         <Form.Item
           name={dataIndex}
+          valuePropName={valuePropName}
           style={{
             margin: 0,
           }}
           rules={[
             {
-              required: true,
+              required: formRequired,
               message: `Please Input ${title}!`,
             },
           ]}
         >
-          <Input
-            className={`dbm-editable-table-new-row-editable-cell-title--${title}`}
-            placeholder=""
-          />
+          {input}
         </Form.Item>
       ) : (
         children
@@ -53,94 +89,92 @@ function EditableCell({
 }
 
 function EditableTable({
+  rowKey,
   defaultData,
-  onEnable,
-  onSave,
-  isConnectionEnabled,
+  onSaveTableData,
+  columns,
+  getColumns,
+  getFooter,
+  getAdditionalOperationButtons,
 }: {
+  rowKey: string;
   defaultData: TableRowType[];
-  onEnable: (record: TableRowType) => void;
-  onSave: (data: TableRowType[]) => void;
-  isConnectionEnabled: (record: TableRowType) => boolean;
+  // When row add/delete, call this function to save the table data
+  onSaveTableData: (data: TableRowType[]) => void;
+  columns: editableTableColumnType[];
+  getColumns: (
+    operationColumn: editableTableColumnType,
+    isEditing: isEditingType
+  ) => editableTableColumnType[];
+  getFooter?: (tableData: TableRowType[]) => React.ReactNode;
+  getAdditionalOperationButtons?: (record: TableRowType) => React.ReactNode;
 }) {
   const [form] = Form.useForm();
-  const [data, setData] = useState<TableRowType[]>(defaultData);
+  const [tableData, setData] = useState<TableRowType[]>(defaultData);
   const [editingKey, setEditingKey] = useState('');
 
-  const isEditing = (record: TableRowType) => record.key === editingKey;
+  const isEditing: isEditingType = (record: TableRowType) => {
+    return record[rowKey] === editingKey;
+  };
 
-  const saveData = (d: TableRowType[]) => {
+  const saveTableData = (d: TableRowType[]) => {
     setData(d);
-    onSave(d);
+    onSaveTableData(d);
   };
 
   const handleAddRow = () => {
-    const newData = [...data];
-    const newRow = {
-      token: '',
-      owner: '',
-      repo: '',
-    };
+    const newData = [...tableData];
+    const newRow = {} as TableRowType;
+    columns.forEach((col) => {
+      newRow[col.dataIndex] = '';
+      if (col['form:valueType'] === 'boolean') {
+        newRow[col.dataIndex] = false;
+      }
+    });
     newData.push({
-      key: '0', // tmp row added, will delete when cancel
       ...newRow,
     });
     setData(newData);
     form.setFieldsValue({
       ...newRow,
     });
-    setEditingKey('0');
+    setEditingKey(newData[newData.length - 1][rowKey] as string);
   };
 
   const edit = (record: TableRowType) => {
     form.setFieldsValue({
-      token: '',
-      owner: '',
-      repo: '',
       ...record,
     });
-    setEditingKey(record.key);
+    setEditingKey(record[rowKey] as string);
   };
 
   const cancel = (record: TableRowType) => {
     setEditingKey('');
-    if (record.key === '0') {
-      // Remove tmp row
-      const newData = [...data];
-      const index = newData.findIndex((item) => item.key === '0');
+    // Remove tmp row which is the last row
+    if (record[rowKey] === '') {
+      const newData = [...tableData];
+      const index = newData.findIndex((item) => item[rowKey] === '');
       newData.splice(index, 1);
       setData(newData);
     }
   };
 
-  const save = async (key: string) => {
+  const saveRow = async (key: string) => {
     try {
       const row = await form.validateFields();
-      const newData = [...data];
-      const index = newData.findIndex((item) => key === item.key);
+      const newData = [...tableData];
+      const index = newData.findIndex((item) => key === item[rowKey]);
 
       if (index > -1) {
         const item = newData[index];
-        if (item.key === '0') {
-          item.key =
-            data.filter(({ key: k }) => k !== '0').length === 0
-              ? '1'
-              : Math.max(
-                  ...data
-                    .filter(({ key: k }) => k !== '0')
-                    .map(({ key: k }) => Number(k))
-                ) +
-                1 +
-                '';
-        }
         newData.splice(index, 1, { ...item, ...row });
-        saveData(newData);
+        saveTableData(newData);
         setEditingKey('');
       } else {
         alert('TODO');
         // newData.push({
         //   ...row,
-        //   key: data.length === 0 ? 1 : Math.max(...data.map(({ key: k }) => k)) + 1,
+        //   key: tableData.length === 0 ? 1 : Math.max(...tableData.map(({ key: k }) => k)) + 1,
         // });
         // setData(newData);
         // setEditingKey('');
@@ -151,165 +185,89 @@ function EditableTable({
   };
 
   const handleDelete = (record: TableRowType) => {
-    const newData = [...data];
-    const index = newData.findIndex((item) => item.key === record.key);
+    const newData = [...tableData];
+    const index = newData.findIndex((item) => item[rowKey] === record[rowKey]);
     newData.splice(index, 1);
-    saveData(newData);
+    saveTableData(newData);
   };
 
-  const handleEnable = (record: TableRowType) => {
-    onEnable(record);
-  };
-
-  const columns = [
-    {
-      title: 'key',
-      dataIndex: 'key',
-      width: '10%',
-      editable: false,
-    },
-    {
-      title: 'token',
-      dataIndex: 'token',
-      width: '10%',
-      render: (token: string) => (
-        <textarea
-          style={{ resize: 'none' }}
-          rows={1}
-          cols={10}
-          disabled
-          defaultValue={token}
-        />
-      ),
-      editable: true,
-    },
-    {
-      title: 'owner',
-      dataIndex: 'owner',
-      width: '10%',
-      editable: true,
-    },
-    {
-      title: 'repo',
-      dataIndex: 'repo',
-      width: '10%',
-      editable: true,
-    },
-    {
-      title: (
-        <div>
-          Operation{' '}
-          <Button
-            className="dbm-editable-table-add-row-btn"
-            size="small"
-            disabled={editingKey !== ''}
-            onClick={handleAddRow}
+  const operationColumn: editableTableColumnType = {
+    title: (
+      <div>
+        Operation{' '}
+        <Button
+          className="dbm-editable-table-add-row-btn"
+          size="small"
+          disabled={editingKey !== ''}
+          onClick={handleAddRow}
+        >
+          Add
+        </Button>
+      </div>
+    ),
+    dataIndex: 'operation',
+    render: (_: any, record: TableRowType) => {
+      const editable = isEditing(record);
+      return editable ? (
+        <span>
+          <Typography.Link
+            className="dbm-editable-table-save-link"
+            style={{
+              marginRight: 8,
+            }}
+            onClick={() => saveRow(record[rowKey] as string)}
           >
-            Add
-          </Button>
-        </div>
-      ),
-      dataIndex: 'operation',
-      render: (_: any, record: TableRowType) => {
-        const editable = isEditing(record);
-        return editable ? (
-          <span>
-            <Typography.Link
-              className="dbm-editable-table-save-link"
-              style={{
-                marginRight: 8,
-              }}
-              onClick={() => save(record.key)}
-            >
-              Save
-            </Typography.Link>
-            <Popconfirm
-              title="Sure to cancel?"
-              onConfirm={() => cancel(record)}
-            >
-              <Button type="link">Cancel</Button>
-            </Popconfirm>
-          </span>
-        ) : (
-          <span>
-            <Typography.Link
-              disabled={editingKey !== ''}
-              onClick={() => edit(record)}
-            >
-              Edit
-            </Typography.Link>
-            <Popconfirm
-              title="Sure to delete?"
-              onConfirm={() => handleDelete(record)}
-            >
-              <Button type="link" danger>
-                Delete
-              </Button>
-            </Popconfirm>
-            <Button
-              className="dbm-enable-connection-btn"
-              type="link"
-              onClick={() => handleEnable(record)}
-            >
-              Enable
+            Save
+          </Typography.Link>
+          <Popconfirm title="Sure to cancel?" onConfirm={() => cancel(record)}>
+            <Button type="link">Cancel</Button>
+          </Popconfirm>
+        </span>
+      ) : (
+        <span>
+          <Typography.Link
+            disabled={editingKey !== ''}
+            onClick={() => edit(record)}
+          >
+            Edit
+          </Typography.Link>
+          <Popconfirm
+            title="Sure to delete?"
+            onConfirm={() => handleDelete(record)}
+          >
+            <Button type="link" danger>
+              Delete
             </Button>
-          </span>
-        );
-      },
+          </Popconfirm>
+          {getAdditionalOperationButtons?.(record)}
+        </span>
+      );
     },
-  ];
+  };
 
-  const mergedColumns = columns.map((col) => {
-    if (!col.editable) {
-      if (col.dataIndex !== 'key') {
-        return col;
-      }
-      // render the "key" column with a check icon if it's the current connection
-      return {
-        ...col,
-        render: (text: string, record: TableRowType) => {
-          if (isConnectionEnabled(record)) {
-            return (
-              <span>
-                {text} <CheckCircleOutlined style={{ color: 'red' }} />
-              </span>
-            );
-          }
-          return text;
-        },
-      };
-    }
-
-    return {
-      ...col,
-      onCell: (record: TableRowType) => ({
-        record,
-        dataIndex: col.dataIndex,
-        title: col.title,
-        editing: isEditing(record),
-      }),
-    };
-  });
+  const mergedColumns = getColumns(operationColumn, isEditing);
 
   return (
     <Form form={form} component={false}>
       <Table
+        bordered
+        rowClassName="editable-row"
         size="small"
         components={{
           body: {
             cell: EditableCell,
           },
         }}
-        bordered
-        dataSource={data}
+        rowKey={rowKey}
+        dataSource={tableData}
         columns={mergedColumns}
-        rowClassName="editable-row"
         pagination={
           {
             // onChange: cancel,
           }
         }
       />
+      {getFooter && getFooter(tableData)}
     </Form>
   );
 }

@@ -4,7 +4,11 @@ import { Button, message, Tooltip, Typography } from 'antd';
 
 import * as constants from '../../constants';
 import { saveConnectionToLocalStorage, reloadDbsSchemaAsync } from './helpers';
-import EditableTable, { TableRowType } from './EditableTable';
+import EditableTable, {
+  isEditingType,
+  editableTableColumnType,
+  TableRowType,
+} from './EditableTable';
 
 // Use `Typography` so can apply dark theme to text
 const { Title } = Typography;
@@ -15,6 +19,37 @@ export type StorageType = {
   remove: (k: string) => void;
 };
 
+const connectionColumns = [
+  { title: 'key', dataIndex: 'key', editable: true },
+  {
+    title: 'token',
+    dataIndex: 'token',
+    width: '10%',
+    render: (token: string) => (
+      <textarea
+        style={{ resize: 'none' }}
+        rows={1}
+        cols={10}
+        disabled
+        defaultValue={token}
+      />
+    ),
+    editable: true,
+  },
+  {
+    title: 'owner',
+    dataIndex: 'owner',
+    width: '10%',
+    editable: true,
+  },
+  {
+    title: 'repo',
+    dataIndex: 'repo',
+    width: '10%',
+    editable: true,
+  },
+];
+
 const saveToFile = (data: string, filename: string) => {
   const blob = new Blob([data], { type: 'application/json' });
   const link = document.createElement('a');
@@ -23,9 +58,6 @@ const saveToFile = (data: string, filename: string) => {
   link.click();
 };
 
-/**
- * To save online db tables schema in the local db, then pages could load faster
- */
 const DbConnections = ({ storage }: { storage: StorageType }) => {
   const [messageApi, contextHolder] = message.useMessage();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -34,12 +66,16 @@ const DbConnections = ({ storage }: { storage: StorageType }) => {
     // Clear UI state
     localStorage.removeItem(constants.LS_QUERY_PAGE_SELECTED_TABLE_NAMES);
 
-    saveConnectionToLocalStorage(enabledConnection);
+    saveConnectionToLocalStorage(
+      enabledConnection.token as string,
+      enabledConnection.owner as string,
+      enabledConnection.repo as string
+    );
 
     await reloadDbsSchemaAsync(
-      enabledConnection.token,
-      enabledConnection.owner,
-      enabledConnection.repo,
+      enabledConnection.token as string,
+      enabledConnection.owner as string,
+      enabledConnection.repo as string,
       messageApi
     );
   };
@@ -99,20 +135,58 @@ const DbConnections = ({ storage }: { storage: StorageType }) => {
     reader.readAsText(file);
   };
 
+  const getColumns = (
+    operationColumn: editableTableColumnType,
+    isEditing: isEditingType
+  ) => {
+    const transformedColumns = connectionColumns.map((col) => {
+      if (!col.editable) {
+        return col;
+      }
+
+      return {
+        ...col,
+        onCell: (record: TableRowType) => {
+          return {
+            record,
+            dataIndex: col.dataIndex,
+            title: col.title,
+            editing: isEditing(record),
+          };
+        },
+      };
+    });
+
+    return [...transformedColumns, operationColumn];
+  };
+
   return (
     <div className="dbm-db-connections">
       {contextHolder}
       <Title level={2}>Database Connections</Title>
+      <div>
+        <div>
+          Enabled connection: {storage.get(constants.LS_KEY_GITHUB_OWNER)}/
+          {storage.get(constants.LS_KEY_GITHUB_REPO_NAME)}
+        </div>
+      </div>
       <EditableTable
+        rowKey="key"
+        columns={connectionColumns}
+        getColumns={getColumns}
         defaultData={JSON.parse(
           storage.get(constants.LS_KEY_DB_CONNECTIONS) || '[]'
         )}
-        isConnectionEnabled={(record: TableRowType) =>
-          record.owner === storage.get(constants.LS_KEY_GITHUB_OWNER) &&
-          record.repo === storage.get(constants.LS_KEY_GITHUB_REPO_NAME)
-        }
-        onEnable={handleDbConnectionEnable}
-        onSave={handleDbConnectionSave}
+        getAdditionalOperationButtons={(record) => (
+          <Button
+            className="dbm-enable-connection-btn"
+            type="link"
+            onClick={() => handleDbConnectionEnable(record)}
+          >
+            Enable
+          </Button>
+        )}
+        onSaveTableData={handleDbConnectionSave}
       />
       <Tooltip title="Export the database connection configs to a JSON file.">
         <Button onClick={handleExport}>Export</Button>

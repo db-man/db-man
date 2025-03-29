@@ -13,7 +13,7 @@ const CreateTablePage = () => {
     );
 
   return (
-    <div className="create-table-page">
+    <div className="dbm-create-table-page">
       <CreateTableForm dbName={params.dbName} />
     </div>
   );

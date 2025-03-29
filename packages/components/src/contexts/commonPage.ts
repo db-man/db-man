@@ -1,8 +1,6 @@
 import React from 'react';
 
-import { GithubDb, types } from '@db-man/github';
-
-import { RowType } from '../types/Data';
+import { GithubDb } from '@db-man/github';
 
 // TODO: Already used GithubDb from @db-man/github as the ts type, so better to remove this type (need to search all places where using `GithubDbType` also need to remove)
 // // TODO: move this to @db-man/github
@@ -44,7 +42,7 @@ import { RowType } from '../types/Data';
 //       html_url?: string;
 //     };
 //   }>;
-//   createTable: (tableConfig: types.DbTable) => Promise<{
+//   createTableSchema: (tableConfig: types.DbTable) => Promise<{
 //     commit: {
 //       html_url?: string;
 //     };

@@ -1,0 +1,89 @@
+import { useContext, useEffect, useState } from 'react';
+
+import { types } from '@db-man/github';
+import { message, Typography } from 'antd';
+import CommonPageContext from 'contexts/commonPage';
+
+import TableManagementForm from './TableManagementForm';
+
+// Use `Typography` so can apply dark theme to text
+const { Title } = Typography;
+
+const TableManagementContainer = ({
+  dbName,
+  tableName,
+}: {
+  dbName: string;
+  tableName: string;
+}) => {
+  const [messageApi, contextHolder] = message.useMessage();
+  const { githubDb } = useContext(CommonPageContext);
+
+  const [dbSchema, setDbSchema] = useState<types.DatabaseSchema | null>(null);
+  const [databaseSchemaSha, setDatabaseSchemaSha] = useState<string | null>(
+    null
+  );
+
+  useEffect(() => {
+    githubDb
+      ?.getDbTablesSchemaV2Async(dbName)
+      .then(({ obj, sha }) => {
+        setDbSchema(obj);
+        setDatabaseSchemaSha(sha);
+      })
+      .catch((err) => {
+        messageApi.error('Failed to load database schema');
+      });
+  }, [dbName, githubDb, messageApi]);
+
+  if (!dbSchema || !databaseSchemaSha) {
+    return <div>dbSchema or databaseSchemaSha is not loaded</div>;
+  }
+
+  const defaultTableSchema = dbSchema.tables.find(
+    (table) => table.name === tableName
+  );
+
+  if (!defaultTableSchema) {
+    return (
+      <div>
+        table {tableName} is not found in db {dbName}
+      </div>
+    );
+  }
+
+  const handleUpdateTableSchema = (tableSchema: types.DbTable) => {
+    const newDbSchema = {
+      ...dbSchema,
+      // update a specific table schema in database schema
+      tables: dbSchema.tables.map((table) =>
+        table.name === tableName ? tableSchema : table
+      ),
+    };
+
+    githubDb
+      ?.updateDatabaseSchema(newDbSchema, databaseSchemaSha)
+      .then(() => {
+        messageApi.success('Table schema updated');
+      })
+      .catch((err) => {
+        console.error('Failed to update table schema', err);
+        messageApi.error('Failed to update table schema');
+      });
+  };
+
+  return (
+    <>
+      {contextHolder}
+      <Title level={2}>Table Schema Management</Title>
+      <div>Table Name: {defaultTableSchema.name}</div>
+      <div>Table Description: {defaultTableSchema.description}</div>
+      <TableManagementForm
+        defaultTableSchema={defaultTableSchema}
+        onUpdateTableSchema={handleUpdateTableSchema}
+      />
+    </>
+  );
+};
+
+export default TableManagementContainer;

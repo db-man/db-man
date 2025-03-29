@@ -49,14 +49,14 @@ const CreateDbPage = () => {
 
     setSaveLoading(true);
     try {
-      const _result = await githubDb?.createDatabase(dbConfig);
+      const _result = await githubDb?.createDatabaseSchema(dbConfig);
 
       if (_result) {
         message.success(<SuccessMessage url={_result.commit.html_url} />, 10);
       }
     } catch (err) {
-      console.error('createDatabase, err:', err);
-      setErrorMessage('Failed to create database on server!');
+      console.error('createDatabaseSchema, err:', err);
+      setErrorMessage('Failed to create database schema on server!');
     }
 
     setSaveLoading(false);
