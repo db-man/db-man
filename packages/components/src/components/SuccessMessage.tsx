@@ -6,7 +6,7 @@ function SuccessMessage({ url }: { url: string | undefined }) {
   return (
     <div>
       Record saved.{' '}
-      <a href={url} target='_blank' rel='noreferrer'>
+      <a href={url} target="_blank" rel="noreferrer">
         Commit link
       </a>
     </div>

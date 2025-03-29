@@ -196,7 +196,7 @@ const UpdatePage = () => {
     if (!errorMessage) {
       return null;
     }
-    return <Alert message={errorMessage} type='error' />;
+    return <Alert message={errorMessage} type="error" />;
   };
 
   const renderForm = () => {
@@ -218,7 +218,7 @@ const UpdatePage = () => {
   };
 
   return (
-    <div className='dbm-page update-page-body-component'>
+    <div className="dbm-page update-page-body-component">
       {contextHolder}
       <Skeleton loading={tips().length > 0}>
         {renderAlert()}

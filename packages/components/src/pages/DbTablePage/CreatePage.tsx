@@ -182,11 +182,11 @@ const CreatePage = () => {
   }
 
   return (
-    <div className='dbm-page'>
+    <div className="dbm-page">
       <h1>
         Create {dbName} {tableName}
       </h1>
-      <div className='create-page-body-component'>
+      <div className="create-page-body-component">
         <Spin
           spinning={tableFileLoading}
           tip={
@@ -194,15 +194,15 @@ const CreatePage = () => {
               Loading file:{' '}
               <a
                 href={githubDb?.getDataUrl(dbName, tableName)}
-                target='_blank'
-                rel='noreferrer'
+                target="_blank"
+                rel="noreferrer"
               >
                 {dbName}/{tableName}
               </a>
             </div>
           }
         >
-          {errorMessage && <Alert message={errorMessage} type='error' />}
+          {errorMessage && <Alert message={errorMessage} type="error" />}
           <Form
             showDelete={false}
             defaultValues={defaultFormValues}
