@@ -14,7 +14,8 @@ const convertDbColumnToTableRowType = (
     id: column.id,
     name: column.name,
     type: column.type,
-    primary: column.primary || false,
+    primary: column.primary,
+    description: column.description,
   }));
 };
 
@@ -27,9 +28,11 @@ const convertTableRowTypeToDbColumn = (
     name: row.name as string,
     type: row.type as types.DbColumnType,
     primary: row.primary as boolean,
+    description: row.description as string,
   }));
 };
 
+// TODO: should merge with the columns in SchemaPage (DbTablePage/SchemaPage.tsx)
 const dbTableColumns = [
   {
     title: 'id',
@@ -55,6 +58,11 @@ const dbTableColumns = [
     editable: true,
     'form:valueType': 'boolean',
     'ui:type': 'checkbox',
+  },
+  {
+    title: 'description',
+    dataIndex: 'description',
+    editable: true,
   },
 ];
 

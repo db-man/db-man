@@ -162,7 +162,7 @@ const genColumn = (
   },
 ];
 
-const footer = ({ dbName }: { dbName: string }) =>
+const footer = ({ dbName, tableName }: { dbName: string; tableName: string }) =>
   function TableFooter() {
     return (
       <div>
@@ -176,13 +176,19 @@ const footer = ({ dbName }: { dbName: string }) =>
             LS_KEY_GITHUB_REPO_PATH
           )}/${dbName}/${DB_CFG_FILENAME}`}
           text={DB_CFG_FILENAME}
-        />
+        />{' '}
+        Manage table schema in{' '}
+        <a href={`/_management/${dbName}/${tableName}`}>{tableName}</a>
       </div>
     );
   };
 
 export default function SchemaPage() {
-  const { dbName, columns: dbTableColumns } = useContext(PageContext);
+  const {
+    dbName,
+    tableName,
+    columns: dbTableColumns,
+  } = useContext(PageContext);
   const location = useLocation();
 
   const queryParams = new URLSearchParams(location.search);
@@ -203,7 +209,7 @@ export default function SchemaPage() {
             dataSource={dbTableColumns}
             columns={genColumn(dbName, dbTableColumns)}
             pagination={false}
-            footer={footer({ dbName })}
+            footer={footer({ dbName, tableName })}
           />
         </div>
       ),

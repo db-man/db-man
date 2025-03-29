@@ -13,7 +13,7 @@ import {
 } from 'antd';
 
 export type TableRowType = {
-  [key: string]: string | boolean;
+  [key: string]: string | boolean | undefined;
 };
 
 // This is extanding from ant design table column type
