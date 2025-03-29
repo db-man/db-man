@@ -7,22 +7,29 @@ export type FormValueType = Record<string, any>;
 
 interface JsonEditorProps {
   value: string;
-  onChange: (value: string) => void;
-  onFormValueChange: (value: FormValueType) => void;
+  // when text area value changes
+  onTextAreaChange: (value: string) => void;
+  // after text area value changes, only when text area value is valid JSON, call this function
+  onJsonObjectChange: (value: FormValueType) => void;
   onSave?: () => void;
 }
 
 const JsonEditor: React.FC<JsonEditorProps> = (props) => {
-  const { value, onChange, onFormValueChange, onSave = () => {} } = props;
+  const {
+    value,
+    onTextAreaChange,
+    onJsonObjectChange,
+    onSave = () => {},
+  } = props;
   const [errMsg, setErrMsg] = useState('');
 
-  const handleChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
-    onChange(event.target.value);
+  const handleTextAreaChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    onTextAreaChange(event.target.value);
 
     setErrMsg('');
     try {
       const obj = str2obj(event.target.value);
-      onFormValueChange(obj);
+      onJsonObjectChange(obj);
     } catch (error) {
       setErrMsg(
         `There is something wrong in JSON text, detail: ${
@@ -45,7 +52,7 @@ const JsonEditor: React.FC<JsonEditorProps> = (props) => {
         autoSize
         status={errMsg ? 'error' : ''}
         value={value}
-        onChange={handleChange}
+        onChange={handleTextAreaChange}
         onKeyDown={handleKeyDown}
       />
       {errMsg && <div style={{ color: 'red' }}>{errMsg}</div>}

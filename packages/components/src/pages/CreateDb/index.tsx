@@ -106,8 +106,8 @@ const CreateDbPage = () => {
       children: (
         <JsonEditor
           value={jsonStr}
-          onChange={setJsonStr}
-          onFormValueChange={setFormValues}
+          onTextAreaChange={setJsonStr}
+          onJsonObjectChange={setFormValues}
           onSave={() => {
             handleFormSubmit();
           }}

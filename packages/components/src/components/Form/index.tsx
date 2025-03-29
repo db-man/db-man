@@ -53,7 +53,7 @@ const renderFormFieldWrapper = ({
   label,
   formField,
 }: RenderFormFieldWrapperProps) => (
-  <div key={id} className='dbm-form-field dbm-string-form-field'>
+  <div key={id} className="dbm-form-field dbm-string-form-field">
     <b>{label}</b>: {formField}
   </div>
 );
@@ -200,7 +200,7 @@ const Form: React.FC<FormProps> = (props) => {
       return (
         <div
           key={column.id}
-          className='dbm-form-field dbm-string-array-form-field'
+          className="dbm-form-field dbm-string-array-form-field"
         >
           <b>{column.name}</b>:{' '}
           <PresetsButtons
@@ -213,8 +213,8 @@ const Form: React.FC<FormProps> = (props) => {
             }}
           />{' '}
           <Select
-            size='small'
-            mode='tags'
+            size="small"
+            mode="tags"
             style={{ width: '100%' }}
             disabled={props.loading}
             value={formValues[column.id]}
@@ -243,8 +243,8 @@ const Form: React.FC<FormProps> = (props) => {
               <Col span={12}>
                 {formValues[column.id] &&
                   formValues[column.id].map((img: string) => (
-                    <a key={img} href={img} target='_blank' rel='noreferrer'>
-                      <img width='200px' src={img} alt='img' />
+                    <a key={img} href={img} target="_blank" rel="noreferrer">
+                      <img width="200px" src={img} alt="img" />
                     </a>
                   ))}
               </Col>
@@ -256,7 +256,7 @@ const Form: React.FC<FormProps> = (props) => {
       return (
         <div
           key={column.id}
-          className='dbm-form-field dbm-string-array-form-field'
+          className="dbm-form-field dbm-string-array-form-field"
         >
           <b>{column.name}</b>:{' '}
           <RefTableLink
@@ -284,7 +284,7 @@ const Form: React.FC<FormProps> = (props) => {
       label: column.name,
       formField: (
         <InputNumber
-          size='small'
+          size="small"
           disabled={loading}
           autoFocus={column.id === pageCtx.primaryKey}
           value={formValues[column.id]}
@@ -301,7 +301,7 @@ const Form: React.FC<FormProps> = (props) => {
       label: column.name,
       formField: (
         <Switch
-          size='small'
+          size="small"
           disabled={props.loading}
           checked={formValues[column.id]}
           onChange={handleChange(column.id)}
@@ -329,7 +329,7 @@ const Form: React.FC<FormProps> = (props) => {
       label: 'Form',
       key: 'form',
       children: (
-        <div className='dbm-form'>
+        <div className="dbm-form">
           {pageCtx.columns.filter(filterOutHiddenFields).map(fieldRender)}
         </div>
       ),
@@ -340,8 +340,8 @@ const Form: React.FC<FormProps> = (props) => {
       children: (
         <JsonEditor
           value={jsonStr}
-          onChange={setJsonStr}
-          onFormValueChange={setFormValues}
+          onTextAreaChange={setJsonStr}
+          onJsonObjectChange={setFormValues}
           onSave={() => {
             handleFormSubmit();
           }}
@@ -350,11 +350,11 @@ const Form: React.FC<FormProps> = (props) => {
     },
   ];
   return (
-    <div className='create-update-component'>
-      <Tabs defaultActiveKey='form' items={tabsItems} />
-      <div className='dbm-action-buttons'>
+    <div className="create-update-component">
+      <Tabs defaultActiveKey="form" items={tabsItems} />
+      <div className="dbm-action-buttons">
         <Button
-          type='primary'
+          type="primary"
           disabled={loading}
           loading={loading}
           onClick={handleFormSubmit}
@@ -365,11 +365,11 @@ const Form: React.FC<FormProps> = (props) => {
           <>
             <Text>|</Text>{' '}
             <Popconfirm
-              title='Are you sure to delete?'
+              title="Are you sure to delete?"
               onConfirm={handleDelete}
               onCancel={() => {}}
-              okText='Yes'
-              cancelText='No'
+              okText="Yes"
+              cancelText="No"
             >
               <Button danger disabled={loading} loading={loading}>
                 Delete
@@ -379,7 +379,7 @@ const Form: React.FC<FormProps> = (props) => {
         )}
         <Text>|</Text>{' '}
         <Button
-          type='link'
+          type="link"
           href={`/${pageCtx.dbName}/${pageCtx.tableName}/create`}
         >
           Reset

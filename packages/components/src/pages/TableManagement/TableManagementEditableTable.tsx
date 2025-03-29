@@ -1,10 +1,15 @@
+import { useState } from 'react';
+
 import { types } from '@db-man/github';
-import { Button } from 'antd';
+import { Button, Tabs } from 'antd';
+
 import EditableTable, {
   isEditingType,
   editableTableColumnType,
   TableRowType,
 } from 'components/EditableTable';
+import { obj2str } from 'components/Form/helpers';
+import JsonEditor from 'components/JsonEditor';
 
 // Type 'DbColumn[]' is not assignable to type 'TableRowType[]'.
 const convertDbColumnToTableRowType = (
@@ -84,10 +89,13 @@ const TableManagementEditableTable = ({
 }: {
   isLoading: boolean;
   defaultTableSchema: types.DbTable;
+  // When table state changes, callback to parent component to send http request.
   onUpdateTableSchema: (tableSchema: types.DbTable) => void;
 }) => {
+  const [jsonStr, setJsonStr] = useState(obj2str(defaultTableSchema));
+
   const handleTableDataSave = (tableData: TableRowType[]) => {
-    // storage.set(dbName, JSON.stringify(tableData));
+    setJsonStr(obj2str(tableData));
   };
 
   const getColumns = (
@@ -135,16 +143,48 @@ const TableManagementEditableTable = ({
     );
   };
 
+  const tabsItems = [
+    {
+      label: 'Table',
+      key: 'table',
+      children: (
+        <EditableTable
+          rowKey="id"
+          loading={isLoading}
+          columns={dbTableColumns}
+          getColumns={getColumns}
+          defaultData={convertDbColumnToTableRowType(
+            defaultTableSchema.columns
+          )}
+          onSaveTableData={handleTableDataSave}
+          getFooter={getFooter}
+        />
+      ),
+    },
+    {
+      label: 'JSON',
+      key: 'json',
+      children: (
+        <JsonEditor
+          value={jsonStr}
+          onTextAreaChange={setJsonStr}
+          onJsonObjectChange={() => {
+            // TODO: When JSON editor value changes and value is a valid JSON object, send http request to update table schema.
+            alert('Not implemented');
+          }}
+          onSave={() => {
+            // TODO: When press 's' key in JSON editor, send http request to update table schema.
+            alert('Not implemented');
+          }}
+        />
+      ),
+    },
+  ];
+
   return (
-    <EditableTable
-      rowKey="id"
-      loading={isLoading}
-      columns={dbTableColumns}
-      getColumns={getColumns}
-      defaultData={convertDbColumnToTableRowType(defaultTableSchema.columns)}
-      onSaveTableData={handleTableDataSave}
-      getFooter={getFooter}
-    />
+    <>
+      <Tabs defaultActiveKey="table" items={tabsItems} />
+    </>
   );
 };
 
