@@ -5,6 +5,11 @@ import { Table, Tabs, Tooltip } from 'antd';
 import type { TableColumnsType, TabsProps } from 'antd';
 import { useLocation, Link } from 'react-router-dom';
 
+import ComponentDemoModal from 'components/ComponentDemoModal';
+import DistinctColumn from 'components/DistinctColumn';
+import ExternalLink from 'components/ExternalLink';
+import ReactSimpleCodeEditor from 'components/ReactSimpleCodeEditor';
+
 import { GetPageUiType, UiType } from '../../types/UiType';
 import DbColumn from '../../types/DbColumn';
 import PageContext from '../../contexts/page';
@@ -20,9 +25,6 @@ import {
   TYPE_GET_PAGE,
   TYPE_LIST_PAGE,
 } from '../../constants';
-import DistinctColumn from '../../components/DistinctColumn';
-import ComponentDemoModal from '../../components/ComponentDemoModal';
-import ReactSimpleCodeEditor from '../../components/ReactSimpleCodeEditor';
 import { checkValidTableColumns } from './helpers';
 
 const genColumn = (
@@ -165,7 +167,7 @@ const footer = ({ dbName }: { dbName: string }) =>
     return (
       <div>
         Table column definition:{' '}
-        <a
+        <ExternalLink
           href={`https://github.com/${localStorage.getItem(
             LS_KEY_GITHUB_OWNER
           )}/${localStorage.getItem(
@@ -173,11 +175,8 @@ const footer = ({ dbName }: { dbName: string }) =>
           )}/blob/main/${localStorage.getItem(
             LS_KEY_GITHUB_REPO_PATH
           )}/${dbName}/${DB_CFG_FILENAME}`}
-          target='_blank'
-          rel='noreferrer'
-        >
-          {DB_CFG_FILENAME}
-        </a>
+          text={DB_CFG_FILENAME}
+        />
       </div>
     );
   };
@@ -200,7 +199,7 @@ export default function SchemaPage() {
           {errMsg && <div>{errMsg}</div>}
           <Table
             scroll={{ x: 2300 }}
-            rowKey='id'
+            rowKey="id"
             dataSource={dbTableColumns}
             columns={genColumn(dbName, dbTableColumns)}
             pagination={false}
@@ -223,16 +222,16 @@ export default function SchemaPage() {
 
   if (distinctParam) {
     return (
-      <div className='table-schema-page'>
+      <div className="table-schema-page">
         <DistinctColumn columnKey={distinctParam} />
       </div>
     );
   }
 
   return (
-    <div className='table-schema-page'>
+    <div className="table-schema-page">
       Table Schema:
-      <Tabs defaultActiveKey='table' items={items} />
+      <Tabs defaultActiveKey="table" items={items} />
     </div>
   );
 }
