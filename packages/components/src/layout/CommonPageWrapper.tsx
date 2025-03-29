@@ -1,10 +1,10 @@
 import React, { useRef } from 'react';
 import { GithubDb } from '@db-man/github';
 
+import CommonPageContext from 'contexts/commonPage';
+import NotFound from 'components/NotFound';
+
 import * as constants from '../constants';
-import CommonPageContext from '../contexts/commonPage';
-import NavBar from '../pages/DbTablePage/NavBar';
-import NotFound from '../components/NotFound';
 
 const { Provider } = CommonPageContext;
 
@@ -18,7 +18,7 @@ const CommonPageWrapper = (props: Props) => {
 
   if (!localStorage.getItem(constants.LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN)) {
     // Normally this is because we dont enable any db connection
-    return <NotFound name='enabled db connection' />;
+    return <NotFound name="enabled db connection" />;
   }
 
   githubDbRef.current = new GithubDb({
@@ -44,10 +44,7 @@ const CommonPageWrapper = (props: Props) => {
 
   return (
     <Provider value={pageInfo()}>
-      <div className='dbm-page-v2'>
-        {props.children}
-        <NavBar />
-      </div>
+      <div className="dbm-page-v2">{props.children}</div>
     </Provider>
   );
 };
