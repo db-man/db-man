@@ -39,6 +39,14 @@ function EditableCell({
     input = <Select options={uiOptions} />;
     // valuePropName = 'value';
   }
+
+  let childrenEl = children;
+  if (uiType === 'checkbox') {
+    childrenEl = (
+      <Checkbox checked={children && children[1] === true} disabled />
+    );
+  }
+
   return (
     <td {...restProps}>
       {editing ? (
@@ -58,7 +66,7 @@ function EditableCell({
           {input}
         </Form.Item>
       ) : (
-        children
+        childrenEl
       )}
     </td>
   );
