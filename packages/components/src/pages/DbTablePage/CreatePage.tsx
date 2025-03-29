@@ -119,7 +119,13 @@ const CreatePage = () => {
       );
 
       if (_result) {
-        message.success(<SuccessMessage url={_result.commit.html_url} />, 10);
+        message.success(
+          <SuccessMessage
+            message="Record saved."
+            url={_result.commit.html_url}
+          />,
+          10
+        );
       }
     } catch (err) {
       console.error('updateTableFile, err:', err);
@@ -148,7 +154,13 @@ const CreatePage = () => {
       );
 
       if (_result) {
-        message.success(<SuccessMessage url={_result.commit.html_url} />, 10);
+        message.success(
+          <SuccessMessage
+            message="Record saved."
+            url={_result.commit.html_url}
+          />,
+          10
+        );
       }
     } catch (err) {
       console.error('updateRecordFile, err:', err);

@@ -1,11 +1,17 @@
 import PropTypes from 'prop-types';
 
-function SuccessMessage({ url }: { url: string | undefined }) {
+function SuccessMessage({
+  message,
+  url,
+}: {
+  message: string;
+  url: string | undefined;
+}) {
   console.debug('Commit link:', url); // eslint-disable-line no-console
 
   return (
     <div>
-      Record saved.{' '}
+      {message}{' '}
       <a href={url} target="_blank" rel="noreferrer">
         Commit link
       </a>

@@ -53,7 +53,10 @@ const CreateDbPage = () => {
 
       if (_result) {
         messageApi.success(
-          <SuccessMessage url={_result.commit.html_url} />,
+          <SuccessMessage
+            message="Database schema created."
+            url={_result.commit.html_url}
+          />,
           10
         );
       }

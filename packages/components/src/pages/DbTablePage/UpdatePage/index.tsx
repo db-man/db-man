@@ -95,7 +95,10 @@ const UpdatePage = () => {
         tableFileSha
       );
 
-      messageApi.success(<SuccessMessage url={commit.html_url} />, 10);
+      messageApi.success(
+        <SuccessMessage message="Record saved." url={commit.html_url} />,
+        10
+      );
     } catch (err) {
       console.error('updateTableFile, err:', err);
       setErrorMessage('Failed to update table file on server!');
@@ -119,7 +122,10 @@ const UpdatePage = () => {
         recordFileSha
       );
 
-      messageApi.success(<SuccessMessage url={commit.html_url} />, 10);
+      messageApi.success(
+        <SuccessMessage message="Record saved." url={commit.html_url} />,
+        10
+      );
     } catch (err) {
       console.error('updateRecordFile, err:', err);
       setErrorMessage('Failed to update record file on server!');
@@ -138,7 +144,10 @@ const UpdatePage = () => {
         recordFileSha
       );
 
-      messageApi.success(<SuccessMessage url={commit.html_url} />, 10);
+      messageApi.success(
+        <SuccessMessage message="Record saved." url={commit.html_url} />,
+        10
+      );
     } catch (err) {
       console.error('deleteRecordFile, err:', err);
       setErrorMessage('Failed to delete record file on server!');

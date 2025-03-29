@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 
 import { types } from '@db-man/github';
 import { message, Typography } from 'antd';
+import SuccessMessage from 'components/SuccessMessage';
 import CommonPageContext from 'contexts/commonPage';
 
 import TableManagementForm from './TableManagementForm';
@@ -69,8 +70,14 @@ const TableManagementContainer = ({
     setIsLoading(true);
     githubDb
       ?.updateDatabaseSchema(newDbSchema, databaseSchemaSha)
-      .then(() => {
-        messageApi.success('Table schema updated');
+      .then(({ commit }) => {
+        messageApi.success(
+          <SuccessMessage
+            message="Table schema updated."
+            url={commit.html_url}
+          />,
+          10
+        );
       })
       .catch((err) => {
         console.error('Failed to update table schema', err);

@@ -53,13 +53,16 @@ const CreateTableForm = ({ dbName }: { dbName: string }) => {
 
       if (_result) {
         messageApi.success(
-          <SuccessMessage url={_result.commit.html_url} />,
+          <SuccessMessage
+            message="Table schema created."
+            url={_result.commit.html_url}
+          />,
           10
         );
       }
     } catch (err) {
       console.error('githubDb.createTableSchema, err:', err);
-      setErrorMessage('Failed to create table on server!');
+      setErrorMessage('Failed to create table schema on server!');
     }
 
     setSaveLoading(false);
