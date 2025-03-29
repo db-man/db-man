@@ -5,7 +5,7 @@ import { message, Typography } from 'antd';
 import SuccessMessage from 'components/SuccessMessage';
 import CommonPageContext from 'contexts/commonPage';
 
-import TableManagementForm from './TableManagementForm';
+import TableManagementEditableTable from './TableManagementEditableTable';
 
 // Use `Typography` so can apply dark theme to text
 const { Title } = Typography;
@@ -94,7 +94,7 @@ const TableManagementContainer = ({
       <Title level={2}>Table Schema Management</Title>
       <div>Table Name: {defaultTableSchema.name}</div>
       <div>Table Description: {defaultTableSchema.description}</div>
-      <TableManagementForm
+      <TableManagementEditableTable
         isLoading={isLoading}
         defaultTableSchema={defaultTableSchema}
         onUpdateTableSchema={handleUpdateTableSchema}

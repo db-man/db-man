@@ -69,7 +69,7 @@ const dbTableColumns = [
 /**
  * Create new columns for an existing table (manage the table schema)
  */
-const TableManagementForm = ({
+const TableManagementEditableTable = ({
   isLoading,
   defaultTableSchema,
   onUpdateTableSchema,
@@ -139,4 +139,4 @@ const TableManagementForm = ({
   );
 };
 
-export default TableManagementForm;
+export default TableManagementEditableTable;
