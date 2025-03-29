@@ -1,14 +1,14 @@
 import React, { useRef } from 'react';
 
 import { Button, message, Tooltip, Typography } from 'antd';
-
-import * as constants from '../../constants';
-import { saveConnectionToLocalStorage, reloadDbsSchemaAsync } from './helpers';
 import EditableTable, {
   isEditingType,
   editableTableColumnType,
   TableRowType,
-} from './EditableTable';
+} from 'components/EditableTable';
+
+import * as constants from '../../constants';
+import { saveConnectionToLocalStorage, reloadDbsSchemaAsync } from './helpers';
 
 // Use `Typography` so can apply dark theme to text
 const { Title } = Typography;

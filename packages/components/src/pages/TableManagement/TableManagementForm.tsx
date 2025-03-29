@@ -1,11 +1,10 @@
 import { types } from '@db-man/github';
 import { Button } from 'antd';
-
 import EditableTable, {
   isEditingType,
   editableTableColumnType,
   TableRowType,
-} from '../Settings/EditableTable';
+} from 'components/EditableTable';
 
 // Type 'DbColumn[]' is not assignable to type 'TableRowType[]'.
 const convertDbColumnToTableRowType = (

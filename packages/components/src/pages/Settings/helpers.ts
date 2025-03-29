@@ -4,7 +4,6 @@ import { MessageInstance } from 'antd/es/message/interface';
 
 import * as constants from '../../constants';
 import { errMsg } from '../../utils';
-import { TableRowType } from './EditableTable';
 
 const loadDbsSchemaAsync = async (github: any, repoPath: string) => {
   // Get all db names in root dir, db name is sub dir name
