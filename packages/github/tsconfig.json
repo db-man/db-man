@@ -16,6 +16,6 @@
     },
     "strictNullChecks": true
   },
-  "exclude": ["node_modules", "**/*.spec.ts", "src/**/*.test.ts"],
+  "exclude": ["node_modules"],
   "include": ["./src/**/*.ts"]
 }
