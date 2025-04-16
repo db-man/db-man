@@ -26,6 +26,11 @@ const author = {
   email: 'bot-email',
 };
 
+export const DBMERR_UPDATE_FILE_409_CONFLICT =
+  'DBMERR_UPDATE_FILE_409_CONFLICT';
+export const DBMERR_DELETE_FILE_409_CONFLICT =
+  'DBMERR_DELETE_FILE_409_CONFLICT';
+
 /**
  * Usage:
  * ```js
@@ -239,6 +244,8 @@ export default class Github {
   }
 
   /**
+   * Create or update a file
+   * TODO should rename the function name because it can also create a file
    * @param {Object} content File content in JSON object
    * @return {Promise<Response>}
    * response.commit
@@ -268,13 +275,32 @@ export default class Github {
       });
       return data;
     } catch (error) {
-      console.error('Failed to createOrUpdateFileContents, error:', error);
       switch (error.response.status) {
         case 409:
-          // error.response.data={"message": "dbs_dir/db_name/table_name.data.json does not match c61...e3a","documentation_url": "https://docs.github.com/rest/reference/repos#create-or-update-file-contents"}
-          // error.response.status=409
-          // file.json does not match c61...e3a
-          throw new Error('Status: 409 Conflict');
+          /**
+           * case 1: when updateing an existing file, but the sha is an old one
+           * ```json
+           * {
+           *   "message": "dbs_dir/db_name/table_name.data.json does not match c61...e3a",
+           *   "documentation_url": "https://docs.github.com/rest/reference/repos#create-or-update-file-contents",
+           *   "status": "409"
+           * }
+           * ```
+           *
+           * case 2: when creating a new file, but creating 2 different file at the same time, below is example response
+           * ```json
+           * {
+           *   "message": "is at 78c...942 but expected b59...979",
+           *   "documentation_url": "https://docs.github.com/rest/repos/contents#create-or-update-file-contents",
+           *   "status": "409"
+           * }
+           * ```
+           *
+           * How to resolve case 2, here is one note from GitHub API doc:
+           * > If you use this endpoint and the "Delete a file" endpoint in parallel, the concurrent requests will conflict and you will receive errors. You must use these endpoints serially instead.
+           */
+
+          throw new Error(DBMERR_UPDATE_FILE_409_CONFLICT);
         default:
           throw error;
       }
@@ -306,10 +332,17 @@ export default class Github {
       console.error('Failed to octokit.rest.repos.deleteFile, error:', error);
       switch (error.response.status) {
         case 409:
-          // error.response.data={"message": "dbs_dir/db_name/table_name.data.json does not match c61...e3a","documentation_url": "https://docs.github.com/rest/reference/repos#create-or-update-file-contents"}
-          // error.response.status=409
-          // file.json does not match c61...e3a
-          throw new Error('Status: 409 Conflict');
+          /**
+           * case 1: when deleting an existing file, but the sha is an old one
+           * ```json
+           * {
+           *   "message": "dbs_dir/db_name/table_name.data.json does not match c61...e3a",
+           *   "documentation_url": "https://docs.github.com/rest/reference/repos#create-or-update-file-contents",
+           *   "status": "409"
+           * }
+           * ```
+           */
+          throw new Error(DBMERR_DELETE_FILE_409_CONFLICT);
         default:
           throw error;
       }
