@@ -45,6 +45,8 @@ GH_TOKEN=ghp_123 npm run release
 
 ## Release all packages
 
+To release packages, will run UT first, then build the package, at last pulish to npmjs.
+
 ```sh
 npm run release
 ```
