@@ -3,7 +3,7 @@
 import { useContext, useEffect, useState } from 'react';
 
 // import { contexts as PageContext, ddRender } from '@db-man/components';
-import { List, Card } from 'antd';
+import { List, Card, Select } from 'antd';
 import { Link } from 'react-router-dom';
 
 import { COL_UI_LISTPAGE_RANDOMVIEW } from '../constants';
@@ -20,18 +20,25 @@ const listGrid = {
   xl: 4, // ≥1200px column of grid
   xxl: 4, // ≥1600px column of grid
 };
-const defaultPageSize = 8;
 const getAny = (arr: RowType[]) => arr[Math.floor(Math.random() * arr.length)];
-export const getRandomItems = (rows: RowType[]) => {
+export const getRandomItems = (rows: RowType[], pageSize: number) => {
   const randomItems = [];
-  const numberOfItems = Math.min(defaultPageSize, rows.length);
+  const numberOfItems = Math.min(pageSize, rows.length);
   for (let i = 0; i < numberOfItems; i += 1) {
     randomItems.push(getAny(rows));
   }
   return randomItems;
 };
 
-export default function RandomList({ rows }: { rows: RowType[] }) {
+export default function RandomList({
+  rows,
+  pageSize,
+  onChange,
+}: {
+  rows: RowType[];
+  pageSize: number;
+  onChange: (pageSize: number) => void;
+}) {
   const { dbName, tableName, primaryKey, columns } = useContext(PageContext);
 
   // idx only used to force reload page data
@@ -78,10 +85,20 @@ export default function RandomList({ rows }: { rows: RowType[] }) {
   if (!rows) return null;
 
   return (
-    <List
-      grid={listGrid}
-      dataSource={getRandomItems(rows)}
-      renderItem={renderItem}
-    />
+    <div className="dbm-random-list">
+      <List
+        grid={listGrid}
+        dataSource={getRandomItems(rows, pageSize)}
+        renderItem={renderItem}
+      />
+      <Select
+        options={[8, 16, 32, 64].map((size) => ({
+          value: size,
+          label: `${size}`,
+        }))}
+        value={pageSize}
+        onChange={onChange}
+      />
+    </div>
   );
 }

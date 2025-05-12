@@ -211,6 +211,13 @@ const ListPage = (props: ListPageProps) => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleRandomListChange = (pageSize: number) => {
+    setPageSize(pageSize);
+    debouncedUpdateUrl({
+      pageSize,
+    });
+  };
+
   const getData = async (tableName: string) => {
     setLoading(`Loading ${dbName}/${tableName} ...`);
     try {
@@ -424,7 +431,14 @@ const ListPage = (props: ListPageProps) => {
           />
         );
       case RandomView:
-        return <RandomList rows={getFilteredData(columns, filter, rows)} />;
+        return (
+          <RandomList
+            rows={getFilteredData(columns, filter, rows)}
+            pageSize={pageSize}
+            onChange={handleRandomListChange}
+          />
+        );
+
       default:
         return null;
     }
