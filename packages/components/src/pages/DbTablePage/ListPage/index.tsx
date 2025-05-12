@@ -270,7 +270,7 @@ const ListPage = (props: ListPageProps) => {
   };
 
   const alertValidations = () => (
-    <div className='dbm-alert-validations'>
+    <div className="dbm-alert-validations">
       {alertDuplicatedRowKey()}
       {alertTableDataInvalid()}
     </div>
@@ -312,8 +312,8 @@ const ListPage = (props: ListPageProps) => {
               {lastRender(...args)}{' '}
               {hasVal(args[0]) && (
                 <Popover
-                  title='Ref Table Links'
-                  trigger='click'
+                  title="Ref Table Links"
+                  trigger="click"
                   content={<RefTableLinks value={args[0]} column={column} />}
                 >
                   <RightSquareFilled />
@@ -383,7 +383,7 @@ const ListPage = (props: ListPageProps) => {
       <div>
         {alertValidations()}
         <Table
-          size='small'
+          size="small"
           showSorterTooltip={false}
           rowKey={primaryKey}
           columns={getTableColumns()}
@@ -403,7 +403,7 @@ const ListPage = (props: ListPageProps) => {
 
   const renderTableViewOrImageView = () => {
     if (loading) return <Spin tip={loading}>Loading...</Spin>;
-    if (errMsg) return <Alert message={errMsg} type='error' />;
+    if (errMsg) return <Alert message={errMsg} type="error" />;
     if (!rows) return null;
 
     switch (view) {
@@ -431,8 +431,8 @@ const ListPage = (props: ListPageProps) => {
   };
 
   return (
-    <div className='dbm-list-page list-component'>
-      <div className='dbm-table-filter'>
+    <div className="dbm-list-page list-component">
+      <div className="dbm-table-filter">
         <Row gutter={10}>
           {[
             ...filterCols(columns),
@@ -443,7 +443,7 @@ const ListPage = (props: ListPageProps) => {
               <Text>{f.name}</Text>
               :
               <Input
-                size='small'
+                size="small"
                 value={filter[f.id]}
                 onChange={handleFilterChange(f.id)}
               />
