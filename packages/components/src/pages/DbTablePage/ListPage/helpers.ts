@@ -172,27 +172,21 @@ export const getInitialFilter = (filterProp: DbColumn[]) => {
 };
 
 export const getInitialSorter = () => {
-  let sorter = {
-    columnKey: '',
-    order: '',
-  };
   // @ts-ignore TODO
   const url = new URL(window.location);
   const sorterParam = url.searchParams.get('sorter');
   if (sorterParam && sorterParam.startsWith('{')) {
     try {
-      sorter = JSON.parse(sorterParam);
+      return JSON.parse(sorterParam);
     } catch (error) {
-      // eslint-disable-next-line no-console
       console.error(
-        'Failed to parse filter param from URL, sorter:',
-        sorter,
+        'Failed to parse sorter param from URL, sorterParam:',
+        sorterParam,
         ', error:',
         error
       );
     }
   }
-  return sorter;
 };
 
 export const updateUrl = (states: { [key: string]: string }) => {

@@ -57,6 +57,11 @@ const TableView = 'table_view';
 const ImageView = 'image_view';
 const RandomView = 'random_view';
 
+const defaultTableSorter = {
+  columnKey: 'createdAt', // e.g. "url"
+  order: 'descend', //  "ascend" or "descend" or undefined
+};
+
 /**
  * URL params:
  * - page: number
@@ -73,10 +78,8 @@ const ListPage = (props: ListPageProps) => {
    * @example filter = { url: 'https://example.com', name: 'John' }
    */
   const [filter, setFilter] = useState<Record<string, string>>({}); // getInitialFilter(filterCols()), cannot get context in constructor
-  const [sorter, setSorter] = useState({
-    columnKey: '', // e.g. "url"
-    order: '', //  "ascend" or "descend" or undefined
-  });
+  // By default, sort by createdAt in descending order
+  const [sorter, setSorter] = useState(defaultTableSorter);
   const [loading, setLoading] = useState('');
   const [errMsg, setErrMsg] = useState('');
   const [rows, setRows] = useState<RowType[] | null>(null);
@@ -103,7 +106,10 @@ const ListPage = (props: ListPageProps) => {
   useEffect(() => {
     getData(tableName);
     setFilter(getInitialFilter(filterCols(columns)));
-    setSorter(getInitialSorter());
+    const sorterFromUrl = getInitialSorter();
+    if (sorterFromUrl) {
+      setSorter(sorterFromUrl);
+    }
 
     return () => {
       // When your component unmounts
