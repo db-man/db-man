@@ -38,7 +38,7 @@ import {
   getInitialFilter,
   updateUrl,
   getColumnSortOrder,
-  getInitialSorter,
+  getInitialSorterFromUrl,
   filterCols,
 } from './helpers';
 
@@ -106,7 +106,7 @@ const ListPage = (props: ListPageProps) => {
   useEffect(() => {
     getData(tableName);
     setFilter(getInitialFilter(filterCols(columns)));
-    const sorterFromUrl = getInitialSorter();
+    const sorterFromUrl = getInitialSorterFromUrl();
     if (sorterFromUrl) {
       setSorter(sorterFromUrl);
     }

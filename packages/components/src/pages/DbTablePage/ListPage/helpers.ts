@@ -171,7 +171,7 @@ export const getInitialFilter = (filterProp: DbColumn[]) => {
   return filter;
 };
 
-export const getInitialSorter = () => {
+export const getInitialSorterFromUrl = () => {
   // @ts-ignore TODO
   const url = new URL(window.location);
   const sorterParam = url.searchParams.get('sorter');
