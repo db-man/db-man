@@ -1,5 +1,10 @@
 # Develop
 
+## Development Workflow
+
+1. Coding
+2. Run `npm run release`
+
 ## Develop
 
 ```sh
