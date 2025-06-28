@@ -45,7 +45,7 @@ const opt = process.argv[2];
 
   const dbsJson = fs.readFileSync('dbs.json', 'utf8');
   const dir = JSON.parse(dbsJson).repoPath;
-  console.debug('dir:', dir);
+  console.debug(`[DEBUG] dir: ${dir}`);
 
   if (opt === 'split') {
     (async () => {

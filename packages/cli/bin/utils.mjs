@@ -42,14 +42,14 @@ export const getDbs = async (dir) => {
           if (dirent.isDirectory()) {
             return dirent;
           } else {
-            console.warn('[WARN] Skip non dir:', dirent.name);
+            console.warn(`[WARN] Skip non dir: ${dirent.name}`);
             return false;
           }
         })
       )
       .then((dirs) => dirs.map((dir) => dir.name));
   } catch (err) {
-    console.error('Failed to list db dir files, err:', err);
+    console.error(`[ERROR] Failed to list db dir files, err:`, err);
     return [];
   }
 
@@ -62,7 +62,10 @@ export const getDbs = async (dir) => {
       );
       tables = JSON.parse(fileContent).tables;
     } catch (err) {
-      console.error('Failed to read db cfg data file, err:', err);
+      console.error(
+        `[ERROR] [${dbName}] Failed to read db cfg data file, err:`,
+        err
+      );
       return [];
     }
     dbs.push({
@@ -82,7 +85,10 @@ export const getDbs = async (dir) => {
 const getPrimaryKey = (table) => {
   const primaryCol = table.columns.find((col) => col.primary);
   if (!primaryCol) {
-    console.error('No primary key found in table!', table.columns);
+    console.error(
+      `[ERROR] [${table.name}] No primary key found in table!`,
+      table.columns
+    );
     process.exitCode = ERR_NO_PRIMARY_KEY;
     process.exit();
   }
@@ -103,13 +109,15 @@ export const processDbs = async (_processTable, dir, dbTable) => {
   for (const db of dbs) {
     for (const table of db.tables) {
       if (dbTable && `${db.name}/${table.name}` !== dbTable) {
-        console.debug('skip table:', db.name, table.name);
+        console.debug(
+          `[DEBUG] [${db.name}/${table.name}] Skip table, dbTable: ${dbTable}`
+        );
         continue;
       }
 
-      console.debug('start process table:', db.name, table.name);
+      console.debug(`[DEBUG] [${db.name}/${table.name}] Start process table`);
       await _processTable(dir, db.name, table);
-      console.debug('finish process table:', db.name, table.name);
+      console.debug(`[DEBUG] [${db.name}/${table.name}] Finish process table`);
     }
   }
 };
@@ -122,18 +130,25 @@ export const splitTableFileToRecordFilesAsync = async (dir, dbName, table) => {
   try {
     data = await readFile(`./${dir}/${dbName}/${table.name}.data.json`, 'utf8');
   } catch (err) {
-    console.error('Failed to read table data file, err:', err);
+    console.error(
+      `[ERROR] [${dbName}/${table.name}] Failed to read table data file, err:`,
+      err
+    );
     return;
   }
 
   if (!data) {
-    console.error('table data file is empty!');
+    console.error(
+      `[ERROR] [${dbName}/${table.name}] Table data file is empty!`
+    );
     return;
   }
 
   const rows = convert(data);
 
-  console.debug(`Split ${dbName}/${table.name} rows count: ${rows.length}`);
+  console.debug(
+    `[DEBUG] [${dbName}/${table.name}] Split table, total rows: ${rows.length}`
+  );
 
   const primaryColumn = table.columns.find((col) => col.primary);
 
@@ -152,7 +167,10 @@ export const splitTableFileToRecordFilesAsync = async (dir, dbName, table) => {
         'utf8'
       );
     } catch (err) {
-      console.error('Failed to write to a record file, err:', err);
+      console.error(
+        `[ERROR] [${dbName}/${table.name}] Failed to write to a record file, err:`,
+        err
+      );
     }
   }
 };
@@ -165,7 +183,10 @@ export const mergeRecordFilesToTableFileAsync = async (dir, dbName, table) => {
   try {
     files = await readdir(`./${dir}/${dbName}/${table.name}`);
   } catch (err) {
-    console.error('Failed to list table dir files, err:', err);
+    console.error(
+      `[ERROR] [${dbName}/${table.name}] Failed to list table dir files, err:`,
+      err
+    );
     return;
   }
 
@@ -174,7 +195,9 @@ export const mergeRecordFilesToTableFileAsync = async (dir, dbName, table) => {
   for (const file of files) {
     // Only process .json files
     if (path.extname(file) !== '.json') {
-      console.warn('skip non json record file:', file);
+      console.warn(
+        `[WARN] [${dbName}/${table.name}] Skip non json record file: ${file}`
+      );
       continue;
     }
 
@@ -182,12 +205,17 @@ export const mergeRecordFilesToTableFileAsync = async (dir, dbName, table) => {
     try {
       data = await readFile(`./${dir}/${dbName}/${table.name}/${file}`, 'utf8');
     } catch (err) {
-      console.error('Failed to read record file, err:', err);
+      console.error(
+        `[ERROR] [${dbName}/${table.name}] Failed to read record file: ${file}, err:`,
+        err
+      );
       continue;
     }
 
     if (!data) {
-      console.warn('record file is empty!');
+      console.warn(
+        `[WARN] [${dbName}/${table.name}] Record file is empty: ${file}`
+      );
       continue;
     }
 
@@ -207,12 +235,15 @@ export const mergeRecordFilesToTableFileAsync = async (dir, dbName, table) => {
       'utf8'
     );
   } catch (err) {
-    console.error('Failed to write to a table data file, err:', err);
+    console.error(
+      `[ERROR] [${dbName}/${table.name}] Failed to write to a table data file, err:`,
+      err
+    );
     return;
   }
 
   console.debug(
-    `Merged ${rows.length} rows into ${dbName}/${table.name} table file.`
+    `[DEBUG] [${dbName}/${table.name}] Merged ${rows.length} rows into table file.`
   );
 };
 
@@ -225,7 +256,10 @@ export const testDbIntegrity = async (dir, dbName, tableName, primaryKey) => {
   try {
     files = await readdir(`./${dir}/${dbName}/${tableName}`);
   } catch (err) {
-    console.error('Failed to list table dir files, err:', err);
+    console.error(
+      `[ERROR] [${dbName}/${tableName}] Failed to list table dir files, err:`,
+      err
+    );
     return;
   }
 
@@ -233,18 +267,24 @@ export const testDbIntegrity = async (dir, dbName, tableName, primaryKey) => {
   try {
     data = await readFile(`./${dir}/${dbName}/${tableName}.data.json`, 'utf8');
   } catch (err) {
-    console.error('Failed to read table data file, err:', err);
+    console.error(
+      `[ERROR] [${dbName}/${tableName}] Failed to read table data file, err:`,
+      err
+    );
     return;
   }
 
   if (!data) {
-    console.error('table data file is empty!');
+    console.error(`[ERROR] [${dbName}/${tableName}] Table data file is empty!`);
     return;
   }
 
   const rows = convert(data);
 
-  console.debug('count:', files.length, rows.length);
+  // The table record files count and rows count should be the same
+  console.debug(
+    `[DEBUG] [${dbName}/${tableName}] files count: ${files.length}, rows count: ${rows.length}`
+  );
 };
 
 export function foo() {
