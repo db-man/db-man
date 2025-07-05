@@ -1,3 +1,4 @@
+// @ts-ignore TODO Cannot find module 'js-base64' or its corresponding type declarations.ts(2307)
 import { Base64 } from 'js-base64';
 
 import octokit from './octokit';
@@ -75,7 +76,7 @@ export default class Github {
    * @returns {Promise}
    * @private
    */
-  getBlob(sha, signal) {
+  getBlob(sha: string, signal?: AbortSignal) {
     return octokit(this.context.personalAccessToken).request(
       'GET /repos/{owner}/{repo}/git/blobs/{sha}',
       {
@@ -93,7 +94,7 @@ export default class Github {
    * @param {*} signal
    * @returns
    */
-  getBlobContentAndSha(sha, signal) {
+  getBlobContentAndSha(sha: string, signal?: AbortSignal) {
     return this.getBlob(sha, signal).then((response) => {
       const obj = JSON.parse(Base64.decode(response.data.content));
       console.debug('@db-man/github getBlobContentAndSha res:', obj);
