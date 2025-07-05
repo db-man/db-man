@@ -20,11 +20,11 @@ type GithubContext = {
 const botName = 'db-man-bot';
 const committer = {
   name: botName,
-  email: 'bot-email',
+  email: 'db-man-bot-email',
 };
 const author = {
   name: botName,
-  email: 'bot-email',
+  email: 'db-man-bot-email',
 };
 
 export const DBMERR_UPDATE_FILE_409_CONFLICT =
