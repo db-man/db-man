@@ -76,7 +76,9 @@ const opt = process.argv[2];
   } else if (opt === 'generateInsightsForAllDbTables') {
     generateInsightsForAllDbTablesAsync(dir);
   } else {
-    console.error('Invalid params, should be "split" or "merge".');
+    console.error(
+      'Invalid params, should be "split" or "merge" or "mergeUpdatedTables" or "splitUpdatedTables" or "printInsights" or "generateInsightsForAllDbTables".'
+    );
     console.error('For example, "$ db-man-cli split".');
   }
 })();
