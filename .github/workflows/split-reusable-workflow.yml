@@ -17,15 +17,20 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 2 # `git diff-tree` (used in `@db-man/cli splitUpdatedTables`) need to compare HEAD and HEAD~1, so need to fetch 2 commits
 
       - name: Install Node.js
         uses: actions/setup-node@v1
         with:
           node-version: 16.x
 
+      # Split updated table files (by SHA) to the record files
+      # Only tables which has updated table data files will be split
       - name: Split table data file
-        run: npx @db-man/cli split
+        run: npx @db-man/cli splitUpdatedTables $GITHUB_SHA
 
+      # Debug: check which record files are modified
       - name: git status
         run: |
           git status

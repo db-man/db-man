@@ -44,6 +44,16 @@ node bin/cli.mjs mergeUpdatedTables 787fc97a43ff53b42288527b28fdb810a519c524
 
 The sha is from GitHub Actions pipeline env var `GITHUB_SHA`.
 
+### splitUpdatedTables
+
+Run the following commands:
+
+```sh
+node bin/cli.mjs splitUpdatedTables 787fc97a43ff53b42288527b28fdb810a519c524
+```
+
+The sha is from GitHub Actions pipeline env var `GITHUB_SHA`.
+
 ### Insights
 
 Run the following commands:

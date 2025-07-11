@@ -1,18 +1,11 @@
-import path from 'path';
-import { readFile, writeFile, readdir } from 'fs/promises';
+import { exec } from 'child_process';
+import { readFile, readdir } from 'fs/promises';
 
-import { DB_CFG_FILENAME, ERR_NO_PRIMARY_KEY } from './constants.mjs';
-
-/**
- * Get valid file name
- * See: https://stackoverflow.com/a/4814088
- * @param oldStr
- * @returns POSIX "Fully portable filenames"
- * @see https://github.com/db-man/github/blob/main/src/githubDb.js#L15
- */
-export const validFilename = (oldStr) => {
-  return oldStr.replace(/[^a-zA-Z0-9._-]/g, '_');
-};
+import {
+  DB_CFG_FILENAME,
+  ERR_NO_PRIMARY_KEY,
+  TABLE_DATA_FILE_SUFFIX,
+} from './constants.mjs';
 
 export const convert = (data) => {
   const rows = JSON.parse(data);
@@ -82,7 +75,7 @@ export const getDbs = async (dir) => {
  * @param {*} table
  * @returns
  */
-const getPrimaryKey = (table) => {
+export const getPrimaryKey = (table) => {
   const primaryCol = table.columns.find((col) => col.primary);
   if (!primaryCol) {
     console.error(
@@ -99,11 +92,11 @@ const getPrimaryKey = (table) => {
 
 /**
  *
- * @param {Function} _processTable One of splitTableFileToRecordFilesAsync, mergeRecordFilesToTableFileAsync, testDbIntegrity
  * @param {*} dir
  * @param {string} dbTable Optional, only process this db table, e.g. "iam/users"
+ * @param {Function} _processTable One of splitTableFileToRecordFilesAsync, mergeRecordFilesToTableFileAsync, testDbIntegrity
  */
-export const processDbs = async (_processTable, dir, dbTable) => {
+export const processDbTables = async (dir, dbTable, _processTable) => {
   const dbs = await getDbs(dir);
 
   for (const db of dbs) {
@@ -120,131 +113,6 @@ export const processDbs = async (_processTable, dir, dbTable) => {
       console.debug(`[DEBUG] [${db.name}/${table.name}] Finish process table`);
     }
   }
-};
-
-// split one big file to small files
-export const splitTableFileToRecordFilesAsync = async (dir, dbName, table) => {
-  const primaryKey = getPrimaryKey(table);
-
-  let data = null;
-  try {
-    data = await readFile(`./${dir}/${dbName}/${table.name}.data.json`, 'utf8');
-  } catch (err) {
-    console.error(
-      `[ERROR] [${dbName}/${table.name}] Failed to read table data file, err:`,
-      err
-    );
-    return;
-  }
-
-  if (!data) {
-    console.error(
-      `[ERROR] [${dbName}/${table.name}] Table data file is empty!`
-    );
-    return;
-  }
-
-  const rows = convert(data);
-
-  console.debug(
-    `[DEBUG] [${dbName}/${table.name}] Split table, total rows: ${rows.length}`
-  );
-
-  const primaryColumn = table.columns.find((col) => col.primary);
-
-  for (const row of rows) {
-    try {
-      let filename = '';
-      if (primaryColumn.type === 'NUMBER') {
-        filename = row[primaryKey] + '';
-      } else {
-        filename = validFilename(row[primaryKey]);
-      }
-
-      await writeFile(
-        `./${dir}/${dbName}/${table.name}/${filename}.json`,
-        JSON.stringify(row, null, '  '),
-        'utf8'
-      );
-    } catch (err) {
-      console.error(
-        `[ERROR] [${dbName}/${table.name}] Failed to write to a record file, err:`,
-        err
-      );
-    }
-  }
-};
-
-// merge multiple small files into one big file
-export const mergeRecordFilesToTableFileAsync = async (dir, dbName, table) => {
-  const primaryKey = getPrimaryKey(table);
-
-  let files = null;
-  try {
-    files = await readdir(`./${dir}/${dbName}/${table.name}`);
-  } catch (err) {
-    console.error(
-      `[ERROR] [${dbName}/${table.name}] Failed to list table dir files, err:`,
-      err
-    );
-    return;
-  }
-
-  const rows = [];
-
-  for (const file of files) {
-    // Only process .json files
-    if (path.extname(file) !== '.json') {
-      console.warn(
-        `[WARN] [${dbName}/${table.name}] Skip non json record file: ${file}`
-      );
-      continue;
-    }
-
-    let data = null;
-    try {
-      data = await readFile(`./${dir}/${dbName}/${table.name}/${file}`, 'utf8');
-    } catch (err) {
-      console.error(
-        `[ERROR] [${dbName}/${table.name}] Failed to read record file: ${file}, err:`,
-        err
-      );
-      continue;
-    }
-
-    if (!data) {
-      console.warn(
-        `[WARN] [${dbName}/${table.name}] Record file is empty: ${file}`
-      );
-      continue;
-    }
-
-    const record = JSON.parse(data);
-    rows.push(record);
-  }
-
-  // Sort by primary key
-  rows.sort((a, b) => {
-    return ('' + a[primaryKey]).localeCompare('' + b[primaryKey]);
-  });
-
-  try {
-    await writeFile(
-      `./${dir}/${dbName}/${table.name}.data.json`,
-      JSON.stringify(rows, null, ' '),
-      'utf8'
-    );
-  } catch (err) {
-    console.error(
-      `[ERROR] [${dbName}/${table.name}] Failed to write to a table data file, err:`,
-      err
-    );
-    return;
-  }
-
-  console.debug(
-    `[DEBUG] [${dbName}/${table.name}] Merged ${rows.length} rows into table file.`
-  );
 };
 
 /**
@@ -265,7 +133,10 @@ export const testDbIntegrity = async (dir, dbName, tableName, primaryKey) => {
 
   let data = null;
   try {
-    data = await readFile(`./${dir}/${dbName}/${tableName}.data.json`, 'utf8');
+    data = await readFile(
+      `./${dir}/${dbName}/${tableName}${TABLE_DATA_FILE_SUFFIX}`,
+      'utf8'
+    );
   } catch (err) {
     console.error(
       `[ERROR] [${dbName}/${tableName}] Failed to read table data file, err:`,
@@ -287,6 +158,139 @@ export const testDbIntegrity = async (dir, dbName, tableName, primaryKey) => {
   );
 };
 
-export function foo() {
-  return 'bar';
+/**
+ * Get changed files by sha
+ *
+ * Example: when only changed 1 record file
+ * ```
+ * $ git diff-tree --no-commit-id --name-only -r 2eab0c1df07639dd0d82a342f8f3a1e2a112a6e7
+ * db_files_dir/iam/users/789900000004.json
+ * ```
+ *
+ * Example: when changed 2 record files
+ * ```
+ * $ git diff-tree --no-commit-id --name-only -r 2ece7c30ca731901377f04236422772e4e997cd3
+ * db_files_dir/iam/users/789900000005.json
+ * db_files_dir/iam/users/789900000006.json
+ * ```
+ *
+ * Example: when changed 1 table file
+ * ```
+ * $ git diff-tree --no-commit-id --name-only -r 2ece7c30ca731901377f04236422772e4e997cd3
+ * db_files_dir/iam/users.data.json
+ * ```
+ *
+ * Example: when changed 2 table files
+ * ```
+ * $ git diff-tree --no-commit-id --name-only -r 2ece7c30ca731901377f04236422772e4e997cd3
+ * db_files_dir/iam/users.data.json
+ * db_files_dir/iam/roles.data.json
+ * ```
+ *
+ * !!! This function need a reasonable depth of git clone, otherwise the given sha is not in the history
+ * !!! Especially on GitHub Actions, the default depth is 1 by default
+ * !!! To support this in GitHub Actions, follow the steps below:
+ * ```
+ * - name: Checkout code
+ *   uses: actions/checkout@v2
+ *   with:
+ *     fetch-depth: 2 # `git diff-tree` (used in `@db-man/cli mergeUpdatedTables`) need to compare HEAD and HEAD~1, so need to fetch 2 commits
+ * ```
+ *
+ * @param {string} sha
+ * @returns {string[]} - An array of changed file paths, e.g. ['iam/users/2.json', 'iam/roles/developer.json']
+ */
+export async function getChangedFilesBySha(sha) {
+  return new Promise((resolve, reject) => {
+    // git diff-tree --no-commit-id --name-only -r 2eab0c1df07639dd0d82a342f8f3a1e2a112a6e7
+    const cmd = `git diff-tree --no-commit-id --name-only -r ${sha}`;
+    console.debug(`[DEBUG] Executing git command: ${cmd}`);
+    exec(cmd, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`Error executing git: ${error}`);
+        return reject(error);
+      }
+      if (stderr) {
+        console.error(`Git stderr: ${stderr}`);
+        return reject(new Error(stderr));
+      }
+
+      // Split the git log into individual file paths
+      const changedFiles = stdout.trim().split('\n');
+      console.debug(
+        `[DEBUG] getChangedFilesBySha: changedFiles:`,
+        changedFiles
+      );
+      resolve(changedFiles);
+    });
+  });
 }
+
+/**
+ * Extracts the changed database tables from the given git log.
+ * @param {string[]} filePaths - An array of changed file paths
+ *                               Example of changed record files: ['iam/users/2.json', 'iam/roles/developer.json']
+ *                               Example of changed table files: ['iam/users.data.json', 'iam/roles.data.json']
+ * @returns {string[]} - An array of unique database table paths, e.g. ['iam/users', 'iam/roles']
+ */
+export function getChangedDbTables(filePaths) {
+  // Extract the directory paths (excluding the file names)
+  const tablePaths = filePaths.map((filePath) => {
+    // get file name(e.g. 'iam/users/2.json' -> '2.json') to determine it's a table file or a record file
+    const fileName = filePath.split('/').pop();
+    if (fileName.endsWith(TABLE_DATA_FILE_SUFFIX)) {
+      // in current repo, for testing, filePath='cli/__test_dbs_dir__/iam/users.data.json'
+      // in real-world, filePath='iam/users.data.json'
+      const parts = filePath.split('/');
+      return parts
+        .slice(parts.length - 2, parts.length)
+        .join('/')
+        .replace(TABLE_DATA_FILE_SUFFIX, '');
+    }
+
+    // in current repo, for testing, filePath='cli/__test_dbs_dir__/iam/users/1.json'
+    // in real-world, filePath='iam/users/2.json'
+    const parts = filePath.split('/');
+    return parts.slice(parts.length - 3, parts.length - 1).join('/');
+  });
+
+  // Return unique table paths, e.g. ['iam/users', 'iam/roles']
+  const uniqueTablePaths = [...new Set(tablePaths)];
+  console.debug(
+    `[DEBUG] getChangedDbTables: uniqueTablePaths:`,
+    uniqueTablePaths
+  );
+  return uniqueTablePaths;
+}
+
+/**
+ * Process updated tables to split or merge
+ * @param {string} dir e.g. "db_files_dir"
+ * @param {string} sha SHA of the commit, e.g. "2eab0c1df07639dd0d82a342f8f3a1e2a112a6e7"
+ *                     e.g. a table (e.g. iam/users.data.json) changed sha
+ *                     e.g. a record (e.g. iam/users/2.json) changed sha
+ * @param {Function} processFunction e.g. splitTableFileToRecordFilesAsync, mergeRecordFilesToTableFileAsync
+ */
+export const processUpdatedTables = async (dir, sha, processFunction) => {
+  const dbs = await getDbs(dir);
+  console.debug('dbs:', dbs);
+
+  const changedFiles = await getChangedFilesBySha(sha);
+  const changedTables = getChangedDbTables(changedFiles);
+
+  // multiple tables can process in parallel, no need to wait for the previous table to finish
+  changedTables.forEach((dbTable) => {
+    const [dbName, tableName] = dbTable.split('/');
+    const table = dbs
+      .find((db) => db.name === dbName)
+      .tables.find((table) => table.name === tableName);
+    if (!table) {
+      console.error('Cannot find table:', dbTable);
+      process.exitCode = ERR_NOT_FOUND_TABLE;
+      process.exit();
+    }
+
+    console.debug('start process table:', dbName, tableName);
+    processFunction(dir, dbName, table);
+  });
+};
