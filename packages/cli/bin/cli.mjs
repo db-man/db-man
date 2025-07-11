@@ -59,7 +59,7 @@ const opt = process.argv[2];
     })();
   } else if (opt === 'mergeUpdatedTables') {
     (async () => {
-      // sha is from GitHub Actions pipeline env var $GITHUB_SHA
+      // sha is from GitHub Actions pipeline env var $GITHUB_SHA, e.g. "8a44b1f55509cd033fd9ac000c218c623f21f6d4".
       const sha = process.argv[3];
       await mergeUpdatedTables(dir, sha);
     })();
