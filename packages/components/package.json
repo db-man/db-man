@@ -1,0 +1,88 @@
+{
+  "name": "@db-man/components",
+  "version": "0.1.164",
+  "description": "",
+  "main": "lib/lib.js",
+  "types": "lib/lib.d.ts",
+  "private": false,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/db-man/components.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/db-man/components/issues"
+  },
+  "homepage": "https://github.com/db-man/components#readme",
+  "dependencies": {
+    "@ant-design/icons": "^5.5.1",
+    "@db-man/github": "^0.1.65",
+    "@uiw/react-json-view": "^2.0.0-alpha.27",
+    "eslint-plugin-cypress": "^2.15.1",
+    "handlebars": "^4.7.8",
+    "lodash.debounce": "^4.0.8",
+    "prismjs": "^1.29.0",
+    "prop-types": "^15.8.1",
+    "react-router": "^6.26.2",
+    "react-router-dom": "^6.26.2",
+    "react-simple-code-editor": "^0.14.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.21.0",
+    "@babel/core": "^7.21.3",
+    "@babel/preset-env": "^7.20.2",
+    "@babel/preset-react": "^7.18.6",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^15.0.0",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^27.5.2",
+    "@types/node": "^16.18.38",
+    "@types/react": "^18.2.14",
+    "@types/react-dom": "^18.2.6",
+    "antd": "^5.21.1",
+    "cypress": "^13.0.0",
+    "eslint-config-react-app": "^7.0.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "5.0.1",
+    "typescript": "^4.9.5",
+    "web-vitals": "^2.1.4"
+  },
+  "peerDependencies": {
+    "antd": ">=5.0.0",
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
+  },
+  "scripts": {
+    "start-cra": "react-scripts start",
+    "build-cra": "react-scripts build",
+    "test-cra": "react-scripts test",
+    "eject-cra": "react-scripts eject",
+    "dev": "PUBLIC_URL=/ npm run start-cra",
+    "test": "CI=true npm run test-cra",
+    "tdd": "npm run test-cra",
+    "build": "./build.sh",
+    "release": "./release.sh"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest",
+      "plugin:cypress/recommended"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "gitHead": "4943ccff075633a097c80072d4dbf0b9a4f753a2"
+}

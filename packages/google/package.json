@@ -1,0 +1,46 @@
+{
+  "name": "@db-man/google",
+  "version": "0.1.12",
+  "description": "@db-man/google",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "getAllInAlbum": "dist/cli_getAllInAlbum.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/db-man/google.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/db-man/google/issues"
+  },
+  "homepage": "https://github.com/db-man/google#readme",
+  "dependencies": {
+    "axios": "^1.6.8",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.17.6",
+    "@babel/core": "^7.21.0",
+    "@babel/preset-env": "^7.20.2",
+    "@babel/preset-typescript": "^7.22.5",
+    "@types/jest": "^29.5.2",
+    "@types/node": "^20.12.2",
+    "@typescript-eslint/eslint-plugin": "^5.40.0",
+    "@typescript-eslint/parser": "^5.40.0",
+    "babel-jest": "^29.4.3",
+    "eslint": "^8.44.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-airbnb-typescript": "^17.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "jest": "^29.6.0",
+    "ts-jest": "^29.1.1"
+  },
+  "scripts": {
+    "build": "rm -rf dist && babel src --out-dir dist --extensions '.ts,.tsx,.js' --copy-files --source-maps && tsc && ./add_hashbang.sh",
+    "test": "jest --detectOpenHandles",
+    "release": "npm test && npm version patch && git push && git push --tags && npm run build && npm publish --access=public"
+  }
+}

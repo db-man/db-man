@@ -1,0 +1,55 @@
+# .github/workflows/validate-reusable-workflow.yml
+name: Validate Reusable Workflow
+
+on:
+  workflow_call:
+
+jobs:
+  # How to do validation:
+  # * Merge record data file to whole table data file, then check git status, should be clean
+  # * Split table files into multiple record files, then check git status, should be clean
+  validate-dbs-tables-records:
+    name: Validate dbs tables records
+    runs-on: ubuntu-latest
+
+    # concurrency:
+    #   group: merge
+    #   cancel-in-progress: true
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16.x
+
+      # Merge record data file to whole table data file
+      - name: Merge records to tables
+        run: npx @db-man/cli merge
+
+      # Check git status, should be clean
+      - name: Check git status
+        run: |
+          git diff
+          git status
+          # if not clean, exit with error
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "Git status is not clean after merge"
+            exit 1
+          fi
+
+      # Split table files into multiple record files
+      - name: Split tables to records
+        run: npx @db-man/cli split
+
+      - name: Check git status
+        run: |
+          git diff
+          git status
+          # if not clean, exit with error
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "Git status is not clean after split"
+            exit 1
+          fi

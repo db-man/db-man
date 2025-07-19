@@ -1,0 +1,29 @@
+{
+  "name": "@db-man/cli",
+  "version": "0.1.36",
+  "description": "CLI for db-man",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/db-man/cli.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/db-man/cli/issues"
+  },
+  "homepage": "https://github.com/db-man/cli#readme",
+  "bin": "./bin/cli.mjs",
+  "dependencies": {
+    "@db-man/github": "^0.1.65"
+  },
+  "devDependencies": {
+    "babel-jest": "^29.4.3",
+    "jest": "^29.6.0"
+  },
+  "scripts": {
+    "test": "jest --detectOpenHandles",
+    "tdd": "jest --detectOpenHandles --watch",
+    "build": "echo 'Build script not implemented'"
+  },
+  "gitHead": "4943ccff075633a097c80072d4dbf0b9a4f753a2"
+}

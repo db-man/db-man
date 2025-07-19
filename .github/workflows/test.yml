@@ -1,0 +1,41 @@
+name: Run Unit Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: '**/node_modules'
+          key: node_modules-${{hashFiles('package-lock.json')}}
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Build this package first, because it's a dependency of @db-man/components
+      - name: Build @db-man/github
+        run: npm run build -w packages/github
+
+      - name: Run tests
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          TZ: Asia/Shanghai
+        run: |
+          npm test

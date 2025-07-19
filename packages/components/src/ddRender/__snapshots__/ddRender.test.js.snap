@@ -1,0 +1,56 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`getColumnRender given ImageLink should match snapshot 1`] = `
+<ImageLink
+  imgSrc="https://foo.com/a.jpg"
+  url="https://foo.com/a.jpg"
+/>
+`;
+
+exports[`getColumnRender given ImageLink should match snapshot when photos is undefined 1`] = `
+<ImageLink
+  imgSrc="record.photos.[0]"
+  url=""
+/>
+`;
+
+exports[`getColumnRender given Link should match snapshot 1`] = `
+<Link
+  href="https://foo.com"
+  text="https://foo.com"
+/>
+`;
+
+exports[`getColumnRender should return proper value 1`] = `
+<ImageLink>
+  https://a.com/b.jpg
+</ImageLink>
+`;
+
+exports[`getColumnRender should return proper value2 1`] = `
+<ImageLink
+  imgSrc="https://a.com/large/b.jpg"
+  url="https://a.com/large/b.jpg"
+/>
+`;
+
+exports[`getRender TextAreaFormFieldValue should match snapshot 1`] = `
+<TextAreaFormFieldValue
+  label="Note"
+  rows={2}
+  value="This is TODO"
+/>
+`;
+
+exports[`getRender given simple arg should render properly 1`] = `
+<Link>
+  https://foo.com
+</Link>
+`;
+
+exports[`getRender given tpl should render properly 1`] = `
+<Link
+  href="https://foo.com"
+  text="https://foo.com"
+/>
+`;

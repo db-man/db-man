@@ -1,0 +1,33 @@
+/* dbm = db-man */
+.dbm-page {
+  /* margin will cause scrollbar on page */
+  /* margin: 10px; */
+  padding: 10px;
+}
+
+/* images column of table */
+/*.dbm-page > * > .ant-table-cell > * > img {*/
+.ant-table-cell img {
+  width: 150px;
+}
+
+.dbm-form-field,
+.dbm-action-buttons {
+  margin-top: 10px;
+}
+
+.dbm-dd-image-link a span {
+  /* color: white;  */
+  width: 150px;
+  display: block;
+  position: absolute;
+  font-size: 1px;
+}
+
+.dbm-dd-image-link a img {
+  width: 150px;
+}
+
+.dbm-table-filter {
+  margin-bottom: 10px;
+}
