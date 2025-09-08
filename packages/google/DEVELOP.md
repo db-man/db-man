@@ -1,5 +1,13 @@
 # DEVELOP
 
+## Local Development
+
+Run tests
+
+```sh
+npm run tdd
+```
+
 ## cli_getAllInAlbum
 
 ### How to develop

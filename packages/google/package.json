@@ -41,6 +41,7 @@
   "scripts": {
     "build": "rm -rf dist && babel src --out-dir dist --extensions '.ts,.tsx,.js' --copy-files --source-maps && tsc && ./add_hashbang.sh",
     "test": "jest --detectOpenHandles",
+    "tdd": "jest --detectOpenHandles --watch",
     "release": "npm test && npm version patch && git push && git push --tags && npm run build && npm publish --access=public"
   }
 }
