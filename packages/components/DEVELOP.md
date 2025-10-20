@@ -19,12 +19,12 @@ npm run test
 
 ### Run cypress test
 
-Create GitHub personal access token for `CYPRESS_XX_DBM_TOKEN`.
-In the Cypress source code, will use `Cypress.env('XX_DBM_TOKEN')` to get this token.
+Create GitHub personal access token for `CYPRESS_DBM_GH_TOKEN`.
+In the Cypress source code, will use `Cypress.env('DBM_GH_TOKEN')` to get this token.
 
 ```sh
-CYPRESS_XX_DBM_TOKEN=ghp_123 npx cypress run # run all tests
-CYPRESS_XX_DBM_TOKEN=ghp_123 npx cypress open # open cypress GUI for debugging
+CYPRESS_DBM_GH_TOKEN=ghp_123 npx cypress run # run all tests
+CYPRESS_DBM_GH_TOKEN=ghp_123 npx cypress open # open cypress GUI for debugging
 ```
 
 ## Build
