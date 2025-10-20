@@ -62,6 +62,17 @@ npm run release
 npm outdated
 ```
 
+## CI
+
+secrets for CI:
+
+- DBM_GH_TOKEN
+
+env vars for CI:
+
+- DBM_GH_TOKEN
+- CYPRESS_DBM_GH_TOKEN
+
 ## How to debug @db-man/github in @db-man/components
 
 After @db-man/github changed source code, call script to rebuild `@db-man/github` source code, then restart dev server to make sure `@db-man/components` to load the new code.

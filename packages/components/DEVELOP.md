@@ -19,7 +19,7 @@ npm run test
 
 ### Run cypress test
 
-Create GitHub personal access token for `CYPRESS_DBM_GH_TOKEN`.
+Create GitHub personal access token and set to env var `CYPRESS_DBM_GH_TOKEN`.
 In the Cypress source code, will use `Cypress.env('DBM_GH_TOKEN')` to get this token.
 
 ```sh

@@ -1,4 +1,3 @@
-// export CYPRESS_DBM_GH_TOKEN=123; npx cypress open
 // CYPRESS_DBM_GH_TOKEN=123 npx cypress open
 export const ghToken = Cypress.env('DBM_GH_TOKEN');
 

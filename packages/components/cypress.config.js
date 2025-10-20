@@ -10,7 +10,7 @@ module.exports = {
       // These env vars are mandatory for cypress to work in CI.
       // If not set, just throw error, no reason to run test cases.
       if (!config.env || !config.env.DBM_GH_TOKEN) {
-        // In CI, set CYPRESS_DBM_GH_TOKEN to populate Cypress.env('DBM_GH_TOKEN')
+        // In CI, set CYPRESS_DBM_GH_TOKEN env vars to populate Cypress.env('DBM_GH_TOKEN')
         // Check `packages/components/cypress/support/constants.js` for more details.
         throw new Error(
           'Missing required Cypress env: DBM_GH_TOKEN. Set CYPRESS_DBM_GH_TOKEN in CI.'
