@@ -1,4 +1,4 @@
-# components
+# @db-man/components
 
 [![CI status][github-action-badge]][github-action-url] [![codecov][codecov-badge]][codecov-url]
 
