@@ -2,7 +2,7 @@ import Github from './Github';
 
 describe('Github', () => {
   const g = new Github({
-    personalAccessToken: process.env.GH_TOKEN ?? '',
+    personalAccessToken: process.env.DBM_GH_TOKEN ?? '',
     owner: 'db-man',
     repoName: 'db',
   });

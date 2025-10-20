@@ -35,7 +35,7 @@ jobs:
 
       - name: Run tests
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          DBM_GH_TOKEN: ${{ secrets.DBM_GH_TOKEN }}
           TZ: Asia/Shanghai
         run: |
           npm test

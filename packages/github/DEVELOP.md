@@ -15,7 +15,7 @@ npm test -- --watch
 Test with real world token
 
 ```sh
-GH_TOKEN=ghp_123 npm run tt
+DBM_GH_TOKEN=ghp_123 npm run tt
 ```
 
 ## Build
@@ -36,5 +36,5 @@ npm run build
 Start to publish (Change `ghp_123` to your GitHub personal access token)
 
 ```sh
-GH_TOKEN=ghp_123 npm run release
+DBM_GH_TOKEN=ghp_123 npm run release
 ```

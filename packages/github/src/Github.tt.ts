@@ -3,13 +3,13 @@ import { formatDate } from './utils';
 
 /**
  * Use Jest to test only this file with realworld token
- * Usage: GH_TOKEN=123 npm run tt
+ * Usage: DBM_GH_TOKEN=123 npm run tt
  */
 
 describe('Github in real world', () => {
   it('should throw an error when updating 2 files at the same time', async () => {
     const github = new Github({
-      personalAccessToken: process.env.GH_TOKEN ?? '',
+      personalAccessToken: process.env.DBM_GH_TOKEN ?? '',
       owner: 'db-man',
       repoName: 'split-table-db',
     });

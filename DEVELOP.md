@@ -45,7 +45,7 @@ Only publish one package.
 
 ```sh
 cd packages/github
-GH_TOKEN=ghp_123 npm run release
+DBM_GH_TOKEN=ghp_123 npm run release
 ```
 
 ## Release all packages

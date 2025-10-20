@@ -17,7 +17,7 @@ const mockDbsSchema = {
 describe('GithubDb', () => {
   it('should return proper value', async () => {
     const gd = new GithubDb({
-      personalAccessToken: process.env.GH_TOKEN ?? '',
+      personalAccessToken: process.env.DBM_GH_TOKEN ?? '',
       repoPath: 'dbs',
       owner: 'db-man',
       repoName: 'db',

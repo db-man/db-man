@@ -36,4 +36,4 @@ jobs:
           # CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           # Creating a token https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CYPRESS_XX_DBM_TOKEN: ${{ secrets.GH_TOKEN }}
+          CYPRESS_XX_DBM_TOKEN: ${{ secrets.DBM_GH_TOKEN }}
