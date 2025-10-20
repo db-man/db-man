@@ -2,8 +2,8 @@ import { useContext, useEffect, useState } from 'react';
 
 import { types } from '@db-man/github';
 import { message, Typography } from 'antd';
-import SuccessMessage from 'components/SuccessMessage';
-import CommonPageContext from 'contexts/commonPage';
+import SuccessMessage from '../../components/SuccessMessage';
+import CommonPageContext from '../../contexts/commonPage';
 
 import TableManagementEditableTable from './TableManagementEditableTable';
 

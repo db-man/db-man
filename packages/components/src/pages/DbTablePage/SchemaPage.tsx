@@ -5,10 +5,10 @@ import { Table, Tabs, Tooltip } from 'antd';
 import type { TableColumnsType, TabsProps } from 'antd';
 import { useLocation, Link } from 'react-router-dom';
 
-import ComponentDemoModal from 'components/ComponentDemoModal';
-import DistinctColumn from 'components/DistinctColumn';
-import ExternalLink from 'components/ExternalLink';
-import ReactSimpleCodeEditor from 'components/ReactSimpleCodeEditor';
+import ComponentDemoModal from '../../components/ComponentDemoModal';
+import DistinctColumn from '../../components/DistinctColumn';
+import ExternalLink from '../../components/ExternalLink';
+import ReactSimpleCodeEditor from '../../components/ReactSimpleCodeEditor';
 
 import { GetPageUiType, UiType } from '../../types/UiType';
 import DbColumn from '../../types/DbColumn';

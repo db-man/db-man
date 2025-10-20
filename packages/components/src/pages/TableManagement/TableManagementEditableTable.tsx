@@ -7,9 +7,9 @@ import EditableTable, {
   isEditingType,
   editableTableColumnType,
   TableRowType,
-} from 'components/EditableTable';
-import { obj2str } from 'components/Form/helpers';
-import JsonEditor from 'components/JsonEditor';
+} from '../../components/EditableTable';
+import { obj2str } from '../../components/Form/helpers';
+import JsonEditor from '../../components/JsonEditor';
 
 // Type 'DbColumn[]' is not assignable to type 'TableRowType[]'.
 const convertDbColumnToTableRowType = (

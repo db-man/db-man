@@ -3,12 +3,12 @@ import { useContext, useState } from 'react';
 import { Tabs, Button, Alert, message, Typography } from 'antd';
 import { types } from '@db-man/github';
 
-import CommonPageContext from 'contexts/commonPage';
-import JsonEditor, { FormValueType } from 'components/JsonEditor';
-import { obj2str } from 'components/Form/helpers';
-import StringFormFieldValue from 'components/StringFormFieldValue';
-import SuccessMessage from 'components/SuccessMessage';
-import { reloadDbsSchemaAsync } from 'pages/Settings/helpers';
+import CommonPageContext from '../../contexts/commonPage';
+import JsonEditor, { FormValueType } from '../../components/JsonEditor';
+import { obj2str } from '../../components/Form/helpers';
+import StringFormFieldValue from '../../components/StringFormFieldValue';
+import SuccessMessage from '../../components/SuccessMessage';
+import { reloadDbsSchemaAsync } from '../../pages/Settings/helpers';
 
 import * as constants from '../../constants';
 

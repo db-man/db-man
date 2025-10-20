@@ -5,7 +5,7 @@ import EditableTable, {
   isEditingType,
   editableTableColumnType,
   TableRowType,
-} from 'components/EditableTable';
+} from '../../components/EditableTable';
 
 import * as constants from '../../constants';
 import { saveConnectionToLocalStorage, reloadDbsSchemaAsync } from './helpers';

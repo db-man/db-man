@@ -1,8 +1,8 @@
 import React, { useRef } from 'react';
 import { GithubDb } from '@db-man/github';
 
-import CommonPageContext from 'contexts/commonPage';
-import NotFound from 'components/NotFound';
+import CommonPageContext from '../contexts/commonPage';
+import NotFound from '../components/NotFound';
 
 import * as constants from '../constants';
 

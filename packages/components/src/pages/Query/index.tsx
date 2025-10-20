@@ -7,7 +7,7 @@ import { useAppContext } from '../../contexts/AppContext';
 import CommonPageContext from '../../contexts/commonPage';
 import ReactSimpleCodeEditor from '../../components/ReactSimpleCodeEditor';
 import { LS_QUERY_PAGE_SELECTED_TABLE_NAMES } from '../../constants';
-import DrawerButton from 'components/DrawerButton';
+import DrawerButton from '../../components/DrawerButton';
 
 // Use `Typography` so can apply dark theme to text
 const { Text } = Typography;
