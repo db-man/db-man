@@ -1,6 +1,6 @@
 {
   "name": "@db-man/components",
-  "version": "0.1.166",
+  "version": "0.1.167",
   "description": "",
   "main": "lib/lib.js",
   "types": "lib/lib.d.ts",
@@ -17,7 +17,7 @@
   "homepage": "https://github.com/db-man/components#readme",
   "dependencies": {
     "@ant-design/icons": "^5.5.1",
-    "@db-man/github": "^0.1.66",
+    "@db-man/github": "^0.1.67",
     "@uiw/react-json-view": "^2.0.0-alpha.27",
     "eslint-plugin-cypress": "^2.15.1",
     "handlebars": "^4.7.8",
