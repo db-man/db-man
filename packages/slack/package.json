@@ -1,0 +1,44 @@
+{
+  "name": "@db-man/slack",
+  "version": "0.1.0",
+  "description": "@db-man/slack",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/db-man/db-man.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/db-man/db-man/issues"
+  },
+  "homepage": "https://github.com/db-man/db-man#readme",
+  "dependencies": {
+    "axios": "^1.6.8"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.25.6",
+    "@babel/core": "^7.25.2",
+    "@babel/preset-env": "^7.25.4",
+    "@babel/preset-typescript": "^7.24.7",
+    "@types/jest": "^29.5.13",
+    "@typescript-eslint/eslint-plugin": "^8.7.0",
+    "@typescript-eslint/parser": "^8.7.0",
+    "babel-jest": "^29.7.0",
+    "eslint": "^9.11.1",
+    "eslint-plugin-jest": "^28.8.3",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.5",
+    "tsx": "^4.20.6"
+  },
+  "scripts": {
+    "build:commonjs": "./build.sh commonjs",
+    "build:es6": "./build.sh es6",
+    "build": "npm run build:commonjs && npm run build:es6",
+    "test": "jest --detectOpenHandles",
+    "tt": "jest --testRegex='.*\\.tt\\.ts$' --testPathPattern=slack_bot.tt.ts",
+    "release": "npm test && npm version patch && git push && git push --tags && npm run build && npm publish --access=public",
+    "debug": "tsx src/slack_bot.ts"
+  }
+}
