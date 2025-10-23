@@ -41,5 +41,5 @@
     "release": "npm test && npm version patch && git push && git push --tags && npm run build && npm publish --access=public",
     "debug": "tsx src/slack_bot.ts"
   },
-  "gitHead": "29d7316aacb783a747de9b4cccd365cb56fd3481"
+  "gitHead": "2dd26b526d070f336ebbfeb8f2063cb936f64e3e"
 }
