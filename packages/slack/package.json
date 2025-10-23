@@ -1,6 +1,6 @@
 {
   "name": "@db-man/slack",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "@db-man/slack",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
