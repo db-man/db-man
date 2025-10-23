@@ -54,12 +54,41 @@ export const sendSlackMsg = (channel: string, msg: string) => {
     });
 };
 
+export const authTest = () => {
+  const token = process.env.DBM_SLACK_BOT_OAUTH_TOKEN;
+  if (!token) {
+    console.warn(
+      'Slack notifications disabled (DBM_SLACK_BOT_OAUTH_TOKEN not set)'
+    );
+    return;
+  }
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    'Content-Type': 'application/json',
+  };
+
+  axios
+    .post('https://slack.com/api/auth.test', { token }, { headers })
+    .then((response) => {
+      console.log('Slack authentication test successful:', response.data);
+    })
+    .catch((error) => {
+      console.error('Error testing Slack authentication:', error);
+    });
+};
+
 /**
  * Debug:
  * ```sh
+ * DBM_SLACK_BOT_OAUTH_TOKEN=xoxb-###-###-*** npx tsx src/slack_bot.ts --auth-test
  * DBM_SLACK_BOT_OAUTH_TOKEN=xoxb-###-###-*** npx tsx src/slack_bot.ts
  * ```
  */
 if (require.main === module) {
-  sendSlackMsg('#hello-world', 'Hello, World!');
+  const options = process.argv.slice(2);
+  if (options.includes('--auth-test')) {
+    authTest();
+  } else {
+    sendSlackMsg('#general', 'Hello, World!');
+  }
 }
