@@ -51,7 +51,8 @@ export const sendSlackMsg = (channel: string, msg: string) => {
       return response;
     })
     .catch((error) => {
-      console.error('Error sending Slack message:', error);
+      console.error('[db-man/slack] Error sending Slack message:', error);
+      throw error;
     });
 };
 
