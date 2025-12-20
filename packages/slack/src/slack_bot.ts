@@ -15,7 +15,7 @@
  * ```
  */
 
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 
 /**
  * Send message to Slack channel
@@ -25,13 +25,22 @@ import axios from 'axios';
  * Note: To disable Slack notifications, simply don't set DBM_SLACK_BOT_OAUTH_TOKEN
  *       To enable, set: export DBM_SLACK_BOT_OAUTH_TOKEN=xoxb-your-token
  */
-export const sendSlackMsg = (channel: string, msg: string) => {
+export const sendSlackMsg = (
+  channel: string,
+  msg: string
+): Promise<{
+  slackResponse: AxiosResponse<any, any> | null;
+  error: string | null;
+}> => {
   const token = process.env.DBM_SLACK_BOT_OAUTH_TOKEN;
   if (!token) {
     console.warn(
       'Slack notifications disabled (DBM_SLACK_BOT_OAUTH_TOKEN not set)'
     );
-    return;
+    return Promise.resolve({
+      slackResponse: null,
+      error: 'Slack notifications disabled (DBM_SLACK_BOT_OAUTH_TOKEN not set)',
+    });
   }
 
   const data = {
@@ -48,12 +57,15 @@ export const sendSlackMsg = (channel: string, msg: string) => {
     .post('https://slack.com/api/chat.postMessage', data, { headers })
     .then((response) => {
       // console.log('Slack message sent successfully:', response.data);
-      return response;
+      return {
+        slackResponse: response,
+        error: null,
+      };
     })
-    .catch((error) => {
-      console.error('[db-man/slack] Error sending Slack message:', error);
-      throw error;
-    });
+    .catch((error) => ({
+      slackResponse: null,
+      error: error.message,
+    }));
 };
 
 export const authTest = () => {
