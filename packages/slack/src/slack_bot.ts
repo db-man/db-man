@@ -47,7 +47,8 @@ export const sendSlackMsg = (channel: string, msg: string) => {
   axios
     .post('https://slack.com/api/chat.postMessage', data, { headers })
     .then((response) => {
-      console.log('Slack message sent successfully:', response.data);
+      // console.log('Slack message sent successfully:', response.data);
+      return response;
     })
     .catch((error) => {
       console.error('Error sending Slack message:', error);
