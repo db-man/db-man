@@ -109,6 +109,10 @@ TODO add description here
 
 TODO add description here
 
+### `type:createUpdatePage`
+
+See `src/types/DbColumn.ts::DbColumnExtendsUiType::type:createUpdatePage`
+
 ### `type:listPage`
 
 See `src/types/DbColumn.ts::DbColumnExtendsUiType`
