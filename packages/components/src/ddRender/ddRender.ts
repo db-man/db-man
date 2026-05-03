@@ -53,7 +53,7 @@ export const getRender = (args: RenderArgs, tplExtra?: any) => {
 type ColumnRenderType = (
   renderKey: RenderKeyType,
   column: DbColumn,
-  tplExtra?: any
+  tplExtra?: any,
 ) => (val: any, record: RowType, index?: number) => any;
 
 /**
@@ -65,7 +65,7 @@ type ColumnRenderType = (
 export const getColumnRender: ColumnRenderType = (
   renderKey,
   column,
-  tplExtra
+  tplExtra,
 ) => {
   // should only used for "type:listPage" or "type:getPage"
   if (
