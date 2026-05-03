@@ -32,9 +32,9 @@ const DbTablePage = (props: {
       owner: localStorage.getItem(constants.LS_KEY_GITHUB_OWNER) || '',
       repoName: localStorage.getItem(constants.LS_KEY_GITHUB_REPO_NAME) || '',
       dbsSchema: JSON.parse(
-        localStorage.getItem(constants.LS_KEY_DBS_SCHEMA) || '{}'
+        localStorage.getItem(constants.LS_KEY_DBS_SCHEMA) || '{}',
       ),
-    })
+    }),
   );
 
   const { dbName, tableName, action } = props;
@@ -70,10 +70,10 @@ const DbTablePage = (props: {
   // compare the offline data with online data, if there is any diff, we show alert
   const getDbSchema = async () => {
     const offlineDbSchema = JSON.parse(
-      localStorage.getItem(constants.LS_KEY_DBS_SCHEMA) || '{}'
+      localStorage.getItem(constants.LS_KEY_DBS_SCHEMA) || '{}',
     )[props.dbName || ''];
     const onlineDbSchema = await githubDbRef.current.getDbTablesSchemaAsync(
-      props.dbName
+      props.dbName,
     );
 
     if (offlineDbSchema && onlineDbSchema) {
@@ -87,8 +87,8 @@ const DbTablePage = (props: {
         messageApi.warning(
           <span>
             Offline and online schema are different!{' '}
-            <a href='/settings'>Go to Settings</a>
-          </span>
+            <a href="/settings">Go to Settings</a>
+          </span>,
         );
       }
     }
@@ -106,7 +106,7 @@ const DbTablePage = (props: {
   }
 
   if (errMsgs.length > 0) {
-    return <div className='dbm-page-v2 err-msg'>{errMsgs.join(' ,')}</div>;
+    return <div className="dbm-page-v2 err-msg">{errMsgs.join(' ,')}</div>;
   }
 
   const PageComponent = actionToComponentMapping[action || ''];
@@ -122,7 +122,7 @@ const DbTablePage = (props: {
 
   return (
     <Provider value={pageInfo()}>
-      <div className='dbm-page-v2'>
+      <div className="dbm-page-v2">
         {contextHolder}
         {/* Pass tableName down, so child component to rerender according to this props */}
         <PageComponent dbName={dbName || ''} tableName={tableName || ''} />
