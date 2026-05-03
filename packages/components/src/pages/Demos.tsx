@@ -1,25 +1,30 @@
 import React from 'react';
 import { Outlet, useParams } from 'react-router';
-import { Collapse } from 'antd';
+import { Collapse, CollapseProps } from 'antd';
 
 import PhotoListExample from './demos/PhotoListExample';
 import ImageLinkExample from './demos/ImageLinkExample';
 
-const { Panel } = Collapse;
-
 const Demos = () => {
   const params = useParams();
+
+  const items: CollapseProps['items'] = [
+    {
+      key: 'ImageLink',
+      label: 'ImageLink',
+      children: <ImageLinkExample />,
+    },
+    {
+      key: 'PhotoList',
+      label: 'PhotoList',
+      children: <PhotoListExample />,
+    },
+  ];
+
   return (
     <>
       {!params.component && (
-        <Collapse defaultActiveKey={['PhotoList']}>
-          <Panel header='ImageLink' key='ImageLink'>
-            <ImageLinkExample />
-          </Panel>
-          <Panel header='PhotoList' key='PhotoList'>
-            <PhotoListExample />
-          </Panel>
-        </Collapse>
+        <Collapse items={items} defaultActiveKey={['PhotoList']} />
       )}
       <Outlet />
     </>
