@@ -50,12 +50,18 @@ const PhotoListExample = () => {
 
   return (
     <div>
-      <h1>Render from ddRender (failed):</h1>
+      <h1>
+        Render from ddRender (This component will fail to render because of
+        incorrect JSON):
+      </h1>
       {getColumnRender(TYPE_GET_PAGE, {
         id: 'photos',
         name: 'Photos',
         type: 'STRING_ARRAY',
-        [TYPE_GET_PAGE]: ['PhotoList', '["PhotoList","]'],
+        [TYPE_GET_PAGE]: [
+          'PhotoList',
+          '["PhotoList","this_is_an_expected_incorrect_json_...]',
+        ],
       })(value, record)}
 
       <h1>Render from ddRender:</h1>
