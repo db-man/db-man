@@ -69,7 +69,7 @@ type DbColumnExtendsUiType = {
    * If true, on the list page, the field/column will be shown in the filter section above the table.
    */
   'ui:listPage:isFilter'?: boolean;
-  'ui:listPage:isImageViewKey'?: string;
+  'ui:listPage:isImageViewKey'?: boolean;
   /**
    * On the List Page, Random View, choose the UI component to use for one of the list item.
    *
