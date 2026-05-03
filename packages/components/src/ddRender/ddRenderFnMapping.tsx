@@ -62,7 +62,7 @@ Handlebars.registerHelper(
     // @ts-ignore
     const string = options.fn(this);
     return string.replace(find, replace);
-  }
+  },
 );
 
 /**
@@ -79,10 +79,10 @@ Handlebars.registerHelper('getTableRecordByKey', (options: Options) => {
   if (!options.hash.rows) return null;
   const primaryKey = getTablePrimaryKey(
     options.hash.tables,
-    options.hash.tableName
+    options.hash.tableName,
   );
   return options.hash.rows.find(
-    (row: RowType) => row[primaryKey] === options.hash.primaryKeyVal
+    (row: RowType) => row[primaryKey] === options.hash.primaryKeyVal,
   );
 });
 
@@ -98,7 +98,7 @@ const genRenderFunc = (Component: any) =>
     record: RowType,
     index?: number,
     args?: RenderArgs,
-    tplExtra?: any
+    tplExtra?: any,
   ) {
     if (!record || typeof record !== 'object') {
       console.error('[genRenderFunc] record should be an object!', record); // eslint-disable-line no-console
@@ -141,7 +141,7 @@ type DdRenderFnMappingType = Record<
     record: RowType,
     index?: number,
     args?: RenderArgs,
-    tplExtra?: any
+    tplExtra?: any,
   ) => JSX.Element
 >;
 
