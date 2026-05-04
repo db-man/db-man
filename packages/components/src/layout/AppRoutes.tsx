@@ -11,7 +11,6 @@ import IframePageWrapper from './IframePageWrapper';
 import Database from './DbTableLayout/Database';
 import Table from './DbTableLayout/Table';
 import Action from './DbTableLayout/Action';
-import ComponentDemo from './ComponentDemo';
 import PageLayout from './PageLayout';
 import CommonPageWrapper from './CommonPageWrapper';
 import TableManagementPage from '../pages/TableManagement';
@@ -41,9 +40,7 @@ export default function AppRoutes() {
             </CommonPageWrapper>
           }
         />
-        <Route path="demos" element={<Demos />}>
-          <Route path=":component" element={<ComponentDemo />} />
-        </Route>
+        <Route path="demos" element={<Demos />} />
         <Route
           path="_views/:dbName/:viewName"
           element={

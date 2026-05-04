@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Modal } from 'antd';
 
-import { ComponentDemoRouter } from '../layout/ComponentDemo';
+import { ComponentDemoRouter } from '../pages/Demos';
 import { GetPageUiType, RenderArgs } from '../types/UiType';
 
 const getComponentName = (renderArg: RenderArgs) => {
@@ -32,16 +32,16 @@ const ComponentDemoModal = ({ renderArg }: { renderArg: GetPageUiType }) => {
   return (
     <>
       {typeof renderArg === 'string' ? renderArg : JSON.stringify(renderArg)}{' '}
-      <Button type='primary' size='small' onClick={showModal}>
+      <Button type="primary" size="small" onClick={showModal}>
         demo
       </Button>
       <Modal
-        title='Component Demo'
+        title="Component Demo"
         open={isModalOpen}
         onOk={handleOk}
         onCancel={handleCancel}
       >
-        <ComponentDemoRouter componentName={getComponentName(renderArg)} />
+        <ComponentDemoRouter compName={getComponentName(renderArg)} />
       </Modal>
     </>
   );

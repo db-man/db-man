@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { getColumnRender } from '../../ddRender/ddRender';
-import { ImageLink } from '../../components/Links';
-import { TYPE_CREATE_UPDATE_PAGE, TYPE_GET_PAGE } from '../../constants';
+import { getColumnRender } from '../ddRender/ddRender';
+import { ImageLink } from './Links';
+import { TYPE_CREATE_UPDATE_PAGE, TYPE_GET_PAGE } from '../constants';
 
-const Demos = () => {
+const ImageLinkDemo = () => {
   const fn = getColumnRender('type:listPage', {
     id: 'photos',
     name: 'Photos',
@@ -29,11 +29,11 @@ const Demos = () => {
       })}
       Render from component:
       <ImageLink
-        imgSrc='https://docs.mapbox.com/mapbox-gl-js/assets/cat.png'
-        url='https://docs.mapbox.com/mapbox-gl-js/assets/cat.png'
+        imgSrc="https://docs.mapbox.com/mapbox-gl-js/assets/cat.png"
+        url="https://docs.mapbox.com/mapbox-gl-js/assets/cat.png"
       />
     </>
   );
 };
 
-export default Demos;
+export default ImageLinkDemo;
