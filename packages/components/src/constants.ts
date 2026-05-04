@@ -25,6 +25,7 @@ export const LS_QUERY_PAGE_SELECTED_TABLE_NAMES =
 
 // Table column definitions
 export const COL_UI_PRESETS = 'ui:createUpdatePage:presets';
+export const COL_UI_SELECT_OPTIONS = 'ui:createUpdatePage:selectOptions';
 export const COL_UI_LISTPAGE_RANDOMVIEW = 'ui:listPage:randomView';
 
 // UI type

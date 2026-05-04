@@ -16,6 +16,7 @@ import PageContext from '../../contexts/page';
 import {
   COL_UI_LISTPAGE_RANDOMVIEW,
   COL_UI_PRESETS,
+  COL_UI_SELECT_OPTIONS,
   DB_CFG_FILENAME,
   LS_KEY_GITHUB_OWNER,
   LS_KEY_GITHUB_REPO_NAME,
@@ -29,7 +30,7 @@ import { checkValidTableColumns } from './helpers';
 
 const genColumn = (
   dbName: string,
-  dbTableColumns: DbColumn[]
+  dbTableColumns: DbColumn[],
 ): TableColumnsType<DbColumn> => [
   {
     key: 'id',
@@ -41,7 +42,7 @@ const genColumn = (
       // if this column is string_array, then render a link "?distinct=tags"
       if (
         dbTableColumns.find(
-          (col) => col.id === cell && col.type === STRING_ARRAY
+          (col) => col.id === cell && col.type === STRING_ARRAY,
         )
       ) {
         return (
@@ -139,6 +140,15 @@ const genColumn = (
     title: COL_UI_PRESETS,
   },
   {
+    key: COL_UI_SELECT_OPTIONS,
+    dataIndex: COL_UI_SELECT_OPTIONS,
+    title: COL_UI_SELECT_OPTIONS,
+    render: (cell: string[]) => {
+      if (!cell) return 'None';
+      return cell.join(', ');
+    },
+  },
+  {
     key: 'ui:listPage:isFilter',
     dataIndex: 'ui:listPage:isFilter',
     title: 'ui:listPage:isFilter',
@@ -169,11 +179,11 @@ const footer = ({ dbName, tableName }: { dbName: string; tableName: string }) =>
         Table column definition:{' '}
         <ExternalLink
           href={`https://github.com/${localStorage.getItem(
-            LS_KEY_GITHUB_OWNER
+            LS_KEY_GITHUB_OWNER,
           )}/${localStorage.getItem(
-            LS_KEY_GITHUB_REPO_NAME
+            LS_KEY_GITHUB_REPO_NAME,
           )}/blob/main/${localStorage.getItem(
-            LS_KEY_GITHUB_REPO_PATH
+            LS_KEY_GITHUB_REPO_PATH,
           )}/${dbName}/${DB_CFG_FILENAME}`}
           text={DB_CFG_FILENAME}
         />{' '}

@@ -26,6 +26,7 @@ import PresetsButtons from '../PresetsButtons';
 import DbColumn from '../../types/DbColumn';
 import { useAppContext } from '../../contexts/AppContext';
 import { RowType } from '../../types/Data';
+import SelectFormField from 'components/SelectFormField';
 
 // Use `Typography` so can apply dark theme to text
 const { Text } = Typography;
@@ -73,7 +74,7 @@ const Form: React.FC<FormProps> = (props) => {
   const [jsonStr, setJsonStr] = useState(
     obj2str({
       ...props.defaultValues,
-    })
+    }),
   );
 
   useEffect(() => {
@@ -149,6 +150,18 @@ const Form: React.FC<FormProps> = (props) => {
           key={column.id}
           label={column.name}
           rows={2}
+          disabled={loading}
+          value={value}
+          onChange={handleChange(column.id)}
+        />
+      );
+    }
+    if (column[constants.TYPE_CREATE_UPDATE_PAGE] === 'Select') {
+      return (
+        <SelectFormField
+          key={column.id}
+          label={column.name}
+          options={column?.['ui:createUpdatePage:selectOptions'] || []}
           disabled={loading}
           value={value}
           onChange={handleChange(column.id)}

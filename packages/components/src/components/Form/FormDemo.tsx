@@ -26,9 +26,24 @@ const tables: DbTable[] = [
         id: 'roleCode',
         name: 'Role Code',
         type: 'STRING',
-        description: 'The role code of the user',
+        description:
+          'The role code of the user, render as Select component in Create/Update page',
         referenceTable: 'roles',
-        'ui:createUpdatePage:enum': ['maintainer', 'developer'],
+        'type:createUpdatePage': 'Select',
+        'ui:createUpdatePage:selectOptions': [
+          {
+            label: 'Maintainer',
+            value: 'maintainer',
+          },
+          {
+            label: 'Developer',
+            value: 'developer',
+          },
+          {
+            label: 'Guest',
+            value: 'guest',
+          },
+        ],
       },
       {
         id: 'maleOrFemale',

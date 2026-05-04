@@ -85,17 +85,12 @@ See `src/types/DbColumn.ts`
 
 TODO add description here
 
-### `ui:createUpdatePage:placeholder`
+### `ui:createUpdatePage`
 
-See `src/types/DbColumn.ts::ColumnPlaceholder`
-
-### `ui:createUpdatePage:enum`
-
-See `src/types/DbColumn.ts::RadioGroupUiTypeEnum`
-
-### `ui:createUpdatePage:presets`
-
-See `src/types/DbColumn.ts::Column`
+- `ui:createUpdatePage:placeholder` - See `src/types/DbColumn.ts::ColumnPlaceholder`
+- `ui:createUpdatePage:enum` - See `src/types/DbColumn.ts::RadioGroupUiTypeEnum`
+- `ui:createUpdatePage:presets` See `src/types/DbColumn.ts::DbColumnExtendsUiType`
+- `ui:createUpdatePage:selectOptions` See `src/types/DbColumn.ts::DbColumnExtendsUiType`
 
 ### `tableProps`
 

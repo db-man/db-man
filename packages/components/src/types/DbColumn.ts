@@ -1,4 +1,5 @@
 import { ColumnType as AntdColumnType } from 'antd/es/table';
+import type { SelectProps } from 'antd';
 import {
   GetPageUiType,
   ListPageUiType,
@@ -34,6 +35,7 @@ export const TABLE_COLUMN_KEYS = [
   'ui:createUpdatePage:enum',
   'ui:createUpdatePage:placeholder',
   'ui:createUpdatePage:presets',
+  'ui:createUpdatePage:selectOptions',
   'ui:listPage:isFilter', // If true, on the list page, the field/column will be shown in the filter section above the table.
   'ui:listPage:isImageViewKey',
   'ui:listPage:randomView',
@@ -65,6 +67,10 @@ type DbColumnExtendsUiType = {
    *     - To render some buttons on top of the input box, click button to quick input a new text into the input box.
    */
   'ui:createUpdatePage:presets'?: string[];
+  /**
+   * Only used when the UI component is Select, to provide options for the dropdown.
+   */
+  'ui:createUpdatePage:selectOptions'?: SelectProps['options'];
   /**
    * If true, on the list page, the field/column will be shown in the filter section above the table.
    */
