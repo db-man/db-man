@@ -4,6 +4,7 @@ import { Collapse, CollapseProps } from 'antd';
 
 import PhotoListExample from './demos/PhotoListExample';
 import ImageLinkExample from './demos/ImageLinkExample';
+import FormDemo from '../components/Form/FormDemo';
 
 const Demos = () => {
   const params = useParams();
@@ -19,12 +20,17 @@ const Demos = () => {
       label: 'PhotoList',
       children: <PhotoListExample />,
     },
+    {
+      key: 'Form',
+      label: 'Form',
+      children: <FormDemo />,
+    },
   ];
 
   return (
     <>
       {!params.component && (
-        <Collapse items={items} defaultActiveKey={['PhotoList']} />
+        <Collapse items={items} defaultActiveKey={['Form']} />
       )}
       <Outlet />
     </>

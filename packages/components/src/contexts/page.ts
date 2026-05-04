@@ -3,6 +3,7 @@ import React from 'react';
 import { types, GithubDb } from '@db-man/github';
 
 import DbColumn from '../types/DbColumn';
+import DbTable from '../types/DbTable';
 // import { GithubDbType } from './commonPage';
 
 export interface PageContextType {
@@ -13,7 +14,7 @@ export interface PageContextType {
   action: string;
   columns: DbColumn[];
   primaryKey: string;
-  tables: string[];
+  tables: DbTable[];
   // githubDb: GithubDbType | null;
   githubDb: GithubDb | null;
 }
