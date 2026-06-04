@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 
 import { Button, message, Tooltip, Typography } from 'antd';
 import EditableTable, {
@@ -61,6 +61,7 @@ const saveToFile = (data: string, filename: string) => {
 const DbConnections = ({ storage }: { storage: StorageType }) => {
   const [messageApi, contextHolder] = message.useMessage();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [tableKey, setTableKey] = useState(0);
 
   const handleDbConnectionEnable = async (enabledConnection: TableRowType) => {
     // Clear UI state
@@ -109,6 +110,7 @@ const DbConnections = ({ storage }: { storage: StorageType }) => {
     // remove switches
     storage.remove(constants.LS_IS_DARK_THEME);
     storage.remove(constants.LS_SHOW_DOWNLOAD_BUTTON);
+    setTableKey((prevKey) => prevKey + 1);
 
     alert('Finish reset, refresh the webpage.');
   };
@@ -128,6 +130,7 @@ const DbConnections = ({ storage }: { storage: StorageType }) => {
         constants.LS_KEY_DB_CONNECTIONS,
         parsedData[constants.LS_KEY_DB_CONNECTIONS]
       );
+      setTableKey((prevKey) => prevKey + 1);
 
       alert('Finish importing, refresh and enable one connection.');
     };
@@ -171,12 +174,11 @@ const DbConnections = ({ storage }: { storage: StorageType }) => {
         </div>
       </div>
       <EditableTable
+        key={tableKey}
         rowKey="key"
         columns={connectionColumns}
         getColumns={getColumns}
-        defaultData={JSON.parse(
-          storage.get(constants.LS_KEY_DB_CONNECTIONS) || '[]'
-        )}
+        defaultData={JSON.parse(storage.get(constants.LS_KEY_DB_CONNECTIONS) || '[]')}
         getAdditionalOperationButtons={(record) => (
           <Button
             className="dbm-enable-connection-btn"
