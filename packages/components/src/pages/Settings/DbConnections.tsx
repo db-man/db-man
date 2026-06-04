@@ -70,14 +70,14 @@ const DbConnections = ({ storage }: { storage: StorageType }) => {
     saveConnectionToLocalStorage(
       enabledConnection.token as string,
       enabledConnection.owner as string,
-      enabledConnection.repo as string
+      enabledConnection.repo as string,
     );
 
     await reloadDbsSchemaAsync(
       enabledConnection.token as string,
       enabledConnection.owner as string,
       enabledConnection.repo as string,
-      messageApi
+      messageApi,
     );
   };
 
@@ -88,7 +88,7 @@ const DbConnections = ({ storage }: { storage: StorageType }) => {
   const handleExport = () => {
     const jsonStrData = JSON.stringify({
       [constants.LS_KEY_DB_CONNECTIONS]: storage.get(
-        constants.LS_KEY_DB_CONNECTIONS
+        constants.LS_KEY_DB_CONNECTIONS,
       ),
     });
     saveToFile(jsonStrData, 'DbManExportData.json');
@@ -128,7 +128,7 @@ const DbConnections = ({ storage }: { storage: StorageType }) => {
 
       storage.set(
         constants.LS_KEY_DB_CONNECTIONS,
-        parsedData[constants.LS_KEY_DB_CONNECTIONS]
+        parsedData[constants.LS_KEY_DB_CONNECTIONS],
       );
       setTableKey((prevKey) => prevKey + 1);
 
@@ -140,7 +140,7 @@ const DbConnections = ({ storage }: { storage: StorageType }) => {
 
   const getColumns = (
     operationColumn: editableTableColumnType,
-    isEditing: isEditingType
+    isEditing: isEditingType,
   ) => {
     const transformedColumns = connectionColumns.map((col) => {
       if (!col.editable) {
@@ -178,7 +178,9 @@ const DbConnections = ({ storage }: { storage: StorageType }) => {
         rowKey="key"
         columns={connectionColumns}
         getColumns={getColumns}
-        defaultData={JSON.parse(storage.get(constants.LS_KEY_DB_CONNECTIONS) || '[]')}
+        defaultData={JSON.parse(
+          storage.get(constants.LS_KEY_DB_CONNECTIONS) || '[]',
+        )}
         getAdditionalOperationButtons={(record) => (
           <Button
             className="dbm-enable-connection-btn"
