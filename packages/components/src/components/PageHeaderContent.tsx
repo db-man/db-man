@@ -66,7 +66,12 @@ function PageHeaderContent(props: PropsType) {
           />
         </Col>
         <Col span={4} style={{ textAlign: 'right' }}>
-          <a href={getGitHubRepoPath()} target="_blank" rel="noreferrer">
+          <a
+            href={getGitHubRepoPath()}
+            target="_blank"
+            rel="noreferrer"
+            className="dbm-github-db-link"
+          >
             <GithubOutlined />
           </a>
         </Col>
