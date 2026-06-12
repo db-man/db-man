@@ -4,6 +4,7 @@
 CI=true npm run test-cra
 
 # build the package
+export REACT_APP_DBM_BUILD_DATE=$(date -u +'%Y-%m-%d %H:%M:%S UTC')
 npm run build
 git add .
 git commit -m 'Build'

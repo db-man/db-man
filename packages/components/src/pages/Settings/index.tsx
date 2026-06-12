@@ -15,14 +15,16 @@ const { Title } = Typography;
  */
 const Settings = () => {
   useTitle('Settings - db-man');
+  const buildDate = process.env.REACT_APP_DBM_BUILD_DATE;
 
   return (
     <div>
       <Title level={1}>Settings</Title>
+      <p>Built on: {buildDate || '(Development Mode)'}</p>
       <Title level={2}>Configs</Title>
-      <SettingSwitch label='Dark Theme' storageKey={LS_IS_DARK_THEME} />
+      <SettingSwitch label="Dark Theme" storageKey={LS_IS_DARK_THEME} />
       <SettingSwitch
-        label='Show Download Button'
+        label="Show Download Button"
         storageKey={LS_SHOW_DOWNLOAD_BUTTON}
       />
       <DbConnections
