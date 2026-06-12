@@ -5,6 +5,20 @@
 1. Coding
 2. Run `npm run release`
 
+## Prepare development env
+
+```sh
+npm i
+npm run build -w packages/github
+npm start
+```
+
+Prepare for release
+
+```sh
+npm login
+```
+
 ## Develop
 
 ```sh
