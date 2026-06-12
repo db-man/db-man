@@ -6,7 +6,7 @@
     "nx": "^20.0.3"
   },
   "scripts": {
-    "dev": "npm run dev -w packages/components",
+    "start": "npm start -w packages/components",
     "test": "npm run test --workspaces",
     "build": "npm run build --workspaces",
     "prepublishOnly": "npm run build",

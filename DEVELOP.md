@@ -10,7 +10,7 @@
 ```sh
 npm i # install dependencies for all packages
 npm run build -w packages/github # Build this package first, because it's a dependency of @db-man/components
-npm run dev # start dev env
+npm start # start dev env
 ```
 
 ## Testing
@@ -79,7 +79,7 @@ After @db-man/github changed source code, call script to rebuild `@db-man/github
 
 ```sh
 ./rebuild_github.sh
-npm run dev
+npm start
 ```
 
 ## Issue 1

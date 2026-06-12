@@ -2,7 +2,7 @@
 
 import React from 'react';
 /**
- * When importing like this `import Handlebars from 'handlebars'`, will see below error when running npm run dev
+ * When importing like this `import Handlebars from 'handlebars'`, will see below error when running npm start
  *
  * ```
  * Failed to compile.

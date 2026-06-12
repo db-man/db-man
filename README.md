@@ -13,7 +13,7 @@ Start a local server for development:
 ```sh
 npm i
 npm run build -w packages/github
-npm run dev
+npm start
 ```
 
 Tutorial:

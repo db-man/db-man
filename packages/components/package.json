@@ -60,7 +60,7 @@
     "build-cra": "react-scripts build",
     "test-cra": "react-scripts test",
     "eject-cra": "react-scripts eject",
-    "dev": "PUBLIC_URL=/ npm run start-cra",
+    "start": "PUBLIC_URL=/ npm run start-cra",
     "test": "CI=true npm run test-cra",
     "tdd": "npm run test-cra",
     "build": "./build.sh",

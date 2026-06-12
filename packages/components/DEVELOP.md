@@ -4,7 +4,7 @@
 
 ```
 npm i
-npm run dev
+npm start
 npm run tdd
 npm run tdd src/pages/DbTablePage/helpers.test.ts
 ```
