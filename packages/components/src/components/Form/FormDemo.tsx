@@ -1,4 +1,4 @@
-import PageContext from 'contexts/page';
+import PageContext from '../../contexts/page';
 import Form from '.';
 import DbTable from '../../types/DbTable';
 
