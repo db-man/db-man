@@ -12,7 +12,7 @@ type PropsType = { params?: { dbName?: string } };
 // TODO: should implement this in GithubDb or Github in @db-man/github, but first need to make sure GithubDb is initialized at the app level.
 const getGitHubRepoPath = () => {
   return `https://github.com/${localStorage.getItem(
-    LS_KEY_GITHUB_OWNER
+    LS_KEY_GITHUB_OWNER,
   )}/${localStorage.getItem(LS_KEY_GITHUB_REPO_NAME)}`;
 };
 
