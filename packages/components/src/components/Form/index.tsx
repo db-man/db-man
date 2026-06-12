@@ -26,7 +26,7 @@ import PresetsButtons from '../PresetsButtons';
 import DbColumn from '../../types/DbColumn';
 import { useAppContext } from '../../contexts/AppContext';
 import { RowType } from '../../types/Data';
-import SelectFormField from 'components/SelectFormField';
+import SelectFormField from '../../components/SelectFormField';
 
 // Use `Typography` so can apply dark theme to text
 const { Text } = Typography;

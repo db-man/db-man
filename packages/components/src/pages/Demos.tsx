@@ -5,11 +5,11 @@ import { Collapse, CollapseProps, Typography } from 'antd';
 
 import FormDemo from '../components/Form/FormDemo';
 import ImageLinkDemo from '../components/ImageLinkDemo';
-import ImageLinksDemo from 'components/ImageLinksDemo';
-import MultiLineInputBoxDemo from 'components/MultiLineInputBoxDemo';
+import ImageLinksDemo from '../components/ImageLinksDemo';
+import MultiLineInputBoxDemo from '../components/MultiLineInputBoxDemo';
 import PhotoListExample from '../components/PhotoListDemo';
-import RadioGroupFormFieldDemo from 'components/RadioGroupFormFieldDemo';
-import TextAreaFormFieldDemo from 'components/TextAreaFormFieldDemo';
+import RadioGroupFormFieldDemo from '../components/RadioGroupFormFieldDemo';
+import TextAreaFormFieldDemo from '../components/TextAreaFormFieldDemo';
 
 // Use `Typography` so can apply dark theme to text
 const { Text } = Typography;
