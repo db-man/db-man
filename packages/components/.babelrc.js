@@ -11,6 +11,9 @@ module.exports = {
       presets: [['@babel/preset-env', { modules: false }]],
     },
   },
-  plugins: ['@babel/plugin-proposal-class-properties'],
+  plugins: [
+    'babel-plugin-transform-inline-environment-variables',
+    '@babel/plugin-proposal-class-properties',
+  ],
   ignore: ['**/__snapshots__/*', '*.snap'],
 };
