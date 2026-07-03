@@ -102,7 +102,9 @@ const UpdatePage = () => {
       );
     } catch (err) {
       console.error('updateTableFile, err:', err);
-      setErrorMessage(buildErrorMessage('Failed to update table file on server!', err));
+      setErrorMessage(
+        buildErrorMessage('Failed to update table file on server!', err),
+      );
     }
 
     setLoading('');
@@ -129,7 +131,9 @@ const UpdatePage = () => {
       );
     } catch (err) {
       console.error('updateRecordFile, err:', err);
-      setErrorMessage(buildErrorMessage('Failed to update record file on server!', err));
+      setErrorMessage(
+        buildErrorMessage('Failed to update record file on server!', err),
+      );
     }
 
     setLoading('');
@@ -151,7 +155,9 @@ const UpdatePage = () => {
       );
     } catch (err) {
       console.error('deleteRecordFile, err:', err);
-      setErrorMessage(buildErrorMessage('Failed to delete record file on server!', err));
+      setErrorMessage(
+        buildErrorMessage('Failed to delete record file on server!', err),
+      );
     }
 
     setLoading('');
@@ -180,7 +186,9 @@ const UpdatePage = () => {
       setTableFileSha(tableFileSha);
     } catch (err) {
       console.error('getTableRows, error:', err);
-      setErrorMessage(buildErrorMessage('Failed to get table file from server!', err));
+      setErrorMessage(
+        buildErrorMessage('Failed to get table file from server!', err),
+      );
     }
     setTableFileLoading('');
   };
@@ -197,7 +205,9 @@ const UpdatePage = () => {
       setRecord(content);
     } catch (err) {
       console.error('getRecordFileContentAndSha, error:', err);
-      setErrorMessage(buildErrorMessage('Failed to get file from server!', err));
+      setErrorMessage(
+        buildErrorMessage('Failed to get file from server!', err),
+      );
     }
     setRecordFileLoading('');
   };

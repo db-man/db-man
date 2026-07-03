@@ -26,7 +26,7 @@ const CreatePage = () => {
   const [tableFileSha, setTableFileSha] =
     useState<types.UpdateFileType['sha']>(undefined);
   const [defaultFormValues, setDefaultFormValues] = useState<ValueType | null>(
-    null
+    null,
   );
   const [saveLoading, setSaveLoading] = useState(false);
 
@@ -44,7 +44,9 @@ const CreatePage = () => {
       }
     } catch (err) {
       console.error('getTableRows, error:', err);
-      setErrorMessage(buildErrorMessage('Failed to get table file from server!', err));
+      setErrorMessage(
+        buildErrorMessage('Failed to get table file from server!', err),
+      );
     }
     setTableFileLoading(false);
   }, [dbName, githubDb, tableName]);
@@ -116,7 +118,7 @@ const CreatePage = () => {
         dbName,
         tableName,
         newContent,
-        tableFileSha
+        tableFileSha,
       );
 
       if (_result) {
@@ -125,12 +127,14 @@ const CreatePage = () => {
             message="Record saved."
             url={_result.commit.html_url}
           />,
-          10
+          10,
         );
       }
     } catch (err) {
       console.error('updateTableFile, err:', err);
-      setErrorMessage(buildErrorMessage('Failed to update table file on server!', err));
+      setErrorMessage(
+        buildErrorMessage('Failed to update table file on server!', err),
+      );
     }
 
     setSaveLoading(false);
@@ -151,7 +155,7 @@ const CreatePage = () => {
         tableName,
         primaryKey,
         record,
-        null // recordFileSha
+        null, // recordFileSha
       );
 
       if (_result) {
@@ -160,12 +164,14 @@ const CreatePage = () => {
             message="Record saved."
             url={_result.commit.html_url}
           />,
-          10
+          10,
         );
       }
     } catch (err) {
       console.error('updateRecordFile, err:', err);
-      setErrorMessage(buildErrorMessage('Failed to create record file on server!', err));
+      setErrorMessage(
+        buildErrorMessage('Failed to create record file on server!', err),
+      );
     }
 
     setSaveLoading(false);
@@ -187,7 +193,7 @@ const CreatePage = () => {
           {value}
         </a>
       </div>,
-      10
+      10,
     );
 
   if (defaultFormValues === null) {

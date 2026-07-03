@@ -11,19 +11,21 @@ describe('getErrorDetail', () => {
 
   it('stringifies object values', () => {
     expect(getErrorDetail({ code: 500, reason: 'bad gateway' })).toBe(
-      '{"code":500,"reason":"bad gateway"}'
+      '{"code":500,"reason":"bad gateway"}',
     );
   });
 });
 
 describe('buildErrorMessage', () => {
   it('appends the error detail when present', () => {
-    expect(buildErrorMessage('Failed to save', new Error('permission denied'))).toBe(
-      'Failed to save Reason: permission denied'
-    );
+    expect(
+      buildErrorMessage('Failed to save', new Error('permission denied')),
+    ).toBe('Failed to save Reason: permission denied');
   });
 
   it('returns the prefix when no detail is available', () => {
-    expect(buildErrorMessage('Failed to save', undefined)).toBe('Failed to save');
+    expect(buildErrorMessage('Failed to save', undefined)).toBe(
+      'Failed to save',
+    );
   });
 });
