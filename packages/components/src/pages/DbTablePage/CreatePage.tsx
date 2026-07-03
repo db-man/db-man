@@ -51,7 +51,10 @@ const CreatePage = () => {
       console.error('getTableRows, error:', err);
       setFeedback({
         type: 'error',
-        message: buildErrorMessage('Failed to get table file from server!', err),
+        message: buildErrorMessage(
+          'Failed to get table file from server!',
+          err,
+        ),
       });
     }
     setTableFileLoading(false);
@@ -142,7 +145,10 @@ const CreatePage = () => {
       console.error('updateTableFile, err:', err);
       setFeedback({
         type: 'error',
-        message: buildErrorMessage('Failed to update table file on server!', err),
+        message: buildErrorMessage(
+          'Failed to update table file on server!',
+          err,
+        ),
       });
     }
 
@@ -183,7 +189,10 @@ const CreatePage = () => {
       console.error('updateRecordFile, err:', err);
       setFeedback({
         type: 'error',
-        message: buildErrorMessage('Failed to create record file on server!', err),
+        message: buildErrorMessage(
+          'Failed to create record file on server!',
+          err,
+        ),
       });
     }
 
