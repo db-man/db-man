@@ -1,14 +1,14 @@
 {
   "folders": [
     {
-      "path": "."
+      "path": ".",
     },
     {
-      "path": "../split-table-db"
+      "path": "../split-table-db",
     },
     {
-      "path": "../db-man.github.io"
-    }
+      "path": "../db-man.github.io",
+    },
   ],
-  "settings": {}
+  "settings": {},
 }
