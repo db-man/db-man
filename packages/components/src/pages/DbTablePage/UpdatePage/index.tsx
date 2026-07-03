@@ -92,12 +92,12 @@ const UpdatePage = () => {
         dbName,
         tableName,
         newRows,
-        tableFileSha
+        tableFileSha,
       );
 
       messageApi.success(
         <SuccessMessage message="Record saved." url={commit.html_url} />,
-        10
+        10,
       );
     } catch (err) {
       console.error('updateTableFile, err:', err);
@@ -119,16 +119,16 @@ const UpdatePage = () => {
         tableName,
         primaryKey,
         record,
-        recordFileSha
+        recordFileSha,
       );
 
       messageApi.success(
         <SuccessMessage message="Record saved." url={commit.html_url} />,
-        10
+        10,
       );
     } catch (err) {
       console.error('updateRecordFile, err:', err);
-      setErrorMessage('Failed to update record file on server!');
+      setErrorMessage('[DBM] Failed to update record file on server!');
     }
 
     setLoading('');
@@ -141,12 +141,12 @@ const UpdatePage = () => {
         dbName,
         tableName,
         formValues[primaryKey],
-        recordFileSha
+        recordFileSha,
       );
 
       messageApi.success(
         <SuccessMessage message="Record saved." url={commit.html_url} />,
-        10
+        10,
       );
     } catch (err) {
       console.error('deleteRecordFile, err:', err);
@@ -173,7 +173,7 @@ const UpdatePage = () => {
     try {
       const { content: rows, sha: tableFileSha } = await githubDb!.getTableRows(
         dbName,
-        tableName
+        tableName,
       );
       setRows(rows);
       setTableFileSha(tableFileSha);
@@ -190,7 +190,7 @@ const UpdatePage = () => {
       const { content, sha } = await githubDb!.getRecordFileContentAndSha(
         dbName,
         tableName,
-        currentId()
+        currentId(),
       );
       setRecordFileSha(sha);
       setRecord(content);
