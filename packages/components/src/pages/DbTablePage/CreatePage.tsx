@@ -7,7 +7,7 @@ import { message, Spin, Alert } from 'antd';
 
 import { validatePrimaryKey } from '../../components/Form/helpers';
 import SharedErrorAlert from '../../components/SharedErrorAlert';
-import SuccessMessage from '../../components/SuccessMessage';
+import CommitSuccessMessage from '../../components/CommitSuccessMessage';
 import * as utils from '../../utils';
 import { buildErrorMessage } from '../../utils/errorMessage';
 import Form, { ValueType } from '../../components/Form';
@@ -127,7 +127,7 @@ const CreatePage = () => {
 
       if (_result) {
         setSuccessMessage(
-          <SuccessMessage
+          <CommitSuccessMessage
             message="Record saved."
             url={_result.commit.html_url}
           />,
@@ -163,7 +163,7 @@ const CreatePage = () => {
 
       if (_result) {
         setSuccessMessage(
-          <SuccessMessage
+          <CommitSuccessMessage
             message="Record saved."
             url={_result.commit.html_url}
           />,

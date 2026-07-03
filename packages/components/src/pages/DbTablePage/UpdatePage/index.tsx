@@ -4,7 +4,7 @@ import { utils as githubUtils, types } from '@db-man/github';
 import { message, Alert, Spin, Skeleton } from 'antd';
 
 import SharedErrorAlert from '../../../components/SharedErrorAlert';
-import SuccessMessage from '../../../components/SuccessMessage';
+import CommitSuccessMessage from '../../../components/CommitSuccessMessage';
 import * as utils from '../../../utils';
 import { buildErrorMessage } from '../../../utils/errorMessage';
 import Form from '../../../components/Form';
@@ -101,7 +101,7 @@ const UpdatePage = () => {
       );
 
       setSuccessMessage(
-        <SuccessMessage message="Record saved." url={commit.html_url} />,
+        <CommitSuccessMessage message="Record saved." url={commit.html_url} />,
       );
     } catch (err) {
       console.error('updateTableFile, err:', err);
@@ -129,7 +129,7 @@ const UpdatePage = () => {
       );
 
       setSuccessMessage(
-        <SuccessMessage message="Record saved." url={commit.html_url} />,
+        <CommitSuccessMessage message="Record saved." url={commit.html_url} />,
       );
     } catch (err) {
       console.error('updateRecordFile, err:', err);
@@ -152,7 +152,10 @@ const UpdatePage = () => {
       );
 
       setSuccessMessage(
-        <SuccessMessage message="Record deleted." url={commit.html_url} />,
+        <CommitSuccessMessage
+          message="Record deleted."
+          url={commit.html_url}
+        />,
       );
     } catch (err) {
       console.error('deleteRecordFile, err:', err);

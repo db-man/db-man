@@ -7,7 +7,7 @@ import CommonPageContext from '../../contexts/commonPage';
 import JsonEditor, { FormValueType } from '../../components/JsonEditor';
 import { obj2str } from '../../components/Form/helpers';
 import StringFormFieldValue from '../../components/StringFormFieldValue';
-import SuccessMessage from '../../components/SuccessMessage';
+import CommitSuccessMessage from '../../components/CommitSuccessMessage';
 import { reloadDbsSchemaAsync } from '../../pages/Settings/helpers';
 
 import * as constants from '../../constants';
@@ -53,11 +53,11 @@ const CreateDbPage = () => {
 
       if (_result) {
         messageApi.success(
-          <SuccessMessage
+          <CommitSuccessMessage
             message="Database schema created."
             url={_result.commit.html_url}
           />,
-          10
+          10,
         );
       }
     } catch (err) {
@@ -73,7 +73,7 @@ const CreateDbPage = () => {
       localStorage.getItem(constants.LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN) || '',
       localStorage.getItem(constants.LS_KEY_GITHUB_OWNER) || '',
       localStorage.getItem(constants.LS_KEY_GITHUB_REPO_NAME) || '',
-      messageApi
+      messageApi,
     );
   };
 

@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 
-function SuccessMessage({
+function CommitSuccessMessage({
   message,
   url,
 }: {
@@ -19,8 +19,8 @@ function SuccessMessage({
   );
 }
 
-SuccessMessage.propTypes = {
+CommitSuccessMessage.propTypes = {
   url: PropTypes.string.isRequired,
 };
 
-export default SuccessMessage;
+export default CommitSuccessMessage;

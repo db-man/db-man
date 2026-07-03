@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 
 import { types } from '@db-man/github';
 import { message, Typography } from 'antd';
-import SuccessMessage from '../../components/SuccessMessage';
+import CommitSuccessMessage from '../../components/CommitSuccessMessage';
 import CommonPageContext from '../../contexts/commonPage';
 
 import TableManagementEditableTable from './TableManagementEditableTable';
@@ -22,7 +22,7 @@ const TableManagementContainer = ({
 
   const [dbSchema, setDbSchema] = useState<types.DatabaseSchema | null>(null);
   const [databaseSchemaSha, setDatabaseSchemaSha] = useState<string | null>(
-    null
+    null,
   );
   const [isLoading, setIsLoading] = useState(false);
 
@@ -47,7 +47,7 @@ const TableManagementContainer = ({
   }
 
   const defaultTableSchema = dbSchema.tables.find(
-    (table) => table.name === tableName
+    (table) => table.name === tableName,
   );
 
   if (!defaultTableSchema) {
@@ -63,7 +63,7 @@ const TableManagementContainer = ({
       ...dbSchema,
       // update a specific table schema in database schema
       tables: dbSchema.tables.map((table) =>
-        table.name === tableName ? tableSchema : table
+        table.name === tableName ? tableSchema : table,
       ),
     };
 
@@ -72,11 +72,11 @@ const TableManagementContainer = ({
       ?.updateDatabaseSchema(newDbSchema, databaseSchemaSha)
       .then(({ commit }) => {
         messageApi.success(
-          <SuccessMessage
+          <CommitSuccessMessage
             message="Table schema updated."
             url={commit.html_url}
           />,
-          10
+          10,
         );
       })
       .catch((err) => {

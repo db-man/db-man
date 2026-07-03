@@ -23,7 +23,7 @@ export { default as RefTableLink } from './components/RefTableLink';
 export { default as RefTableLinks } from './components/RefTableLinks';
 export { default as StringFormField } from './components/StringFormField';
 export { default as StringFormFieldValue } from './components/StringFormFieldValue';
-export { default as SuccessMessage } from './components/SuccessMessage';
+export { default as CommitSuccessMessage } from './components/CommitSuccessMessage';
 export { default as DistinctColumn } from './components/DistinctColumn';
 export { default as QueryPage } from './pages/DbTablePage/QueryPage';
 export { default as TextAreaFormField } from './components/TextAreaFormField';
