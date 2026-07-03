@@ -34,7 +34,7 @@ import {
   Fragment,
 } from '../components/Links';
 import PhotoList from '../components/PhotoList';
-import ErrorAlert from '../components/ErrorAlert';
+import TemplateDebugErrorAlert from '../components/TemplateDebugErrorAlert';
 import TextAreaFormFieldValue from '../components/TextAreaFormFieldValue';
 import { RowType } from '../types/Data';
 import DbTable from '../types/DbTable';
@@ -123,7 +123,7 @@ const genRenderFunc = (Component: any) =>
       return (
         <div>
           val: {val}
-          <ErrorAlert
+          <TemplateDebugErrorAlert
             json={json}
             error={err as Error}
             tplStr={tplStr}

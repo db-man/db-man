@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Alert, Input, Popover, Button } from 'antd';
 import { RowType } from '../types/Data';
 
-export default function ErrorAlert({
+export default function TemplateDebugErrorAlert({
   json,
   error,
   tplStr,
@@ -53,9 +53,10 @@ export default function ErrorAlert({
     />
   );
 }
-ErrorAlert.propTypes = {
+
+TemplateDebugErrorAlert.propTypes = {
   json: PropTypes.string.isRequired,
   error: PropTypes.shape({ message: PropTypes.string }).isRequired,
   tplStr: PropTypes.string.isRequired,
-  record: PropTypes.string.isRequired,
+  record: PropTypes.object.isRequired,
 };

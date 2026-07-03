@@ -5,7 +5,7 @@ export { default as GetPageBody } from './components/GetPageBody';
 export { default as ListPage } from './pages/DbTablePage/ListPage';
 export { default as CreatePage } from './pages/DbTablePage/CreatePage';
 export { default as DvPropTypes } from './components/DvPropTypes';
-export { default as ErrorAlert } from './components/ErrorAlert';
+export { default as TemplateDebugErrorAlert } from './components/TemplateDebugErrorAlert';
 export { default as FieldWrapperForDetailPage } from './components/FieldWrapperForDetailPage';
 export { default as GetPage } from './pages/DbTablePage/GetPage';
 export { default as JsonEditor } from './components/JsonEditor';
