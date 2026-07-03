@@ -6,6 +6,7 @@ import { utils as githubUtils, types } from '@db-man/github';
 import { message, Spin, Alert } from 'antd';
 
 import { validatePrimaryKey } from '../../components/Form/helpers';
+import SharedErrorAlert from '../../components/SharedErrorAlert';
 import SuccessMessage from '../../components/SuccessMessage';
 import * as utils from '../../utils';
 import { buildErrorMessage } from '../../utils/errorMessage';
@@ -201,18 +202,10 @@ const CreatePage = () => {
   }
 
   const renderAlert = () => {
-    if (!errorMessage) {
-      return null;
-    }
     return (
-      <Alert
-        message="Something went wrong"
-        description={errorMessage}
-        type="error"
-        showIcon
-        closable
+      <SharedErrorAlert
+        errorMessage={errorMessage}
         onClose={() => setErrorMessage('')}
-        style={{ marginBottom: 16 }}
       />
     );
   };
