@@ -3,10 +3,10 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 
 import { utils as githubUtils, types } from '@db-man/github';
-import { message, Spin, Alert } from 'antd';
+import { message, Spin } from 'antd';
 
 import { validatePrimaryKey } from '../../components/Form/helpers';
-import SharedErrorAlert from '../../components/SharedErrorAlert';
+import SharedFeedbackAlert from '../../components/SharedFeedbackAlert';
 import CommitSuccessMessage from '../../components/CommitSuccessMessage';
 import * as utils from '../../utils';
 import { buildErrorMessage } from '../../utils/errorMessage';
@@ -19,10 +19,10 @@ const CreatePage = () => {
   const { appModes, githubDb, dbName, tableName, primaryKey, columns } =
     useContext(PageContext);
 
-  const [errorMessage, setErrorMessage] = useState('');
-  const [successMessage, setSuccessMessage] = useState<React.ReactNode | null>(
-    null,
-  );
+  const [feedback, setFeedback] = useState<{
+    type: 'success' | 'error';
+    message: React.ReactNode;
+  } | null>(null);
   // all rows in table file
   const [tableFileLoading, setTableFileLoading] = useState(false);
   // all rows in whole table, in split table mode, it's empty
@@ -40,6 +40,7 @@ const CreatePage = () => {
 
   const getTableFileAsync = useCallback(async () => {
     setTableFileLoading(true);
+    setFeedback(null);
     try {
       const _result = await githubDb?.getTableRows(dbName, tableName);
       if (_result) {
@@ -48,9 +49,10 @@ const CreatePage = () => {
       }
     } catch (err) {
       console.error('getTableRows, error:', err);
-      setErrorMessage(
-        buildErrorMessage('Failed to get table file from server!', err),
-      );
+      setFeedback({
+        type: 'error',
+        message: buildErrorMessage('Failed to get table file from server!', err),
+      });
     }
     setTableFileLoading(false);
   }, [dbName, githubDb, tableName]);
@@ -126,18 +128,22 @@ const CreatePage = () => {
       );
 
       if (_result) {
-        setSuccessMessage(
-          <CommitSuccessMessage
-            message="Record saved."
-            url={_result.commit.html_url}
-          />,
-        );
+        setFeedback({
+          type: 'success',
+          message: (
+            <CommitSuccessMessage
+              message="Record saved."
+              url={_result.commit.html_url}
+            />
+          ),
+        });
       }
     } catch (err) {
       console.error('updateTableFile, err:', err);
-      setErrorMessage(
-        buildErrorMessage('Failed to update table file on server!', err),
-      );
+      setFeedback({
+        type: 'error',
+        message: buildErrorMessage('Failed to update table file on server!', err),
+      });
     }
 
     setSaveLoading(false);
@@ -152,6 +158,7 @@ const CreatePage = () => {
     };
 
     setSaveLoading(true);
+    setFeedback(null);
     try {
       const _result = await githubDb?.updateRecordFile(
         dbName,
@@ -162,18 +169,22 @@ const CreatePage = () => {
       );
 
       if (_result) {
-        setSuccessMessage(
-          <CommitSuccessMessage
-            message="Record saved."
-            url={_result.commit.html_url}
-          />,
-        );
+        setFeedback({
+          type: 'success',
+          message: (
+            <CommitSuccessMessage
+              message="Record saved."
+              url={_result.commit.html_url}
+            />
+          ),
+        });
       }
     } catch (err) {
       console.error('updateRecordFile, err:', err);
-      setErrorMessage(
-        buildErrorMessage('Failed to create record file on server!', err),
-      );
+      setFeedback({
+        type: 'error',
+        message: buildErrorMessage('Failed to create record file on server!', err),
+      });
     }
 
     setSaveLoading(false);
@@ -204,23 +215,10 @@ const CreatePage = () => {
 
   const renderAlert = () => {
     return (
-      <>
-        <SharedErrorAlert
-          errorMessage={errorMessage}
-          onClose={() => setErrorMessage('')}
-        />
-        {successMessage && (
-          <Alert
-            message="Success"
-            description={successMessage}
-            type="success"
-            showIcon
-            closable
-            onClose={() => setSuccessMessage(null)}
-            style={{ marginBottom: 16 }}
-          />
-        )}
-      </>
+      <SharedFeedbackAlert
+        feedback={feedback}
+        onClose={() => setFeedback(null)}
+      />
     );
   };
 

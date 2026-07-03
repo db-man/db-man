@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
 
 import { utils as githubUtils, types } from '@db-man/github';
-import { message, Alert, Spin, Skeleton } from 'antd';
+import { message, Spin, Skeleton } from 'antd';
 
-import SharedErrorAlert from '../../../components/SharedErrorAlert';
+import SharedFeedbackAlert from '../../../components/SharedFeedbackAlert';
 import CommitSuccessMessage from '../../../components/CommitSuccessMessage';
 import * as utils from '../../../utils';
 import { buildErrorMessage } from '../../../utils/errorMessage';
@@ -17,10 +17,10 @@ const UpdatePage = () => {
   const { primaryKey, appModes, dbName, tableName, githubDb } =
     useContext(PageContext);
 
-  const [errorMessage, setErrorMessage] = useState('');
-  const [successMessage, setSuccessMessage] = useState<React.ReactNode | null>(
-    null,
-  );
+  const [feedback, setFeedback] = useState<{
+    type: 'success' | 'error';
+    message: React.ReactNode;
+  } | null>(null);
 
   // all rows in table data file
   const [tableFileLoading, setTableFileLoading] = useState('');
@@ -92,6 +92,7 @@ const UpdatePage = () => {
     const newRows = getNewRows(formValues, [...rows], primaryKey, currentId());
 
     setLoading('Updating table file...');
+    setFeedback(null);
     try {
       const { commit } = await githubDb!.updateTableFile(
         dbName,
@@ -100,14 +101,18 @@ const UpdatePage = () => {
         tableFileSha,
       );
 
-      setSuccessMessage(
-        <CommitSuccessMessage message="Record saved." url={commit.html_url} />,
-      );
+      setFeedback({
+        type: 'success',
+        message: (
+          <CommitSuccessMessage message="Record saved." url={commit.html_url} />
+        ),
+      });
     } catch (err) {
       console.error('updateTableFile, err:', err);
-      setErrorMessage(
-        buildErrorMessage('Failed to update table file on server!', err),
-      );
+      setFeedback({
+        type: 'error',
+        message: buildErrorMessage('Failed to update table file on server!', err),
+      });
     }
 
     setLoading('');
@@ -115,6 +120,7 @@ const UpdatePage = () => {
 
   const updateRecordFileAsync = async (formValues: RowType) => {
     setLoading('Updating record file...');
+    setFeedback(null);
     try {
       const record = {
         ...formValues,
@@ -128,14 +134,18 @@ const UpdatePage = () => {
         recordFileSha,
       );
 
-      setSuccessMessage(
-        <CommitSuccessMessage message="Record saved." url={commit.html_url} />,
-      );
+      setFeedback({
+        type: 'success',
+        message: (
+          <CommitSuccessMessage message="Record saved." url={commit.html_url} />
+        ),
+      });
     } catch (err) {
       console.error('updateRecordFile, err:', err);
-      setErrorMessage(
-        buildErrorMessage('Failed to update record file on server!', err),
-      );
+      setFeedback({
+        type: 'error',
+        message: buildErrorMessage('Failed to update record file on server!', err),
+      });
     }
 
     setLoading('');
@@ -143,6 +153,7 @@ const UpdatePage = () => {
 
   const deleteRecordFileAsync = async (formValues: RowType) => {
     setLoading('Deleting record file...');
+    setFeedback(null);
     try {
       const { commit } = await githubDb!.deleteRecordFile(
         dbName,
@@ -151,17 +162,21 @@ const UpdatePage = () => {
         recordFileSha,
       );
 
-      setSuccessMessage(
-        <CommitSuccessMessage
-          message="Record deleted."
-          url={commit.html_url}
-        />,
-      );
+      setFeedback({
+        type: 'success',
+        message: (
+          <CommitSuccessMessage
+            message="Record deleted."
+            url={commit.html_url}
+          />
+        ),
+      });
     } catch (err) {
       console.error('deleteRecordFile, err:', err);
-      setErrorMessage(
-        buildErrorMessage('Failed to delete record file on server!', err),
-      );
+      setFeedback({
+        type: 'error',
+        message: buildErrorMessage('Failed to delete record file on server!', err),
+      });
     }
 
     setLoading('');
@@ -190,9 +205,10 @@ const UpdatePage = () => {
       setTableFileSha(tableFileSha);
     } catch (err) {
       console.error('getTableRows, error:', err);
-      setErrorMessage(
-        buildErrorMessage('Failed to get table file from server!', err),
-      );
+      setFeedback({
+        type: 'error',
+        message: buildErrorMessage('Failed to get table file from server!', err),
+      });
     }
     setTableFileLoading('');
   };
@@ -209,32 +225,20 @@ const UpdatePage = () => {
       setRecord(content);
     } catch (err) {
       console.error('getRecordFileContentAndSha, error:', err);
-      setErrorMessage(
-        buildErrorMessage('Failed to get file from server!', err),
-      );
+      setFeedback({
+        type: 'error',
+        message: buildErrorMessage('Failed to get file from server!', err),
+      });
     }
     setRecordFileLoading('');
   };
 
   const renderAlert = () => {
     return (
-      <>
-        <SharedErrorAlert
-          errorMessage={errorMessage}
-          onClose={() => setErrorMessage('')}
-        />
-        {successMessage && (
-          <Alert
-            message="Success"
-            description={successMessage}
-            type="success"
-            showIcon
-            closable
-            onClose={() => setSuccessMessage(null)}
-            style={{ marginBottom: 16 }}
-          />
-        )}
-      </>
+      <SharedFeedbackAlert
+        feedback={feedback}
+        onClose={() => setFeedback(null)}
+      />
     );
   };
 
