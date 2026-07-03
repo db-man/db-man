@@ -20,6 +20,9 @@ const CreatePage = () => {
     useContext(PageContext);
 
   const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState<React.ReactNode | null>(
+    null,
+  );
   // all rows in table file
   const [tableFileLoading, setTableFileLoading] = useState(false);
   // all rows in whole table, in split table mode, it's empty
@@ -123,12 +126,11 @@ const CreatePage = () => {
       );
 
       if (_result) {
-        message.success(
+        setSuccessMessage(
           <SuccessMessage
             message="Record saved."
             url={_result.commit.html_url}
           />,
-          10,
         );
       }
     } catch (err) {
@@ -160,12 +162,11 @@ const CreatePage = () => {
       );
 
       if (_result) {
-        message.success(
+        setSuccessMessage(
           <SuccessMessage
             message="Record saved."
             url={_result.commit.html_url}
           />,
-          10,
         );
       }
     } catch (err) {
@@ -203,10 +204,23 @@ const CreatePage = () => {
 
   const renderAlert = () => {
     return (
-      <SharedErrorAlert
-        errorMessage={errorMessage}
-        onClose={() => setErrorMessage('')}
-      />
+      <>
+        <SharedErrorAlert
+          errorMessage={errorMessage}
+          onClose={() => setErrorMessage('')}
+        />
+        {successMessage && (
+          <Alert
+            message="Success"
+            description={successMessage}
+            type="success"
+            showIcon
+            closable
+            onClose={() => setSuccessMessage(null)}
+            style={{ marginBottom: 16 }}
+          />
+        )}
+      </>
     );
   };
 

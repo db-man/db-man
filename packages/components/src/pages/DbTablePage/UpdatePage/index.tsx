@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 import { utils as githubUtils, types } from '@db-man/github';
 import { message, Alert, Spin, Skeleton } from 'antd';
@@ -18,6 +18,9 @@ const UpdatePage = () => {
     useContext(PageContext);
 
   const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState<React.ReactNode | null>(
+    null,
+  );
 
   // all rows in table data file
   const [tableFileLoading, setTableFileLoading] = useState('');
@@ -97,9 +100,8 @@ const UpdatePage = () => {
         tableFileSha,
       );
 
-      messageApi.success(
+      setSuccessMessage(
         <SuccessMessage message="Record saved." url={commit.html_url} />,
-        10,
       );
     } catch (err) {
       console.error('updateTableFile, err:', err);
@@ -126,9 +128,8 @@ const UpdatePage = () => {
         recordFileSha,
       );
 
-      messageApi.success(
+      setSuccessMessage(
         <SuccessMessage message="Record saved." url={commit.html_url} />,
-        10,
       );
     } catch (err) {
       console.error('updateRecordFile, err:', err);
@@ -150,9 +151,8 @@ const UpdatePage = () => {
         recordFileSha,
       );
 
-      messageApi.success(
-        <SuccessMessage message="Record saved." url={commit.html_url} />,
-        10,
+      setSuccessMessage(
+        <SuccessMessage message="Record deleted." url={commit.html_url} />,
       );
     } catch (err) {
       console.error('deleteRecordFile, err:', err);
@@ -215,10 +215,23 @@ const UpdatePage = () => {
 
   const renderAlert = () => {
     return (
-      <SharedErrorAlert
-        errorMessage={errorMessage}
-        onClose={() => setErrorMessage('')}
-      />
+      <>
+        <SharedErrorAlert
+          errorMessage={errorMessage}
+          onClose={() => setErrorMessage('')}
+        />
+        {successMessage && (
+          <Alert
+            message="Success"
+            description={successMessage}
+            type="success"
+            showIcon
+            closable
+            onClose={() => setSuccessMessage(null)}
+            style={{ marginBottom: 16 }}
+          />
+        )}
+      </>
     );
   };
 
