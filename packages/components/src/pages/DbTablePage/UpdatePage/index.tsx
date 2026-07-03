@@ -216,7 +216,17 @@ const UpdatePage = () => {
     if (!errorMessage) {
       return null;
     }
-    return <Alert message={errorMessage} type="error" />;
+    return (
+      <Alert
+        message="Something went wrong"
+        description={errorMessage}
+        type="error"
+        showIcon
+        closable
+        onClose={() => setErrorMessage('')}
+        style={{ marginBottom: 16 }}
+      />
+    );
   };
 
   const renderForm = () => {

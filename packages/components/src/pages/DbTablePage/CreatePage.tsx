@@ -200,6 +200,23 @@ const CreatePage = () => {
     return null;
   }
 
+  const renderAlert = () => {
+    if (!errorMessage) {
+      return null;
+    }
+    return (
+      <Alert
+        message="Something went wrong"
+        description={errorMessage}
+        type="error"
+        showIcon
+        closable
+        onClose={() => setErrorMessage('')}
+        style={{ marginBottom: 16 }}
+      />
+    );
+  };
+
   return (
     <div className="dbm-page">
       <h1>
@@ -221,7 +238,7 @@ const CreatePage = () => {
             </div>
           }
         >
-          {errorMessage && <Alert message={errorMessage} type="error" />}
+          {renderAlert()}
           <Form
             showDelete={false}
             defaultValues={defaultFormValues}
