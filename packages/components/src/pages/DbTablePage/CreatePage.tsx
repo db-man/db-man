@@ -8,6 +8,7 @@ import { message, Spin, Alert } from 'antd';
 import { validatePrimaryKey } from '../../components/Form/helpers';
 import SuccessMessage from '../../components/SuccessMessage';
 import * as utils from '../../utils';
+import { buildErrorMessage } from '../../utils/errorMessage';
 import Form, { ValueType } from '../../components/Form';
 import PageContext from '../../contexts/page';
 import * as constants from '../../constants';
@@ -43,7 +44,7 @@ const CreatePage = () => {
       }
     } catch (err) {
       console.error('getTableRows, error:', err);
-      setErrorMessage('Failed to get table file from server!');
+      setErrorMessage(buildErrorMessage('Failed to get table file from server!', err));
     }
     setTableFileLoading(false);
   }, [dbName, githubDb, tableName]);
@@ -129,7 +130,7 @@ const CreatePage = () => {
       }
     } catch (err) {
       console.error('updateTableFile, err:', err);
-      setErrorMessage('Failed to update table file on server!');
+      setErrorMessage(buildErrorMessage('Failed to update table file on server!', err));
     }
 
     setSaveLoading(false);
@@ -164,7 +165,7 @@ const CreatePage = () => {
       }
     } catch (err) {
       console.error('updateRecordFile, err:', err);
-      setErrorMessage('Failed to create record file on server!');
+      setErrorMessage(buildErrorMessage('Failed to create record file on server!', err));
     }
 
     setSaveLoading(false);

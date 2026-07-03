@@ -5,6 +5,7 @@ import { message, Alert, Spin, Skeleton } from 'antd';
 
 import SuccessMessage from '../../../components/SuccessMessage';
 import * as utils from '../../../utils';
+import { buildErrorMessage } from '../../../utils/errorMessage';
 import Form from '../../../components/Form';
 import PageContext from '../../../contexts/page';
 import { getNewRows } from './helpers';
@@ -101,7 +102,7 @@ const UpdatePage = () => {
       );
     } catch (err) {
       console.error('updateTableFile, err:', err);
-      setErrorMessage('Failed to update table file on server!');
+      setErrorMessage(buildErrorMessage('Failed to update table file on server!', err));
     }
 
     setLoading('');
@@ -128,7 +129,7 @@ const UpdatePage = () => {
       );
     } catch (err) {
       console.error('updateRecordFile, err:', err);
-      setErrorMessage('[DBM] Failed to update record file on server!');
+      setErrorMessage(buildErrorMessage('Failed to update record file on server!', err));
     }
 
     setLoading('');
@@ -150,7 +151,7 @@ const UpdatePage = () => {
       );
     } catch (err) {
       console.error('deleteRecordFile, err:', err);
-      setErrorMessage('Failed to delete record file on server!');
+      setErrorMessage(buildErrorMessage('Failed to delete record file on server!', err));
     }
 
     setLoading('');
@@ -179,7 +180,7 @@ const UpdatePage = () => {
       setTableFileSha(tableFileSha);
     } catch (err) {
       console.error('getTableRows, error:', err);
-      setErrorMessage('Failed to get table file from server!');
+      setErrorMessage(buildErrorMessage('Failed to get table file from server!', err));
     }
     setTableFileLoading('');
   };
@@ -196,7 +197,7 @@ const UpdatePage = () => {
       setRecord(content);
     } catch (err) {
       console.error('getRecordFileContentAndSha, error:', err);
-      setErrorMessage('Failed to get file from server!');
+      setErrorMessage(buildErrorMessage('Failed to get file from server!', err));
     }
     setRecordFileLoading('');
   };
