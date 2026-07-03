@@ -10,5 +10,7 @@
       "path": "../db-man.github.io",
     },
   ],
-  "settings": {},
+  "settings": {
+    "js/ts.tsdk.path": "db-man/node_modules/typescript/lib",
+  },
 }
