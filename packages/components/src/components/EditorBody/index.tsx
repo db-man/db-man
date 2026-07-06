@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState, ReactNode } from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import {
   Select,
   Button,
@@ -31,12 +31,6 @@ import SelectFormField from '../SelectFormField';
 // Use `Typography` so can apply dark theme to text
 const { Text } = Typography;
 
-interface RenderFormFieldWrapperProps {
-  id: string;
-  label: string;
-  formField: ReactNode;
-}
-
 export type ValueType = RowType;
 
 interface EditorBodyProps {
@@ -48,16 +42,6 @@ interface EditorBodyProps {
   onSubmit: (formValues: ValueType) => void;
   onDelete?: (formValues: ValueType) => void;
 }
-
-const renderFormFieldWrapper = ({
-  id,
-  label,
-  formField,
-}: RenderFormFieldWrapperProps) => (
-  <div key={id} className="dbm-form-field dbm-string-form-field">
-    <b>{label}</b>: {formField}
-  </div>
-);
 
 const filterOutHiddenFields = (column: DbColumn) =>
   column[constants.TYPE_CREATE_UPDATE_PAGE] !== 'HIDE';
@@ -170,18 +154,16 @@ const EditorBody: React.FC<EditorBodyProps> = (props) => {
     }
     if (column[constants.TYPE_CREATE_UPDATE_PAGE] === 'RadioGroup') {
       const radioValue = value || column?.['ui:createUpdatePage:enum']?.[0];
-      return renderFormFieldWrapper({
-        id: column.id,
-        label: column.name,
-        formField: (
+      return (
+        <FieldWrapperForCreateUpdatePage key={column.id} column={column}>
           <RadioGroupFormField
             column={column}
             disabled={loading}
             value={radioValue}
             onChange={handleChange(column.id)}
           />
-        ),
-      });
+        </FieldWrapperForCreateUpdatePage>
+      );
     }
     let preview = false;
     if (column[constants.TYPE_CREATE_UPDATE_PAGE] === 'WithPreview') {
@@ -292,10 +274,8 @@ const EditorBody: React.FC<EditorBodyProps> = (props) => {
 
   const renderNumberFormField = (column: DbColumn) => {
     const { loading } = props;
-    return renderFormFieldWrapper({
-      id: column.id,
-      label: column.name,
-      formField: (
+    return (
+      <FieldWrapperForCreateUpdatePage key={column.id} column={column}>
         <InputNumber
           size="small"
           disabled={loading}
@@ -304,23 +284,20 @@ const EditorBody: React.FC<EditorBodyProps> = (props) => {
           onChange={handleChange(column.id)}
           onKeyDown={handleKeyDown}
         />
-      ),
-    });
+      </FieldWrapperForCreateUpdatePage>
+    );
   };
 
-  const renderBoolFormField = (column: DbColumn) =>
-    renderFormFieldWrapper({
-      id: column.id,
-      label: column.name,
-      formField: (
-        <Switch
-          size="small"
-          disabled={props.loading}
-          checked={formValues[column.id]}
-          onChange={handleChange(column.id)}
-        />
-      ),
-    });
+  const renderBoolFormField = (column: DbColumn) => (
+    <FieldWrapperForCreateUpdatePage key={column.id} column={column}>
+      <Switch
+        size="small"
+        disabled={props.loading}
+        checked={formValues[column.id]}
+        onChange={handleChange(column.id)}
+      />
+    </FieldWrapperForCreateUpdatePage>
+  );
 
   const fieldRender = (column: DbColumn) => {
     switch (column.type) {

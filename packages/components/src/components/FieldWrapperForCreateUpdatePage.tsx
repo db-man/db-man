@@ -25,7 +25,7 @@ const FieldWrapperForCreateUpdatePage = ({
       className={`dbm-form-field ${typeClassName}`}
       data-debug={JSON.stringify(column)}
     >
-      <div className='dbm-field-label'>
+      <div className="dbm-field-label">
         <b>{column.name}</b>:{' '}
       </div>
       {children}
