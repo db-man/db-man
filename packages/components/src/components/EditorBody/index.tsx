@@ -170,20 +170,22 @@ const EditorBody: React.FC<EditorBodyProps> = (props) => {
       preview = true;
     }
     return (
-      <StringFormField
-        key={column.id}
-        inputProps={{
-          disabled: loading,
-          autoFocus: column.id === pageCtx.primaryKey,
-          onKeyDown: handleKeyDown,
-          placeholder: column['ui:createUpdatePage:placeholder'],
-        }}
-        preview={preview}
-        column={column}
-        rows={props.rows}
-        value={value}
-        onChange={handleInputChange(column.id)}
-      />
+      <FieldWrapperForCreateUpdatePage key={column.id} column={column}>
+        <StringFormField
+          key={column.id}
+          inputProps={{
+            disabled: loading,
+            autoFocus: column.id === pageCtx.primaryKey,
+            onKeyDown: handleKeyDown,
+            placeholder: column['ui:createUpdatePage:placeholder'],
+          }}
+          preview={preview}
+          column={column}
+          rows={props.rows}
+          value={value}
+          onChange={handleInputChange(column.id)}
+        />
+      </FieldWrapperForCreateUpdatePage>
     );
   };
 
@@ -193,11 +195,7 @@ const EditorBody: React.FC<EditorBodyProps> = (props) => {
       column[constants.TYPE_CREATE_UPDATE_PAGE] === 'Select'
     ) {
       return (
-        <div
-          key={column.id}
-          className="dbm-form-field dbm-string-array-form-field"
-        >
-          <b>{column.name}</b>:{' '}
+        <FieldWrapperForCreateUpdatePage key={column.id} column={column}>
           <PresetsButtons
             column={column}
             onChange={(val: any) => {
@@ -216,7 +214,7 @@ const EditorBody: React.FC<EditorBodyProps> = (props) => {
             onChange={handleStringArrayChange(column.id)}
             onKeyDown={handleKeyDown}
           />
-        </div>
+        </FieldWrapperForCreateUpdatePage>
       );
     }
 
@@ -249,11 +247,7 @@ const EditorBody: React.FC<EditorBodyProps> = (props) => {
       }
 
       return (
-        <div
-          key={column.id}
-          className="dbm-form-field dbm-string-array-form-field"
-        >
-          <b>{column.name}</b>:{' '}
+        <FieldWrapperForCreateUpdatePage key={column.id} column={column}>
           <RefTableLink
             dbName={pageCtx.dbName}
             tables={getTablesByDbName(pageCtx.dbName)}
@@ -265,7 +259,7 @@ const EditorBody: React.FC<EditorBodyProps> = (props) => {
             value={formValues[column.id]}
             onChange={handleStringArrayChange(column.id)}
           />
-        </div>
+        </FieldWrapperForCreateUpdatePage>
       );
     }
 
