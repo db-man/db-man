@@ -17,7 +17,7 @@ jobs:
           fetch-depth: 0 # fetch all history so that git log (in @db-man/cli generateInsightsForAllDbTables) can get all history
 
       - name: Install Node.js
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v6
         with:
           node-version: 16.x
 
