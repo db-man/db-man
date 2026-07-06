@@ -81,6 +81,24 @@ const UpdatePage = () => {
     );
   };
 
+  /*
+   * Example URL: http://localhost:3000/iam/users/update?userId=1744820403529&__replace_fields__={"tags":["foo","bar"]}
+   * The __replace_fields__ query parameter is used to override form values before rendering.
+   */
+  const getReplacedRecord = (formValues: RowType) => {
+    const replaceFields = utils.getUrlParams().__replace_fields__;
+    if (!replaceFields) {
+      return formValues;
+    }
+    try {
+      const replaceFieldsObj = JSON.parse(replaceFields);
+      return { ...formValues, ...replaceFieldsObj };
+    } catch (err) {
+      console.error('getReplacedRecord, err:', err);
+      return formValues;
+    }
+  };
+
   const tips = () => {
     const tips = [];
     if (tableFileLoading) tips.push(tableFileLoading);
@@ -258,12 +276,13 @@ const UpdatePage = () => {
     if (tips().length) {
       return <Spin tip={tips().join(',')}>Loading...</Spin>;
     }
-    if (!getRecord()[primaryKey]) {
+    const record = getReplacedRecord(getRecord());
+    if (!record[primaryKey]) {
       return null;
     }
     return (
       <EditorBody
-        defaultValues={getRecord()}
+        defaultValues={record}
         rows={rows}
         loading={!!loading}
         onSubmit={handleFormSubmit}
