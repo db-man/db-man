@@ -1,64 +1,87 @@
 import Github from './Github';
+import octokit from './octokit';
+
+jest.mock('./octokit');
+
+const mockedOctokitFactory = octokit as jest.MockedFunction<typeof octokit>;
+const mockRequest = jest.fn();
 
 describe('Github', () => {
   const g = new Github({
-    personalAccessToken: process.env.DBM_GH_TOKEN ?? '',
+    personalAccessToken: 'test-token',
     owner: 'db-man',
     repoName: 'db',
   });
 
-  // Declare the consoleErrorSpy variable outside the hooks
   let consoleErrorSpy: jest.SpyInstance;
 
   beforeEach(() => {
-    // Spy on console.error to suppress the error output during the tests
+    mockRequest.mockReset();
+    mockedOctokitFactory.mockReturnValue({ request: mockRequest } as any);
     consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
   });
 
   afterEach(() => {
-    // Restore console.error after each test
     consoleErrorSpy.mockRestore();
   });
 
   describe('getContentByPath', () => {
     it('should return an array with the expected length when calling getContentByPath with a directory path', async () => {
+      mockRequest.mockResolvedValueOnce({
+        data: [{ name: 'a.json' }, { name: 'b.json' }],
+      });
+
       const data = await g.getContentByPath('dbs/iam');
-      // console.log('Github.getContentByPath data:', data);
-      // @ts-expect-error why no length?
-      expect(data.length).toBe(2);
+
+      expect(Array.isArray(data)).toBe(true);
+      expect(data).toHaveLength(2);
     });
 
     it('should return the correct file object when calling getContentByPath with a file path', async () => {
+      mockRequest.mockResolvedValueOnce({
+        data: { name: 'dbcfg.json', content: 'eyJ0ZXN0Ijp0cnVlfQ==' },
+      });
+
       const data = await g.getContentByPath('dbs/iam/dbcfg.json');
-      // console.log('Github.getContentByPath data:', data);
+
       if ('content' in data) {
         expect(data.name).toBe('dbcfg.json');
         return;
       }
-      // should not be here
-      expect(1).toBe(2);
+
+      expect(true).toBe(false);
     });
 
     it('should throw an error when calling getContentByPath with a non-existent path', async () => {
-      await expect(g.getContentByPath('non-existent-path')).rejects.toThrow();
+      mockRequest.mockRejectedValueOnce({ status: 404 });
+
+      await expect(g.getContentByPath('non-existent-path')).rejects.toThrow(
+        'path not found',
+      );
     });
   });
 
   describe('getContentByPathV2', () => {
     it('should return an array with a non-zero length when calling getContentByPathV2 with a directory path', async () => {
+      mockRequest.mockResolvedValueOnce({
+        data: [{ name: 'a.json' }, { name: 'b.json' }],
+      });
+
       const data = await g.getContentByPathV2('dbs/iam');
-      // console.log('Github.getContentByPathV2 data:', data);
-      expect(data.length).not.toBe(0);
+
+      expect(Array.isArray(data)).toBe(true);
+      expect(data).toHaveLength(2);
     });
 
     it('should return an error object when calling getContentByPathV2 with a non-existent path', async () => {
+      mockRequest.mockRejectedValueOnce({ status: 404 });
+
       const [error, data] = await g.getContentByPathV2('non-existent-path');
+
       expect(error).toBeDefined();
-      // Check if the error is an object and has the 'type' property
       if (typeof error === 'object' && 'type' in error!) {
         expect(error.type).toBe('FileNotFound');
       } else {
-        // If the error is not the expected object type, make the test case fail
         expect(true).toBe(false);
       }
       expect(data).toBeNull();
