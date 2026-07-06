@@ -23,7 +23,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: 16.x
+          node-version: 24.x
 
       # Merge record data file to whole table data file
       - name: Merge records to tables
