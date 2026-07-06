@@ -8,12 +8,12 @@ import EditableTable, {
   editableTableColumnType,
   TableRowType,
 } from '../../components/EditableTable';
-import { obj2str } from '../../components/Form/helpers';
+import { obj2str } from '../../components/EditorBody/helpers';
 import JsonEditor from '../../components/JsonEditor';
 
 // Type 'DbColumn[]' is not assignable to type 'TableRowType[]'.
 const convertDbColumnToTableRowType = (
-  columns: types.DbColumn[]
+  columns: types.DbColumn[],
 ): TableRowType[] => {
   return columns.map((column) => ({
     id: column.id,
@@ -26,7 +26,7 @@ const convertDbColumnToTableRowType = (
 
 // Type 'TableRowType[]' is not assignable to type 'DbColumn[]'.
 const convertTableRowTypeToDbColumn = (
-  rows: TableRowType[]
+  rows: TableRowType[],
 ): types.DbColumn[] => {
   return rows.map((row) => ({
     id: row.id as string,
@@ -100,7 +100,7 @@ const TableManagementEditableTable = ({
 
   const getColumns = (
     operationColumn: editableTableColumnType,
-    isEditing: isEditingType
+    isEditing: isEditingType,
   ) => {
     const columns = [...dbTableColumns, operationColumn];
 
@@ -154,7 +154,7 @@ const TableManagementEditableTable = ({
           columns={dbTableColumns}
           getColumns={getColumns}
           defaultData={convertDbColumnToTableRowType(
-            defaultTableSchema.columns
+            defaultTableSchema.columns,
           )}
           onSaveTableData={handleTableDataSave}
           getFooter={getFooter}

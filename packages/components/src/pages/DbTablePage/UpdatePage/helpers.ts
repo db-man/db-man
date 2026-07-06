@@ -1,12 +1,12 @@
 import { utils as githubUtils } from '@db-man/github';
-import { ValueType } from '../../../components/Form';
+import { ValueType } from '../../../components/EditorBody';
 import { RowType } from '../../../types/Data';
 
 export const getNewRows = (
   formValues: ValueType,
   oldRows: RowType[],
   primaryKey: string,
-  currentId: string
+  currentId: string,
 ) =>
   oldRows.map((row) => {
     if (row[primaryKey] !== currentId) {

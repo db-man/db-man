@@ -3,7 +3,7 @@ import { Outlet } from 'react-router';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Collapse, CollapseProps, Typography } from 'antd';
 
-import FormDemo from '../components/Form/FormDemo';
+import EditorBodyDemo from '../components/EditorBody/EditorBodyDemo';
 import ImageLinkDemo from '../components/ImageLinkDemo';
 import ImageLinksDemo from '../components/ImageLinksDemo';
 import MultiLineInputBoxDemo from '../components/MultiLineInputBoxDemo';
@@ -15,7 +15,7 @@ import TextAreaFormFieldDemo from '../components/TextAreaFormFieldDemo';
 const { Text } = Typography;
 
 const demoMap = {
-  Form: <FormDemo />,
+  EditorBody: <EditorBodyDemo />,
   ImageLink: <ImageLinkDemo />,
   ImageLinks: <ImageLinksDemo />,
   MultiLineInputBox: <MultiLineInputBoxDemo />,

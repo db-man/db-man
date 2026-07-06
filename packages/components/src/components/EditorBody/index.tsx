@@ -26,7 +26,7 @@ import PresetsButtons from '../PresetsButtons';
 import DbColumn from '../../types/DbColumn';
 import { useAppContext } from '../../contexts/AppContext';
 import { RowType } from '../../types/Data';
-import SelectFormField from '../../components/SelectFormField';
+import SelectFormField from '../SelectFormField';
 
 // Use `Typography` so can apply dark theme to text
 const { Text } = Typography;
@@ -39,7 +39,7 @@ interface RenderFormFieldWrapperProps {
 
 export type ValueType = RowType;
 
-interface FormProps {
+interface EditorBodyProps {
   /** Wether to show delete button, default is true */
   showDelete?: boolean;
   defaultValues: ValueType;
@@ -62,7 +62,7 @@ const renderFormFieldWrapper = ({
 const filterOutHiddenFields = (column: DbColumn) =>
   column[constants.TYPE_CREATE_UPDATE_PAGE] !== 'HIDE';
 
-const Form: React.FC<FormProps> = (props) => {
+const EditorBody: React.FC<EditorBodyProps> = (props) => {
   const { showDelete = true } = props;
 
   const pageCtx = useContext(PageContext);
@@ -402,4 +402,4 @@ const Form: React.FC<FormProps> = (props) => {
   );
 };
 
-export default Form;
+export default EditorBody;

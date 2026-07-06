@@ -1,5 +1,5 @@
 import PageContext from '../../contexts/page';
-import Form from '.';
+import EditorBody from '.';
 import DbTable from '../../types/DbTable';
 
 const { Provider } = PageContext;
@@ -106,7 +106,7 @@ const FormDemo = () => {
           githubDb: null,
         }}
       >
-        <Form
+        <EditorBody
           defaultValues={{}}
           loading={false}
           rows={[]}

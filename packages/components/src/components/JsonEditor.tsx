@@ -1,7 +1,7 @@
 import React, { useState, ChangeEvent } from 'react';
 import { Input } from 'antd';
 
-import { str2obj } from './Form/helpers';
+import { str2obj } from './EditorBody/helpers';
 
 export type FormValueType = Record<string, any>;
 
@@ -34,7 +34,7 @@ const JsonEditor: React.FC<JsonEditorProps> = (props) => {
       setErrMsg(
         `There is something wrong in JSON text, detail: ${
           (error as Error).message
-        }`
+        }`,
       );
     }
   };

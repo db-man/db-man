@@ -7,7 +7,7 @@ import SharedFeedbackAlert from '../../../components/SharedFeedbackAlert';
 import CommitSuccessMessage from '../../../components/CommitSuccessMessage';
 import * as utils from '../../../utils';
 import { buildErrorMessage } from '../../../utils/errorMessage';
-import Form from '../../../components/Form';
+import EditorBody from '../../../components/EditorBody';
 import PageContext from '../../../contexts/page';
 import { getNewRows } from './helpers';
 import { RowType } from '../../../types/Data';
@@ -262,7 +262,7 @@ const UpdatePage = () => {
       return null;
     }
     return (
-      <Form
+      <EditorBody
         defaultValues={getRecord()}
         rows={rows}
         loading={!!loading}

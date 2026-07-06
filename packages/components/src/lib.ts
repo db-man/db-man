@@ -1,6 +1,6 @@
 // components
 export { default as DbConnections } from './pages/Settings/DbConnections';
-export { default as Form } from './components/Form';
+export { default as EditorBody } from './components/EditorBody';
 export { default as GetPageBody } from './components/GetPageBody';
 export { default as ListPage } from './pages/DbTablePage/ListPage';
 export { default as CreatePage } from './pages/DbTablePage/CreatePage';

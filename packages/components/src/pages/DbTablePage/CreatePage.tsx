@@ -5,12 +5,12 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { utils as githubUtils, types } from '@db-man/github';
 import { message, Spin } from 'antd';
 
-import { validatePrimaryKey } from '../../components/Form/helpers';
+import { validatePrimaryKey } from '../../components/EditorBody/helpers';
 import SharedFeedbackAlert from '../../components/SharedFeedbackAlert';
 import CommitSuccessMessage from '../../components/CommitSuccessMessage';
 import * as utils from '../../utils';
 import { buildErrorMessage } from '../../utils/errorMessage';
-import Form, { ValueType } from '../../components/Form';
+import EditorBody, { ValueType } from '../../components/EditorBody';
 import PageContext from '../../contexts/page';
 import * as constants from '../../constants';
 import { RowType } from '../../types/Data';
@@ -253,7 +253,7 @@ const CreatePage = () => {
           }
         >
           {renderAlert()}
-          <Form
+          <EditorBody
             showDelete={false}
             defaultValues={defaultFormValues}
             rows={rows}

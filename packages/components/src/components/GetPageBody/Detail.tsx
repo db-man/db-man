@@ -10,7 +10,7 @@ import * as ddRender from '../../ddRender/ddRender';
 import FieldWrapperForDetailPage from '../FieldWrapperForDetailPage';
 import StringFormFieldValue from '../StringFormFieldValue';
 import DbColumn from '../../types/DbColumn';
-import { ValueType } from '../Form';
+import { ValueType } from '../EditorBody';
 
 interface DetailProps {
   defaultValues: ValueType;
@@ -86,11 +86,11 @@ const Detail = (props: DetailProps) => {
         ),
       },
     ];
-    return <Collapse size='small' items={items} />;
+    return <Collapse size="small" items={items} />;
   };
 
   return (
-    <div className='get-page-body-detail-component'>
+    <div className="get-page-body-detail-component">
       <div>
         {columns.map((column) => (
           <FieldWrapperForDetailPage

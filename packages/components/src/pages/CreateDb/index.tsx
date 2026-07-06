@@ -5,7 +5,7 @@ import { types } from '@db-man/github';
 
 import CommonPageContext from '../../contexts/commonPage';
 import JsonEditor, { FormValueType } from '../../components/JsonEditor';
-import { obj2str } from '../../components/Form/helpers';
+import { obj2str } from '../../components/EditorBody/helpers';
 import StringFormFieldValue from '../../components/StringFormFieldValue';
 import CommitSuccessMessage from '../../components/CommitSuccessMessage';
 import { reloadDbsSchemaAsync } from '../../pages/Settings/helpers';

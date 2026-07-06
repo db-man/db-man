@@ -9,14 +9,14 @@ import PresetsButtons from './PresetsButtons';
 import DbColumn from '../types/DbColumn';
 import { useAppContext } from '../contexts/AppContext';
 import { FieldValueWarning } from './FormValidations';
-import { checkFieldValue, validatePrimaryKey } from './Form/helpers';
+import { checkFieldValue, validatePrimaryKey } from './EditorBody/helpers';
 import { RowType } from '../types/Data';
 
 type OnChangeType = (
   value: string,
   event:
     | React.ChangeEvent<HTMLInputElement> // for antd.Input
-    | React.MouseEvent<HTMLElement> // for antd.Button
+    | React.MouseEvent<HTMLElement>, // for antd.Button
 ) => void;
 
 interface StringFormFieldProps {
@@ -61,7 +61,7 @@ export default function StringFormField(props: StringFormFieldProps) {
           {value}
         </a>
       </div>,
-      10
+      10,
     );
 
   const handleChange: OnChangeType = (val, evt) => {
@@ -91,12 +91,12 @@ export default function StringFormField(props: StringFormFieldProps) {
   };
 
   return (
-    <div className='dbm-form-field dbm-string-form-field'>
+    <div className="dbm-form-field dbm-string-form-field">
       <b>{column.name}</b>:{' '}
       {pageCtx.appModes.includes('split-table') &&
         column.id === pageCtx.primaryKey && (
           <>
-            <Popover content={popoverContent} title='Primary Key Info'>
+            <Popover content={popoverContent} title="Primary Key Info">
               <QuestionCircleOutlined />
             </Popover>{' '}
           </>
