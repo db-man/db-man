@@ -16,7 +16,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v7
         with:
           fetch-depth: 2 # `git diff-tree` (used in `@db-man/cli splitUpdatedTables`) need to compare HEAD and HEAD~1, so need to fetch 2 commits
 
