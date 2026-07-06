@@ -130,26 +130,28 @@ const EditorBody: React.FC<EditorBodyProps> = (props) => {
     const value = formValues[column.id];
     if (column[constants.TYPE_CREATE_UPDATE_PAGE] === 'TextArea') {
       return (
-        <TextAreaFormField
-          key={column.id}
-          label={column.name}
-          rows={2}
-          disabled={loading}
-          value={value}
-          onChange={handleChange(column.id)}
-        />
+        <FieldWrapperForCreateUpdatePage key={column.id} column={column}>
+          <TextAreaFormField
+            key={column.id}
+            rows={2}
+            disabled={loading}
+            value={value}
+            onChange={handleChange(column.id)}
+          />
+        </FieldWrapperForCreateUpdatePage>
       );
     }
     if (column[constants.TYPE_CREATE_UPDATE_PAGE] === 'Select') {
       return (
-        <SelectFormField
-          key={column.id}
-          label={column.name}
-          options={column?.['ui:createUpdatePage:selectOptions'] || []}
-          disabled={loading}
-          value={value}
-          onChange={handleChange(column.id)}
-        />
+        <FieldWrapperForCreateUpdatePage key={column.id} column={column}>
+          <SelectFormField
+            key={column.id}
+            options={column?.['ui:createUpdatePage:selectOptions'] || []}
+            disabled={loading}
+            value={value}
+            onChange={handleChange(column.id)}
+          />
+        </FieldWrapperForCreateUpdatePage>
       );
     }
     if (column[constants.TYPE_CREATE_UPDATE_PAGE] === 'RadioGroup') {

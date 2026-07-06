@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import TextAreaFormFieldValue from './TextAreaFormFieldValue';
 
 interface TextAreaFormFieldProps {
-  label: string;
   value?: string;
   rows?: number;
   disabled?: boolean;
@@ -12,21 +11,17 @@ interface TextAreaFormFieldProps {
 }
 
 export default function TextAreaFormField(props: TextAreaFormFieldProps) {
-  const { label, value = '', onChange = () => {} } = props;
+  const { value = '', onChange = () => {} } = props;
   return (
-    <div className='dbm-form-field dbm-string-form-field'>
-      <b>{label}</b>:{' '}
-      <TextAreaFormFieldValue
-        value={value}
-        onChange={onChange}
-        {...props} /* eslint-disable-line react/jsx-props-no-spreading */
-      />
-    </div>
+    <TextAreaFormFieldValue
+      value={value}
+      onChange={onChange}
+      {...props} /* eslint-disable-line react/jsx-props-no-spreading */
+    />
   );
 }
 
 TextAreaFormField.propTypes = {
-  label: PropTypes.string.isRequired,
   value: PropTypes.string,
   onChange: PropTypes.func,
 };

@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
-import { message, Popover } from 'antd';
-import { QuestionCircleOutlined } from '@ant-design/icons';
+import { message } from 'antd';
 
 import StringFormFieldValue, { InputProps } from './StringFormFieldValue';
 import RefTableLink from './RefTableLink';
@@ -27,21 +26,6 @@ interface StringFormFieldProps {
   preview?: boolean;
   onChange: OnChangeType;
 }
-
-const popoverContent = (
-  <div>
-    <p>
-      When db mode is split-table, single record will be created as a file on
-      filesystem.
-      <br />
-      But on some filesystem, e.g. macOS or Linux, the filename length limit is
-      255.
-      <br />
-      So we need to check the length of filename, and warn user if it is too
-      long.
-    </p>
-  </div>
-);
 
 /**
  * To render a form field for table_column.type="STRING"
@@ -91,16 +75,7 @@ export default function StringFormField(props: StringFormFieldProps) {
   };
 
   return (
-    <div className="dbm-form-field dbm-string-form-field">
-      <b>{column.name}</b>:{' '}
-      {pageCtx.appModes.includes('split-table') &&
-        column.id === pageCtx.primaryKey && (
-          <>
-            <Popover content={popoverContent} title="Primary Key Info">
-              <QuestionCircleOutlined />
-            </Popover>{' '}
-          </>
-        )}
+    <>
       <PresetsButtons column={column} onChange={handleChange} />{' '}
       <RefTableLink
         column={column}
@@ -127,6 +102,6 @@ export default function StringFormField(props: StringFormFieldProps) {
         value={value}
         onChange={handleChange}
       />
-    </div>
+    </>
   );
 }
