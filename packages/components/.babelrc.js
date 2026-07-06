@@ -12,7 +12,12 @@ module.exports = {
     },
   },
   plugins: [
-    'babel-plugin-transform-inline-environment-variables',
+    [
+      'babel-plugin-transform-define',
+      {
+        'process.env.REACT_APP_DBM_BUILD_DATE': process.env.REACT_APP_DBM_BUILD_DATE || '',
+      },
+    ],
     '@babel/plugin-proposal-class-properties',
   ],
   ignore: ['**/__snapshots__/*', '*.snap'],
