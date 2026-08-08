@@ -145,7 +145,7 @@ export default class GithubDb {
    */
   getDataPath(dbName, tableName) {
     return `${this.LS_KEY_GITHUB_REPO_PATH}/${dbName}/${getDataFileName(
-      tableName // eslint-disable-line @typescript-eslint/comma-dangle
+      tableName, // eslint-disable-line @typescript-eslint/comma-dangle
     )}`;
   }
 
@@ -156,7 +156,7 @@ export default class GithubDb {
    */
   getInsightsPath(dbName, tableName) {
     return `${this.LS_KEY_GITHUB_REPO_PATH}/${dbName}/${getInsightsFileName(
-      tableName
+      tableName,
     )}`;
   }
 
@@ -199,19 +199,19 @@ export default class GithubDb {
     if (!this.isLargeTable(dbName, tableName)) {
       return this.github.getFileContentAndSha(
         this.getDataPath(dbName, tableName),
-        signal // eslint-disable-line @typescript-eslint/comma-dangle
+        signal, // eslint-disable-line @typescript-eslint/comma-dangle
       );
     }
 
     const files = await this.github.getContentByPath(
       `${this.LS_KEY_GITHUB_REPO_PATH}/${dbName}`,
-      signal // eslint-disable-line @typescript-eslint/comma-dangle
+      signal, // eslint-disable-line @typescript-eslint/comma-dangle
     );
 
     // when calling getContentByPath with a file as path param, it returns an object instead of an array
     if (!Array.isArray(files)) {
       throw new Error(
-        `getTableRows: Expected an array of files for the path "${this.LS_KEY_GITHUB_REPO_PATH}/${dbName}", but received an object. Please check if the provided path is a directory.` // eslint-disable-line @typescript-eslint/comma-dangle
+        `getTableRows: Expected an array of files for the path "${this.LS_KEY_GITHUB_REPO_PATH}/${dbName}", but received an object. Please check if the provided path is a directory.`, // eslint-disable-line @typescript-eslint/comma-dangle
       );
     }
 
@@ -230,7 +230,7 @@ export default class GithubDb {
   async getTableInsights(
     dbName: string,
     tableName: string,
-    signal?: AbortSignal
+    signal?: AbortSignal,
   ) {
     return this.github
       .getContentByPath(this.getInsightsPath(dbName, tableName), signal)
@@ -238,13 +238,13 @@ export default class GithubDb {
         // when path is a dir, data is an array, this is not expected in getTableInsights
         if (Array.isArray(data)) {
           throw new Error(
-            'getTableInsights failed, res is an array, the path param should be a file, not a dir.'
+            'getTableInsights failed, res is an array, the path param should be a file, not a dir.',
           );
         }
         // when data is not array, but no content in it, this is not expected in getTableInsights (but no idea why this happens)
         if (!('content' in data) || !data.content) {
           throw new Error(
-            'getTableInsights failed, res.content is not in res, check the path param.'
+            'getTableInsights failed, res.content is not in res, check the path param.',
           );
         }
         if (data.content === '') {
@@ -269,7 +269,7 @@ export default class GithubDb {
     dbName: string,
     tableName: string,
     primaryKeyVal: string,
-    signal?: AbortSignal
+    signal?: AbortSignal,
   ) {
     const path = this.getRecordPath(dbName, tableName, primaryKeyVal);
     return this.github.getFileContentAndSha(path, signal);
@@ -286,7 +286,7 @@ export default class GithubDb {
     dbName: string,
     tableName: string,
     content,
-    sha: UpdateFileType['sha']
+    sha: UpdateFileType['sha'],
   ) {
     const path = this.getDataPath(dbName, tableName);
     return this.github.updateFile({
@@ -357,7 +357,7 @@ export default class GithubDb {
 
   async getDbTablesSchemaAsync(dbName: string) {
     const { content } = await this.github.getFileContentAndSha(
-      this.getDbConfigPath(dbName)
+      this.getDbConfigPath(dbName),
     );
     return content;
   }
@@ -365,13 +365,13 @@ export default class GithubDb {
   // Get one db schema from dbcfg.json
   async getDbTablesSchemaV2Async(dbName: string) {
     const { content, sha } = await this.github.getContentByPath(
-      this.getDbConfigPath(dbName)
+      this.getDbConfigPath(dbName),
     );
 
     // when no content in dbcfg.json, this is not expected
     if (!content) {
       throw new Error(
-        'getDbTablesSchemaV2Async failed, file content is empty.'
+        'getDbTablesSchemaV2Async failed, file content is empty.',
       );
     }
 
