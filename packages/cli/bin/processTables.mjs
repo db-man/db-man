@@ -18,19 +18,19 @@ export const splitTableFileToRecordFilesAsync = async (dir, dbName, table) => {
   try {
     data = await readFile(
       `./${dir}/${dbName}/${table.name}${TABLE_DATA_FILE_SUFFIX}`,
-      'utf8'
+      'utf8',
     );
   } catch (err) {
     console.error(
       `[ERROR] [${dbName}/${table.name}] Failed to read table data file, err:`,
-      err
+      err,
     );
     return;
   }
 
   if (!data) {
     console.error(
-      `[ERROR] [${dbName}/${table.name}] Table data file is empty!`
+      `[ERROR] [${dbName}/${table.name}] Table data file is empty!`,
     );
     return;
   }
@@ -38,7 +38,7 @@ export const splitTableFileToRecordFilesAsync = async (dir, dbName, table) => {
   const rows = convert(data);
 
   console.debug(
-    `[DEBUG] [${dbName}/${table.name}] Split table, total rows: ${rows.length}`
+    `[DEBUG] [${dbName}/${table.name}] Split table, total rows: ${rows.length}`,
   );
 
   const primaryColumn = table.columns.find((col) => col.primary);
@@ -55,12 +55,12 @@ export const splitTableFileToRecordFilesAsync = async (dir, dbName, table) => {
       await writeFile(
         `./${dir}/${dbName}/${table.name}/${filename}.json`,
         JSON.stringify(row, null, '  '),
-        'utf8'
+        'utf8',
       );
     } catch (err) {
       console.error(
         `[ERROR] [${dbName}/${table.name}] Failed to write to a record file, err:`,
-        err
+        err,
       );
     }
   }
@@ -81,7 +81,7 @@ export const mergeRecordFilesToTableFileAsync = async (dir, dbName, table) => {
   } catch (err) {
     console.error(
       `[ERROR] [${dbName}/${table.name}] Failed to list table dir files, err:`,
-      err
+      err,
     );
     return;
   }
@@ -92,7 +92,7 @@ export const mergeRecordFilesToTableFileAsync = async (dir, dbName, table) => {
     // Only process .json files
     if (path.extname(file) !== '.json') {
       console.warn(
-        `[WARN] [${dbName}/${table.name}] Skip non json record file: ${file}`
+        `[WARN] [${dbName}/${table.name}] Skip non json record file: ${file}`,
       );
       continue;
     }
@@ -103,14 +103,14 @@ export const mergeRecordFilesToTableFileAsync = async (dir, dbName, table) => {
     } catch (err) {
       console.error(
         `[ERROR] [${dbName}/${table.name}] Failed to read record file: ${file}, err:`,
-        err
+        err,
       );
       continue;
     }
 
     if (!data) {
       console.warn(
-        `[WARN] [${dbName}/${table.name}] Record file is empty: ${file}`
+        `[WARN] [${dbName}/${table.name}] Record file is empty: ${file}`,
       );
       continue;
     }
@@ -128,17 +128,17 @@ export const mergeRecordFilesToTableFileAsync = async (dir, dbName, table) => {
     await writeFile(
       `./${dir}/${dbName}/${table.name}${TABLE_DATA_FILE_SUFFIX}`,
       JSON.stringify(rows, null, ' '),
-      'utf8'
+      'utf8',
     );
   } catch (err) {
     console.error(
       `[ERROR] [${dbName}/${table.name}] Failed to write to a table data file, err:`,
-      err
+      err,
     );
     return;
   }
 
   console.debug(
-    `[DEBUG] [${dbName}/${table.name}] Merged ${rows.length} rows into table file.`
+    `[DEBUG] [${dbName}/${table.name}] Merged ${rows.length} rows into table file.`,
   );
 };

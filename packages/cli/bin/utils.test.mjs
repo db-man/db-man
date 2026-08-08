@@ -21,12 +21,12 @@ describe('getChangedFilesBySha', () => {
         `packages/cli/__test_dbs_dir__/iam/roles/developer.json
 packages/cli/__test_dbs_dir__/iam/users/2.json
 `,
-        ''
+        '',
       );
     });
 
     const actual = await getChangedFilesBySha(
-      '8a44b1f55509cd033fd9ac000c218c623f21f6d4'
+      '8a44b1f55509cd033fd9ac000c218c623f21f6d4',
     );
     expect(actual).toEqual([
       'packages/cli/__test_dbs_dir__/iam/roles/developer.json',
@@ -41,10 +41,10 @@ packages/cli/__test_dbs_dir__/iam/users/2.json
     });
 
     await expect(getChangedFilesBySha('invalid-sha')).rejects.toThrow(
-      'Command failed'
+      'Command failed',
     );
     expect(console.error).toHaveBeenCalledWith(
-      expect.stringContaining('Error executing git:')
+      expect.stringContaining('Error executing git:'),
     );
   });
 
@@ -55,10 +55,10 @@ packages/cli/__test_dbs_dir__/iam/users/2.json
     });
 
     await expect(getChangedFilesBySha('invalid-sha')).rejects.toThrow(
-      'fatal: bad object'
+      'fatal: bad object',
     );
     expect(console.error).toHaveBeenCalledWith(
-      expect.stringContaining('Git stderr: fatal: bad object')
+      expect.stringContaining('Git stderr: fatal: bad object'),
     );
   });
 });

@@ -38,7 +38,7 @@ export const getDbs = async (dir) => {
             console.warn(`[WARN] Skip non dir: ${dirent.name}`);
             return false;
           }
-        })
+        }),
       )
       .then((dirs) => dirs.map((dir) => dir.name));
   } catch (err) {
@@ -51,13 +51,13 @@ export const getDbs = async (dir) => {
     try {
       const fileContent = await readFile(
         `./${dir}/${dbName}/${DB_CFG_FILENAME}`,
-        'utf8'
+        'utf8',
       );
       tables = JSON.parse(fileContent).tables;
     } catch (err) {
       console.error(
         `[ERROR] [${dbName}] Failed to read db cfg data file, err:`,
-        err
+        err,
       );
       return [];
     }
@@ -80,7 +80,7 @@ export const getPrimaryKey = (table) => {
   if (!primaryCol) {
     console.error(
       `[ERROR] [${table.name}] No primary key found in table!`,
-      table.columns
+      table.columns,
     );
     process.exitCode = ERR_NO_PRIMARY_KEY;
     process.exit();
@@ -103,7 +103,7 @@ export const processDbTables = async (dir, dbTable, _processTable) => {
     for (const table of db.tables) {
       if (dbTable && `${db.name}/${table.name}` !== dbTable) {
         console.debug(
-          `[DEBUG] [${db.name}/${table.name}] Skip table, dbTable: ${dbTable}`
+          `[DEBUG] [${db.name}/${table.name}] Skip table, dbTable: ${dbTable}`,
         );
         continue;
       }
@@ -126,7 +126,7 @@ export const testDbIntegrity = async (dir, dbName, tableName, primaryKey) => {
   } catch (err) {
     console.error(
       `[ERROR] [${dbName}/${tableName}] Failed to list table dir files, err:`,
-      err
+      err,
     );
     return;
   }
@@ -135,12 +135,12 @@ export const testDbIntegrity = async (dir, dbName, tableName, primaryKey) => {
   try {
     data = await readFile(
       `./${dir}/${dbName}/${tableName}${TABLE_DATA_FILE_SUFFIX}`,
-      'utf8'
+      'utf8',
     );
   } catch (err) {
     console.error(
       `[ERROR] [${dbName}/${tableName}] Failed to read table data file, err:`,
-      err
+      err,
     );
     return;
   }
@@ -154,7 +154,7 @@ export const testDbIntegrity = async (dir, dbName, tableName, primaryKey) => {
 
   // The table record files count and rows count should be the same
   console.debug(
-    `[DEBUG] [${dbName}/${tableName}] files count: ${files.length}, rows count: ${rows.length}`
+    `[DEBUG] [${dbName}/${tableName}] files count: ${files.length}, rows count: ${rows.length}`,
   );
 };
 
@@ -219,7 +219,7 @@ export async function getChangedFilesBySha(sha) {
       const changedFiles = stdout.trim().split('\n');
       console.debug(
         `[DEBUG] getChangedFilesBySha: changedFiles:`,
-        changedFiles
+        changedFiles,
       );
       resolve(changedFiles);
     });
@@ -258,7 +258,7 @@ export function getChangedDbTables(filePaths) {
   const uniqueTablePaths = [...new Set(tablePaths)];
   console.debug(
     `[DEBUG] getChangedDbTables: uniqueTablePaths:`,
-    uniqueTablePaths
+    uniqueTablePaths,
   );
   return uniqueTablePaths;
 }
