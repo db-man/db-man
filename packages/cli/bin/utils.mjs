@@ -7,6 +7,11 @@ import {
   TABLE_DATA_FILE_SUFFIX,
 } from './constants.mjs';
 
+// get timestamp like "2023-08-01T12:34:56.789Z"
+export const getTs = () => {
+  return new Date().toISOString();
+};
+
 export const convert = (data) => {
   const rows = JSON.parse(data);
   return rows;
@@ -35,14 +40,17 @@ export const getDbs = async (dir) => {
           if (dirent.isDirectory()) {
             return dirent;
           } else {
-            console.warn(`[WARN] Skip non dir: ${dirent.name}`);
+            console.warn(`${getTs()} [DBM_WARN] Skip non dir: ${dirent.name}`);
             return false;
           }
         }),
       )
       .then((dirs) => dirs.map((dir) => dir.name));
   } catch (err) {
-    console.error(`[ERROR] Failed to list db dir files, err:`, err);
+    console.error(
+      `${getTs()} [DBM_ERROR] Failed to list db dir files, err:`,
+      err,
+    );
     return [];
   }
 
@@ -56,7 +64,7 @@ export const getDbs = async (dir) => {
       tables = JSON.parse(fileContent).tables;
     } catch (err) {
       console.error(
-        `[ERROR] [${dbName}] Failed to read db cfg data file, err:`,
+        `${getTs()} [DBM_ERROR] [${dbName}] Failed to read db cfg data file, err:`,
         err,
       );
       return [];
@@ -79,7 +87,7 @@ export const getPrimaryKey = (table) => {
   const primaryCol = table.columns.find((col) => col.primary);
   if (!primaryCol) {
     console.error(
-      `[ERROR] [${table.name}] No primary key found in table!`,
+      `${getTs()} [DBM_ERROR] [${table.name}] No primary key found in table!`,
       table.columns,
     );
     process.exitCode = ERR_NO_PRIMARY_KEY;
@@ -125,7 +133,7 @@ export const testDbIntegrity = async (dir, dbName, tableName, primaryKey) => {
     files = await readdir(`./${dir}/${dbName}/${tableName}`);
   } catch (err) {
     console.error(
-      `[ERROR] [${dbName}/${tableName}] Failed to list table dir files, err:`,
+      `${getTs()} [DBM_ERROR] [${dbName}/${tableName}] Failed to list table dir files, err:`,
       err,
     );
     return;
@@ -139,14 +147,16 @@ export const testDbIntegrity = async (dir, dbName, tableName, primaryKey) => {
     );
   } catch (err) {
     console.error(
-      `[ERROR] [${dbName}/${tableName}] Failed to read table data file, err:`,
+      `${getTs()} [DBM_ERROR] [${dbName}/${tableName}] Failed to read table data file, err:`,
       err,
     );
     return;
   }
 
   if (!data) {
-    console.error(`[ERROR] [${dbName}/${tableName}] Table data file is empty!`);
+    console.error(
+      `${getTs()} [DBM_ERROR] [${dbName}/${tableName}] Table data file is empty!`,
+    );
     return;
   }
 
@@ -154,7 +164,7 @@ export const testDbIntegrity = async (dir, dbName, tableName, primaryKey) => {
 
   // The table record files count and rows count should be the same
   console.debug(
-    `[DEBUG] [${dbName}/${tableName}] files count: ${files.length}, rows count: ${rows.length}`,
+    `${getTs()} [DBM_DEBUG] [${dbName}/${tableName}] files count: ${files.length}, rows count: ${rows.length}`,
   );
 };
 
@@ -204,21 +214,21 @@ export async function getChangedFilesBySha(sha) {
   return new Promise((resolve, reject) => {
     // git diff-tree --no-commit-id --name-only -r 2eab0c1df07639dd0d82a342f8f3a1e2a112a6e7
     const cmd = `git diff-tree --no-commit-id --name-only -r ${sha}`;
-    console.debug(`[DEBUG] Executing git command: ${cmd}`);
+    console.debug(`${getTs()} [DBM_DEBUG] Executing git command: ${cmd}`);
     exec(cmd, (error, stdout, stderr) => {
       if (error) {
-        console.error(`Error executing git: ${error}`);
+        console.error(`${getTs()} [DBM_ERROR] Error executing git: ${error}`);
         return reject(error);
       }
       if (stderr) {
-        console.error(`Git stderr: ${stderr}`);
+        console.error(`${getTs()} [DBM_ERROR] Git stderr: ${stderr}`);
         return reject(new Error(stderr));
       }
 
       // Split the git log into individual file paths
       const changedFiles = stdout.trim().split('\n');
       console.debug(
-        `[DEBUG] getChangedFilesBySha: changedFiles:`,
+        `${getTs()} [DBM_DEBUG] getChangedFilesBySha: changedFiles:`,
         changedFiles,
       );
       resolve(changedFiles);
@@ -257,7 +267,7 @@ export function getChangedDbTables(filePaths) {
   // Return unique table paths, e.g. ['iam/users', 'iam/roles']
   const uniqueTablePaths = [...new Set(tablePaths)];
   console.debug(
-    `[DEBUG] getChangedDbTables: uniqueTablePaths:`,
+    `${getTs()} [DBM_DEBUG] getChangedDbTables: uniqueTablePaths:`,
     uniqueTablePaths,
   );
   return uniqueTablePaths;
@@ -273,7 +283,7 @@ export function getChangedDbTables(filePaths) {
  */
 export const processUpdatedTables = async (dir, sha, processFunction) => {
   const dbs = await getDbs(dir);
-  console.debug('dbs:', dbs);
+  console.debug(`${getTs()} [DBM_DEBUG] dbs:`, dbs);
 
   const changedFiles = await getChangedFilesBySha(sha);
   const changedTables = getChangedDbTables(changedFiles);
@@ -285,12 +295,14 @@ export const processUpdatedTables = async (dir, sha, processFunction) => {
       .find((db) => db.name === dbName)
       .tables.find((table) => table.name === tableName);
     if (!table) {
-      console.error('Cannot find table:', dbTable);
+      console.error(`${getTs()} [DBM_ERROR] Cannot find table: ${dbTable}`);
       process.exitCode = ERR_NOT_FOUND_TABLE;
       process.exit();
     }
 
-    console.debug('start process table:', dbName, tableName);
+    console.debug(
+      `${getTs()} [DBM_DEBUG] start process table: ${dbName}/${tableName}`,
+    );
     processFunction(dir, dbName, table);
   });
 };

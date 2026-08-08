@@ -3,7 +3,7 @@ import path from 'path';
 import { utils } from '@db-man/github';
 
 import { TABLE_DATA_FILE_SUFFIX } from './constants.mjs';
-import { convert, getPrimaryKey } from './utils.mjs';
+import { convert, getPrimaryKey, getTs } from './utils.mjs';
 
 /**
  * Split one big file to small files
@@ -22,7 +22,7 @@ export const splitTableFileToRecordFilesAsync = async (dir, dbName, table) => {
     );
   } catch (err) {
     console.error(
-      `[ERROR] [${dbName}/${table.name}] Failed to read table data file, err:`,
+      `${getTs()} [DBM_ERROR] [${dbName}/${table.name}] Failed to read table data file, err:`,
       err,
     );
     return;
@@ -30,7 +30,7 @@ export const splitTableFileToRecordFilesAsync = async (dir, dbName, table) => {
 
   if (!data) {
     console.error(
-      `[ERROR] [${dbName}/${table.name}] Table data file is empty!`,
+      `${getTs()} [DBM_ERROR] [${dbName}/${table.name}] Table data file is empty!`,
     );
     return;
   }
@@ -38,7 +38,7 @@ export const splitTableFileToRecordFilesAsync = async (dir, dbName, table) => {
   const rows = convert(data);
 
   console.debug(
-    `[DEBUG] [${dbName}/${table.name}] Split table, total rows: ${rows.length}`,
+    `${getTs()} [DBM_DEBUG] [${dbName}/${table.name}] Split table, total rows: ${rows.length}`,
   );
 
   const primaryColumn = table.columns.find((col) => col.primary);
@@ -59,7 +59,7 @@ export const splitTableFileToRecordFilesAsync = async (dir, dbName, table) => {
       );
     } catch (err) {
       console.error(
-        `[ERROR] [${dbName}/${table.name}] Failed to write to a record file, err:`,
+        `${getTs()} [DBM_ERROR] [${dbName}/${table.name}] Failed to write to a record file, err:`,
         err,
       );
     }
@@ -80,7 +80,7 @@ export const mergeRecordFilesToTableFileAsync = async (dir, dbName, table) => {
     files = await readdir(`./${dir}/${dbName}/${table.name}`);
   } catch (err) {
     console.error(
-      `[ERROR] [${dbName}/${table.name}] Failed to list table dir files, err:`,
+      `${getTs()} [DBM_ERROR] [${dbName}/${table.name}] Failed to list table dir files, err:`,
       err,
     );
     return;
@@ -92,7 +92,7 @@ export const mergeRecordFilesToTableFileAsync = async (dir, dbName, table) => {
     // Only process .json files
     if (path.extname(file) !== '.json') {
       console.warn(
-        `[WARN] [${dbName}/${table.name}] Skip non json record file: ${file}`,
+        `${getTs()} [DBM_WARN] [${dbName}/${table.name}] Skip non json record file: ${file}`,
       );
       continue;
     }
@@ -102,7 +102,7 @@ export const mergeRecordFilesToTableFileAsync = async (dir, dbName, table) => {
       data = await readFile(`./${dir}/${dbName}/${table.name}/${file}`, 'utf8');
     } catch (err) {
       console.error(
-        `[ERROR] [${dbName}/${table.name}] Failed to read record file: ${file}, err:`,
+        `${getTs()} [DBM_ERROR] [${dbName}/${table.name}] Failed to read record file: ${file}, err:`,
         err,
       );
       continue;
@@ -110,7 +110,7 @@ export const mergeRecordFilesToTableFileAsync = async (dir, dbName, table) => {
 
     if (!data) {
       console.warn(
-        `[WARN] [${dbName}/${table.name}] Record file is empty: ${file}`,
+        `${getTs()} [DBM_WARN] [${dbName}/${table.name}] Record file is empty: ${file}`,
       );
       continue;
     }
@@ -132,13 +132,13 @@ export const mergeRecordFilesToTableFileAsync = async (dir, dbName, table) => {
     );
   } catch (err) {
     console.error(
-      `[ERROR] [${dbName}/${table.name}] Failed to write to a table data file, err:`,
+      `${getTs()} [DBM_ERROR] [${dbName}/${table.name}] Failed to write to a table data file, err:`,
       err,
     );
     return;
   }
 
   console.debug(
-    `[DEBUG] [${dbName}/${table.name}] Merged ${rows.length} rows into table file.`,
+    `${getTs()} [DBM_DEBUG] [${dbName}/${table.name}] Merged ${rows.length} rows into table file.`,
   );
 };

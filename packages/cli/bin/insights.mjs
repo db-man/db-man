@@ -2,7 +2,7 @@ import { insightsUtils } from '@db-man/github';
 import { exec } from 'child_process';
 import { writeFile } from 'fs/promises';
 
-import { getDbs } from './utils.mjs';
+import { getDbs, getTs } from './utils.mjs';
 
 /**
  * Function to execute git log command
@@ -14,14 +14,16 @@ function getGitLogAsync(dir, dbTable) {
   return new Promise((resolve, reject) => {
     // git --no-pager log --follow --numstat --pretty="%H %ad" --date=short -- db_files_dir/iam/users.data.json
     const cmd = `git --no-pager log --follow --numstat --pretty="%H %ad" --date=short -- ${dir}/${dbTable}.data.json`;
-    console.debug(`Executing git log command: ${cmd}`);
+    console.debug(`${getTs()} [DBM_DEBUG] Executing git log command: ${cmd}`);
     exec(cmd, (error, stdout, stderr) => {
       if (error) {
-        console.error(`Error executing git log: ${error}`);
+        console.error(
+          `${getTs()} [DBM_ERROR] Error executing git log: ${error}`,
+        );
         return reject(error);
       }
       if (stderr) {
-        console.error(`stderr: ${stderr}`);
+        console.error(`${getTs()} [DBM_ERROR] Git stderr: ${stderr}`);
         return reject(new Error(stderr));
       }
       // console.log(`Git log output:\n${stdout}`);
@@ -44,7 +46,7 @@ function getGitLogAsync(dir, dbTable) {
  */
 export const printInsightsAsync = async (dir, dbTable) => {
   const rawLog = await getGitLogAsync(dir, dbTable);
-  console.debug('rawLog:', rawLog);
+  console.debug(`${getTs()} [DBM_DEBUG] rawLog:`, rawLog);
 
   let tmp = insightsUtils.parseGitCommitDataToCSV(rawLog);
   tmp = insightsUtils.calcTotalLinesByDateFromGitLogs(tmp);
@@ -72,11 +74,11 @@ export const generateInsightsForAllDbTablesAsync = async (dir) => {
   dbs.forEach((db) => {
     db.tables.forEach(async (table) => {
       const rawLog = await getGitLogAsync(dir, `${db.name}/${table.name}`);
-      console.debug('rawLog:', rawLog);
+      console.debug(`${getTs()} [DBM_DEBUG] rawLog:`, rawLog);
 
       // save to `db_files_dir/iam/users.insights.gitlog`
       const gitLogFilePath = `${dir}/${db.name}/${table.name}.insights.gitlog`;
-      console.log(`Writing git log to ${gitLogFilePath}`);
+      console.log(`${getTs()} [DBM_INFO] Writing git log to ${gitLogFilePath}`);
       writeFile(gitLogFilePath, rawLog, 'utf8');
     });
   });
