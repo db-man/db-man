@@ -20,7 +20,7 @@ const GetPageBody = () => {
   const getInitialFormFields = useCallback(
     (tableRows: RowType[]) => {
       const foundRows = tableRows.filter(
-        (item) => item[primaryKey] === utils.getUrlParams()[primaryKey]
+        (item) => item[primaryKey] === utils.getUrlParams()[primaryKey],
       );
 
       if (foundRows.length === 0) {
@@ -36,7 +36,7 @@ const GetPageBody = () => {
         ...foundRows[0],
       };
     },
-    [primaryKey]
+    [primaryKey],
   );
 
   const getSingleRecordAsync = useCallback(() => {
@@ -123,7 +123,7 @@ const GetPageBody = () => {
   ]);
 
   const renderAlert = () =>
-    errorMessage && <Alert message={errorMessage} type='error' />;
+    errorMessage && <Alert message={errorMessage} type="error" />;
 
   const renderDetail = () => {
     if (record === null) {
@@ -141,7 +141,7 @@ const GetPageBody = () => {
   }
 
   return (
-    <div className='get-body-component'>
+    <div className="get-body-component">
       {renderAlert()}
       {renderDetail()}
     </div>
