@@ -232,36 +232,31 @@ const CreatePage = () => {
   };
 
   return (
-    <div className="dbm-page">
-      <h1>
-        Create {dbName} {tableName}
-      </h1>
-      <div className="create-page-body-component">
-        <Spin
-          spinning={tableFileLoading}
-          tip={
-            <div>
-              Loading file:{' '}
-              <a
-                href={githubDb?.getDataUrl(dbName, tableName)}
-                target="_blank"
-                rel="noreferrer"
-              >
-                {dbName}/{tableName}
-              </a>
-            </div>
-          }
-        >
-          {renderAlert()}
-          <EditorBody
-            showDelete={false}
-            defaultValues={defaultFormValues}
-            rows={rows}
-            loading={saveLoading}
-            onSubmit={handleFormSubmit}
-          />
-        </Spin>
-      </div>
+    <div className="create-page-body-component">
+      <Spin
+        spinning={tableFileLoading}
+        tip={
+          <div>
+            Loading file:{' '}
+            <a
+              href={githubDb?.getDataUrl(dbName, tableName)}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {dbName}/{tableName}
+            </a>
+          </div>
+        }
+      >
+        {renderAlert()}
+        <EditorBody
+          showDelete={false}
+          defaultValues={defaultFormValues}
+          rows={rows}
+          loading={saveLoading}
+          onSubmit={handleFormSubmit}
+        />
+      </Spin>
     </div>
   );
 };

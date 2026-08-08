@@ -106,7 +106,7 @@ const DbTablePage = (props: {
   }
 
   if (errMsgs.length > 0) {
-    return <div className="dbm-page-v2 err-msg">{errMsgs.join(' ,')}</div>;
+    return <div className="dbm-page err-msg">{errMsgs.join(' ,')}</div>;
   }
 
   const PageComponent = actionToComponentMapping[action || ''];
@@ -122,8 +122,11 @@ const DbTablePage = (props: {
 
   return (
     <Provider value={pageInfo()}>
-      <div className="dbm-page-v2">
+      <div className="dbm-page">
         {contextHolder}
+        <h1 className="dbm-page-title">
+          {action} {dbName}/{tableName}
+        </h1>
         {/* Pass tableName down, so child component to rerender according to this props */}
         <PageComponent dbName={dbName || ''} tableName={tableName || ''} />
         <NavBar />

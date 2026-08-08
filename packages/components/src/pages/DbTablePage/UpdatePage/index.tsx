@@ -292,7 +292,7 @@ const UpdatePage = () => {
   };
 
   return (
-    <div className="dbm-page update-page-body-component">
+    <div className="update-page-body-component">
       {contextHolder}
       <Skeleton loading={tips().length > 0}>
         {renderAlert()}

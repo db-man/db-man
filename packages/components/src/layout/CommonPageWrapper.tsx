@@ -28,7 +28,7 @@ const CommonPageWrapper = (props: Props) => {
     owner: localStorage.getItem(constants.LS_KEY_GITHUB_OWNER) || '',
     repoName: localStorage.getItem(constants.LS_KEY_GITHUB_REPO_NAME) || '',
     dbsSchema: JSON.parse(
-      localStorage.getItem(constants.LS_KEY_DBS_SCHEMA) || '{}'
+      localStorage.getItem(constants.LS_KEY_DBS_SCHEMA) || '{}',
     ),
   });
 
@@ -44,7 +44,7 @@ const CommonPageWrapper = (props: Props) => {
 
   return (
     <Provider value={pageInfo()}>
-      <div className="dbm-page-v2">{props.children}</div>
+      <div className="dbm-page">{props.children}</div>
     </Provider>
   );
 };

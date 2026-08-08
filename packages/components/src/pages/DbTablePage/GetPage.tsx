@@ -19,12 +19,5 @@ export default function GetPage({
    */
   const key = `${dbName}-${tableName}`;
 
-  return (
-    <div className='dbm-page'>
-      <h1>
-        Get {dbName} {tableName}
-      </h1>
-      <GetPageBody key={key} />
-    </div>
-  );
+  return <GetPageBody key={key} />;
 }
