@@ -42,7 +42,7 @@ import Github from './Github';
 export default class GithubDb {
   LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN: string;
 
-  LS_KEY_GITHUB_REPO_PATH: string;
+  LS_KEY_GITHUB_REPO_PATH: string; // e.g. dbs
 
   LS_KEY_GITHUB_OWNER: string;
 
@@ -130,12 +130,19 @@ export default class GithubDb {
    * @param {string} dbName
    * @param {string} tableName
    * @param {string|number} primaryKeyVal
-   * @returns Path for GitHub
+   * @returns Path for GitHub, e.g. dbs/iam/users/1.json
    */
   getRecordPath(dbName, tableName, primaryKeyVal: string | number) {
     return `${
       this.LS_KEY_GITHUB_REPO_PATH
     }/${dbName}/${tableName}/${getRecordFileName(primaryKeyVal)}`;
+  }
+
+  /**
+   * @returns Path for GitHub, e.g. dbs/dbName/__views__/viewName.js
+   */
+  getDbViewScriptPath(dbName: string, queryFilename: string) {
+    return `${this.LS_KEY_GITHUB_REPO_PATH}/${dbName}/__views__/${queryFilename}`;
   }
 
   /**
@@ -273,6 +280,21 @@ export default class GithubDb {
   ) {
     const path = this.getRecordPath(dbName, tableName, primaryKeyVal);
     return this.github.getFileContentAndSha(path, signal);
+  }
+
+  /**
+   * @param {string} dbName
+   * @param {string} queryFilename
+   * @param {new AbortController().signal} signal
+   * @returns {Promise}
+   */
+  getDbViewScriptFileContentAndSha(
+    dbName: string,
+    queryFilename: string,
+    signal?: AbortSignal,
+  ) {
+    const path = this.getDbViewScriptPath(dbName, queryFilename);
+    return this.github.getPlainTextByPath(path, signal);
   }
 
   /**

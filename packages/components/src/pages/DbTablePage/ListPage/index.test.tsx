@@ -37,6 +37,7 @@ const context: PageContextType = {
       updateFile: jest.fn(),
       deleteFile: jest.fn(),
       getDbsCfg: jest.fn(),
+      getPlainTextByPath: jest.fn(),
     },
     getTableRows: jest.fn(),
     getTableInsights: jest.fn(),
@@ -59,6 +60,8 @@ const context: PageContextType = {
     getTableSchema: jest.fn(),
     isLargeTable: jest.fn(),
     getDbTablesSchemaV2Async: jest.fn(),
+    getDbViewScriptPath: jest.fn(),
+    getDbViewScriptFileContentAndSha: jest.fn(),
   },
   appModes: [],
   dbs: {},
@@ -98,7 +101,7 @@ describe.skip('ListPageBody', () => {
           <PageContext.Provider value={context}>
             <ListPageBody tableName="users" />
           </PageContext.Provider>
-        </BrowserRouter>
+        </BrowserRouter>,
       );
     });
 

@@ -34,6 +34,9 @@ describe('GithubDb', () => {
       getBlobContentAndSha: jest
         .fn()
         .mockResolvedValue({ content: [{ id: 1 }], sha: 'abc123' }),
+      getPlainTextByPath: jest
+        .fn()
+        .mockResolvedValue('console.log("Hello World");'),
     };
 
     (Github as unknown as jest.Mock).mockImplementation(() => mockGithub);
@@ -47,6 +50,12 @@ describe('GithubDb', () => {
     });
     const data = await gd.getTableRows('iam', 'users');
 
+    // test getDbViewScriptFileContentAndSha
+    const result = await gd.getDbViewScriptFileContentAndSha(
+      'iam',
+      'view1.sql',
+    );
+
     expect(mockGithub.getContentByPath).toHaveBeenCalledWith(
       'dbs/iam',
       undefined,
@@ -56,5 +65,6 @@ describe('GithubDb', () => {
       undefined,
     );
     expect(data.sha).toBe('abc123');
+    expect(result).toEqual('console.log("Hello World");');
   });
 });

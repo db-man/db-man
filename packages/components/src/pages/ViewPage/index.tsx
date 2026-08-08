@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 import { Typography, TreeSelect, Table, Collapse, CollapseProps } from 'antd';
 
@@ -20,9 +20,8 @@ export default function ViewPage() {
   const { dbs, getTablesByDbName, getViewByDbNameViewName } = useAppContext();
   const { dbName, viewName } = useParams();
   const { githubDb } = useContext(CommonPageContext);
-  const [selectedDbTableNames, setSelectedDbTableNames] = React.useState<
-    string[]
-  >(
+  const [pageError, setPageError] = useState<string | null>(null);
+  const [selectedDbTableNames, setSelectedDbTableNames] = useState<string[]>(
     JSON.parse(
       localStorage.getItem(LS_QUERY_PAGE_SELECTED_TABLE_NAMES) || '[]',
     ),
@@ -48,25 +47,45 @@ export default function ViewPage() {
   useEffect(() => {
     selectedDbTableNames.forEach((dbTableName) => {
       const [dbName, tableName] = dbTableName.split('/');
-      githubDb?.getTableRows(dbName, tableName).then((response) => {
-        setTablesRows((prev) => ({
-          ...prev,
-          [dbTableName]: response.content,
-        }));
-      });
+      githubDb
+        ?.getTableRows(dbName, tableName)
+        .then((response: { content: RowType[] }) => {
+          setTablesRows((prev) => ({
+            ...prev,
+            [dbTableName]: response.content,
+          }));
+        });
     });
   }, [githubDb, selectedDbTableNames]);
 
   useEffect(() => {
+    if (!dbName || !viewName) {
+      setPageError('dbName or viewName is missing');
+      return;
+    }
+
     const view = getViewByDbNameViewName(dbName || '', viewName || '');
     if (!view) {
       setResult({ obj: [], err: 'View not found' });
       return;
     }
     // TODO: no hard code `query`, should defined in @db-man/github package
-    const code = view.query || '';
-    console.log('code:', code);
-    setCode(code);
+    const codeOrFile = view.query || '';
+    console.log('codeOrFile:', codeOrFile);
+
+    if (codeOrFile.startsWith('query_file:')) {
+      githubDb
+        ?.getDbViewScriptFileContentAndSha(
+          dbName,
+          codeOrFile.replace('query_file:', ''),
+        )
+        .then((code: string) => {
+          console.log('code:', code);
+          setCode(code);
+        });
+    } else {
+      setCode(codeOrFile);
+    }
   }, [dbName, viewName, getViewByDbNameViewName]);
 
   useEffect(() => {
@@ -119,8 +138,41 @@ export default function ViewPage() {
     },
   ];
 
+  const renderTable = () => {
+    if (typeof result.obj !== 'object') {
+      return (
+        <div>
+          Result is not an object, but result content:{' '}
+          {JSON.stringify(result.obj)}
+        </div>
+      );
+    }
+    return (
+      <div>
+        {result.obj && result.obj.length > 0 && (
+          <Table
+            rowKey={(record) => JSON.stringify(record)}
+            columns={Object.keys(result.obj[0] || {}).map((key) => ({
+              title: key,
+              dataIndex: key,
+              key,
+              // @ts-ignore
+              sorter: (a, b) => a[key] - b[key],
+            }))}
+            dataSource={result.obj}
+          />
+        )}
+      </div>
+    );
+  };
+
   return (
     <div className="dbm-view-page">
+      {pageError && (
+        <div style={{ color: 'red' }}>
+          <Text>Error: {pageError}</Text>
+        </div>
+      )}
       <div>View Name: {viewName}</div>
       <div>
         <div>DB Tables Selector:</div>
@@ -137,19 +189,7 @@ export default function ViewPage() {
         <div>
           <Text>Result:</Text>
         </div>
-        {result.obj && result.obj.length > 0 && (
-          <Table
-            rowKey={(record) => JSON.stringify(record)}
-            columns={Object.keys(result.obj[0] || {}).map((key) => ({
-              title: key,
-              dataIndex: key,
-              key,
-              // @ts-ignore
-              sorter: (a, b) => a[key] - b[key],
-            }))}
-            dataSource={result.obj}
-          />
-        )}
+        {renderTable()}
       </div>
     </div>
   );

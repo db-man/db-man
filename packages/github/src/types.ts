@@ -145,6 +145,9 @@ export interface RawFileContentAndSha {
 }
 
 export interface FileContentAndSha {
+  // TODO: should change type of content from TableRow[] to string,
+  // because this should be type of low level API to get original text content of a file,
+  // no matter it's a json file or it's a markdown file.
   content: TableRow[];
   sha: string;
 }

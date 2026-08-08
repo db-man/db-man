@@ -110,7 +110,7 @@ export default class Github {
    * Given path 'dbs/iam/dbcfg.json', return this file
    * TODO:
    *   - change name from getContentByPath to getRawContentByPath, because content is in base64 format
-   *   - should have a better name, for example sometimess this function is used to get all files under a dir
+   *   - should have a better name, for example sometimes this function is used to get all files under a dir
    * @param {string} path can be a file or a dir
    * @param {*} signal
    * @returns {Promise<File|Files>}
@@ -241,6 +241,38 @@ export default class Github {
         content: rows,
         sha: data.sha,
       };
+    });
+  }
+
+  /**
+   * Get the plain text content of a file, no matter it's a json file or it's a markdown file.
+   * The file should be less than 1MB
+   * @param {string} path
+   * @param {*} signal
+   * @returns {Promise}
+   */
+  getPlainTextByPath(path: string, signal?: AbortSignal): Promise<string> {
+    return this.getContentByPath(path, signal).then((data) => {
+      // when path is a dir, data is an array, this is not expected in getFileContentAndSha
+      if (Array.isArray(data)) {
+        throw new Error(
+          'getPlainTextByPath failed, res is an array, the path param should be a file, not a dir.',
+        );
+      }
+
+      // when data is not array, but no content in it, this is not expected in getPlainTextByPath (but no idea why this happens)
+      if (!('content' in data) || !data.content) {
+        throw new Error(
+          'getPlainTextByPath failed, res.content is not in res, check the path param.',
+        );
+      }
+
+      if (data.content === '') {
+        // This is a new empty file, maybe just created
+        return '';
+      } else {
+        return Base64.decode(data.content);
+      }
     });
   }
 
