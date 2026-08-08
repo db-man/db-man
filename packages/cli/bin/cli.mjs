@@ -2,7 +2,7 @@
 
 import fs from 'fs';
 
-import { processDbTables, processUpdatedTables } from './utils.mjs';
+import { processDbTables, processUpdatedTables, getTs } from './utils.mjs';
 import {
   printInsightsAsync,
   generateInsightsForAllDbTablesAsync,
@@ -38,15 +38,15 @@ const opt = process.argv[2];
 
 (() => {
   if (!opt) {
-    console.error('Invalid params.');
-    console.error('For example, "$ db-man-cli split".');
+    console.error(`${getTs()} [DBM_ERROR] Invalid params.`);
+    console.error(`${getTs()} [DBM_ERROR] For example, "$ db-man-cli split".`);
     process.exitCode = 1;
     return;
   }
 
   const dbsJson = fs.readFileSync('dbs.json', 'utf8');
   const dir = JSON.parse(dbsJson).repoPath;
-  console.debug(`[DEBUG] dir: ${dir}`);
+  console.debug(`${getTs()} [DBM_DEBUG] dir: ${dir}`);
 
   if (opt === 'split') {
     (async () => {
@@ -77,8 +77,8 @@ const opt = process.argv[2];
     generateInsightsForAllDbTablesAsync(dir);
   } else {
     console.error(
-      'Invalid params, should be "split" or "merge" or "mergeUpdatedTables" or "splitUpdatedTables" or "printInsights" or "generateInsightsForAllDbTables".',
+      `${getTs()} [DBM_ERROR] Invalid params, should be "split" or "merge" or "mergeUpdatedTables" or "splitUpdatedTables" or "printInsights" or "generateInsightsForAllDbTables".`,
     );
-    console.error('For example, "$ db-man-cli split".');
+    console.error(`${getTs()} [DBM_ERROR] For example, "$ db-man-cli split".`);
   }
 })();

@@ -25,5 +25,5 @@
     "tdd": "jest --detectOpenHandles --watch",
     "build": "echo 'Build script not implemented'"
   },
-  "gitHead": "e5662c533843488e4f830af12309698689f549ef"
+  "gitHead": "c399dc5f979ad1d2891f79c1b6a9aa8e96da263b"
 }
