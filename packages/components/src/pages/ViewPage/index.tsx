@@ -23,7 +23,9 @@ export default function ViewPage() {
   const [selectedDbTableNames, setSelectedDbTableNames] = React.useState<
     string[]
   >(
-    JSON.parse(localStorage.getItem(LS_QUERY_PAGE_SELECTED_TABLE_NAMES) || '[]')
+    JSON.parse(
+      localStorage.getItem(LS_QUERY_PAGE_SELECTED_TABLE_NAMES) || '[]',
+    ),
   );
   const [code, setCode] = React.useState('');
   const [result, setResult] = React.useState({ obj: [], err: '' });
@@ -85,7 +87,7 @@ export default function ViewPage() {
     setSelectedDbTableNames(newValue);
     localStorage.setItem(
       LS_QUERY_PAGE_SELECTED_TABLE_NAMES,
-      JSON.stringify(newValue)
+      JSON.stringify(newValue),
     );
   };
 
@@ -104,7 +106,7 @@ export default function ViewPage() {
   const items: CollapseProps['items'] = [
     {
       key: '1',
-      label: 'View Query COde',
+      label: 'View Query Code',
       children: (
         <div>
           <ReactSimpleCodeEditor
