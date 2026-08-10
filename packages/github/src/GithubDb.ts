@@ -294,7 +294,6 @@ export default class GithubDb {
     signal?: AbortSignal,
   ) {
     const path = this.getDbViewScriptPath(dbName, queryFilename);
-    console.debug('getDbViewScriptFileContentAndSha path:', path);
     return this.github.getPlainTextByPath(path, signal);
   }
 

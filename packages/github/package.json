@@ -42,5 +42,5 @@
     "tt": "jest --testRegex='.*\\.tt\\.ts$' --testPathPattern=Github.tt.ts",
     "release": "npm test && npm version patch && git push && git push --tags && npm run build && npm publish --access=public"
   },
-  "gitHead": "1cc8417571989ac15ebe0432f80177808f9e2a06"
+  "gitHead": "f0d293c5e2a61b18ad151b488f25b5743bc0735d"
 }
