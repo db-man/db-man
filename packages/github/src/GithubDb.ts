@@ -266,9 +266,9 @@ export default class GithubDb {
   }
 
   /**
-   * @param {string} path
    * @param {string} dbName
    * @param {string} tableName
+   * @param {string|number} primaryKeyVal
    * @param {new AbortController().signal} signal
    * @returns {Promise}
    */
@@ -294,6 +294,7 @@ export default class GithubDb {
     signal?: AbortSignal,
   ) {
     const path = this.getDbViewScriptPath(dbName, queryFilename);
+    console.debug('getDbViewScriptFileContentAndSha path:', path);
     return this.github.getPlainTextByPath(path, signal);
   }
 
