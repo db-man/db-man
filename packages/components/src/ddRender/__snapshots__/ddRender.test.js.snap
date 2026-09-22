@@ -21,6 +21,13 @@ exports[`getColumnRender given Link should match snapshot 1`] = `
 />
 `;
 
+exports[`getColumnRender given Link should match snapshot when has ?param 1`] = `
+<Link
+  href="https://foobar.com?barfoo=123"
+  text="https://foobar.com?barfoo=123"
+/>
+`;
+
 exports[`getColumnRender should return proper value 1`] = `
 <ImageLink>
   https://a.com/b.jpg

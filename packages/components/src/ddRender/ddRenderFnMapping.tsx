@@ -162,6 +162,7 @@ const ddRenderFnMapping: DdRenderFnMappingType = {
    * 1. "type:getPage": ["Link", "{\"href\":\"https://github.com/{{record.org}}/{{record.repo}}\",\"text\":\"{{record.repo}}\"}"],
    * 2. "type:listPage": ["Link", "{\"href\":\"https://github.com/{{record.org}}/{{record.repo}}\",\"text\":\"{{record.repo}}\"}"]
    * 3. "type:listPage": "Link"
+   * 4. "type:listPage": ["Link", "{\"href\":\"{{{record.url}}}\",\"text\":\"{{{record.url}}}\"}"] (check `ddRenderFnMapping.test.tsx` to understand why using `{{` instead of `{{{`)
    */
   Link: genRenderFunc(Link),
   /**

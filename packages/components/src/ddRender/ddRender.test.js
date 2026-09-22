@@ -9,7 +9,7 @@ describe('getColumnRender', () => {
       'type:listPage': 'ImageLink',
     });
     expect(
-      view('https://a.com/b.jpg', { url: 'https://a.com/b.jpg' }, 1)
+      view('https://a.com/b.jpg', { url: 'https://a.com/b.jpg' }, 1),
     ).toMatchSnapshot();
   });
 
@@ -22,7 +22,7 @@ describe('getColumnRender', () => {
       ],
     });
     expect(
-      view('https://a.com/large/b.jpg', { url: 'https://a.com/large/b.jpg' })
+      view('https://a.com/large/b.jpg', { url: 'https://a.com/large/b.jpg' }),
     ).toMatchSnapshot();
   });
 
@@ -34,7 +34,31 @@ describe('getColumnRender', () => {
             'Link',
             '{"href":"{{record.url}}","text":"{{record.url}}"}',
           ],
-        })('https://foo.com', { url: 'https://foo.com' })
+        })('https://foo.com', { url: 'https://foo.com' }),
+      ).toMatchSnapshot();
+    });
+    it('should match snapshot when has ?param', () => {
+      /**
+       * If you use `{{record.url}}` in template in column def object
+       * after running the render function getColumnRender()(), it will render the link as `https://foobar.com/?bar&#x3D;123`
+       *
+       * Handlebars' default escaping behavior:
+       * Double-curly braces (`{{...}}`): Handlebars treats standard double curlies as HTML templates and automatically encodes special HTML characters (`=`, `/`, `<`, `>`, `&`, `"`, `'`) into safe HTML entities (converting `=` into `&#x3D;`).
+       * Triple-curly braces (`{{{...}}}`): Triple curlies signal Handlebars to output raw, unescaped text, preserving characters like `=` and `/` exactly as passed in the data object.
+       */
+      const colDef = {
+        'type:listPage': [
+          'Link',
+          '{"href":"{{{record.url}}}","text":"{{{record.url}}}"}',
+        ],
+      };
+      expect(
+        getColumnRender('type:listPage', colDef)(
+          'https://foobar.com?barfoo=123',
+          {
+            url: 'https://foobar.com?barfoo=123',
+          },
+        ),
       ).toMatchSnapshot();
     });
   });
@@ -50,7 +74,7 @@ describe('getColumnRender', () => {
         })('https://foo.com/a.jpg', {
           id: 'foo',
           photos: ['https://foo.com/a.jpg'],
-        })
+        }),
       ).toMatchSnapshot();
     });
     it('should match snapshot when photos is undefined', () => {
@@ -60,7 +84,7 @@ describe('getColumnRender', () => {
             'ImageLink',
             '{"url":"{{record.photos.[0]}}","imgSrc":"record.photos.[0]"}',
           ],
-        })('', { id: 'foo' })
+        })('', { id: 'foo' }),
       ).toMatchSnapshot();
     });
   });
@@ -141,7 +165,7 @@ describe('getRender', () => {
       const column = { id: 'note', name: 'Note' };
       const record = { note: 'This is TODO' };
       expect(
-        getRender(args, { column })(record.note, record)
+        getRender(args, { column })(record.note, record),
       ).toMatchSnapshot();
     });
   });
