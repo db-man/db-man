@@ -28,17 +28,17 @@ export function Link({
   if (children) {
     return (
       <a
-        className='dbm-dd-link'
+        className="dbm-dd-link"
         href={children}
-        target='_blank'
-        rel='noreferrer'
+        target="_blank"
+        rel="noreferrer"
       >
         {children}
       </a>
     );
   }
   return (
-    <a className='dbm-dd-link' href={href} target='_blank' rel='noreferrer'>
+    <a className="dbm-dd-link" href={href} target="_blank" rel="noreferrer">
       {text}
     </a>
   );
@@ -85,16 +85,16 @@ export function ImageLink({
     imgSrc2 = children;
   }
   return (
-    <div className='dbm-dd-image-link'>
-      <a href={url2} rel='noreferrer' target='_blank'>
+    <div className="dbm-dd-image-link">
+      <a href={url2} rel="noreferrer" target="_blank">
         <span>{url2}</span>
-        <img alt='ImageLink' src={imgSrc2} />
+        <img alt="ImageLink" src={imgSrc2} />
       </a>
       <br />
       {description}
       <div style={isShow()}>
         <Button
-          className='dbm-dd-image-link-download-btn'
+          className="dbm-dd-image-link-download-btn"
           onClick={() => {
             downloadImage(url2);
           }}
@@ -129,7 +129,7 @@ export function ImageLinks({
   }
   // eslint-disable-next-line react/no-array-index-key, react/jsx-props-no-spreading
   return (
-    <div className='dbm-dd-image-links'>
+    <div className="dbm-dd-image-links">
       {results.map((img, index) => (
         <ImageLink key={index} {...img} />
       ))}
