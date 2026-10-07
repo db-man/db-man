@@ -1,7 +1,7 @@
 #!/bin/bash -ex
 
-# test the package
-CI=true npm run test-cra
+# test the package (with coverage thresholds enforced)
+CI=true npm run test:coverage
 
 # build the package
 export REACT_APP_DBM_BUILD_DATE=$(date -u +'%Y-%m-%d %H:%M:%S UTC')
