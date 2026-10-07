@@ -1,121 +1,134 @@
-import React, { act } from 'react';
+import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
-import { render /* screen,  waitFor, */ } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { GithubDb } from '@db-man/github';
 
 import { STRING } from '../../../constants';
 import PageContext, { PageContextType } from '../../../contexts/page';
-import ListPageBody from './index';
+import DbColumn from '../../../types/DbColumn';
+import ListPage from './index';
 
-const context: PageContextType = {
-  dbName: 'db-man',
-  tableName: 'users',
-  action: 'list',
-  columns: [
-    { id: 'id', name: 'ID', type: STRING },
-    { id: 'email', name: 'Email', type: STRING },
-  ],
-  primaryKey: 'id',
-  tables: [],
-  githubDb: {
-    LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN: 'github_personal_access_token',
-    LS_KEY_GITHUB_REPO_PATH: 'github_repo_path',
-    LS_KEY_GITHUB_OWNER: 'github_owner',
-    LS_KEY_GITHUB_REPO_NAME: 'github_repo_name',
-    dbsSchema: {},
-    github: {
-      context: {
-        personalAccessToken: 'github_personal_access_token',
-        owner: 'github_owner',
-        repoName: 'github_repo_name',
-      },
-      getGitHubUrl: jest.fn(),
-      getBlob: jest.fn(),
-      getBlobContentAndSha: jest.fn(),
-      getContentByPath: jest.fn(),
-      getContentByPathV2: jest.fn(),
-      getFileContentAndSha: jest.fn(),
-      updateFile: jest.fn(),
-      deleteFile: jest.fn(),
-      getDbsCfg: jest.fn(),
-      getPlainTextByPath: jest.fn(),
-    },
-    getTableRows: jest.fn(),
-    getTableInsights: jest.fn(),
-    updateTableFile: jest.fn(),
-    updateRecordFile: jest.fn(),
-    createDatabaseSchema: jest.fn(),
-    updateDatabaseSchema: jest.fn(),
-    createTableSchema: jest.fn(),
-    getDataUrl: jest.fn(),
-    getRecordFileContentAndSha: jest.fn(),
-    getGitHubRepoPath: jest.fn(),
-    getGitHubFullPath: jest.fn(),
-    getDataPath: jest.fn(),
-    deleteRecordFile: jest.fn(),
-    getGitHubHistoryPath: jest.fn(),
-    getDbConfigPath: jest.fn(),
-    getRecordPath: jest.fn(),
-    getInsightsPath: jest.fn(),
-    getDbTablesSchemaAsync: jest.fn(),
-    getTableSchema: jest.fn(),
-    isLargeTable: jest.fn(),
-    getDbTablesSchemaV2Async: jest.fn(),
-    getDbViewScriptPath: jest.fn(),
-    getDbViewScriptFileContentAndSha: jest.fn(),
-  },
+/**
+ * IMPORTANT: never configure a mock at module scope in this repo.
+ * CRA sets `resetMocks: true`, which wipes every mock implementation before
+ * each test. The implementation must be set inside the test (or `beforeEach`).
+ */
+const mockGetTableRows = jest.fn();
+
+const columns: DbColumn[] = [
+  { id: 'userId', name: 'User ID', type: STRING, primary: true },
+  { id: 'name', name: 'Name', type: STRING, 'ui:listPage:isFilter': true },
+];
+
+const context = {
   appModes: [],
   dbs: {},
-};
-// jest.mock('@db-man/github');
+  dbName: 'iam',
+  tableName: 'users',
+  action: 'list',
+  columns,
+  primaryKey: 'userId',
+  tables: [],
+  githubDb: { getTableRows: mockGetTableRows } as unknown as GithubDb,
+} as PageContextType;
 
-beforeEach(() => {
-  (context.githubDb?.getTableRows as any).mockReset();
-  (context.githubDb?.getTableRows as any).mockResolvedValue({
-    content: [{ userId: '123' }],
-  });
+const renderListPage = () =>
+  render(
+    <BrowserRouter>
+      <PageContext.Provider value={context}>
+        <ListPage tableName='users' />
+      </PageContext.Provider>
+    </BrowserRouter>
+  );
+
+const row = (userId: string, name: string) => ({
+  userId,
+  name,
+  createdAt: '2021-07-04 09:16:01',
+  updatedAt: '2021-07-04 09:16:01',
 });
 
-afterEach(() => {});
+describe('ListPage', () => {
+  beforeEach(() => {
+    mockGetTableRows.mockReset();
+  });
 
-describe.skip('ListPageBody', () => {
-  it('renders table properly', async () => {
-    Object.defineProperty(window, 'matchMedia', {
-      writable: true,
-      value: jest.fn().mockImplementation((query) => ({
-        matches: false,
-        media: query,
-        onchange: null,
-        addListener: jest.fn(), // deprecated
-        removeListener: jest.fn(), // deprecated
-        addEventListener: jest.fn(),
-        removeEventListener: jest.fn(),
-        dispatchEvent: jest.fn(),
-      })),
+  it('shows a loading tip, then renders the rows returned by githubDb', async () => {
+    let resolveGetTableRows: (value: unknown) => void = () => {};
+    mockGetTableRows.mockReturnValue(
+      new Promise((resolve) => {
+        resolveGetTableRows = resolve;
+      })
+    );
+
+    renderListPage();
+
+    // While the request is in flight, the loading tip is shown
+    expect(screen.getByText(/Loading iam\/users/i)).toBeInTheDocument();
+
+    resolveGetTableRows({ content: [row('123', 'David')] });
+
+    expect(await screen.findByText('David')).toBeInTheDocument();
+    expect(screen.queryByText(/Loading iam\/users/i)).not.toBeInTheDocument();
+    expect(mockGetTableRows).toHaveBeenCalledWith(
+      'iam',
+      'users',
+      expect.anything()
+    );
+  });
+
+  it('renders an error alert when fetching the rows fails', async () => {
+    mockGetTableRows.mockRejectedValue(new Error('boom'));
+
+    renderListPage();
+
+    expect(
+      await screen.findByText(/Failed to get data: boom/i)
+    ).toBeInTheDocument();
+  });
+
+  it('warns about rows sharing the same primary key', async () => {
+    mockGetTableRows.mockResolvedValue({
+      content: [row('123', 'David'), row('123', 'Ben')],
     });
 
-    // githubDb.getTableRows.mockResolvedValue({ content: [{ id: '123', email: 'foo@abc.com' }] });
+    renderListPage();
 
-    act(() => {
-      render(
-        <BrowserRouter>
-          <PageContext.Provider value={context}>
-            <ListPageBody tableName="users" />
-          </PageContext.Provider>
-        </BrowserRouter>,
-      );
+    expect(
+      await screen.findByText(/Duplicated row keys/i)
+    ).toBeInTheDocument();
+  });
+
+  it('warns about rows which have no primary key', async () => {
+    mockGetTableRows.mockResolvedValue({
+      content: [row('123', 'David'), { name: 'NoKey' }],
     });
 
-    // await screen.findByText('Loading db-man/users ...');
+    renderListPage();
 
-    // await waitFor(() => expect(githubDb.getTableRows).toHaveBeenCalledTimes(1));
+    expect(await screen.findByText(/Invalid rows/i)).toBeInTheDocument();
+  });
 
-    // await screen.findByText('123');
-    // await screen.findByText('foo');
+  it('filters the displayed rows by the filter input', async () => {
+    mockGetTableRows.mockResolvedValue({
+      content: [row('123', 'David'), row('456', 'Ben')],
+    });
 
-    // screen.debug();
+    renderListPage();
+    expect(await screen.findByText('Ben')).toBeInTheDocument();
 
-    // expect(
-    //   container.innerHTML,
-    // ).toMatchSnapshot(); /* ... gets filled automatically by jest ... */
+    // The first text box above the table is the "Name" filter
+    fireEvent.change(screen.getAllByRole('textbox')[0], {
+      target: { value: 'Dav' },
+    });
+
+    await waitFor(() =>
+      expect(screen.queryByText('Ben')).not.toBeInTheDocument()
+    );
+    expect(screen.getByText('David')).toBeInTheDocument();
+
+    // Let the debounced `updateUrl` (500ms) flush inside this test, so that any
+    // error it throws is reported here instead of leaking into the next test.
+    await new Promise((resolve) => setTimeout(resolve, 600));
   });
 });

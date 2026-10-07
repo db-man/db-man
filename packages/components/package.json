@@ -63,6 +63,7 @@
     "eject-cra": "react-scripts eject",
     "start": "PUBLIC_URL=/ npm run start-cra",
     "test": "CI=true npm run test-cra",
+    "test:coverage": "CI=true react-scripts test --coverage",
     "tdd": "npm run test-cra",
     "build": "./build.sh",
     "release": "./release.sh"
@@ -73,6 +74,33 @@
       "react-app/jest",
       "plugin:cypress/recommended"
     ]
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "^@uiw/react-json-view/light$": "@uiw/react-json-view/cjs/theme/light.js",
+      "^@uiw/react-json-view/dark$": "@uiw/react-json-view/cjs/theme/dark.js"
+    },
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx,ts,tsx}",
+      "!src/**/*.d.ts",
+      "!src/**/*.test.{js,jsx,ts,tsx}",
+      "!src/**/*.spec.{js,jsx,ts,tsx}",
+      "!src/**/*.cy.{js,jsx,ts,tsx}",
+      "!src/**/*Demo.{js,jsx,ts,tsx}",
+      "!src/index.tsx",
+      "!src/lib.ts",
+      "!src/reportWebVitals.ts",
+      "!src/example/**",
+      "!src/pages/demos/**"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "lines": 31,
+        "statements": 30,
+        "functions": 24,
+        "branches": 25
+      }
+    }
   },
   "browserslist": {
     "production": [

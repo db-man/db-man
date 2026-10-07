@@ -39,3 +39,14 @@ jobs:
           TZ: Asia/Shanghai
         run: |
           npm test
+
+      # Collect coverage for @db-man/components so that the `coverageThreshold`
+      # in packages/components/package.json is actually enforced.
+      # Without `--coverage` jest does not collect coverage at all, and the
+      # threshold is silently ignored.
+      - name: Run tests with coverage (@db-man/components)
+        env:
+          DBM_GH_TOKEN: ${{ secrets.DBM_GH_TOKEN }}
+          TZ: Asia/Shanghai
+        run: |
+          npm run test:coverage -w packages/components
