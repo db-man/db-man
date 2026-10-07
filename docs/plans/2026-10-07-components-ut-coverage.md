@@ -2,7 +2,7 @@
 
 - 日期：2026-10-07
 - 范围：`packages/components`（`@db-man/components`）
-- 状态：**Stage 0 / 1 / 1.5 / 2 / 3 已完成并通过验收**；Stage 4–5 待做
+- 状态：**Stage 0 / 1 / 1.5 / 2 / 3 / 4 已完成并通过验收**；Stage 5 待做
 
 ---
 
@@ -15,8 +15,12 @@
 | 1.5 基线 + 阈值 | ✅ 完成 | `coverageThreshold.global` = lines 31 / statements 30 / functions 24 / branches 25 |
 | 2 逻辑层 | ✅ 完成 | 8 个目标文件全部达标（最低 98.2%），行覆盖 33.59% → **43.87%**；阈值同步抬到 lines 41 / statements 41 / functions 34 / branches 34 |
 | 3 ListPage 深入 | ✅ 完成 | `ListPage/index.tsx` 行覆盖 68.96% → **100%**（函数 100%、分支 90.62%），5 → 25 个用例；包整体 43.87% → **49.03%**；阈值抬到 lines 47 / statements 46 / functions 40 / branches 40 |
-| 4 表单组件族 | ⬜ 未开始 | — |
+| 4 表单组件族 | ✅ 完成 | 新增 13 个测试文件 / 72 个用例（FormValidations、StringFormField(Value)、Select/RadioGroupFormField、两个 FieldWrapper、EditorBody 15 用例、RefTableLink(s)、DistinctColumn、JsonEditor、一行断言级小组件合集）；包整体行覆盖 49.03% → **58.96%**（语句 58.38 / 分支 55.18 / 函数 53.54）；阈值抬到 lines 57 / statements 56 / functions 51 / branches 52 |
 | 5 写路径（可选） | ⬜ 未开始 | — |
+
+### release.sh 决策（2026-10-08 用户拍板）
+
+用户决定 release.sh **需要**带覆盖率校验（否定了此前"CI 是唯一判定点、release 不需要"的建议）：`packages/components/release.sh` 的测试步骤已改为 `CI=true npm run test:coverage`，发布前同样强制阈值。
 
 ### 覆盖率水位变化（实测）
 
@@ -27,6 +31,7 @@
 | **Stage 1 后** | **33.59%** | **32.93%** | **27.52%** | **26.77%** | **18 passed / 0 skipped** | **80 passed / 0 skipped** |
 | **Stage 2 后** | **43.87%** | **43.13%** | **36.74%** | **36.81%** | **22 passed / 0 skipped** | **175 passed / 0 skipped** |
 | **Stage 3 后** | **49.03%** | **48.56%** | **42.89%** | **42.51%** | **22 passed / 0 skipped** | **195 passed / 0 skipped** |
+| **Stage 4 后** | **58.96%** | **58.38%** | **55.18%** | **53.54%** | **35 passed / 0 skipped** | **267 passed / 0 skipped** |
 
 ### 验收证据（Stage 0 / 1）
 
@@ -78,6 +83,14 @@
 - 生产文件逐字节还原，`md5` 校验一致（`5a60374e450719642c1460ffa5aabad0`）
 - 阈值抬到 lines 47 / statements 46 / functions 40 / branches 40，**重跑全量确认通过**（EXIT=0）
 - 类型：`tsc` 干净
+
+### 验收证据（Stage 4）
+
+- 全量 `--coverage`：35 套件 / **267 用例全部通过**；包整体行 **58.96%** / 语句 58.38% / 分支 55.18% / 函数 53.54%
+- 阈值抬到 lines 57 / statements 56 / functions 51 / branches 52，**重跑全量确认通过**
+- 类型：`tsc`（`-p tsconfig.json`，对 `emitDeclarationOnly` 冲突做了等价绕行）对 `src/` **干净**；node_modules 与 babel 产物（`es/`、`lib/`）的既有报错与本次改动无关
+- 反脆弱抽查 4/4：①反转 `EditorBody` 主键空格告警条件 → `warns when the primary key value contains whitespace` 变红；②反转 `StringFormField` 的 split-table 分支 → 重复主键告警 / 跳过重复检查 / 文件名过长 3 个用例变红。改坏后 4 失败、全部命中对应语义用例
+- **抽查用的 2 个生产文件已逐字节还原**（md5 前后一致：`2f43de…` / `63fef6…`），`git status` 确认无残留
 
 ---
 
