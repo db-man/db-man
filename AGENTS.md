@@ -81,6 +81,17 @@ The other four workflows (`merge` / `split` / `validate` / `insights`) are `work
   `jest.moduleNameMapper` works around it. CRA merges object-form config, so defaults survive.
 - **This repo is public.** Everything committed — docs and notes included — is world-readable and
   permanent. No tokens, no personal filesystem paths, no third-party internal information.
+- **A module-level `debounce` is painful to test — shorten it, don't fake time it.** `ListPage`
+  builds `debounce(updateUrl, 500)` at module scope. Rather than mixing `jest.useFakeTimers()` with
+  RTL's `waitFor`, mock the delay: `jest.mock('lodash.debounce', () => (fn) => jest.requireActual('lodash.debounce')(fn, 20))`.
+  The real `updateUrl` and the real `window.location` stay in play, so tests can assert on the URL.
+- **Scope `getByText` to the element when a label is repeated.** On `ListPage` the text `Name` is both
+  a column header and a filter label, so `getByText('Name')` throws "found multiple elements". Pick
+  column headers out of `.ant-table-thead th` by element instead.
+- **`ListPage` fetches twice on mount.** Both `useEffect` blocks in it (`deps: []` and
+  `deps: [props.tableName]`) call `getData`, so every mount issues the same request twice. Not a
+  correctness bug, but it doubles the request count. `docs/plans/2026-10-07-components-ut-coverage.md`
+  §3.9.8 has the fix; a test named `fetches the rows twice on mount` pins the current behaviour.
 - `formatDate` depends on `TZ=Asia/Shanghai`; CI supplies it through `env`, not the test script.
 - Doc drift: root `DEVELOP.md` quotes `"test": "TZ=Asia/Shanghai lerna run test"`, but the real root
   script is `npm run test --workspaces`. `README.md` links `packages/insights`, which does not exist.

@@ -2,7 +2,7 @@
 
 - 日期：2026-10-07
 - 范围：`packages/components`（`@db-man/components`）
-- 状态：**Stage 0 / 1 / 1.5 / 2 已完成并通过验收**；Stage 3–5 待做
+- 状态：**Stage 0 / 1 / 1.5 / 2 / 3 已完成并通过验收**；Stage 4–5 待做
 
 ---
 
@@ -14,7 +14,7 @@
 | 1 复活停用测试 | ✅ 完成 | 3 个停用文件处理完毕：2 个改回 `.test.tsx` 并修正后跑通、1 个转换成 jest 测试后删除原 `.cy.tsx` |
 | 1.5 基线 + 阈值 | ✅ 完成 | `coverageThreshold.global` = lines 31 / statements 30 / functions 24 / branches 25 |
 | 2 逻辑层 | ✅ 完成 | 8 个目标文件全部达标（最低 98.2%），行覆盖 33.59% → **43.87%**；阈值同步抬到 lines 41 / statements 41 / functions 34 / branches 34 |
-| 3 ListPage 深入 | ⬜ 未开始 | — |
+| 3 ListPage 深入 | ✅ 完成 | `ListPage/index.tsx` 行覆盖 68.96% → **100%**（函数 100%、分支 90.62%），5 → 25 个用例；包整体 43.87% → **49.03%**；阈值抬到 lines 47 / statements 46 / functions 40 / branches 40 |
 | 4 表单组件族 | ⬜ 未开始 | — |
 | 5 写路径（可选） | ⬜ 未开始 | — |
 
@@ -26,6 +26,7 @@
 | Stage 0 后（口径变化） | 17.02% | 16.60% | 14.08% | 14.37% | 同上 | 同上 |
 | **Stage 1 后** | **33.59%** | **32.93%** | **27.52%** | **26.77%** | **18 passed / 0 skipped** | **80 passed / 0 skipped** |
 | **Stage 2 后** | **43.87%** | **43.13%** | **36.74%** | **36.81%** | **22 passed / 0 skipped** | **175 passed / 0 skipped** |
+| **Stage 3 后** | **49.03%** | **48.56%** | **42.89%** | **42.51%** | **22 passed / 0 skipped** | **195 passed / 0 skipped** |
 
 ### 验收证据（Stage 0 / 1）
 
@@ -51,6 +52,32 @@
 
 - 阈值同步抬到 lines 41 / statements 41 / functions 34 / branches 34（按新水位向下取整再减 2 点），改完**重跑全量确认通过**（EXIT=0）
 - 类型：`tsc` 仍然干净（新增 4 个测试文件、改写 1 个）
+
+### 验收证据（Stage 3）
+
+`ListPage/index.tsx` 单文件实测（`coverage/coverage-final.json`）：
+
+| 指标 | 起点 | 现在 |
+|---|---|---|
+| 行 | 68.96% | **100%** |
+| 函数 | 71.05% | **100%** |
+| 语句 | 67.94% | **98.71%** |
+| 分支 | 42.18% | **90.62%** |
+
+用例数 5 → 25。剩下的分支缺口经逐条核对**都是构造上不可达的**，不写测试去凑：
+
+| 行 | 代码 | 为什么不可达 |
+|---|---|---|
+| 189 / 190 / 211 / 212 | `pagination.current \|\| defaultPage` 的 `\|\|` 兜底 | antd 的 `Pagination` 与 `ImageCardTable` 的 `onChange` 永远传数字，`current` / `pageSize` 不会是 falsy |
+| 245 / 261 | `if (!rows) return null;` | `renderTable()` 只在 `rows` 非空时被调用（`index.tsx:420` 已先 `if (!rows) return null`） |
+
+- 反脆弱抽查 6/6：分别改坏①`contentTableName !== tableName` 守卫、②`hasVal` 的 `STRING_ARRAY` 判断、③重复主键告警的返回条件、④末页提示文案、⑤`case ImageView:` 分支、⑥去掉重复取数的那个 effect（对照 `fetches the rows twice on mount`）→ 对应用例**全部变红**
+- **抽查过程本身出过两次假信号，都已纠正**：
+  1. 第一轮里有一条 `sed` 因为模式含 `||` 撞上了 `|` 分隔符而**静默失败**，那次结论无效 → 改用 `@` 做分隔符，并在打补丁后 `grep` 确认真的改到了
+  2. 第一轮的 `re-fetches and hides the old rows` 用例在守卫被改坏后**仍然通过**——它验的是用户可见结果（旧行不残留），真正挡住旧行的是 `loading` 态而不是那行守卫。为此**新增** `hides the rows while the context points at a different table`，只让 context 前进、不触发重新取数，从而真正隔离那条守卫（第 6 条抽查已证实它会被改坏代码打红）
+- 生产文件逐字节还原，`md5` 校验一致（`5a60374e450719642c1460ffa5aabad0`）
+- 阈值抬到 lines 47 / statements 46 / functions 40 / branches 40，**重跑全量确认通过**（EXIT=0）
+- 类型：`tsc` 干净
 
 ---
 
@@ -354,12 +381,43 @@ render(
 - 键盘左右翻页：`ArrowRight` / `ArrowLeft`，含首尾边界（`This is the last page!`）
 - 卸载时 `AbortController.abort()`
 
-**坑**：
-- `debounce(updateUrl, 500)` 是**模块级**的，测翻页/筛选需要 `jest.useFakeTimers()` 推进 500ms
-- fake timers 下 `waitFor` 需要配 `advanceTimers`，否则会挂住
+**坑**（计划时的判断，实测后有修正）：
+- `debounce(updateUrl, 500)` 是模块级的 —— 计划里写的是"用 fake timers 推进 500ms"，**实测后没用这条路**：fake timers 和 RTL 的 `waitFor` 混用要到处补 `advanceTimers`，反而更脆。改成用 `jest.mock('lodash.debounce')` 把这个模块级 debounce 的等待缩短到 20ms，保留真实的 `updateUrl` 和真实的 `window.location`，只是跑得快。断言落在 **URL 上**（`window.location.search` 含 `page=2` / `filter=...` / `sorter=...`），比断言一个 mock 更强
 - `window.scrollTo` 已由 Stage 0 垫片解决
 
-**目标**：`ListPage/index.tsx` 行覆盖 **≥60%**（当前 6.4%，其中 6.4% 还只是模块顶层语句）。
+**目标**：`ListPage/index.tsx` 行覆盖 **≥60%**。
+
+**执行结果（已完成）**：行覆盖 **100%**（函数 100%、语句 98.71%、分支 90.62%），5 → 24 个用例。目标超额完成。
+
+覆盖到的行为（每条都对应一个用例）：
+
+| 用例 | 覆盖的分支 |
+|---|---|
+| 加载中显示 `Loading iam/users ...` | `index.tsx:83, 228, 418` |
+| 成功渲染行数据 | 主路径 |
+| 失败渲染 error Alert | `index.tsx:237-240` |
+| 重复主键告警 | `alertDuplicatedRowKey`（244-257） |
+| 主键缺失告警 | `alertTableDataInvalid`（259-283） |
+| 筛选框改变结果集 | `handleFilterChange`（172-182） |
+| 从 URL 读 sorter 排序 / 无 sorter 时按 createdAt 降序 | `index.tsx:109-112`、`getColumnSortOrder` |
+| `type:listPage: "HIDE"` 的列被过滤掉 | `index.tsx:294` |
+| 每行的 Update / Detail 链接（含 `encodeURIComponent`） | `index.tsx:357-387` |
+| `referenceTable` 列的 Popover 与 Ref Table 链接 | `index.tsx:312-337` |
+| `STRING_ARRAY` 列为空时不渲染 Popover | `index.tsx:314-320` |
+| `tableName` 变化时隐藏旧表数据并重新取数 | `index.tsx:168-170` |
+| context 指向别的表时不渲染表格（真正隔离 `contentTableName` 守卫） | `index.tsx:394` |
+| 切到 Image View 并翻页（`handleCardTableChange`） | `index.tsx:210-218, 425-438` |
+| Image View 缺 key 列时报警 | `ImageCardTable` 的 `!imgKey` 分支 |
+| URL 里是未知 view 时什么都不渲染 | `index.tsx:448-449`（default 分支） |
+| 切到 Random View 并改 pageSize（`handleRandomListChange`） | `index.tsx:220-225, 439-446` |
+| 用表格分页器翻页（`handleTableChange` 分页分支） | `index.tsx:189-190, 197-206` |
+| 点列头排序、再点一次反向（`handleTableChange` 排序分支） | `index.tsx:191-196` |
+| 左右方向键翻页 + 首尾边界提示 | `index.tsx:129-159` |
+| 焦点在筛选框里时方向键不翻页 | `index.tsx:131-134` |
+| 其它按键无反应 | `index.tsx:147` 的 else 分支 |
+| 未知列类型时回退成渲染原始值 | `index.tsx:308-310, 313` |
+| 挂载时取两次数（钉住既有缺陷，见 §3.9.8） | `index.tsx:106-120, 168-170` |
+| 卸载时 abort 在途请求 | `index.tsx:114-119` |
 
 ---
 
@@ -489,6 +547,29 @@ const handleAddRow = () => {
 
 ---
 
+### 3.9.8 `ListPage` 挂载时会发两次同样的请求（Stage 3 发现）
+
+`ListPage` 上有两个都会在挂载时运行的 effect：
+
+```tsx
+useEffect(() => {
+  getData(tableName);            // index.tsx:106-120，deps 是 []
+  ...
+}, []);
+
+useEffect(() => {
+  getData(props.tableName);      // index.tsx:168-170，deps 是 [props.tableName]
+}, [props.tableName]);
+```
+
+两个 effect 的依赖都让它们在**首次挂载时各跑一次**，两次都用同一个 `tableName`，所以每次进入 List 页都会**发出两次完全相同的取数请求**。这两个 effect 本身没错（一个管挂载、一个管后续的 tableName 变化），问题是挂载时职责重叠了。
+
+影响：多一次网络请求（对 GitHub API 来说是白耗配额）。不影响正确性——两次结果一样，`setRows` 用后到的那个。
+
+已用一个显式命名的用例 `fetches the rows twice on mount` 钉住现状（断言 `toHaveBeenCalledTimes(2)`），将来谁修好了这条，测试会提醒他改断言。修法：删掉 168-170 那个 effect，把 `props.tableName` 的取值搬进第一个 effect 的依赖里。
+
+---
+
 ## 4. 硬性纪律（给执行者）
 
 1. **不要在模块作用域用 `jest.fn()` 配 mock**。`resetMocks: true` 会清空。放 `beforeEach` 或 `it` 内部。这是本仓库最容易踩的坑（§1.2）。
@@ -498,6 +579,8 @@ const handleAddRow = () => {
 5. **不要留 `.skip`**。已停用的测试要么救活要么删，不留中间态。
 6. **不要顺手改被测生产代码的行为**。若测试确实需要生产代码配合（例如加 `data-testid`），单独列出来先说明，不要夹带。
 7. **写完必须跑 `tsc` 类型检查**。`build.sh` 末尾有 `tsc`，测试文件也在 `tsconfig.json` 的 `include` 里，测试代码类型不过会让 `npm run build` 变红。命令见 §8。
+8. **DOM 断言要对准元素，不要只按文字找**。`getByText('Name')` 在 `ListPage` 上会同时命中"表头单元格"和"表格上方的筛选标签"，报错信息还只说"找到多个"。列头要用 `.ant-table-thead th` 里按元素挑（见 `clickColumnHeader`）。
+9. **改坏代码做抽查时，先确认补丁真的生效**。Stage 3 第一轮抽查里有个 `sed` 因为模式中含 `||` 撞了 `|` 分隔符而静默失败，那一条抽查结果是无效的；另外"改坏守卫但用例仍绿"暴露的是**测试写得太松**（真正的保护来自上层的 loading 态，不是被改的那行）。抽查必须能区分"补丁没生效"和"测试没覆盖"。
 
 ---
 
@@ -518,6 +601,8 @@ const handleAddRow = () => {
 2. 该 Stage 的目标文件覆盖率达标
 3. `coverageThreshold` 不下降
 4. **反脆弱抽查**：随机挑 3 个本 Stage 新增的测试，临时改坏对应生产代码，确认测试变红，再改回
+   - 抽查时必须**先确认补丁真的生效**（`grep` 一下），否则会把"补丁没应用"误读成"测试没覆盖"（§4 第 9 条）
+   - 抽查完后生产文件要**逐字节还原并用 `md5` 校验**，不能靠 `git checkout`
 
 ---
 
@@ -527,7 +612,7 @@ const handleAddRow = () => {
 |---|---|---|
 | Stage 0 改变分母 | 旧基线 16.3% 立即作废，拿它对比新阈值会得出错误结论 | 0.4 强制重测后再填阈值 |
 | 阈值形同虚设 | 只加 `coverageThreshold` 但不带 `--coverage`，jest 不收集覆盖率，校验不发生 | 0.3 同步改脚本 + CI |
-| fake timers 与 `waitFor` 冲突 | `waitFor` 在 fake timers 下默认不推进时间，用例会挂住超时 | 用 `waitFor(..., { advanceTimers: jest.advanceTimersByTime })`；或先 `jest.useRealTimers()` 再断言 |
+| fake timers 与 `waitFor` 冲突 | `waitFor` 在 fake timers 下默认不推进时间，用例会挂住超时 | **实际做法：根本不用 fake timers。** 需要推进"模块级 debounce"时改用 `jest.mock('lodash.debounce')` 把等待缩短（Stage 3） |
 | `Settings/helpers.ts` 无法注入 | `reloadDbsSchemaAsync` 内部 `new Github(...)` | 必须 `jest.mock('@db-man/github')`，照抄 `UpdatePage/helpers.test.ts` |
 | jsdom 无 `indexedDB` | `utils/indexedDBHelpers.ts` 直接用 `indexedDB` | 引入 `fake-indexeddb`，或把纯逻辑抽出来单独测（二选一，需先确认） |
 | split-table 分支漏测 | `appModes` 含 `'split-table'` 与否走完全不同的写路径 | Stage 5 每个用例成对写（开/关各一） |
@@ -535,16 +620,17 @@ const handleAddRow = () => {
 | 停用测试的原始意图丢失 | 3 个文件来自被压平的 `init` 提交，`git log` 查不到停用原因 | Stage 1 逐个判断「救活 or 删」，不猜原因 |
 | `.t.tsx` 命名惯例 | 仓库用 `.t.tsx` 表示"停用的测试"，容易被后人误解为别的东西 | Stage 1 已删除这两个文件，并从 `collectCoverageFrom` 移除 `!src/**/*.t.*`（留着会静默隐藏将来出现的 `.t.tsx`） |
 
-### 已消解的风险（截至 Stage 2）
+### 已消解的风险（截至 Stage 3）
 
 | 原风险 | 现状 |
 |---|---|
-| Stage 0 改变分母，旧基线作废 | 已重测：17.02% → Stage 1 后 33.59% → Stage 2 后 43.87%，阈值每次按新数字定 |
-| 阈值形同虚设（不带 `--coverage`） | 已验证：临时抬高阈值时 jest 确实报 `threshold not met`；Stage 2 抬到 41/41/34/34 后重跑仍绿 |
+| Stage 0 改变分母，旧基线作废 | 已重测：17.02% → 33.59% → 43.87% → **49.03%**，阈值每次按新数字定 |
+| 阈值形同虚设（不带 `--coverage`） | 已验证：临时抬高阈值时 jest 确实报 `threshold not met`；Stage 3 抬到 47/46/40/40 后重跑仍绿 |
 | `@uiw/react-json-view` 子路径 jest 解析不了 | 已用 `moduleNameMapper` 修好（§3.9.1） |
 | 测试代码类型不过会让 `npm run build` 变红 | 已加纪律第 7 条 + 每次跑 `tsc` 检查 |
-| jsdom 无 `indexedDB` | 已消解，**没有引入新依赖**：用手写 request 对象直接触发 `onsuccess`/`onerror`（Stage 2，见上表） |
-| fake timers 与 `waitFor` 冲突 | 已消解：两者在**不同文件**里用——`Settings/helpers.test.ts` 用 fake timers 且不调 `waitFor`；`EditableTable/index.test.tsx` 用 `waitFor` 且不碰 fake timers。同一文件里混用才会撞上 |
+| jsdom 无 `indexedDB` | 已消解，**没有引入新依赖**：用手写 request 对象直接触发 `onsuccess`/`onerror`（Stage 2） |
+| fake timers 与 `waitFor` 冲突 | 已消解：Stage 2 把两者分开在不同文件用；Stage 3 更进一步，**完全不用 fake timers**，改用 `jest.mock('lodash.debounce')` 缩短模块级 debounce |
+| 空断言导致数字虚高 | Stage 3 抽查时又抓到一次：一个用例在守卫被改坏后仍绿（真正的保护来自上层 loading 态）。已改用能真正隔离该守卫的写法，并复测确认变红（§6 第 4 条） |
 
 ---
 
