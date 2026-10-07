@@ -133,3 +133,7 @@ dist
 .DS_Store
 .nx/cache
 .nx/workspace-data
+
+# Agent-private scratch. Platform-injected, not shared, not reviewable.
+# Durable project conventions belong in AGENTS.md, not here.
+.workbuddy/
