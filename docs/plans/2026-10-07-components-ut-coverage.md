@@ -2,7 +2,7 @@
 
 - 日期：2026-10-07
 - 范围：`packages/components`（`@db-man/components`）
-- 状态：**Stage 0 / 1 / 1.5 已完成并通过验收**；Stage 2–5 待做
+- 状态：**Stage 0 / 1 / 1.5 / 2 已完成并通过验收**；Stage 3–5 待做
 
 ---
 
@@ -13,7 +13,7 @@
 | 0 脚手架与口径 | ✅ 完成 | 分母 104 → 90 个文件；`*Demo` / `*.cy` / `*.t` / 入口文件已剔除；新增 `npm run test:coverage`；CI 增加带覆盖率的步骤 |
 | 1 复活停用测试 | ✅ 完成 | 3 个停用文件处理完毕：2 个改回 `.test.tsx` 并修正后跑通、1 个转换成 jest 测试后删除原 `.cy.tsx` |
 | 1.5 基线 + 阈值 | ✅ 完成 | `coverageThreshold.global` = lines 31 / statements 30 / functions 24 / branches 25 |
-| 2 逻辑层 | ⬜ 未开始 | — |
+| 2 逻辑层 | ✅ 完成 | 8 个目标文件全部达标（最低 98.2%），行覆盖 33.59% → **43.87%**；阈值同步抬到 lines 41 / statements 41 / functions 34 / branches 34 |
 | 3 ListPage 深入 | ⬜ 未开始 | — |
 | 4 表单组件族 | ⬜ 未开始 | — |
 | 5 写路径（可选） | ⬜ 未开始 | — |
@@ -25,13 +25,32 @@
 | 起点 | 16.33% | 15.96% | 13.87% | 13.64% | 14 passed / 1 skipped | 63 passed / 1 skipped |
 | Stage 0 后（口径变化） | 17.02% | 16.60% | 14.08% | 14.37% | 同上 | 同上 |
 | **Stage 1 后** | **33.59%** | **32.93%** | **27.52%** | **26.77%** | **18 passed / 0 skipped** | **80 passed / 0 skipped** |
+| **Stage 2 后** | **43.87%** | **43.13%** | **36.74%** | **36.81%** | **22 passed / 0 skipped** | **175 passed / 0 skipped** |
 
-### 验收证据
+### 验收证据（Stage 0 / 1）
 
 - 反脆弱抽查 4/4：分别改坏 `ListPage` 的失败提示文案、重复主键告警、`DbTablePage` 的 404 分支、`SettingSwitch` 写 localStorage 的分支 → 对应测试**全部变红**；改回后全绿
 - 阈值真实生效：临时把 `lines` 抬到 99，jest 报 `"global" coverage threshold for statements (30%) not met: 0.43%` → 证明阈值确实被校验（不是假动作）
 - 类型：`tsc --noEmit`（沿用 `tsconfig.json`）干净 —— 这一点必须守住，因为 `build.sh` 会跑 `tsc`
 - 抽查用的 3 个生产文件已逐字节还原，`git status` 确认未残留改动
+
+### 验收证据（Stage 2）
+
+逐文件实测（`coverage/coverage-summary.json`，行覆盖）：
+
+| 文件 | 起点 | 现在 | 目标 | |
+|---|---|---|---|---|
+| `src/components/EditorBody/helpers.ts` | 32.4% | **100%** | ≥90% | ✅ |
+| `src/pages/Settings/helpers.ts` | 5.9% | **98.5%** | ≥80% | ✅ |
+| `src/pages/DbTablePage/ListPage/helpers.ts` | 46.6% | **100%** | ≥90% | ✅ |
+| `src/utils.ts` | 23.8% | **100%** | ≥80% | ✅ |
+| `src/dbs.ts` | 45% | **100%** | ≥80% | ✅ |
+| `src/utils/indexedDBHelpers.ts` | 0% | **100%** | ≥70% | ✅ |
+| `src/components/EditableTable/index.tsx` | 29% | **98.2%** | ≥70% | ✅ |
+| `src/components/EditableTable/EditableCell.tsx` | 64% | **100%** | ≥70% | ✅ |
+
+- 阈值同步抬到 lines 41 / statements 41 / functions 34 / branches 34（按新水位向下取整再减 2 点），改完**重跑全量确认通过**（EXIT=0）
+- 类型：`tsc` 仍然干净（新增 4 个测试文件、改写 1 个）
 
 ---
 
@@ -291,6 +310,20 @@ CRA 允许在 `package.json` 里覆盖的 jest 键有白名单（`createJestConf
 
 **验收**：上表文件行覆盖达标；断言针对行为（输入 → 输出），不是快照。
 
+#### Stage 2 执行记录（已完成）
+
+| 文件 | 测试文件 | 用例数 | 实际手法 |
+|---|---|---|---|
+| `EditorBody/helpers.ts` | `EditorBody/helpers.test.ts`（原文件只有 2 个用例，在其上补齐） | 25 | 纯函数直测；`checkFieldValue` 补上 250/251 字符的边界 |
+| `ListPage/helpers.ts` | `ListPage/helpers.test.ts`（原有 6 个用例，追加到 29） | 29 | URL 相关用 `window.history.pushState` 改地址再断言；顺带测了原计划漏掉的 `getInitialSorterFromUrl` |
+| `Settings/helpers.ts` | `Settings/helpers.test.ts`（新建） | 15 | `jest.mock('@db-man/github')` 桩掉 `Github` 构造器；`jest.mock('../../utils')` 桩掉 `errMsg` 让错误路径安静且可计数；`messageApi` 用桩对象；`jest.useFakeTimers()` 吃掉 3 秒后的 reload |
+| `utils.ts` | `utils.test.js`（原有 1 个用例，追加到 7） | 7 | `downloadImage` 需要 `fetch` / `Headers` / `URL.createObjectURL`，jsdom 三样都没有 → 测试里补桩，并 spy `HTMLAnchorElement.prototype.click` 读 `download` 属性 |
+| `dbs.ts` | `dbs.test.ts`（新建） | 13 | 直接改 `localStorage` 再调 |
+| `utils/indexedDBHelpers.ts` | `indexedDBHelpers.test.ts`（新建） | 6 | **没有引入 `fake-indexeddb`**；这三个函数本质是「回调 API → Promise」的适配层，用手写的 request 对象手动触发 `onsuccess` / `onerror` 就够，且不需要新依赖 |
+| `EditableTable` | `EditableTable/index.test.tsx`（新建） | 9 | 用 RTL 跑真实交互：增行 / 填值 / 保存 / 必填校验 / 取消 / 删除（Popconfirm 点确认）；`getColumns` 照抄真实调用方的 `onCell` 写法 |
+
+关键发现：`reloadDbsSchemaAsync` 里的 `validateDbsSchame` **没有导出**，无法直接单测。改成走 `reloadDbsSchemaAsync` 的完整路径来验它（喂一份有缺陷的 schema，断言拒绝保存），代价是每条用例都要铺一遍 mock。这比为了好测去改生产代码的导出边界更划算（§4 纪律第 6 条）。
+
 ---
 
 ### Stage 3 — ListPage 真正测起来（全包最大单文件，506 行）
@@ -364,7 +397,7 @@ render(
 
 ## 3.9 执行中新发现的既有生产问题（**本次未改**，需决策）
 
-写测试的过程中撞出 5 个既有问题。按 §4 纪律第 6 条（不顺手改生产代码行为），本次一律**只记录、不修**。前 3 个建议单独修。
+写测试的过程中撞出 7 个既有问题（3.9.1–3.9.7）。按 §4 纪律第 6 条（不顺手改生产代码行为），本次一律**只记录、不修**。3.9.1–3.9.3 以及在 3.9.6 / 3.9.7 建议单独修。
 
 ### 3.9.1 jest 解析不了 `@uiw/react-json-view/light`（已修）
 
@@ -420,6 +453,40 @@ return dbs2[dbName].tables || [];                        // 但没守卫"schema 
 
 本次的处理方式写在 `SettingSwitch.test.tsx` 里：整个替换 `window.location` 对象。
 
+### 3.9.6 `Settings/helpers.ts::validateDbsSchame` 的"缺 columns"分支一进就崩（Stage 2 发现）
+
+```ts
+if (!table.columns) {
+  errors.push(`Missing table columns, tableName: ${table.name}, dbName:${dbName}`);
+}
+table.columns.forEach((column, colIndex) => { ... });   // ← columns 是 undefined 时这里抛
+```
+
+守卫把错误收集起来了，但紧接着无条件调 `table.columns.forEach`，所以一份「表缺 `columns` 字段」的 dbcfg.json 不会得到那句友好提示，而是直接抛 `TypeError`，冒泡出 `reloadDbsSchemaAsync`。
+
+注意 `columns: []`（空数组）**不会**触发——空数组是 truthy，走进了 `forEach` 什么都不做。只有字段真的缺失才崩。
+
+已用一个明确标注的用例把当前行为钉住（`Settings/helpers.test.ts` → `should throw instead of reporting a table without a columns field`）。修法就是在 `forEach` 外面加一层 `if (table.columns)`。
+
+### 3.9.7 `EditableTable` 的"只允许编辑一行"守卫盖不住新增的行（Stage 2 发现）
+
+```tsx
+const handleAddRow = () => {
+  ...
+  setEditingKey(newData[newData.length - 1][rowKey] as string);   // 新行的 rowKey 是 ''
+};
+...
+<Button disabled={editingKey !== ''} onClick={handleAddRow}>Add</Button>
+```
+
+新行的 key 恒为 `''`，而 `''` 正好是"没在编辑任何行"的哨兵值。于是：
+
+- 点 Add 之后 `editingKey` 变成 `''`，`disabled={editingKey !== ''}` 不成立 → **Add 按钮没被禁用，可以连点，连点就会插入多个空行**
+- 边上的 Edit 链接也没被禁用（`disabled={editingKey !== ''}`，同样不成立）
+- 编辑新行本身是靠 `isEditing(record) => record[rowKey] === editingKey` 生效的（`'' === ''`），属于**碰巧能用**
+
+已用两个用例钉住现状：一个断言「编辑已有行时 Add 被禁用」（守卫的正向路径），一个显式断言「新增行后 Add 仍是可点的」并注明原因。修法是给哨兵换一个不可能是真实 key 的值（例如 `null`）。
+
 ---
 
 ## 4. 硬性纪律（给执行者）
@@ -468,14 +535,16 @@ return dbs2[dbName].tables || [];                        // 但没守卫"schema 
 | 停用测试的原始意图丢失 | 3 个文件来自被压平的 `init` 提交，`git log` 查不到停用原因 | Stage 1 逐个判断「救活 or 删」，不猜原因 |
 | `.t.tsx` 命名惯例 | 仓库用 `.t.tsx` 表示"停用的测试"，容易被后人误解为别的东西 | Stage 1 已删除这两个文件，并从 `collectCoverageFrom` 移除 `!src/**/*.t.*`（留着会静默隐藏将来出现的 `.t.tsx`） |
 
-### 已消解的风险（Stage 0/1 完成时）
+### 已消解的风险（截至 Stage 2）
 
 | 原风险 | 现状 |
 |---|---|
-| Stage 0 改变分母，旧基线作废 | 已重测：17.02% → Stage 1 后 33.59%，阈值按新数字定 |
-| 阈值形同虚设（不带 `--coverage`） | 已验证：临时抬高阈值时 jest 确实报 `threshold not met` |
+| Stage 0 改变分母，旧基线作废 | 已重测：17.02% → Stage 1 后 33.59% → Stage 2 后 43.87%，阈值每次按新数字定 |
+| 阈值形同虚设（不带 `--coverage`） | 已验证：临时抬高阈值时 jest 确实报 `threshold not met`；Stage 2 抬到 41/41/34/34 后重跑仍绿 |
 | `@uiw/react-json-view` 子路径 jest 解析不了 | 已用 `moduleNameMapper` 修好（§3.9.1） |
 | 测试代码类型不过会让 `npm run build` 变红 | 已加纪律第 7 条 + 每次跑 `tsc` 检查 |
+| jsdom 无 `indexedDB` | 已消解，**没有引入新依赖**：用手写 request 对象直接触发 `onsuccess`/`onerror`（Stage 2，见上表） |
+| fake timers 与 `waitFor` 冲突 | 已消解：两者在**不同文件**里用——`Settings/helpers.test.ts` 用 fake timers 且不调 `waitFor`；`EditableTable/index.test.tsx` 用 `waitFor` 且不碰 fake timers。同一文件里混用才会撞上 |
 
 ---
 
