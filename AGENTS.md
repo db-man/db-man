@@ -91,3 +91,6 @@ The other four workflows (`merge` / `split` / `validate` / `insights`) are `work
   freely, but do not edit or merge someone else's** — add your own file instead.
 - Plans are written for a downstream executor and must be self-contained: exact commands, paths,
   mock shapes, and acceptance criteria.
+- Multiple agents may work in this tree at the same time. Stage and commit only the files you
+  changed — do not sweep someone else's in-flight edits into your commit. If files you did not
+  touch show up as modified, leave them alone and say so.
