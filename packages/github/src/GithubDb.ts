@@ -1,6 +1,12 @@
 import { Base64 } from 'js-base64';
 
-import { DatabaseMap, DatabaseSchema, UpdateFileType, DbTable } from './types';
+import {
+  DatabaseMap,
+  DatabaseSchema,
+  UpdateFileType,
+  DbTable,
+  PrimaryKeyVal,
+} from './types';
 import { DB_CFG_FILENAME } from './constants';
 import {
   getDataFileName,
@@ -132,7 +138,7 @@ export default class GithubDb {
    * @param {string|number} primaryKeyVal
    * @returns Path for GitHub, e.g. dbs/iam/users/1.json
    */
-  getRecordPath(dbName, tableName, primaryKeyVal: string | number) {
+  getRecordPath(dbName, tableName, primaryKeyVal: PrimaryKeyVal) {
     return `${
       this.LS_KEY_GITHUB_REPO_PATH
     }/${dbName}/${tableName}/${getRecordFileName(primaryKeyVal)}`;
@@ -275,7 +281,7 @@ export default class GithubDb {
   getRecordFileContentAndSha(
     dbName: string,
     tableName: string,
-    primaryKeyVal: string,
+    primaryKeyVal: PrimaryKeyVal,
     signal?: AbortSignal,
   ) {
     const path = this.getRecordPath(dbName, tableName, primaryKeyVal);

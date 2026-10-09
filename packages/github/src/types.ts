@@ -169,3 +169,12 @@ export type DeleteFileType = {
   sha: RestEndpointMethodTypes['repos']['deleteFile']['parameters']['sha'];
   message: string;
 };
+
+/**
+ * A primary key value.
+ *
+ * The primary column of a table may be declared as `STRING` or as `NUMBER`, so
+ * both are legal here. Converting a primary key value into a file name happens
+ * in exactly one place: `utils.getRecordFileName`.
+ */
+export type PrimaryKeyVal = string | number;

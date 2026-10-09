@@ -273,22 +273,42 @@ describe('GithubDb', () => {
   });
 
   describe('getRecordFileContentAndSha', () => {
-    it('should read the record file with the primary key in the path', async () => {
+    it('should read the record file for a string primary key', async () => {
       mockGithub.getFileContentAndSha.mockResolvedValueOnce({
-        content: [{ id: 1 }],
+        content: [{ code: 'ADMIN' }],
         sha: 'r1',
       });
 
-      // `primaryKeyVal` is declared as string even though getRecordPath() and
-      // getRecordFileName() both accept numbers — see the registered issue in
-      // the report; not widened here, this change is tests only.
-      const res = await gd.getRecordFileContentAndSha('iam', 'users', '1');
+      const res = await gd.getRecordFileContentAndSha('iam', 'roles', 'ADMIN');
 
       expect(mockGithub.getFileContentAndSha).toHaveBeenCalledWith(
-        'dbs/iam/users/1.json',
+        'dbs/iam/roles/ADMIN.json',
         undefined,
       );
       expect(res.sha).toBe('r1');
+    });
+
+    // The primary column may be declared as NUMBER (see
+    // packages/cli/__test_dbs_dir__/iam/dbcfg.json and Github.tt.ts, which uses
+    // date.valueOf()). A numeric value is therefore a legal input, not a
+    // caller mistake — do not "fix" this test by passing a string.
+    it('should read the record file for a numeric primary key', async () => {
+      mockGithub.getFileContentAndSha.mockResolvedValueOnce({
+        content: [{ userId: 1744820403529 }],
+        sha: 'r2',
+      });
+
+      const res = await gd.getRecordFileContentAndSha(
+        'iam',
+        'users',
+        1744820403529,
+      );
+
+      expect(mockGithub.getFileContentAndSha).toHaveBeenCalledWith(
+        'dbs/iam/users/1744820403529.json',
+        undefined,
+      );
+      expect(res.sha).toBe('r2');
     });
   });
 

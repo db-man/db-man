@@ -1,3 +1,5 @@
+import type { PrimaryKeyVal } from './types';
+
 // // Check something like: "Failed to load resource: the server responded with a status of 409 ()"
 // const _checkError = (response) => {
 //   if (!response.ok) {
@@ -34,7 +36,7 @@ export const getDataFileName = (tableName: string) => `${tableName}.data.json`;
 export const getInsightsFileName = (tableName: string) =>
   `${tableName}.insights.gitlog`;
 
-export const getRecordFileName = (primaryKeyVal: string | number) => {
+export const getRecordFileName = (primaryKeyVal: PrimaryKeyVal) => {
   if (typeof primaryKeyVal === 'number') {
     return `${validFilename(String(primaryKeyVal))}.json`;
   }
