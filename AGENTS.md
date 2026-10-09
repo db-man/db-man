@@ -92,6 +92,16 @@ The other four workflows (`merge` / `split` / `validate` / `insights`) are `work
   `deps: [props.tableName]`) call `getData`, so every mount issues the same request twice. Not a
   correctness bug, but it doubles the request count. `docs/plans/2026-10-07-components-ut-coverage.md`
   §3.9.8 has the fix; a test named `fetches the rows twice on mount` pins the current behaviour.
+- **`coverage/coverage-summary.json` goes stale — read the stdout table instead.** CRA writes
+  `coverage-final.json` + lcov + text + clover by default, not a *summary*. The summary file only
+  appears when you ask for it (`--coverageReporters=json-summary`), so an old copy can sit in
+  `coverage/` and answer with the numbers of a run from days ago. Either read the text table jest
+  prints, or write to a scratch dir: `--coverageReporters=json-summary --coverageDirectory=/tmp/cov`.
+  To measure a few files without paying for the full ~5 minute run, add `--testPathPattern`.
+- **antd `Table` inserts a hidden measure row.** The first `tbody tr` is
+  `.ant-table-measure-row` (`aria-hidden`, zero height), so indexing `tbody tr` is off by one and
+  "expect N rows" fails at N+1. Query `tr.ant-table-row` instead. Related: `react-simple-code-editor`
+  renders a contenteditable `div.npm__react-simple-code-editor__textarea`, not a `textarea`.
 - `formatDate` depends on `TZ=Asia/Shanghai`; CI supplies it through `env`, not the test script.
 - Doc drift: root `DEVELOP.md` quotes `"test": "TZ=Asia/Shanghai lerna run test"`, but the real root
   script is `npm run test --workspaces`. `README.md` links `packages/insights`, which does not exist.
