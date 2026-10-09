@@ -2,7 +2,7 @@
 
 - 日期：2026-10-07
 - 范围：`packages/components`（`@db-man/components`）
-- 状态：**Stage 0 / 1 / 1.5 / 2 / 3 / 4 已完成并通过验收**；Stage 5 待做
+- 状态：**Stage 0 / 1 / 1.5 / 2 / 3 / 4 / 5 全部完成并通过验收**
 
 ---
 
@@ -16,7 +16,7 @@
 | 2 逻辑层 | ✅ 完成 | 8 个目标文件全部达标（最低 98.2%），行覆盖 33.59% → **43.87%**；阈值同步抬到 lines 41 / statements 41 / functions 34 / branches 34 |
 | 3 ListPage 深入 | ✅ 完成 | `ListPage/index.tsx` 行覆盖 68.96% → **100%**（函数 100%、分支 90.62%），5 → 25 个用例；包整体 43.87% → **49.03%**；阈值抬到 lines 47 / statements 46 / functions 40 / branches 40 |
 | 4 表单组件族 | ✅ 完成 | 新增 13 个测试文件 / 72 个用例（FormValidations、StringFormField(Value)、Select/RadioGroupFormField、两个 FieldWrapper、EditorBody 15 用例、RefTableLink(s)、DistinctColumn、JsonEditor、一行断言级小组件合集）；包整体行覆盖 49.03% → **58.96%**（语句 58.38 / 分支 55.18 / 函数 53.54）；阈值抬到 lines 57 / statements 56 / functions 51 / branches 52 |
-| 5 写路径（可选） | ⬜ 未开始 | — |
+| 5 写路径 | ✅ 完成 | 6 个目标文件全部覆盖：CreatePage(264) / UpdatePage(305) / SchemaPage(253) / CreateDb(141) / CreateTableForm(141) / DbConnections(215)；新增 6 个测试文件 / 48 个用例；单文件行覆盖 93.51%–100%；包整体 58.96% → **76.1%**（语句 75.25 / 分支 64.91 / 函数 68.11）；阈值抬到 lines 74 / statements 73 / functions 66 / branches 63 |
 
 ### release.sh 决策（2026-10-08 用户拍板）
 
@@ -32,6 +32,7 @@
 | **Stage 2 后** | **43.87%** | **43.13%** | **36.74%** | **36.81%** | **22 passed / 0 skipped** | **175 passed / 0 skipped** |
 | **Stage 3 后** | **49.03%** | **48.56%** | **42.89%** | **42.51%** | **22 passed / 0 skipped** | **195 passed / 0 skipped** |
 | **Stage 4 后** | **58.96%** | **58.38%** | **55.18%** | **53.54%** | **35 passed / 0 skipped** | **267 passed / 0 skipped** |
+| **Stage 5 后** | **76.10%** | **75.25%** | **64.91%** | **68.11%** | **41 passed / 0 skipped** | **315 passed / 0 skipped** |
 
 ### 验收证据（Stage 0 / 1）
 
@@ -91,6 +92,27 @@
 - 类型：`tsc`（`-p tsconfig.json`，对 `emitDeclarationOnly` 冲突做了等价绕行）对 `src/` **干净**；node_modules 与 babel 产物（`es/`、`lib/`）的既有报错与本次改动无关
 - 反脆弱抽查 4/4：①反转 `EditorBody` 主键空格告警条件 → `warns when the primary key value contains whitespace` 变红；②反转 `StringFormField` 的 split-table 分支 → 重复主键告警 / 跳过重复检查 / 文件名过长 3 个用例变红。改坏后 4 失败、全部命中对应语义用例
 - **抽查用的 2 个生产文件已逐字节还原**（md5 前后一致：`2f43de…` / `63fef6…`），`git status` 确认无残留
+
+### 验收证据（Stage 5）
+
+逐文件实测（`--coverageReporters=json-summary`，只跑 Stage 5 的 6 个套件）：
+
+| 文件 | 行 | 语句 | 函数 | 分支 |
+|---|---|---|---|---|
+| `SchemaPage.tsx` | **100%** | 100% | 94.11% | 92.85% |
+| `CreateDb/index.tsx` | 96.55% | 96.66% | 85.71% | 60% |
+| `CreateTable/CreateTableForm.tsx` | 96.55% | 96.66% | 85.71% | 60% |
+| `Settings/DbConnections.tsx` | 96.49% | 95.00% | 94.11% | 66.66% |
+| `CreatePage.tsx` | 96.29% | 96.29% | 93.33% | 83.33% |
+| `UpdatePage/index.tsx` | 93.51% | 93.63% | 94.73% | **100%** |
+
+- 全量 `--coverage`：41 套件 / **315 用例全部通过**；包整体行 **76.1%** / 语句 75.25% / 分支 64.91% / 函数 68.11%
+- 阈值抬到 lines 74 / statements 73 / functions 66 / branches 63，**重跑全量确认通过**
+- 类型：`tsc` 对 `src/` 干净（修掉了 3 个新测试里的类型错误：`NodeList` 展开需 `Array.from`、`jest.fn` 需显式 blob 参数）
+- 反脆弱抽查 9/9：①反转 `UpdatePage.handleDelete` 的 split-table 判断 → 删除记录 / 不支持删除 2 个用例变红；②反转 `CreatePage.getData` 的 `if (!isSplitTable())` → 挂载取整表等 7 个用例变红。合计 9 失败，全部命中对应语义用例
+- 抽查用的 2 个生产文件已逐字节还原（md5 前后一致：`2a4c33…` / `d93512…`），`git status` 确认无残留
+
+**给后续接手者的提示**：两个写页面都用真实 `EditorBody` 渲染表单、用 `PageContext` 注入 `githubDb` 桩对象，无需 mock `@db-man/github` 模块；`CreateDb` / `CreateTableForm` 唯一的外部副作用 `reloadDbsSchemaAsync` 走 `jest.mock('./helpers')`；`DbConnections` 的 `storage` 本来就是 prop，直接注入桩对象即可。
 
 ---
 
@@ -453,7 +475,7 @@ render(
 
 ---
 
-### Stage 5（可选，建议单独排期）— 页面写路径
+### Stage 5 — 页面写路径（✅ 已完成）
 
 `CreatePage.tsx`(264)、`UpdatePage/index.tsx`(305)、`SchemaPage.tsx`(253)、`CreateDb/index.tsx`(141)、`CreateTable/CreateTableForm.tsx`(141)、`Settings/DbConnections.tsx`(215)。
 
@@ -464,11 +486,13 @@ render(
 
 建议不要和 Stage 0–4 混在一个 PR 里。
 
+**落地结果**：按上面的三条约束逐条守住 —— 写操作全部断言到 `updateTableFile` / `updateRecordFile` / `deleteRecordFile` / `createDatabaseSchema` / `createTableSchema` 的**实参**（不是"被调用过"），split-table 与非 split-table 两条分支在 `CreatePage` / `UpdatePage` 里都各有一组用例，且没有为凑覆盖率写渲染快照。实际新增 48 个用例，成本符合预期。
+
 ---
 
 ## 3.9 执行中新发现的既有生产问题（**本次未改**，需决策）
 
-写测试的过程中撞出 7 个既有问题（3.9.1–3.9.7）。按 §4 纪律第 6 条（不顺手改生产代码行为），本次一律**只记录、不修**。3.9.1–3.9.3 以及在 3.9.6 / 3.9.7 建议单独修。
+写测试的过程中撞出 9 个既有问题（3.9.1–3.9.9）。按 §4 纪律第 6 条（不顺手改生产代码行为），本次一律**只记录、不修**。3.9.1–3.9.3 以及在 3.9.6 / 3.9.7 / 3.9.9 建议单独修。
 
 ### 3.9.1 jest 解析不了 `@uiw/react-json-view/light`（已修）
 
@@ -580,6 +604,24 @@ useEffect(() => {
 影响：多一次网络请求（对 GitHub API 来说是白耗配额）。不影响正确性——两次结果一样，`setRows` 用后到的那个。
 
 已用一个显式命名的用例 `fetches the rows twice on mount` 钉住现状（断言 `toHaveBeenCalledTimes(2)`），将来谁修好了这条，测试会提醒他改断言。修法：删掉 168-170 那个 effect，把 `props.tableName` 的取值搬进第一个 effect 的依赖里。
+
+### 3.9.9 `SchemaPage` 把 `selectOptions` 渲染成 `[object Object]`（Stage 5 发现）
+
+`SchemaPage.tsx` 的列定义里，`ui:createUpdatePage:selectOptions` 这一列用 `cell.join(', ')` 渲染：
+
+```tsx
+render: (cell: string[]) => {
+  if (!cell) return 'None';
+  return cell.join(', ');
+},
+```
+
+但 `selectOptions` 的真实类型是 `SelectProps['options']`，即**对象数组**（`[{label, value}]`）。`Array.prototype.join` 对每个元素调用 `toString()`，对象一律得到 `[object Object]`，所以只要 schema 里配了 selectOptions，Schema 页就会显示成 `[object Object]`，而不是 `A, B`。
+
+- 影响：纯显示问题，不影响数据；但 Schema 页正是让人"看 schema 长什么样"的页面，这里显示坏了就失去了该列的意义。
+- 同一文件里 `ui:createUpdatePage:enum`（真·字符串数组）用同样的写法是**正确**的，两者不能一起改。
+- 本次只记录不修：不写测试去钉死 `[object Object]`（那是把缺陷固化成规范）。修法：该列 render 改成 `cell.map((o) => o?.label ?? o?.value).join(', ')`。
+- `tableProps` 与 `tableProperties` 两个键名在 `DbColumn` 与 `SchemaPage` 之间也不一致（`TABLE_COLUMN_KEYS` 里是 `tableProps`），一并留给下次决定。
 
 ---
 
