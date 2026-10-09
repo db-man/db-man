@@ -2,7 +2,13 @@
 
 - 日期：2026-10-07
 - 范围：`packages/github`（`@db-man/github`）
-- 状态：**待批准，尚未动手**
+- 状态：**Stage 0 / 1 / 2 / 3 / 4 已完成并推送**（提交 `85cb21d`，CI 两个工作流均 success）；
+  **Stage 5（覆盖率闸门）待定**，见本文件 §4 Stage 5 与 §9.2 的修正说明
+- 完成情况：用例 9 → 72；`Github.ts` 语句 28.4% → 96.29%，`GithubDb.ts` 36.0% → 98.66%，
+  `utils.ts` 61.5% → 100%，包整体 42.26% → 97.42%（分支 95.18% / 函数 98.18%）
+- 遗留缺陷：「`DeleteFileType.message` 必填但够不到默认值」「`getRecordFileContentAndSha` 的
+  `primaryKeyVal` 声明为 `string` 而领域上可为数字」两条已移出本计划，前者登记在 `TODO.md`，
+  后者由 **`docs/plans/2026-10-09-primary-key-val-type.md`** 处理
 - 姊妹计划：`docs/plans/2026-10-07-components-ut-coverage.md`（components 侧，数字与口径各自独立）
 
 ---
