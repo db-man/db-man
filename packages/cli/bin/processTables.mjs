@@ -41,19 +41,18 @@ export const splitTableFileToRecordFilesAsync = async (dir, dbName, table) => {
     `${getTs()} [DBM_DEBUG] [${dbName}/${table.name}] Split table, total rows: ${rows.length}`,
   );
 
-  const primaryColumn = table.columns.find((col) => col.primary);
-
   for (const row of rows) {
     try {
-      let filename = '';
-      if (primaryColumn.type === 'NUMBER') {
-        filename = row[primaryKey] + '';
-      } else {
-        filename = utils.validFilename(row[primaryKey]);
-      }
+      // The record file name has exactly one definition: utils.getRecordFileName
+      // in @db-man/github. It is also what GithubDb uses to find a record file,
+      // so deriving it a second way here would mean the writer and the reader
+      // disagree about a row's path. They did: a NUMBER primary key was written
+      // unsanitised ("1e+21.json" for 1e21) while the reader looked for
+      // "1e_21.json".
+      const filename = utils.getRecordFileName(row[primaryKey]);
 
       await writeFile(
-        `./${dir}/${dbName}/${table.name}/${filename}.json`,
+        `./${dir}/${dbName}/${table.name}/${filename}`,
         JSON.stringify(row, null, '  '),
         'utf8',
       );
