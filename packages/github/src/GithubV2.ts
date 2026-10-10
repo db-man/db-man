@@ -8,7 +8,6 @@ import {
   FileContentAndSha,
   FileOrDir,
   RawFileContentAndSha,
-  UpdateFileType,
 } from './types';
 import { DBS_CFG_FILENAME } from './constants';
 
@@ -16,6 +15,42 @@ type GithubContext = {
   personalAccessToken: string;
   owner: string;
   repoName: string;
+};
+
+/**
+ * What the two write entries have in common. `PUT .../contents/{path}` creates
+ * the file when it is sent no sha and overwrites it when it is sent one, so the
+ * presence of a sha is the only thing that decides which of the two happened.
+ * `createFile` and `saveFile` are narrow views of this one shape.
+ */
+type WriteFileParams = {
+  path: string;
+  content: any;
+  sha?: string;
+  message: string;
+};
+
+type CreateFileParams = {
+  path: string;
+  content: any;
+  message?: string;
+  /**
+   * Must not be passed — overwriting a known version is what `saveFile()` is
+   * for. Declared as `never` so TypeScript rejects it at the call site instead
+   * of silently turning a create into an overwrite.
+   */
+  sha?: never;
+};
+
+type SaveFileParams = {
+  path: string;
+  content: any;
+  /**
+   * Required. The version you read with `getFileContentAndSha()` — GitHub
+   * refuses the write if the file has changed since that read.
+   */
+  sha: string;
+  message?: string;
 };
 
 const botName = 'db-man-bot';
@@ -122,7 +157,6 @@ export default class Github {
    * @param {string} path can be a file or a dir
    * @param {*} signal
    * @returns {Promise<File|Files>}
-   * @private
    */
   getRawContentByPath(path: string, signal?: AbortSignal) {
     return octokit(this.context.personalAccessToken)
@@ -319,20 +353,80 @@ export default class Github {
   }
 
   /**
-   * Create or update a file
-   * TODO should rename the function name because it can also create a file
-   * @param {Object} content File content in JSON object
+   * Create a new file at `path`.
+   *
+   * The file must not exist yet — GitHub answers 422 when it does, and that
+   * error is rethrown as-is. Use `saveFile()` to overwrite an existing file.
+   *
+   * Passing a sha is rejected; see `CreateFileParams.sha`.
+   * @param {CreateFileParams} params File content in JSON object
    * @return {Promise<Response>}
-   * response.commit
-   * response.commit.html_url https://github.com/username/reponame/commit/a7f...04d
-   * response.content
+   * @public
    */
-  async updateFile({
+  async createFile({
+    path,
+    content,
+    message = 'Create file',
+    sha,
+  }: CreateFileParams) {
+    if (sha !== undefined && sha !== null) {
+      throw new Error(
+        `createFile failed, sha must not be passed, use saveFile() to overwrite the existing file, path: ${path}.`,
+      );
+    }
+    return this.createOrUpdateFile({ path, content, message });
+  }
+
+  /**
+   * Overwrite the file at `path`, at the version it was read at.
+   *
+   * `sha` is the guard, not a formality: GitHub answers 409 when the file has
+   * changed since that read, and this method turns that into
+   * `DBMERR_UPDATE_FILE_409_CONFLICT`. Omitting the sha would silently drop the
+   * guard and overwrite whatever is there now, so it is required here.
+   * @param {SaveFileParams} params File content in JSON object
+   * @return {Promise<Response>}
+   * @public
+   */
+  async saveFile({
     path,
     content,
     sha,
     message = 'Update file',
-  }: UpdateFileType) {
+  }: SaveFileParams) {
+    if (sha === undefined || sha === null) {
+      throw new Error(
+        `saveFile failed, sha is required, use createFile() to create a new file, path: ${path}.`,
+      );
+    }
+    return this.createOrUpdateFile({ path, content, sha, message });
+  }
+
+  /**
+   * The single write call to `PUT /repos/{owner}/{repo}/contents/{path}`, which
+   * creates the file when it is sent no sha and overwrites it when it is sent
+   * one.
+   *
+   * Use `createFile()` / `saveFile()` unless you specifically want both halves
+   * behind one door — they each pin one half down, which is the point of them.
+   *
+   * The 409 message thrown below is `DBMERR_UPDATE_FILE_409_CONFLICT`, a
+   * published string that consumers match on. Both its text and its name are
+   * fixed: do not reword it, and do not rename the constant to match this
+   * method's name.
+   * @param {WriteFileParams} params File content in JSON object
+   * @return {Promise<Response>}
+   * response.commit
+   * response.commit.html_url https://github.com/username/reponame/commit/a7f...04d
+   * response.content
+   * @private
+   */
+  private async createOrUpdateFile({
+    path,
+    content,
+    sha,
+    message,
+  }: WriteFileParams) {
     const contentEncoded = Base64.encode(content);
     try {
       const { data } = await octokit(
@@ -350,7 +444,9 @@ export default class Github {
       });
       return data;
     } catch (error) {
-      switch (error.response.status) {
+      // A network-level failure carries no `response`; plain `error.response`
+      // would throw a TypeError here and lose the original error.
+      switch (error?.response?.status) {
         case 409:
           /**
            * case 1: when updateing an existing file, but the sha is an old one
@@ -405,7 +501,9 @@ export default class Github {
       return data;
     } catch (error) {
       console.error('Failed to octokit.rest.repos.deleteFile, error:', error);
-      switch (error.response.status) {
+      // A network-level failure carries no `response`; plain `error.response`
+      // would throw a TypeError here and lose the original error.
+      switch (error?.response?.status) {
         case 409:
           /**
            * case 1: when deleting an existing file, but the sha is an old one
@@ -429,11 +527,6 @@ export default class Github {
    * @returns
    */
   getDbsCfg(): Promise<DbsCfgContentAndShaType> {
-    // return this.getFileContentAndSha(DBS_CFG_FILENAME).then(
-    //   (res: FileContentAndSha) => {
-    //     return res;
-    //   }
-    // );
     return this.getFileRawContent(DBS_CFG_FILENAME).then((data) => {
       // when data has no content in it, this is not expected in getDbsCfg (but no idea why this happens)
       if (!('content' in data) || !data.content) {

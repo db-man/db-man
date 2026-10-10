@@ -5,10 +5,10 @@ jest.mock('./octokit');
 
 const mockedOctokitFactory = octokit as jest.MockedFunction<typeof octokit>;
 
-// The three channels Github.ts talks to. They are shaped differently:
-// reads go through `request(url, params)`, writes through `rest.repos.*`.
-// Both must exist on the mock, otherwise the write paths throw a TypeError
-// that has nothing to do with the code under test.
+// The three channels the class under test talks to. They are shaped
+// differently: reads go through `request(url, params)`, writes through
+// `rest.repos.*`. Both must exist on the mock, otherwise the write paths throw
+// a TypeError that has nothing to do with the code under test.
 const mockRequest = jest.fn();
 const mockCreateOrUpdateFileContents = jest.fn();
 const mockDeleteFile = jest.fn();
@@ -404,12 +404,86 @@ describe('GithubV2', () => {
     });
   });
 
-  describe('updateFile', () => {
+  describe('createFile', () => {
     it('should send base64 content with the bot identity and return the response data', async () => {
       const data = { commit: { sha: 'c1' }, content: { sha: 'f1' } };
       mockCreateOrUpdateFileContents.mockResolvedValueOnce({ data });
 
-      const res = await g.updateFile({
+      const res = await g.createFile({
+        path: 'dbs/iam/users.data.json',
+        content: '{"id":1}',
+        message: '[db-man] Create table file (iam/users)',
+      });
+
+      expect(res).toBe(data);
+      expect(mockCreateOrUpdateFileContents).toHaveBeenCalledWith({
+        owner: 'db-man',
+        repo: 'db',
+        path: 'dbs/iam/users.data.json',
+        // No sha is what makes this a create: the endpoint creates when the
+        // field is absent. Pinned explicitly so a later edit that starts
+        // forwarding a sha cannot slip through unnoticed.
+        sha: undefined,
+        message: '[db-man] Create table file (iam/users)',
+        content: toBase64('{"id":1}'),
+        committer: BOT,
+        author: BOT,
+      });
+    });
+
+    it("should default the commit message to 'Create file'", async () => {
+      mockCreateOrUpdateFileContents.mockResolvedValueOnce({ data: {} });
+
+      await g.createFile({
+        path: 'dbs/iam/users.data.json',
+        content: '[]',
+      });
+
+      expect(mockCreateOrUpdateFileContents).toHaveBeenCalledWith(
+        expect.objectContaining({ message: 'Create file' }),
+      );
+    });
+
+    it('should reject a sha, because that is an overwrite and belongs to saveFile', async () => {
+      // `sha` is typed as `never`, so only an untyped caller can get here.
+      await expect(
+        g.createFile({
+          path: 'dbs/iam/users.data.json',
+          content: '[]',
+          sha: 'old-sha',
+        } as any),
+      ).rejects.toThrow(
+        'createFile failed, sha must not be passed, use saveFile() to overwrite the existing file, path: dbs/iam/users.data.json.',
+      );
+
+      expect(mockCreateOrUpdateFileContents).not.toHaveBeenCalled();
+    });
+
+    it('should map a 409 conflict to the documented error message', async () => {
+      // On a create, 409 is the concurrent-create case: two writers creating the
+      // same path at the same time.
+      mockCreateOrUpdateFileContents.mockRejectedValueOnce({
+        response: { status: 409 },
+      });
+
+      const err = await g
+        .createFile({ path: 'dbs/iam/users.data.json', content: '[]' })
+        .catch((e) => e);
+
+      expect(err).toBeInstanceOf(Error);
+      // Literal on purpose. Asserting against the exported constant would also
+      // pass after the constant's value is changed — verified by editing the
+      // constant to a wrong string: this test is what turns red.
+      expect(err.message).toBe('DBMERR_UPDATE_FILE_409_CONFLICT');
+    });
+  });
+
+  describe('saveFile', () => {
+    it('should send base64 content with the sha and the bot identity', async () => {
+      const data = { commit: { sha: 'c1' }, content: { sha: 'f1' } };
+      mockCreateOrUpdateFileContents.mockResolvedValueOnce({ data });
+
+      const res = await g.saveFile({
         path: 'dbs/iam/users.data.json',
         content: '{"id":1}',
         sha: 'old-sha',
@@ -432,7 +506,7 @@ describe('GithubV2', () => {
     it("should default the commit message to 'Update file'", async () => {
       mockCreateOrUpdateFileContents.mockResolvedValueOnce({ data: {} });
 
-      await g.updateFile({
+      await g.saveFile({
         path: 'dbs/iam/users.data.json',
         content: '[]',
         sha: 's',
@@ -443,13 +517,26 @@ describe('GithubV2', () => {
       );
     });
 
+    it('should require a sha, because without it this is a create', async () => {
+      await expect(
+        g.saveFile({
+          path: 'dbs/iam/users.data.json',
+          content: '[]',
+        } as any),
+      ).rejects.toThrow(
+        'saveFile failed, sha is required, use createFile() to create a new file, path: dbs/iam/users.data.json.',
+      );
+
+      expect(mockCreateOrUpdateFileContents).not.toHaveBeenCalled();
+    });
+
     it('should map a 409 conflict to the documented error message', async () => {
       mockCreateOrUpdateFileContents.mockRejectedValueOnce({
         response: { status: 409 },
       });
 
       const err = await g
-        .updateFile({
+        .saveFile({
           path: 'dbs/iam/users.data.json',
           content: '[]',
           sha: 'stale-sha',
@@ -457,9 +544,7 @@ describe('GithubV2', () => {
         .catch((e) => e);
 
       expect(err).toBeInstanceOf(Error);
-      // Literal on purpose. Asserting against the exported constant would also
-      // pass after the constant's value is changed — verified by editing the
-      // constant to a wrong string: this test is what turns red.
+      // literal on purpose, see the createFile case above
       expect(err.message).toBe('DBMERR_UPDATE_FILE_409_CONFLICT');
     });
 
@@ -470,7 +555,19 @@ describe('GithubV2', () => {
       mockCreateOrUpdateFileContents.mockRejectedValueOnce(upstream);
 
       await expect(
-        g.updateFile({ path: 'p', content: '[]', sha: 's' }),
+        g.saveFile({ path: 'p', content: '[]', sha: 's' }),
+      ).rejects.toBe(upstream);
+    });
+
+    it('should rethrow a network error that has no response, not a TypeError', async () => {
+      // A transport-level failure has no `response` at all. The error must come
+      // through as itself — reading `.status` off nothing would replace it with
+      // a TypeError and destroy the only clue about what went wrong.
+      const upstream = new Error('socket hang up');
+      mockCreateOrUpdateFileContents.mockRejectedValueOnce(upstream);
+
+      await expect(
+        g.saveFile({ path: 'p', content: '[]', sha: 's' }),
       ).rejects.toBe(upstream);
     });
   });
@@ -502,8 +599,8 @@ describe('GithubV2', () => {
       mockDeleteFile.mockResolvedValueOnce({ data: {} });
 
       // Open question (registered in the plan, not fixed here): DeleteFileType
-      // declares `message` as required while updateFile makes it optional, so
-      // this default is only reachable from untyped callers. The cast is what
+      // declares `message` as required while the write entries make it optional,
+      // so this default is only reachable from untyped callers. The cast is what
       // it takes to exercise it.
       await g.deleteFile({ path: 'dbs/iam/users/1.json', sha: 's' } as any);
 
@@ -524,7 +621,7 @@ describe('GithubV2', () => {
         .catch((e) => e);
 
       expect(err).toBeInstanceOf(Error);
-      // literal on purpose, see the updateFile case above
+      // literal on purpose, see the saveFile case above
       expect(err.message).toBe('DBMERR_DELETE_FILE_409_CONFLICT');
     });
 
@@ -532,6 +629,16 @@ describe('GithubV2', () => {
       const upstream = Object.assign(new Error('boom'), {
         response: { status: 500 },
       });
+      mockDeleteFile.mockRejectedValueOnce(upstream);
+
+      await expect(
+        g.deleteFile({ path: 'p', sha: 's', message: 'm' }),
+      ).rejects.toBe(upstream);
+    });
+
+    it('should rethrow a network error that has no response, not a TypeError', async () => {
+      // same hazard as the write path: no `response` on a transport failure
+      const upstream = new Error('socket hang up');
       mockDeleteFile.mockRejectedValueOnce(upstream);
 
       await expect(
