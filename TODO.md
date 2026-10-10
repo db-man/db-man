@@ -18,8 +18,3 @@
   longer cares (it compares string forms since PR #1), but the file stops matching the column
   type declared in `dbcfg.json`. Found while fixing the `===` lookup bug; deliberately not
   changed there.
-- Bug: the two codebases turn a numeric primary key into a file name differently.
-  `packages/cli/bin/processTables.mjs` uses `row[primaryKey] + ''` for `NUMBER` columns (no
-  sanitising), while `@db-man/github` always uses `validFilename(String(x))`. Identical for
-  ordinary magnitudes; they diverge only when the number string contains a character
-  `validFilename` rewrites, e.g. `1e21` becomes `1e+21` vs `1e_21`. Pick one rule and share it.
