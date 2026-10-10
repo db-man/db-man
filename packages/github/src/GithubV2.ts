@@ -6,6 +6,7 @@ import {
   DbsCfgContentAndShaType,
   DeleteFileType,
   FileContentAndSha,
+  FileOrDir,
   RawFileContentAndSha,
   UpdateFileType,
 } from './types';
@@ -106,17 +107,24 @@ export default class Github {
   }
 
   /**
-   * Given path 'dbs/iam', return all files in this path
-   * Given path 'dbs/iam/dbcfg.json', return this file
-   * TODO:
-   *   - change name from getContentByPath to getRawContentByPath, because content is in base64 format
-   *   - should have a better name, for example sometimes this function is used to get all files under a dir
+   * Raw call to `GET /repos/{owner}/{repo}/contents/{path}`, which answers
+   * with an **array** of entries when `path` is a dir and a single **object**
+   * when it is a file.
+   *
+   * Use `listDir()` / `getFileRawContent()` unless you specifically need the
+   * un-split response. Keeping the two shapes here is deliberate: this is the
+   * one place that should have to decide between them.
+   *
+   * The error messages below are a public contract — consumers render
+   * `error.message` to end users. Keep them byte-for-byte: do not reword them,
+   * and do not "fix" the `unknow` typo.
+   *
    * @param {string} path can be a file or a dir
    * @param {*} signal
    * @returns {Promise<File|Files>}
-   * @public
+   * @private
    */
-  getContentByPath(path: string, signal?: AbortSignal) {
+  getRawContentByPath(path: string, signal?: AbortSignal) {
     return octokit(this.context.personalAccessToken)
       .request('GET /repos/{owner}/{repo}/contents/{path}', {
         owner: this.context.owner,
@@ -124,9 +132,9 @@ export default class Github {
         path,
         request: { signal },
       })
-      .then(({ data }) => data as RawFileContentAndSha)
+      .then(({ data }) => data)
       .catch((err) => {
-        console.error('Github.getContentByPath failed, err:', err);
+        console.error('Github.getRawContentByPath failed, err:', err);
         let newErr;
         switch (err.status) {
           case 401:
@@ -152,6 +160,53 @@ export default class Github {
         newErr.cause = err;
         throw newErr;
       });
+  }
+
+  /**
+   * Given a dir path, e.g. 'dbs/iam', return the entries under it.
+   * Throws when `path` points at a file — the caller asked for a dir.
+   * @param {string} path must be a dir
+   * @param {*} signal
+   * @returns {Promise<FileOrDir[]>}
+   * @public
+   */
+  listDir(path: string, signal?: AbortSignal): Promise<FileOrDir[]> {
+    return this.getRawContentByPath(path, signal).then((data) => {
+      if (!Array.isArray(data)) {
+        throw new Error(
+          `listDir failed, path is a file, not a dir, path: ${path}.`,
+        );
+      }
+      return data as FileOrDir[];
+    });
+  }
+
+  /**
+   * Given a file path, e.g. 'dbs/iam/dbcfg.json', return that one file.
+   * `content` is in base64 format — that is the GitHub API shape, not a choice
+   * made here. Use `getFileContentAndSha()` / `getPlainTextByPath()` to get
+   * decoded content.
+   * Throws when `path` points at a dir — the caller asked for a file.
+   * Because the shape is settled here, callers do NOT need to re-check
+   * `Array.isArray(...)` on the result. Same for `listDir()` in the other
+   * direction.
+   * @param {string} path must be a file
+   * @param {*} signal
+   * @returns {Promise<RawFileContentAndSha>}
+   * @public
+   */
+  getFileRawContent(
+    path: string,
+    signal?: AbortSignal,
+  ): Promise<RawFileContentAndSha> {
+    return this.getRawContentByPath(path, signal).then((data) => {
+      if (Array.isArray(data)) {
+        throw new Error(
+          `getFileRawContent failed, path is a dir, not a file, path: ${path}.`,
+        );
+      }
+      return data as RawFileContentAndSha;
+    });
   }
 
   /**
@@ -214,14 +269,8 @@ export default class Github {
     path: string,
     signal?: AbortSignal,
   ): Promise<FileContentAndSha> {
-    return this.getContentByPath(path, signal).then((data) => {
-      // when path is a dir, data is an array, this is not expected in getFileContentAndSha
-      if (Array.isArray(data)) {
-        throw new Error(
-          'getFileContentAndSha failed, res is an array, the path param should be a file, not a dir.',
-        );
-      }
-      // when data is not array, but no content in it, this is not expected in getFileContentAndSha (but no idea why this happens)
+    return this.getFileRawContent(path, signal).then((data) => {
+      // when data has no content in it, this is not expected in getFileContentAndSha (but no idea why this happens)
       if (!('content' in data) || !data.content) {
         throw new Error(
           'getFileContentAndSha failed, res.content is not in res, check the path param.',
@@ -252,15 +301,8 @@ export default class Github {
    * @returns {Promise}
    */
   getPlainTextByPath(path: string, signal?: AbortSignal): Promise<string> {
-    return this.getContentByPath(path, signal).then((data) => {
-      // when path is a dir, data is an array, this is not expected in getFileContentAndSha
-      if (Array.isArray(data)) {
-        throw new Error(
-          'getPlainTextByPath failed, res is an array, the path param should be a file, not a dir.',
-        );
-      }
-
-      // when data is not array, but no content in it, this is not expected in getPlainTextByPath (but no idea why this happens)
+    return this.getFileRawContent(path, signal).then((data) => {
+      // when data has no content in it, this is not expected in getPlainTextByPath (but no idea why this happens)
       if (!('content' in data) || !data.content) {
         throw new Error(
           'getPlainTextByPath failed, res.content is not in res, check the path param.',
@@ -392,14 +434,8 @@ export default class Github {
     //     return res;
     //   }
     // );
-    return this.getContentByPath(DBS_CFG_FILENAME).then((data) => {
-      // when path is a dir, data is an array, this is not expected in getDbsCfg
-      if (Array.isArray(data)) {
-        throw new Error(
-          'getDbsCfg failed, res is an array, the path param should be a file, not a dir.',
-        );
-      }
-      // when data is not array, but no content in it, this is not expected in getDbsCfg (but no idea why this happens)
+    return this.getFileRawContent(DBS_CFG_FILENAME).then((data) => {
+      // when data has no content in it, this is not expected in getDbsCfg (but no idea why this happens)
       if (!('content' in data) || !data.content) {
         throw new Error(
           'getDbsCfg failed, res.content is not in res, check the path param.',

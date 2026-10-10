@@ -95,48 +95,65 @@ describe('GithubV2', () => {
     });
   });
 
-  describe('getContentByPath', () => {
-    it('should return an array with the expected length when calling getContentByPath with a directory path', async () => {
+  describe('getRawContentByPath / listDir / getFileRawContent', () => {
+    it('listDir: should return an array with the expected length when called with a directory path', async () => {
       mockRequest.mockResolvedValueOnce({
         data: [{ name: 'a.json' }, { name: 'b.json' }],
       });
 
-      const data = await g.getContentByPath('dbs/iam');
+      const data = await g.listDir('dbs/iam');
 
       expect(Array.isArray(data)).toBe(true);
       expect(data).toHaveLength(2);
     });
 
-    it('should return the correct file object when calling getContentByPath with a file path', async () => {
+    it('listDir: should refuse a path that turns out to be a file', async () => {
       mockRequest.mockResolvedValueOnce({
-        data: { name: 'dbcfg.json', content: 'eyJ0ZXN0Ijp0cnVlfQ==' },
+        data: { name: 'dbcfg.json', sha: 's1' },
       });
 
-      const data = await g.getContentByPath('dbs/iam/dbcfg.json');
-
-      if ('content' in data) {
-        expect(data.name).toBe('dbcfg.json');
-        return;
-      }
-
-      expect(true).toBe(false);
+      await expect(g.listDir('dbs/iam/dbcfg.json')).rejects.toThrow(
+        'listDir failed, path is a file, not a dir, path: dbs/iam/dbcfg.json.',
+      );
     });
 
-    it('should throw an error when calling getContentByPath with a non-existent path', async () => {
+    it('getFileRawContent: should return the raw file object when called with a file path', async () => {
+      mockRequest.mockResolvedValueOnce({
+        data: { name: 'dbcfg.json', content: 'eyJ0ZXN0Ijp0cnVlfQ==', sha: 's1' },
+      });
+
+      const data = await g.getFileRawContent('dbs/iam/dbcfg.json');
+
+      expect(data.name).toBe('dbcfg.json');
+      // content stays base64 here — decoding is the caller's job
+      // (getFileContentAndSha / getPlainTextByPath do it for you)
+      expect(data.content).toBe('eyJ0ZXN0Ijp0cnVlfQ==');
+    });
+
+    it('getFileRawContent: should refuse a path that turns out to be a dir', async () => {
+      mockRequest.mockResolvedValueOnce({ data: [{ name: 'a.json' }] });
+
+      await expect(g.getFileRawContent('dbs/iam')).rejects.toThrow(
+        'getFileRawContent failed, path is a dir, not a file, path: dbs/iam.',
+      );
+    });
+
+    it('should throw an error when calling getRawContentByPath with a non-existent path', async () => {
       mockRequest.mockRejectedValueOnce({ status: 404 });
 
-      await expect(g.getContentByPath('non-existent-path')).rejects.toThrow(
+      await expect(g.getRawContentByPath('non-existent-path')).rejects.toThrow(
         'path not found',
       );
     });
 
-    // The three assertions below pin the URL template and the parameter names
-    // that octokit receives. If someone edits the template string in Github.ts,
-    // these fail even though the mock would happily accept anything.
+    // The four assertions below pin the URL template and the parameter names
+    // that octokit receives, plus the error wording that consumers display.
+    // If someone edits the template string in GithubV2.ts, or re-words an
+    // error message, these fail even though the mock would accept anything.
     it('should call the contents endpoint with owner, repo, path and signal', async () => {
       mockRequest.mockResolvedValueOnce({ data: [] });
 
-      await g.getContentByPath('dbs/iam');
+      await g.getRawContentByPath('dbs/iam');
 
       expect(mockRequest).toHaveBeenCalledWith(CONTENT_URL, {
         owner: 'db-man',
@@ -150,7 +167,7 @@ describe('GithubV2', () => {
       const upstream = { status: 401, message: 'Bad credentials' };
       mockRequest.mockRejectedValueOnce(upstream);
 
-      const err = await g.getContentByPath('dbs/iam').catch((e) => e);
+      const err = await g.getRawContentByPath('dbs/iam').catch((e) => e);
 
       expect(err.message).toBe(
         'Failed to get content by path, maybe personal access token is invalid, path: dbs/iam.',
@@ -163,7 +180,7 @@ describe('GithubV2', () => {
       mockRequest.mockRejectedValueOnce({ status: 403 });
 
       await expect(
-        g.getContentByPath('dbs/iam/users.data.json'),
+        g.getRawContentByPath('dbs/iam/users.data.json'),
       ).rejects.toThrow(
         'Failed to get content by path, maybe file too large, path: dbs/iam/users.data.json.',
       );
@@ -172,7 +189,7 @@ describe('GithubV2', () => {
     it('should fall back to a generic message for any other status', async () => {
       mockRequest.mockRejectedValueOnce({ status: 500 });
 
-      await expect(g.getContentByPath('dbs/iam')).rejects.toThrow(
+      await expect(g.getRawContentByPath('dbs/iam')).rejects.toThrow(
         'Failed to get content by path, unknow error, path: dbs/iam.',
       );
     });
@@ -268,8 +285,10 @@ describe('GithubV2', () => {
     it('should throw when the path points to a directory', async () => {
       mockRequest.mockResolvedValueOnce({ data: [{ name: 'a.json' }] });
 
+      // The "path is a dir" rule moved down into getFileRawContent(), so this
+      // caller no longer produces its own wording — it re-raises the shared one.
       await expect(g.getFileContentAndSha('dbs/iam')).rejects.toThrow(
-        'getFileContentAndSha failed, res is an array, the path param should be a file, not a dir.',
+        'getFileRawContent failed, path is a dir, not a file, path: dbs/iam.',
       );
     });
 
@@ -298,8 +317,10 @@ describe('GithubV2', () => {
     it('should throw when the path points to a directory', async () => {
       mockRequest.mockResolvedValueOnce({ data: [{ name: 'a.sql' }] });
 
+      // See the note in getFileContentAndSha: the rule now lives in
+      // getFileRawContent().
       await expect(g.getPlainTextByPath('dbs/iam/__views__')).rejects.toThrow(
-        'getPlainTextByPath failed, res is an array, the path param should be a file, not a dir.',
+        'getFileRawContent failed, path is a dir, not a file, path: dbs/iam/__views__.',
       );
     });
 
@@ -365,8 +386,10 @@ describe('GithubV2', () => {
     it('should throw when dbs.json resolves to a directory', async () => {
       mockRequest.mockResolvedValueOnce({ data: [{ name: 'dbs.json' }] });
 
+      // See the note in getFileContentAndSha: the rule now lives in
+      // getFileRawContent().
       await expect(g.getDbsCfg()).rejects.toThrow(
-        'getDbsCfg failed, res is an array, the path param should be a file, not a dir.',
+        'getFileRawContent failed, path is a dir, not a file, path: dbs.json.',
       );
     });
 
