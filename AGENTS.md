@@ -60,7 +60,24 @@ Env: `TZ=Asia/Shanghai`, secret `DBM_GH_TOKEN`. Coverage is only enforced in tha
 `packages/components` **without** `component: true`, so only `cypress/e2e/**` executes; component
 specs (`src/**/*.cy.tsx`) never run on CI.
 
-The other four workflows (`merge` / `split` / `validate` / `insights`) are `workflow_call` only.
+The other four workflows (`merge` / `split` / `validate` / `insights`) are `workflow_call` only —
+nothing in this repo triggers them, but they are not dead. See Release.
+
+## Release
+
+Merging to `main` puts nothing live. Two consumers, two channels:
+
+- **`db-man/split-table-db`** — the live data repo the portal points at by default. It calls all
+  four reusable workflows as `db-man/db-man/...@main`, and each runs `npx @db-man/cli`. So a
+  **workflow edit is live on merge while the CLI it calls is not**: adding a
+  `npx @db-man/cli <newCommand>` line breaks downstream (against the old published CLI) with this
+  repo's CI green. Change both together, or release first.
+- **`db-man.github.io`** — the live portal, a thin shell around `@db-man/components` (`^0.1.x`).
+  Its own `upgrade.yml` runs `npm i` weekly (Mon 00:00 UTC), so a published `@db-man/components`
+  reaches the site with no edit in that repo; trigger that workflow to skip the wait.
+
+`npm run release` = test → build → `lerna publish`; the root `publish` script then opens that
+upgrade workflow.
 
 ## Gotchas
 
