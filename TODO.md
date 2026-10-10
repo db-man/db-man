@@ -12,13 +12,12 @@
   explicit cast (`as unknown as DeleteFileType`). Decide which side is the truth: make
   `DeleteFileType.message` optional in `types.ts`, or make `UpdateFileType.message` required so
   the two write APIs agree.
-- Bug: record lookup in the portal compares a row value against a URL query string with `===`, so
-  it never matches when the primary column is `NUMBER` (`1 === '1'` is false). Affected:
-  `components/.../GetPageBody/index.tsx` and `components/.../DbTablePage/UpdatePage/index.tsx`.
-  Only reachable in normal (non `split-table`) mode, where the record is found by scanning the
-  table rows instead of by building the record file path. This is not hypothetical:
-  `packages/cli/__test_dbs_dir__/iam/dbcfg.json` ships `userId` as `NUMBER` + `primary: true`, and
-  `Github.tt.ts` uses `date.valueOf()` as a primary key.
+- Bug: editing a record rewrites its primary key as a string. `getNewRows` merges the form values
+  over the row (`{...row, ...formValues}`) and a form field always yields a string, so a `NUMBER`
+  primary key turns from `1` into `'1'` in the data file on the first edit. Record lookup no
+  longer cares (it compares string forms since PR #1), but the file stops matching the column
+  type declared in `dbcfg.json`. Found while fixing the `===` lookup bug; deliberately not
+  changed there.
 - Bug: the two codebases turn a numeric primary key into a file name differently.
   `packages/cli/bin/processTables.mjs` uses `row[primaryKey] + ''` for `NUMBER` columns (no
   sanitising), while `@db-man/github` always uses `validFilename(String(x))`. Identical for

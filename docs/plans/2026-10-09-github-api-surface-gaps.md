@@ -2,7 +2,8 @@
 
 - 日期：2026-10-09
 - 范围：`packages/github`（`@db-man/github`），连带少量 `packages/components` 调用点
-- 状态：**未开工**。本文件是计划，不含任何代码改动
+- 状态：**Stage 1.1 已完成并合并**（PR #1，合并提交 `006919f`，CI 绿）；Stage 1.2 / 1.3 / 1.4
+  与 Stage 2 / 3 **未开工**
 - 行号基准：2026-10-09 23:00 的工作区状态（`packages/github` 的 `tsconfig.include` 是  
   `./src/**/*.ts`，测试文件与源码同目录，改动会让行号漂移——引用行号前先 `grep -nE` 复核）
 - 前置：`docs/plans/2026-10-09-primary-key-val-type.md`（主键类型收口 `PrimaryKeyVal`）  
@@ -143,8 +144,8 @@ export const createDbmError = (
 
 #### 1.1 修 numeric 主键查找（实锤 bug）
 
-`TODO.md:15-21` 已登记。normal 模式下按主键找行用的是 `===`，主键列声明为 `NUMBER` 时永远不成立  
-（`row.userId` 是数字 `1`，URL query 是字符串 `'1'`）。
+`TODO.md:15-21` 曾登记过（修好后该条已从 `TODO.md` 删除）。normal 模式下按主键找行用的是 `===`，
+主键列声明为 `NUMBER` 时永远不成立（`row.userId` 是数字 `1`，URL query 是字符串 `'1'`）。
 
 **范围要按全仓 grep 数，不要信任 TODO 已登记的那几条。** 用一条覆盖 `===` / `!==` 的 grep
 （注意：只写 `===` 会漏掉 `!==`，`!==` 里没有连续的三个等号）：
@@ -175,7 +176,13 @@ grep -rnE "\[primaryKey\][[:space:]]*(===|!==|==|!=)" packages/*/src --include='
 注意 `null` / `undefined` 的处理：`String(null)` 是 `'null'`，必须先排除空值，否则 `undefined`  
 和 `null` 会被判为相等；而「行没有主键」也不该被当成本次 URL 要的那一行。
 
-**状态：已实现**，在分支 `fix/primary-key-string-number-lookup`（含 5 处改点 + 单测）。
+**状态：已完成并合并**（PR #1，合并提交 `006919f`；分支 `fix/primary-key-string-number-lookup`
+已删除）。5 处改点 + 单测都在里面。验收实测：`npm run test:coverage -w packages/components`
+43 suites / 338 tests 全绿，语句 1405/1767（≈79.5%，闸门 73/74/66/63 全过）；
+PR 的 `test` 与 `cypress-run (1)(2)` 全绿。
+
+删除的合并分支里值得留一句的东西：无（改动全在 `packages/components`，未触碰 `packages/github`，
+所以不需要 `./rebuild_github.sh`、也不会影响已发布的 `@db-man/github`）。
 
 #### 1.2 统一"主键 → 文件名"规则
 
