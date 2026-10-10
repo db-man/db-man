@@ -116,7 +116,7 @@ describe('GithubDbV2', () => {
   });
 
   describe('path helpers', () => {
-    // These look like trivial string joins, but getDataPath() uses
+    // These look like trivial string joins, but getTableDataPath() uses
     // `<table>.data.json` while getInsightsPath() uses `<table>.insights.gitlog`
     // — mixing them up would write data into the wrong file.
     it('should build every path and URL from the configured repoPath', () => {
@@ -131,24 +131,24 @@ describe('GithubDbV2', () => {
       expect(gd.getDbViewScriptPath('iam', 'view1.sql')).toBe(
         'dbs/iam/__views__/view1.sql',
       );
-      expect(gd.getDataPath('iam', 'users')).toBe('dbs/iam/users.data.json');
+      expect(gd.getTableDataPath('iam', 'users')).toBe('dbs/iam/users.data.json');
       expect(gd.getInsightsPath('iam', 'users')).toBe(
         'dbs/iam/users.insights.gitlog',
       );
-      expect(gd.getDataUrl('iam', 'users')).toBe(
+      expect(gd.getTableDataUrl('iam', 'users')).toBe(
         'https://github.com/db-man/db/blob/main/dbs/iam/users.data.json',
       );
     });
 
-    it('should build a record path for a numeric and a string primary key', () => {
-      expect(gd.getRecordPath('iam', 'users', 1)).toBe('dbs/iam/users/1.json');
-      expect(gd.getRecordPath('iam', 'users', 'abc')).toBe(
+    it('should build a row path for a numeric and a string primary key', () => {
+      expect(gd.getRowPath('iam', 'users', 1)).toBe('dbs/iam/users/1.json');
+      expect(gd.getRowPath('iam', 'users', 'abc')).toBe(
         'dbs/iam/users/abc.json',
       );
     });
 
     it('should sanitize a primary key that is not filename safe', () => {
-      expect(gd.getRecordPath('iam', 'users', 'a/b c')).toBe(
+      expect(gd.getRowPath('iam', 'users', 'a/b c')).toBe(
         'dbs/iam/users/a_b_c.json',
       );
     });
@@ -262,14 +262,14 @@ describe('GithubDbV2', () => {
     });
   });
 
-  describe('getRecordFileContentAndSha', () => {
-    it('should read the record file for a string primary key', async () => {
+  describe('getRowFileContentAndSha', () => {
+    it('should read the row file for a string primary key', async () => {
       mockGithub.getFileContentAndSha.mockResolvedValueOnce({
         content: [{ code: 'ADMIN' }],
         sha: 'r1',
       });
 
-      const res = await gd.getRecordFileContentAndSha('iam', 'roles', 'ADMIN');
+      const res = await gd.getRowFileContentAndSha('iam', 'roles', 'ADMIN');
 
       expect(mockGithub.getFileContentAndSha).toHaveBeenCalledWith(
         'dbs/iam/roles/ADMIN.json',
@@ -282,13 +282,13 @@ describe('GithubDbV2', () => {
     // packages/cli/__test_dbs_dir__/iam/dbcfg.json and Github.tt.ts, which uses
     // date.valueOf()). A numeric value is therefore a legal input, not a
     // caller mistake — do not "fix" this test by passing a string.
-    it('should read the record file for a numeric primary key', async () => {
+    it('should read the row file for a numeric primary key', async () => {
       mockGithub.getFileContentAndSha.mockResolvedValueOnce({
         content: [{ userId: 1744820403529 }],
         sha: 'r2',
       });
 
-      const res = await gd.getRecordFileContentAndSha(
+      const res = await gd.getRowFileContentAndSha(
         'iam',
         'users',
         1744820403529,
@@ -411,12 +411,12 @@ describe('GithubDbV2', () => {
     // GithubV2.test.ts).
   });
 
-  describe('deleteRecordFile', () => {
-    it('should delete the record file with the db-man message and the given sha', async () => {
+  describe('deleteRow', () => {
+    it('should delete the row file with the db-man message and the given sha', async () => {
       const data = { commit: { sha: 'c2' } };
       mockGithub.deleteFile.mockResolvedValueOnce(data);
 
-      const res = await gd.deleteRecordFile('iam', 'users', 1, 'sha-1');
+      const res = await gd.deleteRow('iam', 'users', 1, 'sha-1');
 
       expect(mockGithub.deleteFile).toHaveBeenCalledWith({
         path: 'dbs/iam/users/1.json',

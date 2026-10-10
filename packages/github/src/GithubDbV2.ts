@@ -146,7 +146,7 @@ export default class GithubDbV2 {
    * @param {string|number} primaryKeyVal
    * @returns Path for GitHub, e.g. dbs/iam/users/1.json
    */
-  getRecordPath(dbName, tableName, primaryKeyVal: PrimaryKeyVal) {
+  getRowPath(dbName, tableName, primaryKeyVal: PrimaryKeyVal) {
     return `${
       this.LS_KEY_GITHUB_REPO_PATH
     }/${dbName}/${tableName}/${getRecordFileName(primaryKeyVal)}`;
@@ -164,7 +164,7 @@ export default class GithubDbV2 {
    * @param {string} tableName
    * @returns Path for GitHub, e.g. dbs/dbName/tableName.data.json
    */
-  getDataPath(dbName, tableName) {
+  getTableDataPath(dbName, tableName) {
     return `${this.LS_KEY_GITHUB_REPO_PATH}/${dbName}/${getDataFileName(
       tableName, // eslint-disable-line @typescript-eslint/comma-dangle
     )}`;
@@ -186,8 +186,8 @@ export default class GithubDbV2 {
    * @param {string} tableName
    * @returns GitHub URL of table data file, e.g. https://github.com/ownerName/repoName/blob/main/dbs/dbName/tableName.data.json
    */
-  getDataUrl(dbName, tableName) {
-    return this.getGitHubFullPath(this.getDataPath(dbName, tableName));
+  getTableDataUrl(dbName, tableName) {
+    return this.getGitHubFullPath(this.getTableDataPath(dbName, tableName));
   }
 
   /**
@@ -219,7 +219,7 @@ export default class GithubDbV2 {
   async getTableRows(dbName: string, tableName: string, signal?: AbortSignal) {
     if (!this.isLargeTable(dbName, tableName)) {
       return this.githubV2.getFileContentAndSha(
-        this.getDataPath(dbName, tableName),
+        this.getTableDataPath(dbName, tableName),
         signal, // eslint-disable-line @typescript-eslint/comma-dangle
       );
     }
@@ -276,13 +276,13 @@ export default class GithubDbV2 {
    * @param {new AbortController().signal} signal
    * @returns {Promise}
    */
-  getRecordFileContentAndSha(
+  getRowFileContentAndSha(
     dbName: string,
     tableName: string,
     primaryKeyVal: PrimaryKeyVal,
     signal?: AbortSignal,
   ) {
-    const path = this.getRecordPath(dbName, tableName, primaryKeyVal);
+    const path = this.getRowPath(dbName, tableName, primaryKeyVal);
     return this.githubV2.getFileContentAndSha(path, signal);
   }
 
@@ -314,7 +314,7 @@ export default class GithubDbV2 {
     content,
     sha: UpdateFileType['sha'],
   ) {
-    const path = this.getDataPath(dbName, tableName);
+    const path = this.getTableDataPath(dbName, tableName);
     const params = {
       path,
       content: JSON.stringify(content, null, 1),
@@ -368,7 +368,7 @@ export default class GithubDbV2 {
    */
   private getRowWriteParams(dbName, tableName, primaryKeyName, row) {
     return {
-      path: this.getRecordPath(dbName, tableName, row[primaryKeyName]),
+      path: this.getRowPath(dbName, tableName, row[primaryKeyName]),
       content: JSON.stringify(row, null, '  '),
     };
   }
@@ -445,8 +445,8 @@ export default class GithubDbV2 {
    * response.commit.html_url https://github.com/username/reponame/commit/a7f...04d
    * response.content
    */
-  async deleteRecordFile(dbName, tableName, primaryKeyVal, sha) {
-    const path = this.getRecordPath(dbName, tableName, primaryKeyVal);
+  async deleteRow(dbName, tableName, primaryKeyVal, sha) {
+    const path = this.getRowPath(dbName, tableName, primaryKeyVal);
     return this.githubV2.deleteFile({
       path,
       sha,
