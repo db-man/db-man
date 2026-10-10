@@ -488,7 +488,7 @@ describe('GithubDbV2', () => {
     });
   });
 
-  describe('getDbTablesSchemaAsync', () => {
+  describe('getDbTablesSchema', () => {
     it('should return the content of dbcfg.json', async () => {
       const dbCfg = { name: 'iam', description: 'iam db', tables: [] };
       mockGithub.getFileContentAndSha.mockResolvedValueOnce({
@@ -496,7 +496,7 @@ describe('GithubDbV2', () => {
         sha: 'cfg-sha',
       });
 
-      const res = await gd.getDbTablesSchemaAsync('iam');
+      const res = await gd.getDbTablesSchema('iam');
 
       expect(mockGithub.getFileContentAndSha).toHaveBeenCalledWith(
         'dbs/iam/dbcfg.json',
@@ -505,7 +505,7 @@ describe('GithubDbV2', () => {
     });
   });
 
-  describe('getDbTablesSchemaV2Async', () => {
+  describe('getDbTablesSchemaV2', () => {
     it('should return the parsed object together with the sha', async () => {
       const dbCfg = { name: 'iam', description: 'iam db', tables: [] };
       mockGithub.getFileRawContent.mockResolvedValueOnce({
@@ -513,7 +513,7 @@ describe('GithubDbV2', () => {
         sha: 'cfg-sha',
       });
 
-      const res = await gd.getDbTablesSchemaV2Async('iam');
+      const res = await gd.getDbTablesSchemaV2('iam');
 
       expect(mockGithub.getFileRawContent).toHaveBeenCalledWith(
         'dbs/iam/dbcfg.json',
@@ -527,7 +527,7 @@ describe('GithubDbV2', () => {
         sha: 'cfg-sha',
       });
 
-      await expect(gd.getDbTablesSchemaV2Async('iam')).rejects.toThrow(
+      await expect(gd.getDbTablesSchemaV2('iam')).rejects.toThrow(
         'getDbTablesSchemaV2Async failed, file content is empty.',
       );
     });

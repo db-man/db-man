@@ -400,7 +400,7 @@ export default class GithubDbV2 {
 
   // Append a new table schema to dbcfg.json
   async createTableSchema(dbName: string, tableConfig: DbTable) {
-    const { obj, sha } = await this.getDbTablesSchemaV2Async(dbName);
+    const { obj, sha } = await this.getDbTablesSchemaV2(dbName);
     const newObj = {
       ...obj,
       tables: [...obj.tables, tableConfig],
@@ -413,7 +413,7 @@ export default class GithubDbV2 {
     });
   }
 
-  async getDbTablesSchemaAsync(dbName: string) {
+  async getDbTablesSchema(dbName: string) {
     const { content } = await this.githubV2.getFileContentAndSha(
       this.getDbConfigPath(dbName),
     );
@@ -421,7 +421,7 @@ export default class GithubDbV2 {
   }
 
   // Get one db schema from dbcfg.json
-  async getDbTablesSchemaV2Async(dbName: string) {
+  async getDbTablesSchemaV2(dbName: string) {
     const { content, sha } = await this.githubV2.getFileRawContent(
       this.getDbConfigPath(dbName),
     );
