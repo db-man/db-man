@@ -12,15 +12,12 @@ import ReactSimpleCodeEditor from '../../components/ReactSimpleCodeEditor';
 
 import { GetPageUiType, UiType } from '../../types/UiType';
 import DbColumn from '../../types/DbColumn';
-import PageContext from '../../contexts/page';
+import PageContext, { PageContextType } from '../../contexts/page';
 import {
   COL_UI_LISTPAGE_RANDOMVIEW,
   COL_UI_PRESETS,
   COL_UI_SELECT_OPTIONS,
   DB_CFG_FILENAME,
-  LS_KEY_GITHUB_OWNER,
-  LS_KEY_GITHUB_REPO_NAME,
-  LS_KEY_GITHUB_REPO_PATH,
   STRING_ARRAY,
   TYPE_CREATE_UPDATE_PAGE,
   TYPE_GET_PAGE,
@@ -172,21 +169,25 @@ const genColumn = (
   },
 ];
 
-const footer = ({ dbName, tableName }: { dbName: string; tableName: string }) =>
+const footer = ({
+  dbName,
+  tableName,
+  githubDb,
+}: {
+  dbName: string;
+  tableName: string;
+  githubDb: PageContextType['githubDb'];
+}) =>
   function TableFooter() {
     return (
       <div>
         Table column definition:{' '}
-        <ExternalLink
-          href={`https://github.com/${localStorage.getItem(
-            LS_KEY_GITHUB_OWNER,
-          )}/${localStorage.getItem(
-            LS_KEY_GITHUB_REPO_NAME,
-          )}/blob/main/${localStorage.getItem(
-            LS_KEY_GITHUB_REPO_PATH,
-          )}/${dbName}/${DB_CFG_FILENAME}`}
-          text={DB_CFG_FILENAME}
-        />{' '}
+        {githubDb ? (
+          <ExternalLink
+            href={githubDb.getGitHubFullPath(githubDb.getDbConfigPath(dbName))}
+            text={DB_CFG_FILENAME}
+          />
+        ) : null}{' '}
         Manage table schema in{' '}
         <a href={`/_management/${dbName}/${tableName}`}>{tableName}</a>
       </div>
@@ -198,6 +199,7 @@ export default function SchemaPage() {
     dbName,
     tableName,
     columns: dbTableColumns,
+    githubDb,
   } = useContext(PageContext);
   const location = useLocation();
 
@@ -219,7 +221,7 @@ export default function SchemaPage() {
             dataSource={dbTableColumns}
             columns={genColumn(dbName, dbTableColumns)}
             pagination={false}
-            footer={footer({ dbName, tableName })}
+            footer={footer({ dbName, tableName, githubDb })}
           />
         </div>
       ),

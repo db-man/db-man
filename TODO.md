@@ -18,3 +18,21 @@
   longer cares (it compares string forms since PR #1), but the file stops matching the column
   type declared in `dbcfg.json`. Found while fixing the `===` lookup bug; deliberately not
   changed there.
+- Refactor: build the `GithubDb` instance **once, in the app layer**, and pass it down via
+  `AppContext`. Three places construct their own today — `DbTablePage.tsx:26-38`,
+  `CommonPageWrapper.tsx:24` (whose `:15` comment already admits the duplication), and the local
+  helper in `src/components/PageHeaderContent.tsx:13-17` — and the third one *cannot* call the
+  library at all: the header is a **sibling of `<Outlet>`** (`layout/PageLayout.tsx:22` vs `:49`),
+  so instances created inside the routed pages are out of its reach. That file's `:12` TODO states
+  the precondition ("first need to make sure GithubDb is initialized at the app level");
+  `DbTablePage.tsx:63` carries the same note (`// TODO: move this to app context`).
+  Do this **only if the instance moves too — never move the token check.**
+  `CommonPageWrapper.tsx:19-22` returns `NotFound` when no token is stored, while `DbTablePage`
+  builds one with an empty token; hoisting that check would turn the pages that legitimately need
+  no token (Settings, Demos) into `NotFound`.
+  Scope: ~5 source files plus the tests that hand-write `appCtx`. Wants a commit of its own — it is
+  an architecture change, not a dedup.
+- Related, already tracked in `docs/plans/2026-10-09-github-api-surface-gaps.md`: §3.2 (branch/ref
+  support — `main` is hardcoded in `GithubDb.ts:120,124` and `GithubDbV2.ts:127-133`), and §5
+  (delete the consumer-less `getContentByPathV2`, which is also the only caller of `getGitHubUrl` —
+  the `/blob/`-less URL that 404s).

@@ -1,14 +1,10 @@
 import React from 'react';
 import { render, screen, waitFor, within, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
+import { GithubDb } from '@db-man/github';
 
 import SchemaPage from './SchemaPage';
 import PageContext from '../../contexts/page';
-import {
-  LS_KEY_GITHUB_OWNER,
-  LS_KEY_GITHUB_REPO_NAME,
-  LS_KEY_GITHUB_REPO_PATH,
-} from '../../constants';
 
 const columns = [
   { id: 'userId', name: 'User ID', type: 'STRING', primary: true },
@@ -28,12 +24,30 @@ const columns = [
   { id: 'plain', name: 'Plain', type: 'STRING' },
 ] as any[];
 
+/**
+ * A real `GithubDb` with only its network call replaced. The URL builders
+ * (`getGitHubFullPath`, `getDbConfigPath`) stay real, so the footer assertion
+ * below checks the component's wiring rather than restating a mock's own
+ * return value.
+ */
+function makeGithubDb() {
+  const githubDb = new GithubDb({
+    personalAccessToken: 'test-token',
+    repoPath: 'dbs',
+    owner: 'db-man',
+    repoName: 'db',
+    dbsSchema: {},
+  });
+  jest
+    .spyOn(githubDb, 'getTableRows')
+    .mockResolvedValue({ content: [{ tags: ['a'] }], sha: 'sha-1' });
+  return githubDb;
+}
+
 function renderPage({
   dbTableColumns = columns,
   url = '/iam/users/schema',
-  githubDb = {
-    getTableRows: jest.fn().mockResolvedValue({ content: [{ tags: ['a'] }] }),
-  },
+  githubDb = makeGithubDb(),
 }: {
   dbTableColumns?: any[];
   url?: string;
@@ -142,10 +156,7 @@ describe('SchemaPage', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders the footer links using the stored repo settings', () => {
-    localStorage.setItem(LS_KEY_GITHUB_OWNER, 'db-man');
-    localStorage.setItem(LS_KEY_GITHUB_REPO_NAME, 'db');
-    localStorage.setItem(LS_KEY_GITHUB_REPO_PATH, 'dbs');
+  it('links dbcfg.json through the injected githubDb', () => {
     renderPage();
 
     const footer = document.querySelector('.ant-table-footer') as HTMLElement;
