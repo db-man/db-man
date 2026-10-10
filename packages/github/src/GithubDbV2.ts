@@ -330,24 +330,47 @@ export default class GithubDbV2 {
   }
 
   /**
-   * @param {Object} content File content in JSON object
-   * @return {Promise<Response>}
-   * response.commit
-   * response.commit.html_url https://github.com/username/reponame/commit/a7f...04d
-   * response.content
+   * Create a row file: `dbs/<dbName>/<tableName>/<primaryKeyVal>.json`.
+   *
+   * There is no sha parameter on purpose. A caller that has not read the file
+   * has nothing to overwrite, and the entry for that job is createFile().
+   * `primaryKeyName` is the column to take the file name from, not a value.
+   *
+   * @returns {Promise<Response>} response.commit.html_url points at the commit
    */
-  async updateRecordFile(dbName, tableName, primaryKey, record, sha) {
-    const path = this.getRecordPath(dbName, tableName, record[primaryKey]);
-    const params = {
-      path,
-      content: JSON.stringify(record, null, '  '),
+  async createRow(dbName, tableName, primaryKeyName, row) {
+    return this.githubV2.createFile({
+      ...this.getRowWriteParams(dbName, tableName, primaryKeyName, row),
+      message: `[db-man] Create record file (${dbName}/${tableName})`,
+    });
+  }
+
+  /**
+   * Overwrite the revision the caller read, addressed by that revision's sha.
+   *
+   * The sha is required, not optional: "the caller has no sha" is createRow(),
+   * and an undefined sha here would silently turn an update into a create.
+   *
+   * @returns {Promise<Response>} response.commit.html_url points at the commit
+   */
+  async updateRow(dbName, tableName, primaryKeyName, row, sha: string) {
+    return this.githubV2.saveFile({
+      ...this.getRowWriteParams(dbName, tableName, primaryKeyName, row),
       message: `[db-man] Update record file (${dbName}/${tableName})`,
+      sha,
+    });
+  }
+
+  /**
+   * Both entries write the same bytes to the same place, so the path rule and
+   * the on-disk formatting (2 spaces) are stated once, here. Only the message
+   * and the create-vs-overwrite choice differ between them.
+   */
+  private getRowWriteParams(dbName, tableName, primaryKeyName, row) {
+    return {
+      path: this.getRecordPath(dbName, tableName, row[primaryKeyName]),
+      content: JSON.stringify(row, null, '  '),
     };
-    // Same split as updateTableFile: sha decides create vs overwrite.
-    if (sha === undefined || sha === null) {
-      return this.githubV2.createFile(params);
-    }
-    return this.githubV2.saveFile({ ...params, sha });
   }
 
   // Schema management

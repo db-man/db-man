@@ -23,8 +23,8 @@ const mockDbsSchema = {
 };
 
 /**
- * Every GithubV2 method GithubDb may reach for, in one place, so a new case can
- * never silently call an undefined method on the mock.
+ * Every GithubV2 method GithubDbV2 may reach for, in one place, so a new case
+ * can never silently call an undefined method on the mock.
  */
 const createMockGithub = () => ({
   getFileContentAndSha: jest.fn(),
@@ -37,7 +37,7 @@ const createMockGithub = () => ({
   deleteFile: jest.fn(),
 });
 
-describe('GithubDb', () => {
+describe('GithubDbV2', () => {
   let mockGithub: ReturnType<typeof createMockGithub>;
   let gd: GithubDbV2;
   let consoleDebugSpy: jest.SpyInstance;
@@ -106,7 +106,7 @@ describe('GithubDb', () => {
       );
     });
 
-    it('should build a Github instance with the same credentials', () => {
+    it('should build a GithubV2 instance with the same credentials', () => {
       expect(MockedGithub).toHaveBeenCalledWith({
         personalAccessToken: 'test-token',
         owner: 'db-man',
@@ -354,11 +354,38 @@ describe('GithubDb', () => {
     });
   });
 
-  describe('updateRecordFile', () => {
-    it('should save the record file using the primary key value and 2-space indentation', async () => {
-      const record = { id: 1, name: 'John' };
+  describe('createRow', () => {
+    it('should create the row file with the primary key value, 2-space indentation and no sha', async () => {
+      const row = { id: 7, name: 'John' };
 
-      await gd.updateRecordFile('iam', 'users', 'id', record, 'sha-1');
+      await gd.createRow('iam', 'users', 'id', row);
+
+      // 2 spaces is the on-disk format of row files, and it must stay that way
+      // here as well as in updateRow
+      expect(mockGithub.createFile).toHaveBeenCalledWith({
+        path: 'dbs/iam/users/7.json',
+        content: '{\n  "id": 7,\n  "name": "John"\n}',
+        message: '[db-man] Create record file (iam/users)',
+      });
+      expect(mockGithub.saveFile).not.toHaveBeenCalled();
+    });
+
+    it('should use the value of the given primary key column, not the first field', async () => {
+      const row = { name: 'John', id: 42 };
+
+      await gd.createRow('iam', 'users', 'id', row);
+
+      expect(mockGithub.createFile).toHaveBeenCalledWith(
+        expect.objectContaining({ path: 'dbs/iam/users/42.json' }),
+      );
+    });
+  });
+
+  describe('updateRow', () => {
+    it('should save the row file with the sha the caller read', async () => {
+      const row = { id: 1, name: 'John' };
+
+      await gd.updateRow('iam', 'users', 'id', row, 'sha-1');
 
       expect(mockGithub.saveFile).toHaveBeenCalledWith({
         path: 'dbs/iam/users/1.json',
@@ -366,30 +393,22 @@ describe('GithubDb', () => {
         message: '[db-man] Update record file (iam/users)',
         sha: 'sha-1',
       });
+      expect(mockGithub.createFile).not.toHaveBeenCalled();
     });
 
     it('should use the value of the given primary key column, not the first field', async () => {
-      const record = { name: 'John', id: 42 };
+      const row = { name: 'John', id: 42 };
 
-      await gd.updateRecordFile('iam', 'users', 'id', record, 'sha-1');
+      await gd.updateRow('iam', 'users', 'id', row, 'sha-1');
 
       expect(mockGithub.saveFile).toHaveBeenCalledWith(
         expect.objectContaining({ path: 'dbs/iam/users/42.json' }),
       );
     });
 
-    it('should create the record file when the caller has no sha', async () => {
-      const record = { id: 7 };
-
-      await gd.updateRecordFile('iam', 'users', 'id', record, undefined);
-
-      expect(mockGithub.createFile).toHaveBeenCalledWith({
-        path: 'dbs/iam/users/7.json',
-        content: JSON.stringify(record, null, '  '),
-        message: '[db-man] Update record file (iam/users)',
-      });
-      expect(mockGithub.saveFile).not.toHaveBeenCalled();
-    });
+    // There is no "the caller has no sha" case here: the sha is required by the
+    // type, and saveFile owns the runtime guard for a missing one (see
+    // GithubV2.test.ts).
   });
 
   describe('deleteRecordFile', () => {
