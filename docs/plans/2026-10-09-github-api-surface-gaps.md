@@ -2,8 +2,8 @@
 
 - 日期：2026-10-09
 - 范围：`packages/github`（`@db-man/github`），连带少量 `packages/components` 调用点
-- 状态：**Stage 1.1、1.2 已完成**。1.1 已合并（PR #1，合并提交 `006919f`，CI 绿）；1.2 在分支  
-  `fix/unify-primary-key-filename` 待 review。Stage 1.3 / 1.4 与 Stage 2 / 3 **未开工**
+- 状态：**Stage 1.1、1.2 已完成并合并**（1.1 = PR #1 / 合并提交 `006919f`；1.2 = PR #2 /  
+  合并提交 `a1f71bb`，CI 绿）。Stage 1.3 / 1.4 与 Stage 2 / 3 **未开工**
 - 行号基准：2026-10-09 23:00 的工作区状态（`packages/github` 的 `tsconfig.include` 是  
   `./src/**/*.ts`，测试文件与源码同目录，改动会让行号漂移——引用行号前先 `grep -nE` 复核）
 - 前置：`docs/plans/2026-10-09-primary-key-val-type.md`（主键类型收口 `PrimaryKeyVal`）  
@@ -199,7 +199,7 @@ PR 的 `test` 与 `cypress-run (1)(2)` 全绿。
 **注意一个独立问题**：`processTables.mjs:123-125` 的排序也用 `'' + a[primaryKey]`，那是**排序键**  
 不是文件名，语义不同，**不要顺手改**。
 
-**状态：已实现**（分支 `fix/unify-primary-key-filename`）。`processTables.mjs` 里那段三行分支  
+**状态：已实现并合并**（PR #2，合并提交 `a1f71bb`）。`processTables.mjs` 里那段三行分支  
 （`NUMBER` 走 `row[primaryKey] + ''`、其余走 `utils.validFilename`）换成一行  
 `utils.getRecordFileName(row[primaryKey])`，两套规则收敛为一处；`primaryColumn` 变量随之删掉  
 （`getPrimaryKey(table)` 已经做过同样的查找）。排序键按要求未动。

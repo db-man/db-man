@@ -106,6 +106,11 @@ The other four workflows (`merge` / `split` / `validate` / `insights`) are `work
   key is the JSON number `1` in the data file but the string `'1'` in a URL query or a form field,
   so `1 === '1'` is false and the row is silently not found. Five call sites had this bug; the fix
   and the affected list are in `docs/plans/2026-10-09-github-api-surface-gaps.md` §3.1.1.
+- **`utils.getRecordFileName` is the only definition of a record file name.** The split-table CLI
+  used to build the name itself for `NUMBER` keys (`row[primaryKey] + ''`, unsanitised) while
+  `GithubDb` looked up the sanitised one, so a `1e21` key was written to `1e+21.json` and read from
+  `1e_21.json` — a row the portal could never open. Anything that turns a primary key into a path
+  calls it; see `docs/plans/2026-10-09-github-api-surface-gaps.md` §3.1.2.
 - `formatDate` depends on `TZ=Asia/Shanghai`; CI supplies it through `env`, not the test script.
 - Doc drift: root `DEVELOP.md` quotes `"test": "TZ=Asia/Shanghai lerna run test"`, but the real root
   script is `npm run test --workspaces`. `README.md` links `packages/insights`, which does not exist.
