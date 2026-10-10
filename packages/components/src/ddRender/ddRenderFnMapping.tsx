@@ -40,6 +40,7 @@ import { RowType } from '../types/Data';
 import DbTable from '../types/DbTable';
 import { RenderArgs } from '../types/UiType';
 import { getTablePrimaryKey } from '../dbs';
+import { isSamePrimaryKey } from '../utils';
 
 interface Options {
   fn: (this: any) => string;
@@ -81,8 +82,8 @@ Handlebars.registerHelper('getTableRecordByKey', (options: Options) => {
     options.hash.tables,
     options.hash.tableName,
   );
-  return options.hash.rows.find(
-    (row: RowType) => row[primaryKey] === options.hash.primaryKeyVal,
+  return options.hash.rows.find((row: RowType) =>
+    isSamePrimaryKey(row[primaryKey], options.hash.primaryKeyVal),
   );
 });
 

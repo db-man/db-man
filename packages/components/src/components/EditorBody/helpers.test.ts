@@ -28,10 +28,19 @@ describe('validatePrimaryKey', () => {
     expect(validatePrimaryKey('foo', [], 'id')).toBe(true);
   });
 
-  it('compares with ===, so a number does not match the string read from the form', () => {
-    // The value always comes from a form input (a string), while a record read
-    // from GitHub may hold a number. They are treated as different records.
-    expect(validatePrimaryKey('1', [{ id: 1 }], 'id')).toBe(true);
+  it('rejects a value which is used by a record holding a number', () => {
+    // The value comes from a form input, so it is the string '1', while the
+    // record read from a data file may hold the number 1.
+    expect(validatePrimaryKey('1', [{ id: 1 }], 'id')).toBe(false);
+  });
+
+  it('accepts a value which only differs from a record by another type', () => {
+    expect(validatePrimaryKey('2', [{ id: 1 }], 'id')).toBe(true);
+  });
+
+  it('accepts a value when rows hold no primary key at all', () => {
+    expect(validatePrimaryKey('1', [{ name: 'Alice' }], 'id')).toBe(true);
+    expect(validatePrimaryKey('1', [{ id: null }], 'id')).toBe(true);
   });
 
   it('should only look at the primary key column', () => {
