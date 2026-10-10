@@ -71,13 +71,13 @@ export const DBMERR_DELETE_FILE_409_CONFLICT =
 /**
  * Usage:
  * ```js
- * const github = new Github({
+ * const github = new GithubV2({
  *   personalAccessToken: 'your-personal-access-token',
  *   owner: 'your-github-username',
  *   repoName: 'your-repo-name',
  * });
  */
-export default class Github {
+export default class GithubV2 {
   context: GithubContext;
 
   constructor({ personalAccessToken, owner, repoName }) {
@@ -168,7 +168,7 @@ export default class Github {
       })
       .then(({ data }) => data)
       .catch((err) => {
-        console.error('Github.getRawContentByPath failed, err:', err);
+        console.error('GithubV2.getRawContentByPath failed, err:', err);
         let newErr;
         switch (err.status) {
           case 401:

@@ -23,15 +23,17 @@ const mockDbsSchema = {
 };
 
 /**
- * Every Github method GithubDb may reach for, in one place, so a new case can
+ * Every GithubV2 method GithubDb may reach for, in one place, so a new case can
  * never silently call an undefined method on the mock.
  */
 const createMockGithub = () => ({
   getFileContentAndSha: jest.fn(),
-  getContentByPath: jest.fn(),
+  getFileRawContent: jest.fn(),
+  listDir: jest.fn(),
   getBlobContentAndSha: jest.fn(),
   getPlainTextByPath: jest.fn(),
-  updateFile: jest.fn(),
+  createFile: jest.fn(),
+  saveFile: jest.fn(),
   deleteFile: jest.fn(),
 });
 
@@ -200,11 +202,12 @@ describe('GithubDb', () => {
       );
       expect(res).toEqual({ content: [{ id: 1 }], sha: 's1' });
       // the normal path must not touch the blob API
-      expect(mockGithub.getContentByPath).not.toHaveBeenCalled();
+      expect(mockGithub.listDir).not.toHaveBeenCalled();
+      expect(mockGithub.getBlobContentAndSha).not.toHaveBeenCalled();
     });
 
     it('should read a large table through the blob API', async () => {
-      mockGithub.getContentByPath.mockResolvedValueOnce([
+      mockGithub.listDir.mockResolvedValueOnce([
         { name: 'roles.data.json', sha: 'other' },
         { name: 'users.data.json', sha: 'abc123' },
       ]);
@@ -215,53 +218,40 @@ describe('GithubDb', () => {
 
       const res = await gd.getTableRows('iam', 'users');
 
-      expect(mockGithub.getContentByPath).toHaveBeenCalledWith(
-        'dbs/iam',
-        undefined,
-      );
+      expect(mockGithub.listDir).toHaveBeenCalledWith('dbs/iam', undefined);
       expect(mockGithub.getBlobContentAndSha).toHaveBeenCalledWith(
         'abc123',
         undefined,
       );
       expect(res.sha).toBe('abc123');
     });
-
-    it('should throw when the large table directory resolves to a file', async () => {
-      mockGithub.getContentByPath.mockResolvedValueOnce({ name: 'iam' });
-
-      await expect(gd.getTableRows('iam', 'users')).rejects.toThrow(
-        'Expected an array of files',
-      );
-    });
+    // The "a dir path can turn out to be a file" rule used to be re-checked
+    // here. listDir() owns it now and GithubV2.test.ts asserts it, so this
+    // suite no longer repeats that check.
   });
 
   describe('getTableInsights', () => {
     it('should return the decoded git log text', async () => {
       const gitLog = 'abc123 2024-10-01\n1\t0\troles.data.json';
-      mockGithub.getContentByPath.mockResolvedValueOnce({
+      mockGithub.getFileRawContent.mockResolvedValueOnce({
         content: toBase64(gitLog),
         sha: 's1',
       });
 
       const res = await gd.getTableInsights('iam', 'roles');
 
-      expect(mockGithub.getContentByPath).toHaveBeenCalledWith(
+      expect(mockGithub.getFileRawContent).toHaveBeenCalledWith(
         'dbs/iam/roles.insights.gitlog',
         undefined,
       );
       expect(res).toBe(gitLog);
     });
 
-    it('should throw when the insights path is a directory', async () => {
-      mockGithub.getContentByPath.mockResolvedValueOnce([]);
-
-      await expect(gd.getTableInsights('iam', 'roles')).rejects.toThrow(
-        'getTableInsights failed, res is an array, the path param should be a file, not a dir.',
-      );
-    });
+    // The "a file path can turn out to be a dir" rule used to be re-checked
+    // here. getFileRawContent() owns it now and GithubV2.test.ts asserts it.
 
     it('should throw when the response carries no content', async () => {
-      mockGithub.getContentByPath.mockResolvedValueOnce({
+      mockGithub.getFileRawContent.mockResolvedValueOnce({
         name: 'roles.insights.gitlog',
         sha: 's1',
       });
@@ -327,38 +317,54 @@ describe('GithubDb', () => {
   });
 
   describe('updateTableFile', () => {
-    it('should write the table file with 1-space indentation and the db-man message', async () => {
+    it('should save the table file with 1-space indentation and the db-man message', async () => {
       const data = { commit: { sha: 'c1' } };
-      mockGithub.updateFile.mockResolvedValueOnce(data);
+      mockGithub.saveFile.mockResolvedValueOnce(data);
 
       const rows = [{ id: 1 }, { id: 2 }];
       const res = await gd.updateTableFile('iam', 'users', rows, 'old-sha');
 
       // 1 space, deliberately not 2 — this is the on-disk format of table files
-      expect(mockGithub.updateFile.mock.calls[0][0].content).toBe(
+      expect(mockGithub.saveFile.mock.calls[0][0].content).toBe(
         '[\n {\n  "id": 1\n },\n {\n  "id": 2\n }\n]',
       );
-      expect(mockGithub.updateFile).toHaveBeenCalledWith({
+      expect(mockGithub.saveFile).toHaveBeenCalledWith({
         path: 'dbs/iam/users.data.json',
         content: JSON.stringify(rows, null, 1),
+        message: '[db-man] Update table file (iam/users)',
         sha: 'old-sha',
+      });
+      expect(mockGithub.createFile).not.toHaveBeenCalled();
+      expect(res).toBe(data);
+    });
+
+    // The sha is what decides create vs overwrite, so a caller that has none
+    // must land on createFile — not on a save with an undefined sha.
+    it('should create the table file when the caller has no sha', async () => {
+      const rows = [{ id: 1 }];
+
+      await gd.updateTableFile('iam', 'users', rows, undefined);
+
+      expect(mockGithub.createFile).toHaveBeenCalledWith({
+        path: 'dbs/iam/users.data.json',
+        content: JSON.stringify(rows, null, 1),
         message: '[db-man] Update table file (iam/users)',
       });
-      expect(res).toBe(data);
+      expect(mockGithub.saveFile).not.toHaveBeenCalled();
     });
   });
 
   describe('updateRecordFile', () => {
-    it('should write the record file using the primary key value and 2-space indentation', async () => {
+    it('should save the record file using the primary key value and 2-space indentation', async () => {
       const record = { id: 1, name: 'John' };
 
       await gd.updateRecordFile('iam', 'users', 'id', record, 'sha-1');
 
-      expect(mockGithub.updateFile).toHaveBeenCalledWith({
+      expect(mockGithub.saveFile).toHaveBeenCalledWith({
         path: 'dbs/iam/users/1.json',
         content: '{\n  "id": 1,\n  "name": "John"\n}',
-        sha: 'sha-1',
         message: '[db-man] Update record file (iam/users)',
+        sha: 'sha-1',
       });
     });
 
@@ -367,9 +373,22 @@ describe('GithubDb', () => {
 
       await gd.updateRecordFile('iam', 'users', 'id', record, 'sha-1');
 
-      expect(mockGithub.updateFile).toHaveBeenCalledWith(
+      expect(mockGithub.saveFile).toHaveBeenCalledWith(
         expect.objectContaining({ path: 'dbs/iam/users/42.json' }),
       );
+    });
+
+    it('should create the record file when the caller has no sha', async () => {
+      const record = { id: 7 };
+
+      await gd.updateRecordFile('iam', 'users', 'id', record, undefined);
+
+      expect(mockGithub.createFile).toHaveBeenCalledWith({
+        path: 'dbs/iam/users/7.json',
+        content: JSON.stringify(record, null, '  '),
+        message: '[db-man] Update record file (iam/users)',
+      });
+      expect(mockGithub.saveFile).not.toHaveBeenCalled();
     });
   });
 
@@ -395,11 +414,10 @@ describe('GithubDb', () => {
 
       await gd.createDatabaseSchema(schema);
 
-      expect(mockGithub.updateFile).toHaveBeenCalledWith({
+      expect(mockGithub.createFile).toHaveBeenCalledWith({
         path: 'dbs/iam/dbcfg.json',
         content: JSON.stringify(schema, null, '  '),
         message: '[db-man] Create database schema (iam)',
-        sha: undefined,
       });
     });
   });
@@ -410,7 +428,7 @@ describe('GithubDb', () => {
 
       await gd.updateDatabaseSchema(schema, 'cfg-sha');
 
-      expect(mockGithub.updateFile).toHaveBeenCalledWith({
+      expect(mockGithub.saveFile).toHaveBeenCalledWith({
         path: 'dbs/iam/dbcfg.json',
         content: JSON.stringify(schema, null, '  '),
         message: '[db-man] Update database schema (iam)',
@@ -427,7 +445,7 @@ describe('GithubDb', () => {
         description: 'iam db',
         tables: [existingTable],
       };
-      mockGithub.getContentByPath.mockResolvedValueOnce({
+      mockGithub.getFileRawContent.mockResolvedValueOnce({
         content: toBase64(JSON.stringify(dbCfg)),
         sha: 'cfg-sha',
       });
@@ -435,10 +453,10 @@ describe('GithubDb', () => {
       const newTable = { name: 'roles', columns: [] };
       await gd.createTableSchema('iam', newTable);
 
-      expect(mockGithub.getContentByPath).toHaveBeenCalledWith(
+      expect(mockGithub.getFileRawContent).toHaveBeenCalledWith(
         'dbs/iam/dbcfg.json',
       );
-      expect(mockGithub.updateFile).toHaveBeenCalledWith({
+      expect(mockGithub.saveFile).toHaveBeenCalledWith({
         path: 'dbs/iam/dbcfg.json',
         content: JSON.stringify(
           { ...dbCfg, tables: [existingTable, newTable] },
@@ -471,18 +489,21 @@ describe('GithubDb', () => {
   describe('getDbTablesSchemaV2Async', () => {
     it('should return the parsed object together with the sha', async () => {
       const dbCfg = { name: 'iam', description: 'iam db', tables: [] };
-      mockGithub.getContentByPath.mockResolvedValueOnce({
+      mockGithub.getFileRawContent.mockResolvedValueOnce({
         content: toBase64(JSON.stringify(dbCfg)),
         sha: 'cfg-sha',
       });
 
       const res = await gd.getDbTablesSchemaV2Async('iam');
 
+      expect(mockGithub.getFileRawContent).toHaveBeenCalledWith(
+        'dbs/iam/dbcfg.json',
+      );
       expect(res).toEqual({ obj: dbCfg, sha: 'cfg-sha' });
     });
 
     it('should throw when dbcfg.json has no content', async () => {
-      mockGithub.getContentByPath.mockResolvedValueOnce({
+      mockGithub.getFileRawContent.mockResolvedValueOnce({
         name: 'dbcfg.json',
         sha: 'cfg-sha',
       });

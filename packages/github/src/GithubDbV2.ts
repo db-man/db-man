@@ -5,6 +5,7 @@ import {
   DatabaseSchema,
   UpdateFileType,
   DbTable,
+  FileOrDir,
   PrimaryKeyVal,
 } from './types';
 import { DB_CFG_FILENAME } from './constants';
@@ -13,7 +14,14 @@ import {
   getInsightsFileName,
   getRecordFileName,
 } from './utils';
-import Github from './Github';
+import GithubV2 from './GithubV2';
+
+/**
+ * What an entry of a directory listing really carries. `listDir()` declares
+ * `FileOrDir[]`, which only names `name`; the entries GitHub returns for a dir
+ * also carry the `sha` that `getTableRows()` needs to reach the blob API.
+ */
+type DirEntry = FileOrDir & { sha: string };
 
 /**
  * @class
@@ -36,7 +44,7 @@ import Github from './Github';
  *     ]
  *   }
  * };
- * const githubDb = new GithubDb({
+ * const githubDb = new GithubDbV2({
  *   personalAccessToken
  *   repoPath: 'dbs',
  *   dbsSchema,
@@ -45,7 +53,7 @@ import Github from './Github';
  * });
  * ```
  */
-export default class GithubDb {
+export default class GithubDbV2 {
   LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN: string;
 
   LS_KEY_GITHUB_REPO_PATH: string; // e.g. dbs
@@ -56,7 +64,7 @@ export default class GithubDb {
 
   dbsSchema: DatabaseMap;
 
-  github: Github;
+  githubV2: GithubV2;
 
   /**
    * Cache dbsSchema in this class, so that we don't need to get it from GitHub API every time
@@ -96,7 +104,7 @@ export default class GithubDb {
     this.LS_KEY_GITHUB_REPO_NAME = repoName;
     this.dbsSchema = dbsSchema;
 
-    this.github = new Github({
+    this.githubV2 = new GithubV2({
       personalAccessToken: this.LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN,
       owner: this.LS_KEY_GITHUB_OWNER,
       repoName: this.LS_KEY_GITHUB_REPO_NAME,
@@ -200,7 +208,7 @@ export default class GithubDb {
   }
 
   /**
-   * When table file is more than 1MB, call getContentByPath to get sha, and then using sha to call getBlobContentAndSha to get content
+   * When table file is more than 1MB, list the db dir with listDir to get sha, and then using sha to call getBlobContentAndSha to get content
    * When table file is less than 1MB, call getFileContentAndSha
    * @param {string} path
    * @param {string} dbName
@@ -210,23 +218,19 @@ export default class GithubDb {
    */
   async getTableRows(dbName: string, tableName: string, signal?: AbortSignal) {
     if (!this.isLargeTable(dbName, tableName)) {
-      return this.github.getFileContentAndSha(
+      return this.githubV2.getFileContentAndSha(
         this.getDataPath(dbName, tableName),
         signal, // eslint-disable-line @typescript-eslint/comma-dangle
       );
     }
 
-    const files = await this.github.getContentByPath(
-      `${this.LS_KEY_GITHUB_REPO_PATH}/${dbName}`,
+    const dirPath = `${this.LS_KEY_GITHUB_REPO_PATH}/${dbName}`;
+    // listDir owns the "this path must be a dir" rule, so there is no shape
+    // check to repeat here.
+    const files = (await this.githubV2.listDir(
+      dirPath,
       signal, // eslint-disable-line @typescript-eslint/comma-dangle
-    );
-
-    // when calling getContentByPath with a file as path param, it returns an object instead of an array
-    if (!Array.isArray(files)) {
-      throw new Error(
-        `getTableRows: Expected an array of files for the path "${this.LS_KEY_GITHUB_REPO_PATH}/${dbName}", but received an object. Please check if the provided path is a directory.`, // eslint-disable-line @typescript-eslint/comma-dangle
-      );
-    }
+    )) as DirEntry[];
 
     let sha;
     files.forEach((file) => {
@@ -234,7 +238,7 @@ export default class GithubDb {
         sha = file.sha;
       }
     });
-    return this.github.getBlobContentAndSha(sha, signal);
+    return this.githubV2.getBlobContentAndSha(sha, signal);
   }
 
   /**
@@ -245,16 +249,10 @@ export default class GithubDb {
     tableName: string,
     signal?: AbortSignal,
   ) {
-    return this.github
-      .getContentByPath(this.getInsightsPath(dbName, tableName), signal)
+    return this.githubV2
+      .getFileRawContent(this.getInsightsPath(dbName, tableName), signal)
       .then((data) => {
-        // when path is a dir, data is an array, this is not expected in getTableInsights
-        if (Array.isArray(data)) {
-          throw new Error(
-            'getTableInsights failed, res is an array, the path param should be a file, not a dir.',
-          );
-        }
-        // when data is not array, but no content in it, this is not expected in getTableInsights (but no idea why this happens)
+        // when data has no content in it, this is not expected in getTableInsights (but no idea why this happens)
         if (!('content' in data) || !data.content) {
           throw new Error(
             'getTableInsights failed, res.content is not in res, check the path param.',
@@ -285,7 +283,7 @@ export default class GithubDb {
     signal?: AbortSignal,
   ) {
     const path = this.getRecordPath(dbName, tableName, primaryKeyVal);
-    return this.github.getFileContentAndSha(path, signal);
+    return this.githubV2.getFileContentAndSha(path, signal);
   }
 
   /**
@@ -300,7 +298,7 @@ export default class GithubDb {
     signal?: AbortSignal,
   ) {
     const path = this.getDbViewScriptPath(dbName, queryFilename);
-    return this.github.getPlainTextByPath(path, signal);
+    return this.githubV2.getPlainTextByPath(path, signal);
   }
 
   /**
@@ -317,12 +315,18 @@ export default class GithubDb {
     sha: UpdateFileType['sha'],
   ) {
     const path = this.getDataPath(dbName, tableName);
-    return this.github.updateFile({
+    const params = {
       path,
       content: JSON.stringify(content, null, 1),
-      sha,
       message: `[db-man] Update table file (${dbName}/${tableName})`,
-    });
+    };
+    // A sha means "overwrite the revision I read", no sha means "create". The
+    // library keeps those behind two entries now, so the caller's optional sha
+    // is what picks one.
+    if (sha === undefined || sha === null) {
+      return this.githubV2.createFile(params);
+    }
+    return this.githubV2.saveFile({ ...params, sha });
   }
 
   /**
@@ -334,12 +338,16 @@ export default class GithubDb {
    */
   async updateRecordFile(dbName, tableName, primaryKey, record, sha) {
     const path = this.getRecordPath(dbName, tableName, record[primaryKey]);
-    return this.github.updateFile({
+    const params = {
       path,
       content: JSON.stringify(record, null, '  '),
-      sha,
       message: `[db-man] Update record file (${dbName}/${tableName})`,
-    });
+    };
+    // Same split as updateTableFile: sha decides create vs overwrite.
+    if (sha === undefined || sha === null) {
+      return this.githubV2.createFile(params);
+    }
+    return this.githubV2.saveFile({ ...params, sha });
   }
 
   // Schema management
@@ -350,17 +358,16 @@ export default class GithubDb {
    */
   async createDatabaseSchema(databaseSchema: DatabaseSchema) {
     const databaseName = databaseSchema.name;
-    return this.github.updateFile({
+    return this.githubV2.createFile({
       path: this.getDbConfigPath(databaseName),
       content: JSON.stringify(databaseSchema, null, '  '),
       message: `[db-man] Create database schema (${databaseName})`,
-      sha: undefined,
     });
   }
 
   async updateDatabaseSchema(databaseSchema: DatabaseSchema, sha: string) {
     const databaseName = databaseSchema.name;
-    return this.github.updateFile({
+    return this.githubV2.saveFile({
       path: this.getDbConfigPath(databaseName),
       content: JSON.stringify(databaseSchema, null, '  '),
       message: `[db-man] Update database schema (${databaseName})`,
@@ -375,7 +382,7 @@ export default class GithubDb {
       ...obj,
       tables: [...obj.tables, tableConfig],
     };
-    return this.github.updateFile({
+    return this.githubV2.saveFile({
       path: this.getDbConfigPath(dbName),
       content: JSON.stringify(newObj, null, '  '),
       message: `[db-man] Create table schema (${tableConfig.name})`,
@@ -384,7 +391,7 @@ export default class GithubDb {
   }
 
   async getDbTablesSchemaAsync(dbName: string) {
-    const { content } = await this.github.getFileContentAndSha(
+    const { content } = await this.githubV2.getFileContentAndSha(
       this.getDbConfigPath(dbName),
     );
     return content;
@@ -392,7 +399,7 @@ export default class GithubDb {
 
   // Get one db schema from dbcfg.json
   async getDbTablesSchemaV2Async(dbName: string) {
-    const { content, sha } = await this.github.getContentByPath(
+    const { content, sha } = await this.githubV2.getFileRawContent(
       this.getDbConfigPath(dbName),
     );
 
@@ -417,7 +424,7 @@ export default class GithubDb {
    */
   async deleteRecordFile(dbName, tableName, primaryKeyVal, sha) {
     const path = this.getRecordPath(dbName, tableName, primaryKeyVal);
-    return this.github.deleteFile({
+    return this.githubV2.deleteFile({
       path,
       sha,
       message: `[db-man] Delete file (${dbName}/${tableName})`,
