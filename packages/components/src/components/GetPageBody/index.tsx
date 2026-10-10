@@ -19,8 +19,9 @@ const GetPageBody = () => {
   // Create the initial form fields according to whether create/update.
   const getInitialFormFields = useCallback(
     (tableRows: RowType[]) => {
-      const foundRows = tableRows.filter(
-        (item) => item[primaryKey] === utils.getUrlParams()[primaryKey],
+      const currentId = utils.getUrlParams()[primaryKey];
+      const foundRows = tableRows.filter((item) =>
+        utils.isSamePrimaryKey(item[primaryKey], currentId),
       );
 
       if (foundRows.length === 0) {

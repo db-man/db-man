@@ -1,5 +1,6 @@
 import { ValueType } from '.';
 import { TYPE_CREATE_UPDATE_PAGE } from '../../constants';
+import { isSamePrimaryKey } from '../../utils';
 import DbColumn from '../../types/DbColumn';
 import { UiType } from '../../types/UiType';
 
@@ -15,7 +16,7 @@ export const validatePrimaryKey = (
   content: ValueType[],
   primaryKey: string
 ) => {
-  const found = content.find((item) => item[primaryKey] === value);
+  const found = content.find((item) => isSamePrimaryKey(item[primaryKey], value));
   if (found) {
     return false;
   }

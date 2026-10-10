@@ -77,7 +77,8 @@ const UpdatePage = () => {
       return record;
     }
     return (
-      rows.find((row) => row[primaryKey] === currentId()) || ({} as RowType)
+      rows.find((row) => utils.isSamePrimaryKey(row[primaryKey], currentId())) ||
+      ({} as RowType)
     );
   };
 

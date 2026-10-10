@@ -215,6 +215,39 @@ describe('UpdatePage', () => {
     });
   });
 
+  it('finds and updates a record whose primary key is a number in the data file', async () => {
+    const { githubDb } = renderPage({
+      url: '/iam/users/update?userId=1',
+      githubDb: makeGithubDb({
+        getTableRows: jest.fn().mockResolvedValue({
+          content: [{ userId: 1, name: 'Alice' }],
+          sha: 'table-sha',
+        }),
+      }),
+    });
+    await waitFor(() => {
+      expect(githubDb.getTableRows).toHaveBeenCalled();
+    });
+
+    // Before, `row[primaryKey] === currentId()` was false (`1 !== '1'`), so the
+    // form was never prefilled and no Save button was rendered at all.
+    await waitFor(() => {
+      expect(fieldInput(0)).toHaveValue('1');
+    });
+    expect(fieldInput(1)).toHaveValue('Alice');
+
+    fireEvent.change(fieldInput(1), { target: { value: 'Alice2' } });
+    fireEvent.click(saveButton());
+
+    await waitFor(() => {
+      expect(githubDb.updateTableFile).toHaveBeenCalled();
+    });
+    const [, , newRows] = githubDb.updateTableFile.mock.calls[0];
+    // The row is replaced, not appended a second time.
+    expect(newRows).toHaveLength(1);
+    expect(newRows[0]).toMatchObject({ name: 'Alice2' });
+  });
+
   it('overrides form values from the __replace_fields__ query param', async () => {
     renderPage({
       url: `/iam/users/update?userId=u1&__replace_fields__=${encodeURIComponent(

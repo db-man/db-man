@@ -1,4 +1,28 @@
 import { message } from 'antd';
+import type { types } from '@db-man/github';
+
+/**
+ * Whether two primary key values mean the same record.
+ *
+ * The primary key of a record read from a data file is whatever JSON type the
+ * file holds, so a `NUMBER` primary key column is the number `1`. The same key
+ * taken from the URL query (`?userId=1`) or from a form field is always the
+ * string `'1'`, so `===` never matches the two and the record is never found.
+ * Compare the string forms instead.
+ *
+ * `null` / `undefined` mean "no value" and match nothing, not even each other:
+ * a row which has no primary key must not be picked as the record of a missing
+ * query parameter.
+ */
+export const isSamePrimaryKey = (
+  a: types.PrimaryKeyVal | null | undefined,
+  b: types.PrimaryKeyVal | null | undefined,
+) => {
+  if (a === null || a === undefined || b === null || b === undefined) {
+    return false;
+  }
+  return String(a) === String(b);
+};
 
 export const getUrlParams = () => {
   const urlSearchParams = new URLSearchParams(window.location.search);

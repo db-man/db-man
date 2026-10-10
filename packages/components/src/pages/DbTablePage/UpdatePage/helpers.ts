@@ -1,5 +1,6 @@
 import { utils as githubUtils } from '@db-man/github';
 import { ValueType } from '../../../components/EditorBody';
+import { isSamePrimaryKey } from '../../../utils';
 import { RowType } from '../../../types/Data';
 
 export const getNewRows = (
@@ -9,7 +10,7 @@ export const getNewRows = (
   currentId: string,
 ) =>
   oldRows.map((row) => {
-    if (row[primaryKey] !== currentId) {
+    if (!isSamePrimaryKey(row[primaryKey], currentId)) {
       return row;
     }
     // To update an existing item
