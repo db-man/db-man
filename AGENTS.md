@@ -102,6 +102,10 @@ The other four workflows (`merge` / `split` / `validate` / `insights`) are `work
   `.ant-table-measure-row` (`aria-hidden`, zero height), so indexing `tbody tr` is off by one and
   "expect N rows" fails at N+1. Query `tr.ant-table-row` instead. Related: `react-simple-code-editor`
   renders a contenteditable `div.npm__react-simple-code-editor__textarea`, not a `textarea`.
+- **Compare primary key values with `utils.isSamePrimaryKey`, never `===`.** A `NUMBER` primary
+  key is the JSON number `1` in the data file but the string `'1'` in a URL query or a form field,
+  so `1 === '1'` is false and the row is silently not found. Five call sites had this bug; the fix
+  and the affected list are in `docs/plans/2026-10-09-github-api-surface-gaps.md` §3.1.1.
 - `formatDate` depends on `TZ=Asia/Shanghai`; CI supplies it through `env`, not the test script.
 - Doc drift: root `DEVELOP.md` quotes `"test": "TZ=Asia/Shanghai lerna run test"`, but the real root
   script is `npm run test --workspaces`. `README.md` links `packages/insights`, which does not exist.
