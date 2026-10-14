@@ -7,5 +7,12 @@ import GithubDbV2 from './GithubDbV2';
 
 export { types, contants, GithubDb, Github, GithubV2, GithubDbV2 };
 
+/**
+ * The error vocabulary is flattened, not namespaced like `utils`: consumers
+ * match on it (`err.type === 'CONFLICT'`), and `isGithubError()` is the guard
+ * that goes with it. See `src/errors.ts`.
+ */
+export * from './errors';
+
 export * as utils from './utils';
 export * as insightsUtils from './insightsUtils';

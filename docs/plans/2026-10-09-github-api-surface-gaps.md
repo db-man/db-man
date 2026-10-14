@@ -3,7 +3,9 @@
 - 日期：2026-10-09
 - 范围：`packages/github`（`@db-man/github`），连带少量 `packages/components` 调用点
 - 状态：**Stage 1.1、1.2 已完成并合并**（1.1 = PR #1 / 合并提交 `006919f`；1.2 = PR #2 /  
-  合并提交 `a1f71bb`，CI 绿）。Stage 1.3 / 1.4 与 Stage 2 / 3 **未开工**
+  合并提交 `a1f71bb`，CI 绿）。**Stage 2.1 的行级 API 已在 V2 侧实现**（2026-10-11，形态见 §2.1.1；
+  portal 迁移到 V2 仍未做，所以那 5 处 `isSplitTable()` 还在）。Stage 1.3 / 1.4、Stage 2 的其余子项
+  与 Stage 3 **未开工**
 - 行号基准：2026-10-09 23:00 的工作区状态（`packages/github` 的 `tsconfig.include` 是  
   `./src/**/*.ts`，测试文件与源码同目录，改动会让行号漂移——引用行号前先 `grep -nE` 复核）
 - 前置：`docs/plans/2026-10-09-primary-key-val-type.md`（主键类型收口 `PrimaryKeyVal`）  
@@ -27,8 +29,10 @@ Stage 1 / Stage 2；Stage 3 是可选的扩展与一致性。
 
 ### 1.1 公开 API 面现状
 
-`packages/github/src/index.ts` 只导出 6 项：`types`、`contants`、`GithubDb`、`Github`、  
-`utils`、`insightsUtils`。其中真正的数据操作面：
+`packages/github/src/index.ts` 导出 8 项：`types`、`contants`、`Github`、`GithubDb`、`GithubV2`、  
+`GithubDbV2`、`utils`、`insightsUtils`。（本节写于 2026-10-09，当时只有 6 项；两个 V2 类是  
+2026-10-10 的提交 `ee0e476` 加进来的，`src/index.test.ts` 已把出口钉住——见 §2.1 的改定。）  
+其中真正的数据操作面：
 
 | 类          | 方法                                                                                                                                                                        | 性质                      |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------- |
@@ -73,7 +77,105 @@ Stage 1 / Stage 2；Stage 3 是可选的扩展与一致性。
 
 ## 2. 开工前必须先定的三件事
 
-### 2.1 行级 API 的形态（A / B / C 对比）
+### 2.1 行级 API 的形态
+
+> **2026-10-11 改定：本节结论已被取代。** 下表"结论"列的"**采纳方案 C（调用方分派、库只补 normal 侧）**"
+> **作废**；改定为**在库内按构造注入的 `dbModes` 分派**，落点 `GithubDbV2`——即原方案 A 的 V2 版本。
+> §3 Stage 2.1 那份 `insertRow` / `updateRow` / `deleteRow` 签名同样作废（该节已加指针）。
+> 下表保留作留痕。
+
+#### 2.1.1 改定后的设计（2026-10-11）
+
+**为什么"库内分派"这次成立** —— 原否 A 的三条理由在 V2 下逐条失效：
+
+| 原否决理由（见下表"问题"列） | V2 下为什么失效 |
+| --- | --- |
+| ① `GithubDb` 构造里没有 `dbModes`，要新增输入 | `GithubDbV2` 是从 0 设计的，而且**已发布的 npm 包里没有任何 V2 文件**（`0.1.79` 发布于 2026-08-11，V2 的全部提交在 2026-10-10）→ 给 V2 构造加必填参数对任何已发布消费者零影响 |
+| ② 模式缺失时要么报错、要么推导默认 | 采纳"**必填 + 非法值抛错**"，不推导默认——正是本仓"缺输入就报错"的口径 |
+| ③ 与"判定点单一"冲突 | 方向相反：分派点从 `components` 里的 **5 处**（`CreatePage.tsx:37`、`UpdatePage/index.tsx:71`、`GetPageBody/index.tsx:89`、`StringFormField.tsx:56`、`FieldWrapperForCreateUpdatePage.tsx:54`）收成**构造 1 处** |
+
+**构造**
+
+```ts
+new GithubDbV2({
+  personalAccessToken, owner, repoName, repoPath, dbsSchema,
+  dbModes, // 'normal' | 'split-table'，必填；非法值抛错
+});
+```
+
+`dbModes` 与已有的 `dbsSchema` 同源（`dbs.json` → localStorage `dbm_github_repo_modes`），由调用方传入。
+**不提供**"从 `dbs.json` 自动读 mode"的便捷方法——那正是被否决的"缺输入就推导默认"。
+
+**对外行级 API（本轮新增）**
+
+| 方法 | 签名 | 行为 |
+| --- | --- | --- |
+| `getRow` | `(dbName, tableName, primaryKeyVal) → Promise<{ row, rev } \| null>` | 行不存在返回 `null`（把该次读的 404 映射掉），**不是异常** |
+| `insertRow` | `(dbName, tableName, row) → Promise<WriteResult>` | 主键值从 `row` 里取（哪个列是主键由库查 schema） |
+| `updateRow` | `(dbName, tableName, primaryKeyVal, row, rev) → Promise<WriteResult>` | 传**整行**（不是 patch）；`rev` 必填 |
+| `deleteRow` | `(dbName, tableName, primaryKeyVal, rev) → Promise<WriteResult>` | `rev` 必填；**normal 模式终于能删行了** |
+
+三条规则：
+
+1. **`rev` 只能来自 `getRow`。** 它是不可解释的句柄（内部带 mode + sha，不对外暴露字面 sha）。
+   `getTableRows` 读的是 `<table>.data.json`，split 下那个 sha 属于**另一个文件**，拿去写记录文件必然
+   409 → 所以整表读**不产出 `rev`**。规则一句话：**写操作的 `rev` 必须来自同一行的读。**
+2. **主键列由库从 `dbsSchema` 查**（`primary: true`）。查不到 db / 表 / 主键列 → **抛错**，
+   **不学** `components/src/dbs.ts:47-52` 的"找不到返回空字符串"。
+3. **`updateRow` / `deleteRow` 从签名上就够不到"行不存在"**：`rev` 必填，而 `rev` 只能由 `getRow`
+   成功产出 → 非法状态不可表示，比在库里争论"抛错还是返回 null"更彻底。
+
+**写操作的返回值**：保留 `commit`（UI 用 `commit.html_url` 渲染"查看提交"），并额外带回本次实际走的路
+（`mode` 与 `action`），让"normal 这次是整表覆写"在调用方可见——**不把成本藏进一个名字后面**。
+
+**内部化（本轮顺手做；这三个方法当前零消费者）**
+
+| 现名（`GithubDbV2.ts`） | 处置 |
+| --- | --- |
+| `createRow` / `updateRow` / `deleteRow`（split 的记录文件语义，`:341/356/448`） | 改名 `createRecordFile` / `saveRecordFile` / `deleteRecordFile`，**private**——"最终写到哪个文件"不该外露 |
+| `getRowFileContentAndSha`（`:279`） | private |
+| `updateTableFile`（整表覆写，`:311`） | **保留对外**——这个能力本身有用 |
+| `getTableRows`（`:219`） | 保留原名（改名/改签名是纯破坏） |
+
+命名撞车由此消解：`*Row` 只留给"会按模式分派的行级操作"，文件级原语改叫 `*RecordFile` 并下沉。
+
+**必须知情的代价（封装改变不了）**
+
+1. **normal 下每次行写 = 全表下载 + 全表上传**（`large: true` 的表走 blob API），split 下是写一个小文件，
+   差一个数量级。封装只是把它从调用方眼前挪走，没让它变快。
+2. **split 下写完 `<table>.data.json` 不会立即更新**——要等 GitHub Action 合并
+   （见 `packages/components/DOC.md:20` 与同文件 "Migrate to split-table mode" 一节）。
+   刚写完马上读全表拿到的是旧数据。
+3. **失败形态不同**：normal 撞整表覆写冲突、split 撞单记录冲突，同一个 `catch` 要兜两种
+   ——这正是返回值要带 `mode` / `action` 的原因。
+4. **`insertRow` 的重名判定两模式不同源**：normal 在内存数组里扫主键（零 HTTP）→ `DUPLICATE_KEY`；
+   split 的"记录文件已存在"由 GitHub 回 422 → **原样透出 `ALREADY_EXISTS`**，不要重贴 `DUPLICATE_KEY`
+   （`utils.getRecordFileName` 先过 `validFilename`，是**多对一**，"文件已存在" ≠ "主键已存在"，
+   重贴会说假话）。
+
+**本轮不做**
+
+- **portal 迁移**：`components` 里那 5 处 `isSplitTable()` 不动，收益要等一次独立的迁移才落地——
+  两者是两件事，不混在一个改动里。
+- 不改 `getTableRows`；不动 v1 `GithubDb`（已发布 `0.1.79` 有它的外部消费者，见 §1.3）。
+
+**实现状态（2026-10-11）**
+
+- **已落地**：`src/errors.ts`（新错误契约，词表见 §2.3）、`GithubV2` 的错误码映射、
+  `GithubDbV2` 的构造 `dbModes` + 四个行级方法 + 文件级原语内部化、`index.ts` 平铺导出 `errors`。
+- **另有一份重复实现**：`utils.isSamePrimaryKey` 加进了 `packages/github/src/utils.ts`，而
+  `packages/components/src/utils.ts:17` 早有一份同名同语义的（来自 §3.1.1 的修复）。合并方向应是
+  components 改为从库里 import，但那要动 components —— 本轮没做，两份暂时靠人守着一致。
+- **本轮新定的两条**（讨论阶段没覆盖，实现时定的）：① `updateRow` 若发现**主键被改**则抛错拒绝
+  ——两种模式对"改主键"的行为本就不一致（split 会留下旧记录文件，normal 会就地改名），那是
+  delete + insert，得显式做；② `GithubV2` 只在**没传 sha 的 create** 上把 422 映射成
+  `ALREADY_EXISTS`，带 sha 的 422 原样透出。
+
+**留待改的下游段落**
+
+- **§3 Stage 2.1**：行级签名（见该节横幅）。
+
+#### 2.1.2 原对比（留痕；下表"结论"列已作废）
 
 |     | 方案 A：库内按模式自动分派                                                                                 | 方案 B：调用方分派，两套命名                                      | 方案 C：只补 normal 模式（推荐）                                                                |
 | --- | ---------------------------------------------------------------------------------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------ |
@@ -94,45 +196,48 @@ Stage 1 / Stage 2；Stage 3 是可选的扩展与一致性。
   需要新能力时**加可选参数**或**并列新方法**
 - `getContentByPathV2` 无消费者 → 可以最自由地处理（见 §5，建议删除而不是改造）
 
-### 2.3 错误类型怎么造（必须避开 babel 降级坑）
+### 2.3 错误类型怎么造（2026-10-11 改定，已落地）
 
-`build.sh` 的 commonjs 分支走 `babel src --out-dir dist`，`@babel/preset-env` 可能把 class 降级到 ES5。  
-**`class DbmError extends Error` 在 ES5 降级下会破坏原型链**，导致 `instanceof DbmError` 失效、  
-stack 丢失。因此**不要用 class，用工厂函数 + 挂字段**：
+> **本节原稿的那套词表（`DbmError` / `DbmErrorType` / `FILE_NOT_FOUND | NO_PERMISSION | FILE_TOO_LARGE | …`）
+> 作废。** 2026-10-10 讨论后换成 `GithubError` 这一套（词表见下），2026-10-11 落进
+> `packages/github/src/errors.ts`。原稿"不要用 class"的结论留着，但**理由换掉了——原来那个理由是错的**。
 
-```ts
-// src/errors.ts（新文件；types.ts 目前是纯类型，不放运行时值）
-export type DbmErrorType =
-  | 'FILE_NOT_FOUND'
-  | 'NO_PERMISSION'
-  | 'FILE_TOO_LARGE'
-  | 'CONFLICT'
-  | 'ROW_NOT_FOUND'
-  | 'DUPLICATE_KEY'
-  | 'UNKNOWN';
+**结论：工厂函数 + 挂字段 + 导出的 guard 函数；不要 `class GithubError extends Error`。**
 
-export interface DbmError extends Error {
-  type: DbmErrorType;
-  status?: number;
-  url?: string;
-}
+原稿的理由是"`@babel/preset-env` 会把 class 降级到 ES5、破坏原型链，导致 `instanceof` 失效"。
+**实测不成立**：`packages/github/babel.config.js` 是 `@babel/preset-env { targets: { node: 'current' } }`，
+不降级。真正的理由是本包**自己带两份副本**（`dist/` 与 `es6/`），npm 去重也不保证 —— 同一个逻辑错误在
+throw 侧与 catch 侧可能各自加载了不同的副本，`instanceof` 于是假阴性。`type` 字段跟着值走，跨副本仍有效，
+`isGithubError()` 是唯一受支持的判据。
 
-export const createDbmError = (
-  type: DbmErrorType,
-  message: string,
-  extra?: { status?: number; url?: string; cause?: unknown },
-): DbmError => {
-  const err = new Error(message) as DbmError;
-  err.type = type;
-  if (extra?.status !== undefined) err.status = extra.status;
-  if (extra?.url !== undefined) err.url = extra.url;
-  if (extra?.cause !== undefined) err.cause = extra.cause;
-  return err;
-};
-```
+**词表**：唯一定义源是 `src/errors.ts` 的 `GITHUB_ERROR_TYPES` 常量数组，联合类型由它派生（不会两处漂移）。
 
-判据 API 侧：consumer 用 `err.type === 'CONFLICT'` 判断，**不再字符串匹配**。`DbmErrorType` 与  
-`createDbmError` 都从 `src/index.ts` 导出。
+| type | 来源 | 含义 |
+| --- | --- | --- |
+| `UNAUTHORIZED` | 401 | token 缺失或失效 |
+| `FORBIDDEN` | 403 | 有 token 但没权限；也用于"文件太大、contents API 拿不到"——**不拆**，本库是靠 `dbSchema.large` 声明式知道文件大小的（见 `isLargeTable`） |
+| `NOT_FOUND` | 404 | 路径不存在 |
+| `ALREADY_EXISTS` | 422，**仅在没传 sha 的 create 上** | 文件已经在那儿；带 sha 的 422 是别的抱怨，原样透出 |
+| `CONFLICT` | 409 | 写入带的 sha 已过期。message **仍是 `DBMERR_UPDATE_FILE_409_CONFLICT` / `DBMERR_DELETE_FILE_409_CONFLICT` 字面**，老式 `includes` 匹配继续成立 |
+| `RATE_LIMITED` | 429 | 词表预留，当前没有映射点 |
+| `REMOTE_FAILURE` | 5xx / 传输层 | 词表预留，当前没有映射点（现状是原样 rethrow 上游错误） |
+| `UNKNOWN` | 其它 | `getRawContentByPath` 的 default 分支 |
+| `ROW_NOT_FOUND` | 库自己造 | db 层：表里没有这一行 |
+| `DUPLICATE_KEY` | 库自己造 | db 层：主键已在表里（normal 模式在内存数组里扫出来的，零 HTTP）。与 `ALREADY_EXISTS` **不是一回事**：记录文件名经过 `validFilename`，是多对一，"文件已存在" ≠ "主键已存在" |
+
+**三条边界**：
+
+1. **只有"远端回来的错"挂 `type`**。调用方用法错误（构造参数缺失、给了 `createFile` 一个 sha）仍是裸 `Error`。
+2. **`message` 不被 `type` 顶掉**：`type` 给程序判，`message` 给人读和搜索。
+3. **错误不跨层翻译**：db 层只新建 `ROW_NOT_FOUND` / `DUPLICATE_KEY` 这两个自己的类型，其余原样透出
+   —— split 侧撞上"记录文件已存在"就透出 `ALREADY_EXISTS`，**不重贴** `DUPLICATE_KEY`。
+
+**导出面**：`index.ts` 用 `export * from './errors'` **平铺**导出（不像 `utils` 那样带命名空间），
+因为 consumer 要写 `err.type === 'CONFLICT'`。`src/index.test.ts` 钉住了 `GITHUB_ERROR_TYPES` /
+`createGithubError` / `isGithubError` 这三个名字。
+
+**本次没做的一小块**：原稿的 `url` 字段没落——`GithubV2.getGitHubUrl` 产出的链接仍是**打不开的**
+（缺 `/blob/<ref>/`，见 §3 Stage 3.2），挂一个已知坏掉的 URL 不如先不挂。
 
 ---
 
@@ -211,13 +316,17 @@ PR 的 `test` 与 `cypress-run (1)(2)` 全绿。
 
 #### 1.3 错误契约收口
 
+> **2026-10-11：契约已落盘，本节的下述签名按 §2.3 改定后的口径读。** 工厂是
+> `createGithubError`（不是 `createDbmError`），词表见 §2.3。本节对象是 **v1 `Github`**，
+> 尚未开工；已落地的只是 **V2 `GithubV2`** 一侧（见 §2.1.1「已落地」）。
+
 见 §2.3 的类型设计。要做的收敛（**只收敛，不改语义**）：
 
 | 位置                                         | 现状                                                 | 改成                                                                                                                                                                |
 | ------------------------------------------ | -------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Github.ts:119-155` `getContentByPath`     | 抛 `Error` + `.cause`，message 分 401/403/404/default | 保持 message 文案不变（有调用方依赖 `err.cause.status === 404` 的判断，见 `Settings/helpers.ts:35-50`），额外用 `createDbmError` 补上 `type` / `status` / `url`                            |
+| `Github.ts:119-155` `getContentByPath`     | 抛 `Error` + `.cause`，message 分 401/403/404/default | 保持 message 文案不变（有调用方依赖 `err.cause.status === 404` 的判断，见 `Settings/helpers.ts:35-50`），额外用 `createGithubError` 补上 `type` / `status` / `url`                            |
 | `Github.ts:213-245` `getFileContentAndSha` | 抛裸 `Error`                                         | 同上                                                                                                                                                                |
-| `Github.ts:336` `updateFile` 409           | `throw new Error(DBMERR_UPDATE_FILE_409_CONFLICT)` | `createDbmError('CONFLICT', DBMERR_UPDATE_FILE_409_CONFLICT, { status: 409, cause: error })`。**`message` 必须仍是那个常量字符串**（`Github.tt.ts:43` 断言了 `error.message` 等于它） |
+| `Github.ts:336` `updateFile` 409           | `throw new Error(DBMERR_UPDATE_FILE_409_CONFLICT)` | `createGithubError('CONFLICT', DBMERR_UPDATE_FILE_409_CONFLICT, { status: 409, cause: error })`。**`message` 必须仍是那个常量字符串**（`Github.tt.ts:43` 断言了 `error.message` 等于它） |
 | `Github.ts:378` `deleteFile` 409           | 同上                                                 | 同上                                                                                                                                                                |
 | `Github.ts:162-206` `getContentByPathV2`   | 返回 `[err, data]` 元组，无消费者                           | **不改造，删除**，见 §5                                                                                                                                                   |
 
@@ -242,6 +351,11 @@ Stage 5 处理）。这条不在 `npm test` 里（`*.tt.ts` 不匹配 jest 默�
 ### Stage 2（P1）— 核心能力
 
 #### 2.1 normal 模式行级 API（本计划的核心价值）
+
+> **2026-10-11：本节签名已被 §2.1 改定取代。** 改定后：落点是 `GithubDbV2`（不是 `GithubDb`）、由构造
+> 注入的 `dbModes` 在**库内**分派（不是调用方分派）、`updateRow` / `deleteRow` 带 `rev`。
+> 另：本节正文写的 `createDbmError` 一律按 §2.3 读作 `createGithubError`（词表见 §2.3）。
+> 下面这段保留作留痕。
 
 按 §2.1 的方案 C，在 `GithubDb` 上**纯新增**三个方法，只作用于 `<table>.data.json`：
 
@@ -362,7 +476,7 @@ async listTableNames(dbName: string): Promise<string[]>  // 从 this.dbsSchema[d
 ## 5. 不做的事
 
 - **不动 `getContentByPathV2`**：实测只有定义 + 它自己的测试（`Github.ts:162`、`Github.test.ts:181-225`），  
-  **无任何真实消费者**。建议**删除**方法 + 它的测试（属死代码清理），而不是给它补 `DbmError` 改造。  
+  **无任何真实消费者**。建议**删除**方法 + 它的测试（属死代码清理），而不是给它补 `GithubError` 改造。  
   删除是 public API 的破坏性变更——若要保守，可先 `@deprecated` 标注、下一个 major 再删。
 - **不改 `getTableRows` / `updateTableFile` / `updateRecordFile` / `deleteRecordFile` 的签名**：  
   §1.3 显示它们是 6–19 处调用的热路径。需要新能力时加可选参数或并列新方法。

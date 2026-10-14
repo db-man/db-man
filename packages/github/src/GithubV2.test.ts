@@ -141,9 +141,13 @@ describe('GithubV2', () => {
     it('should throw an error when calling getRawContentByPath with a non-existent path', async () => {
       mockRequest.mockRejectedValueOnce({ status: 404 });
 
-      await expect(g.getRawContentByPath('non-existent-path')).rejects.toThrow(
-        'path not found',
-      );
+      const err = await g
+        .getRawContentByPath('non-existent-path')
+        .catch((e) => e);
+
+      expect(err.type).toBe('NOT_FOUND');
+      expect(err.status).toBe(404);
+      expect(err.message).toContain('path not found');
     });
 
     // The four assertions below pin the URL template and the parameter names
@@ -169,6 +173,7 @@ describe('GithubV2', () => {
 
       const err = await g.getRawContentByPath('dbs/iam').catch((e) => e);
 
+      expect(err.type).toBe('UNAUTHORIZED');
       expect(err.message).toBe(
         'Failed to get content by path, maybe personal access token is invalid, path: dbs/iam.',
       );
@@ -179,9 +184,12 @@ describe('GithubV2', () => {
     it('should explain an oversized file when the API answers 403', async () => {
       mockRequest.mockRejectedValueOnce({ status: 403 });
 
-      await expect(
-        g.getRawContentByPath('dbs/iam/users.data.json'),
-      ).rejects.toThrow(
+      const err = await g
+        .getRawContentByPath('dbs/iam/users.data.json')
+        .catch((e) => e);
+
+      expect(err.type).toBe('FORBIDDEN');
+      expect(err.message).toBe(
         'Failed to get content by path, maybe file too large, path: dbs/iam/users.data.json.',
       );
     });
@@ -189,7 +197,10 @@ describe('GithubV2', () => {
     it('should fall back to a generic message for any other status', async () => {
       mockRequest.mockRejectedValueOnce({ status: 500 });
 
-      await expect(g.getRawContentByPath('dbs/iam')).rejects.toThrow(
+      const err = await g.getRawContentByPath('dbs/iam').catch((e) => e);
+
+      expect(err.type).toBe('UNKNOWN');
+      expect(err.message).toBe(
         'Failed to get content by path, unknow error, path: dbs/iam.',
       );
     });
@@ -475,6 +486,41 @@ describe('GithubV2', () => {
       // pass after the constant's value is changed — verified by editing the
       // constant to a wrong string: this test is what turns red.
       expect(err.message).toBe('DBMERR_UPDATE_FILE_409_CONFLICT');
+      // The wording stays for the consumers that match on it; new callers read
+      // the type instead.
+      expect(err.type).toBe('CONFLICT');
+      expect(err.status).toBe(409);
+    });
+
+    it('should report a create that hit an existing file as ALREADY_EXISTS', async () => {
+      // GitHub refuses to create a file that is already there. Only a create
+      // can land here — an overwrite whose sha is stale is the 409 above.
+      mockCreateOrUpdateFileContents.mockRejectedValueOnce({
+        response: { status: 422 },
+        message: "Invalid request.\n\nsha wasn't supplied",
+      });
+
+      const err = await g
+        .createFile({ path: 'dbs/iam/users.data.json', content: '[]' })
+        .catch((e) => e);
+
+      expect(err.type).toBe('ALREADY_EXISTS');
+      expect(err.status).toBe(422);
+      // GitHub's own wording names what it refused, so it is kept as-is
+      expect(err.message).toContain("sha wasn't supplied");
+    });
+
+    it('should let a 422 on an overwrite through untouched', async () => {
+      // A sha was supplied, so "the file is already there" cannot be the
+      // complaint — putting a type on it would be a guess.
+      const upstream = Object.assign(new Error('Invalid request.'), {
+        response: { status: 422 },
+      });
+      mockCreateOrUpdateFileContents.mockRejectedValueOnce(upstream);
+
+      await expect(
+        g.saveFile({ path: 'p', content: '[]', sha: 's' }),
+      ).rejects.toBe(upstream);
     });
   });
 
@@ -623,6 +669,7 @@ describe('GithubV2', () => {
       expect(err).toBeInstanceOf(Error);
       // literal on purpose, see the saveFile case above
       expect(err.message).toBe('DBMERR_DELETE_FILE_409_CONFLICT');
+      expect(err.type).toBe('CONFLICT');
     });
 
     it('should rethrow any other error untouched', async () => {

@@ -130,11 +130,21 @@ export type DatabaseSchema = {
  */
 export type DatabaseMap = Record<string, DatabaseSchema>;
 
-type TableRow = Record<string, any>;
+/**
+ * One record. The columns are whatever the table's `dbcfg.json` declares, so
+ * the values are not narrowed here — the primary key, for example, is a JSON
+ * number for a `NUMBER` column and a string for a `STRING` one.
+ */
+export type TableRow = Record<string, any>;
 
 type DbsCfgType = {
   repoPath?: string;
-  dbModes: string; // one of 'normal' or 'split-table'
+  /**
+   * Kept as `string` because it is read straight out of `dbs.json`, which is
+   * user-editable and has no validation at the file level. The library's own
+   * input is the narrower `DbMode` — see `GithubDbV2`'s constructor.
+   */
+  dbModes: string;
 };
 
 // raw response from @octokit/rest API
@@ -178,3 +188,47 @@ export type DeleteFileType = {
  * in exactly one place: `utils.getRecordFileName`.
  */
 export type PrimaryKeyVal = string | number;
+
+/**
+ * Which on-disk layout a database uses. One value per database, read from
+ * `dbs.json`'s `dbModes` field.
+ *
+ * - `normal` — the table lives in one file, `<table>.data.json`. One row is a
+ *   member of that array, so writing a row rewrites the whole file.
+ * - `split-table` — each row also lives in its own file,
+ *   `<table>/<primaryKeyVal>.json`. Writing a row writes that one file.
+ */
+export type DbMode = 'normal' | 'split-table';
+
+declare const rowRevBrand: unique symbol;
+
+/**
+ * The revision of one row: what `getRow()` returns next to the row, and what
+ * `updateRow()` / `deleteRow()` take back unchanged.
+ *
+ * Deliberately opaque, and deliberately impossible to build by hand. Which sha
+ * is inside — and, more to the point, *which file* that sha belongs to —
+ * depends on the db mode, and every shas look alike (40 hex characters). If a
+ * caller could pass a plain string, a table-file sha would eventually be handed
+ * to a write that addresses a record file, and GitHub would answer 409. Only
+ * `getRow()` can produce one, and it reads the very file the write will touch.
+ */
+export type RowRev = { readonly [rowRevBrand]: true };
+
+/** Which row-level entry produced a write. */
+export type RowWriteAction = 'insert' | 'update' | 'delete';
+
+/**
+ * What a row-level write returns.
+ *
+ * `commit` is the same object the GitHub contents API returns, so a consumer
+ * can keep rendering `commit.html_url` as it does today. `mode` and `action`
+ * are added here: they say what the write actually did, which is not visible
+ * from the call — a normal-mode `insertRow` downloads and re-uploads the whole
+ * table, and the caller should be able to see that rather than guess.
+ */
+export type RowWriteResult = {
+  commit: { html_url: string; sha?: string };
+  mode: DbMode;
+  action: RowWriteAction;
+};

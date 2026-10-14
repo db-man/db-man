@@ -10,6 +10,7 @@ import {
   RawFileContentAndSha,
 } from './types';
 import { DBS_CFG_FILENAME } from './constants';
+import { createGithubError } from './errors';
 
 type GithubContext = {
   personalAccessToken: string;
@@ -152,7 +153,10 @@ export default class GithubV2 {
    *
    * The error messages below are a public contract — consumers render
    * `error.message` to end users. Keep them byte-for-byte: do not reword them,
-   * and do not "fix" the `unknow` typo.
+   * and do not "fix" the `unknow` typo. Each one also carries a `type` for
+   * programmatic handling (`UNAUTHORIZED` / `FORBIDDEN` / `NOT_FOUND` /
+   * `UNKNOWN`) — a caller that wants to act on a missing file asks for
+   * `NOT_FOUND` instead of matching on the wording.
    *
    * @param {string} path can be a file or a dir
    * @param {*} signal
@@ -169,30 +173,33 @@ export default class GithubV2 {
       .then(({ data }) => data)
       .catch((err) => {
         console.error('GithubV2.getRawContentByPath failed, err:', err);
-        let newErr;
+        const extra = { status: err.status, cause: err };
         switch (err.status) {
           case 401:
-            newErr = new Error(
+            throw createGithubError(
+              'UNAUTHORIZED',
               `Failed to get content by path, maybe personal access token is invalid, path: ${path}.`,
+              extra,
             );
-            break;
           case 403:
-            newErr = new Error(
+            throw createGithubError(
+              'FORBIDDEN',
               `Failed to get content by path, maybe file too large, path: ${path}.`,
+              extra,
             );
-            break;
           case 404:
-            newErr = new Error(
+            throw createGithubError(
+              'NOT_FOUND',
               `Failed to get content by path, path not found, path: ${path}.`,
+              extra,
             );
-            break;
           default:
-            newErr = new Error(
+            throw createGithubError(
+              'UNKNOWN',
               `Failed to get content by path, unknow error, path: ${path}.`,
+              extra,
             );
         }
-        newErr.cause = err;
-        throw newErr;
       });
   }
 
@@ -356,7 +363,9 @@ export default class GithubV2 {
    * Create a new file at `path`.
    *
    * The file must not exist yet — GitHub answers 422 when it does, and that
-   * error is rethrown as-is. Use `saveFile()` to overwrite an existing file.
+   * comes back as a `GithubError` of type `ALREADY_EXISTS` (the message is
+   * GitHub's own, so it still names the path). Use `saveFile()` to overwrite an
+   * existing file.
    *
    * Passing a sha is rejected; see `CreateFileParams.sha`.
    * @param {CreateFileParams} params File content in JSON object
@@ -413,7 +422,8 @@ export default class GithubV2 {
    * The 409 message thrown below is `DBMERR_UPDATE_FILE_409_CONFLICT`, a
    * published string that consumers match on. Both its text and its name are
    * fixed: do not reword it, and do not rename the constant to match this
-   * method's name.
+   * method's name. The error is *also* typed `CONFLICT`, which is what new
+   * callers should read — the text stays for the ones that match on it.
    * @param {WriteFileParams} params File content in JSON object
    * @return {Promise<Response>}
    * response.commit
@@ -471,7 +481,25 @@ export default class GithubV2 {
            * > If you use this endpoint and the "Delete a file" endpoint in parallel, the concurrent requests will conflict and you will receive errors. You must use these endpoints serially instead.
            */
 
-          throw new Error(DBMERR_UPDATE_FILE_409_CONFLICT);
+          throw createGithubError(
+            'CONFLICT',
+            DBMERR_UPDATE_FILE_409_CONFLICT,
+            { status: 409, cause: error },
+          );
+        case 422:
+          /**
+           * Only a create can land here: GitHub refuses to create a file that
+           * is already there. An overwrite whose sha is stale is a 409, above —
+           * so a 422 *with* a sha is some other complaint, and goes through as
+           * it came.
+           */
+          if (sha === undefined || sha === null) {
+            throw createGithubError('ALREADY_EXISTS', error.message, {
+              status: 422,
+              cause: error,
+            });
+          }
+          throw error;
         default:
           throw error;
       }
@@ -515,7 +543,11 @@ export default class GithubV2 {
            * }
            * ```
            */
-          throw new Error(DBMERR_DELETE_FILE_409_CONFLICT);
+          throw createGithubError(
+            'CONFLICT',
+            DBMERR_DELETE_FILE_409_CONFLICT,
+            { status: 409, cause: error },
+          );
         default:
           throw error;
       }

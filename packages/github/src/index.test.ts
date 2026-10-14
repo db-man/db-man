@@ -19,6 +19,11 @@ describe('public entry', () => {
         'GithubDbV2',
         'utils',
         'insightsUtils',
+        // the error vocabulary is part of the door as well: consumers match on
+        // `err.type` and need the guard to go with it
+        'GITHUB_ERROR_TYPES',
+        'createGithubError',
+        'isGithubError',
       ]),
     );
   });
@@ -42,6 +47,7 @@ describe('public entry', () => {
       personalAccessToken: 'token',
       repoPath: 'dbs',
       dbsSchema: {},
+      dbModes: 'normal',
       owner: 'owner',
       repoName: 'repo',
     });

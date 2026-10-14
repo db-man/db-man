@@ -31,6 +31,34 @@ export function validFilename(oldStr: string) {
   return oldStr.replace(/[^a-zA-Z0-9._-]/g, '_');
 }
 
+/**
+ * Whether two primary key values mean the same record.
+ *
+ * The primary key of a row read out of a data file is whatever JSON type the
+ * file holds, so a `NUMBER` primary column gives the number `1`. The same key
+ * coming from a URL query (`?userId=1`) or a form field is always the string
+ * `'1'`, so `===` never matches the two and the row is silently not found.
+ * Compare the string forms instead.
+ *
+ * `null` / `undefined` mean "no value" and match nothing, not even each other:
+ * a row that has no primary key must not be picked as the row of a missing
+ * query parameter.
+ *
+ * `packages/components/src/utils.ts` has a function with this name and these
+ * semantics — it predates this one, from the fix recorded in
+ * `docs/plans/2026-10-09-github-api-surface-gaps.md` §3.1.1. The two are kept
+ * in step by hand until components can import this one instead.
+ */
+export const isSamePrimaryKey = (
+  a: PrimaryKeyVal | null | undefined,
+  b: PrimaryKeyVal | null | undefined,
+) => {
+  if (a === null || a === undefined || b === null || b === undefined) {
+    return false;
+  }
+  return String(a) === String(b);
+};
+
 export const getDataFileName = (tableName: string) => `${tableName}.data.json`;
 
 export const getInsightsFileName = (tableName: string) =>
