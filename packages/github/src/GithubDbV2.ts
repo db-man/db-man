@@ -344,29 +344,6 @@ export default class GithubDbV2 {
   }
 
   /**
-   * Read the record file of one row — the split-table layout.
-   *
-   * Private: which file a row lives in is decided by the mode, and `getRow()`
-   * is the entry that decides it. Nothing outside this class needs to know that
-   * `dbs/<db>/<table>/<pk>.json` exists.
-   *
-   * @param {string} dbName
-   * @param {string} tableName
-   * @param {string|number} primaryKeyVal
-   * @param {new AbortController().signal} signal
-   * @returns {Promise}
-   */
-  private getRowFileContentAndSha(
-    dbName: string,
-    tableName: string,
-    primaryKeyVal: PrimaryKeyVal,
-    signal?: AbortSignal,
-  ) {
-    const path = this.getRowPath(dbName, tableName, primaryKeyVal);
-    return this.githubV2.getFileContentAndSha(path, signal);
-  }
-
-  /**
    * @param {string} dbName
    * @param {string} queryFilename
    * @param {new AbortController().signal} signal
@@ -593,10 +570,11 @@ export default class GithubDbV2 {
   ): Promise<{ row: TableRow; rev: RowRev } | null> {
     if (this.dbModes === 'split-table') {
       try {
-        const { content, sha } = await this.getRowFileContentAndSha(
-          dbName,
-          tableName,
-          primaryKeyVal,
+        // The row lives in a file of its own — `dbs/<db>/<table>/<pk>.json`.
+        // Which file that is gets decided right here, and no caller is told.
+        const path = this.getRowPath(dbName, tableName, primaryKeyVal);
+        const { content, sha } = await this.githubV2.getFileContentAndSha(
+          path,
           signal,
         );
         // A record file holds one row, though the shape it is read with still
