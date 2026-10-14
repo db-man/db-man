@@ -50,6 +50,13 @@ After editing `packages/github` source, rebuild before the dev server can see it
 Runners differ by package: `cli` / `github` / `google` / `slack` use `jest --detectOpenHandles`;
 `components` uses `CI=true react-scripts test`, which does **not** collect coverage.
 
+**Verify what you changed, not the whole tree.** A root `npm test` fans out all 40 `components`
+suites at once, and they contend for CPU hard enough to inflate each suite's time several-fold
+(measured here: one suite is 8.7 s on its own and 67.7 s inside a full run, and 27 of 33 timed
+suites crossed 60 s — 33.7 minutes of suite time in one pass). Changed only `packages/github`?
+`npm run test -w packages/github` — 8 suites, seconds — is the complete and sufficient check.
+The whole tree is what CI runs.
+
 ## CI
 
 `.github/workflows/test.yml` — on push to `main` and on every PR. Node 24, `npm ci`, builds
