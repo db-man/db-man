@@ -143,6 +143,16 @@ upgrade workflow.
 
 - Plans live in `docs/plans/YYYY-MM-DD-<topic>.md`. **Each plan belongs to its task: read others
   freely, but do not edit or merge someone else's** — add your own file instead.
+- **A live plan is a work order; a finished one is a record.** While stages remain, keep the plan
+  true for the next executor: update the `- 状态：` block (what is done, plus the commit hash),
+  and if one of its decisions gets reversed, add a dated blockquote above that section
+  (`> **YYYY-MM-DD 改定：…**`) instead of rewriting it — the old text and any rejected option
+  stay, or the next person proposes them again. Once every stage is done the plan is **frozen**:
+  no retro-edits, a later reversal starts a new plan, and at most a one-line pointer is added to
+  the old header. Re-amending finished plans on every reversal is what would make the
+  `YYYY-MM-DD-` prefix meaningless. Precedents: `2026-10-09-github-api-surface-gaps.md` §2.1 (old
+  comparison kept as §2.1.2) and §2.3 (live, amended in place, old text kept);
+  `2026-10-09-primary-key-val-type.md` (finished — status block only, body untouched).
 - Plans are written for a downstream executor and must be self-contained: exact commands, paths,
   mock shapes, and acceptance criteria.
 - Multiple agents may work in this tree at the same time. Stage and commit only the files you
