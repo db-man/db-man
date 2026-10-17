@@ -26,7 +26,7 @@ const DistinctColumn = ({ columnKey }: { columnKey: string }) => {
       setLoading(false);
       console.error(
         'Failed to get JSON file in DistinctColumn component, error:',
-        error
+        error,
       );
     }
   };
@@ -72,7 +72,7 @@ const DistinctColumn = ({ columnKey }: { columnKey: string }) => {
           const filter = encodeURIComponent(
             JSON.stringify({
               [columnKey]: item.name,
-            })
+            }),
           );
           return (
             <List.Item>
@@ -92,7 +92,7 @@ const DistinctColumn = ({ columnKey }: { columnKey: string }) => {
     );
   };
 
-  return <div className='dbm-distinct-column-component'>{renderList()}</div>;
+  return <div className="dbm-distinct-column-component">{renderList()}</div>;
 };
 
 export default DistinctColumn;
