@@ -7,7 +7,7 @@ import {
   fireEvent,
 } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { GithubDb } from '@db-man/github';
+import { GithubDbV2 } from '@db-man/github';
 
 import SchemaPage from './SchemaPage';
 import PageContext from '../../contexts/page';
@@ -31,33 +31,34 @@ const columns = [
 ] as any[];
 
 /**
- * A real `GithubDb` with only its network call replaced. The URL builders
+ * A real `GithubDbV2` with only its network call replaced. The URL builders
  * (`getGitHubFullPath`, `getDbConfigPath`) stay real, so the footer assertion
  * below checks the component's wiring rather than restating a mock's own
  * return value.
  */
-function makeGithubDb() {
-  const githubDb = new GithubDb({
+function makeGithubDbV2() {
+  const githubDbV2 = new GithubDbV2({
     personalAccessToken: 'test-token',
     repoPath: 'dbs',
     owner: 'db-man',
     repoName: 'db',
     dbsSchema: {},
+    dbModes: 'normal',
   });
   jest
-    .spyOn(githubDb, 'getTableRows')
+    .spyOn(githubDbV2, 'getTableRows')
     .mockResolvedValue({ content: [{ tags: ['a'] }], sha: 'sha-1' });
-  return githubDb;
+  return githubDbV2;
 }
 
 function renderPage({
   dbTableColumns = columns,
   url = '/iam/users/schema',
-  githubDb = makeGithubDb(),
+  githubDbV2 = makeGithubDbV2(),
 }: {
   dbTableColumns?: any[];
   url?: string;
-  githubDb?: any;
+  githubDbV2?: any;
 } = {}) {
   const pageCtx = {
     appModes: [],
@@ -67,7 +68,7 @@ function renderPage({
     columns: dbTableColumns,
     primaryKey: 'userId',
     tables: [],
-    githubDb,
+    githubDbV2,
   };
   render(
     <MemoryRouter initialEntries={[url]}>
@@ -76,7 +77,7 @@ function renderPage({
       </PageContext.Provider>
     </MemoryRouter>,
   );
-  return { githubDb };
+  return { githubDbV2 };
 }
 
 const tableHeadText = () =>
@@ -162,7 +163,7 @@ describe('SchemaPage', () => {
     ).toBeInTheDocument();
   });
 
-  it('links dbcfg.json through the injected githubDb', () => {
+  it('links dbcfg.json through the injected githubDbV2', () => {
     renderPage();
 
     const footer = document.querySelector('.ant-table-footer') as HTMLElement;
@@ -187,9 +188,11 @@ describe('SchemaPage', () => {
   });
 
   it('renders DistinctColumn when the distinct query param is set', async () => {
-    const { githubDb } = renderPage({ url: '/iam/users/schema?distinct=tags' });
+    const { githubDbV2 } = renderPage({
+      url: '/iam/users/schema?distinct=tags',
+    });
     await waitFor(() => {
-      expect(githubDb.getTableRows).toHaveBeenCalledWith('iam', 'users');
+      expect(githubDbV2.getTableRows).toHaveBeenCalledWith('iam', 'users');
     });
     expect(
       document.querySelector('.dbm-distinct-column-component'),

@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { GithubDb } from '@db-man/github';
+import { GithubDbV2 } from '@db-man/github';
 
 import CommonPageContext from '../contexts/commonPage';
 import NotFound from '../components/NotFound';
@@ -14,14 +14,14 @@ type Props = {
 
 // TODO: Because this file is copied from DbTablePage.tsx, so some of the codes are duplicated
 const CommonPageWrapper = (props: Props) => {
-  const githubDbRef = useRef<GithubDb | null>(null);
+  const githubDbV2Ref = useRef<GithubDbV2 | null>(null);
 
   if (!localStorage.getItem(constants.LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN)) {
     // Normally this is because we dont enable any db connection
     return <NotFound name="enabled db connection" />;
   }
 
-  githubDbRef.current = new GithubDb({
+  githubDbV2Ref.current = new GithubDbV2({
     personalAccessToken:
       localStorage.getItem(constants.LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN) || '',
     repoPath: localStorage.getItem(constants.LS_KEY_GITHUB_REPO_PATH) || '',
@@ -30,6 +30,8 @@ const CommonPageWrapper = (props: Props) => {
     dbsSchema: JSON.parse(
       localStorage.getItem(constants.LS_KEY_DBS_SCHEMA) || '{}',
     ),
+    dbModes: (localStorage.getItem(constants.LS_KEY_GITHUB_REPO_MODES) ||
+      'normal') as GithubDbV2['dbModes'],
   });
 
   const pageInfo = () => {
@@ -38,7 +40,7 @@ const CommonPageWrapper = (props: Props) => {
       appModes: localStorage.getItem(constants.LS_KEY_GITHUB_REPO_MODES)
         ? localStorage.getItem(constants.LS_KEY_GITHUB_REPO_MODES)!.split(',')
         : [],
-      githubDb: githubDbRef.current,
+      githubDbV2: githubDbV2Ref.current,
     };
   };
 

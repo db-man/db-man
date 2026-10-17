@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 
-import { GithubDb } from '@db-man/github';
+import { GithubDbV2, types } from '@db-man/github';
 import { message } from 'antd';
 
 import { getColumns, getPrimaryKey, getTablesByDbName } from '../../dbs';
@@ -23,8 +23,8 @@ const DbTablePage = (props: {
 }) => {
   const [messageApi, contextHolder] = message.useMessage();
 
-  const githubDbRef = useRef(
-    new GithubDb({
+  const githubDbV2Ref = useRef(
+    new GithubDbV2({
       personalAccessToken:
         localStorage.getItem(constants.LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN) ||
         '',
@@ -34,6 +34,8 @@ const DbTablePage = (props: {
       dbsSchema: JSON.parse(
         localStorage.getItem(constants.LS_KEY_DBS_SCHEMA) || '{}',
       ),
+      dbModes: (localStorage.getItem(constants.LS_KEY_GITHUB_REPO_MODES) ||
+        'normal') as types.DbMode,
     }),
   );
 
@@ -61,7 +63,7 @@ const DbTablePage = (props: {
       primaryKey,
       tables: getTablesByDbName(dbName),
       // TODO: move this to app context
-      githubDb: githubDbRef.current,
+      githubDbV2: githubDbV2Ref.current,
     };
   };
 
@@ -72,7 +74,7 @@ const DbTablePage = (props: {
     const offlineDbSchema = JSON.parse(
       localStorage.getItem(constants.LS_KEY_DBS_SCHEMA) || '{}',
     )[props.dbName || ''];
-    const onlineDbSchema = await githubDbRef.current.getDbTablesSchemaAsync(
+    const onlineDbSchema = await githubDbV2Ref.current.getDbTablesSchema(
       props.dbName,
     );
 

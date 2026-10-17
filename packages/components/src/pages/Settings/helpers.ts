@@ -1,14 +1,14 @@
-import { Github, types } from '@db-man/github';
+import { GithubV2, types } from '@db-man/github';
 import { message } from 'antd';
 import { MessageInstance } from 'antd/es/message/interface';
 
 import * as constants from '../../constants';
 import { errMsg } from '../../utils';
 
-const loadDbsSchemaAsync = async (github: any, repoPath: string) => {
+const loadDbsSchemaAsync = async (githubV2: GithubV2, repoPath: string) => {
   // Get all db names in root dir, db name is sub dir name
   // e.g. files=[{name: 'iam'}]
-  const files: types.FileOrDir[] = await github.getContentByPath(repoPath);
+  const files: types.FileOrDir[] = await githubV2.listDir(repoPath);
 
   const dbsSchema: types.DatabaseMap = {
     /**
@@ -24,7 +24,7 @@ const loadDbsSchemaAsync = async (github: any, repoPath: string) => {
     files
       .map(({ name }: { name: string }) => name)
       .map((dbName: string) => {
-        return github
+        return githubV2
           .getFileContentAndSha(
             `${repoPath}/${dbName}/${constants.DB_CFG_FILENAME}`,
           )
@@ -120,7 +120,7 @@ export const reloadDbsSchemaAsync = async (
 ) => {
   messageApi.info('Start loading DBs schema...');
 
-  const github = new Github({
+  const githubV2 = new GithubV2({
     personalAccessToken: token,
     owner,
     repoName,
@@ -131,7 +131,7 @@ export const reloadDbsSchemaAsync = async (
     // get repo path from dbs.json in repo root dir
     // in this file will tell where to find all db files
     // TODO: test this with non split-table mode
-    res = await github.getDbsCfg();
+    res = await githubV2.getDbsCfg();
   } catch (err) {
     errMsg(
       `Failed to get dbs.json! Reason: ${
@@ -157,7 +157,7 @@ export const reloadDbsSchemaAsync = async (
 
   let dbsSchema;
   try {
-    dbsSchema = await loadDbsSchemaAsync(github, repoPath);
+    dbsSchema = await loadDbsSchemaAsync(githubV2, repoPath);
   } catch (err) {
     errMsg(
       `Failed to get DB schema! ${

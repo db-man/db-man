@@ -14,7 +14,7 @@ import { RowType } from '../../../types/Data';
 
 const UpdatePage = () => {
   const [messageApi, contextHolder] = message.useMessage();
-  const { primaryKey, appModes, dbName, tableName, githubDb } =
+  const { primaryKey, appModes, dbName, tableName, githubDbV2 } =
     useContext(PageContext);
 
   const [feedback, setFeedback] = useState<{
@@ -30,7 +30,7 @@ const UpdatePage = () => {
 
   const [recordFileLoading, setRecordFileLoading] = useState('');
   const [record, setRecord] = useState<RowType>({});
-  const [recordFileSha, setRecordFileSha] = useState<string | null>(null);
+  const [recordFileSha, setRecordFileSha] = useState<types.RowRev | null>(null);
 
   const [loading, setLoading] = useState('');
 
@@ -114,7 +114,7 @@ const UpdatePage = () => {
     setLoading('Updating table file...');
     setFeedback(null);
     try {
-      const { commit } = await githubDb!.updateTableFile(
+      const { commit } = await githubDbV2!.updateTableFile(
         dbName,
         tableName,
         newRows,
@@ -142,6 +142,14 @@ const UpdatePage = () => {
   };
 
   const updateRecordFileAsync = async (formValues: RowType) => {
+    if (!recordFileSha) {
+      setFeedback({
+        type: 'error',
+        message: `Record file sha is null, cannot update record file ${dbName}/${tableName}/${currentId()}`,
+      });
+      return;
+    }
+
     setLoading('Updating record file...');
     setFeedback(null);
     try {
@@ -149,10 +157,10 @@ const UpdatePage = () => {
         ...formValues,
         updatedAt: githubUtils.formatDate(new Date()),
       };
-      const { commit } = await githubDb!.updateRecordFile(
+      const { commit } = await githubDbV2!.updateRow(
         dbName,
         tableName,
-        primaryKey,
+        formValues[primaryKey],
         record,
         recordFileSha,
       );
@@ -178,10 +186,18 @@ const UpdatePage = () => {
   };
 
   const deleteRecordFileAsync = async (formValues: RowType) => {
+    if (!recordFileSha) {
+      setFeedback({
+        type: 'error',
+        message: `Record file sha is null, cannot delete record file ${dbName}/${tableName}/${currentId()}`,
+      });
+      return;
+    }
+
     setLoading('Deleting record file...');
     setFeedback(null);
     try {
-      const { commit } = await githubDb!.deleteRecordFile(
+      const { commit } = await githubDbV2!.deleteRow(
         dbName,
         tableName,
         formValues[primaryKey],
@@ -226,10 +242,8 @@ const UpdatePage = () => {
   const getTableFileAsync = async () => {
     setTableFileLoading(`Loading ${dbName}/${tableName} ...`);
     try {
-      const { content: rows, sha: tableFileSha } = await githubDb!.getTableRows(
-        dbName,
-        tableName,
-      );
+      const { content: rows, sha: tableFileSha } =
+        await githubDbV2!.getTableRows(dbName, tableName);
       setRows(rows);
       setTableFileSha(tableFileSha);
     } catch (err) {
@@ -248,13 +262,16 @@ const UpdatePage = () => {
   const getRecordFileAsync = async () => {
     setRecordFileLoading(`Loading ${dbName}/${tableName}/${currentId()}`);
     try {
-      const { content, sha } = await githubDb!.getRecordFileContentAndSha(
-        dbName,
-        tableName,
-        currentId(),
-      );
-      setRecordFileSha(sha);
-      setRecord(content);
+      const res = await githubDbV2!.getRow(dbName, tableName, currentId());
+      if (res && res.row) {
+        setRecordFileSha(res.rev);
+        setRecord(res.row);
+      } else {
+        setFeedback({
+          type: 'error',
+          message: `Record not found in ${dbName}/${tableName}/${currentId()}`,
+        });
+      }
     } catch (err) {
       console.error('getRecordFileContentAndSha, error:', err);
       setFeedback({

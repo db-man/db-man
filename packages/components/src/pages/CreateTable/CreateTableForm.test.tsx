@@ -16,20 +16,20 @@ const { reloadDbsSchemaAsync } = jest.requireMock(
 
 const commit = { html_url: 'https://github.com/db-man/db.test/commit/8' };
 
-function makeGithubDb(overrides: Record<string, unknown> = {}) {
+function makeGithubDbV2(overrides: Record<string, unknown> = {}) {
   return {
     createTableSchema: jest.fn().mockResolvedValue({ commit }),
     ...overrides,
   };
 }
 
-function renderForm(githubDb = makeGithubDb(), dbName = 'iam') {
+function renderForm(githubDbV2 = makeGithubDbV2(), dbName = 'iam') {
   render(
-    <CommonPageContext.Provider value={{ appModes: [], githubDb } as any}>
+    <CommonPageContext.Provider value={{ appModes: [], githubDbV2 } as any}>
       <CreateTableForm dbName={dbName} />
     </CommonPageContext.Provider>,
   );
-  return { githubDb };
+  return { githubDbV2 };
 }
 
 const nameInput = () => screen.getAllByRole('textbox')[0] as HTMLInputElement;
@@ -42,13 +42,13 @@ beforeEach(() => {
 
 describe('CreateTableForm', () => {
   it('creates the table schema within the given database', async () => {
-    const { githubDb } = renderForm();
+    const { githubDbV2 } = renderForm();
 
     fireEvent.change(nameInput(), { target: { value: 'posts' } });
     fireEvent.click(createButton());
 
     await waitFor(() => {
-      expect(githubDb.createTableSchema).toHaveBeenCalledWith('iam', {
+      expect(githubDbV2.createTableSchema).toHaveBeenCalledWith('iam', {
         name: 'posts',
         description: '',
         tables: [],
@@ -60,12 +60,12 @@ describe('CreateTableForm', () => {
   });
 
   it('passes the dbName it was given', async () => {
-    const { githubDb } = renderForm(makeGithubDb(), 'shop');
+    const { githubDbV2 } = renderForm(makeGithubDbV2(), 'shop');
 
     fireEvent.click(createButton());
 
     await waitFor(() => {
-      expect(githubDb.createTableSchema).toHaveBeenCalledWith(
+      expect(githubDbV2.createTableSchema).toHaveBeenCalledWith(
         'shop',
         expect.anything(),
       );
@@ -73,10 +73,10 @@ describe('CreateTableForm', () => {
   });
 
   it('shows an error alert when creation fails', async () => {
-    const githubDb = makeGithubDb({
+    const githubDbV2 = makeGithubDbV2({
       createTableSchema: jest.fn().mockRejectedValue(new Error('nope')),
     });
-    renderForm(githubDb);
+    renderForm(githubDbV2);
 
     fireEvent.click(createButton());
 

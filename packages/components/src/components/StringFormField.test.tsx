@@ -30,7 +30,7 @@ function makePageCtx(overrides: Record<string, any> = {}) {
     columns: [],
     primaryKey: 'name',
     tables,
-    githubDb: null,
+    githubDbV2: null,
     ...overrides,
   };
 }

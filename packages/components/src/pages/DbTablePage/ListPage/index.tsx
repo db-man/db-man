@@ -71,7 +71,7 @@ const defaultTableSorter = {
  * - view: string (table_view or image_view)
  */
 const ListPage = (props: ListPageProps) => {
-  const { columns, tableName, primaryKey, dbName, githubDb } =
+  const { columns, tableName, primaryKey, dbName, githubDbV2 } =
     useContext<PageContextType>(PageContext);
 
   /**
@@ -227,7 +227,7 @@ const ListPage = (props: ListPageProps) => {
   const getData = async (tableName: string) => {
     setLoading(`Loading ${dbName}/${tableName} ...`);
     try {
-      const { content } = await githubDb!.getTableRows(
+      const { content } = await githubDbV2!.getTableRows(
         dbName,
         tableName,
         controllerRef.current.signal,

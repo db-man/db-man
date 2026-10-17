@@ -4,7 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 import DistinctColumn from './DistinctColumn';
 import PageContext from '../contexts/page';
 
-function makePageCtx(githubDb: any) {
+function makePageCtx(githubDbV2: any) {
   return {
     appModes: [],
     dbName: 'iam',
@@ -13,20 +13,20 @@ function makePageCtx(githubDb: any) {
     columns: [],
     primaryKey: 'name',
     tables: [],
-    githubDb,
+    githubDbV2,
   } as any;
 }
 
 describe('DistinctColumn', () => {
   it('renders tag names with counts sorted by count desc', async () => {
-    const githubDb = {
+    const githubDbV2 = {
       getTableRows: jest.fn().mockResolvedValue({
         content: [{ tags: ['a', 'b'] }, { tags: ['a'] }],
       }),
     };
     render(
       <MemoryRouter>
-        <PageContext.Provider value={makePageCtx(githubDb)}>
+        <PageContext.Provider value={makePageCtx(githubDbV2)}>
           <DistinctColumn columnKey="tags" />
         </PageContext.Provider>
       </MemoryRouter>,
@@ -47,18 +47,18 @@ describe('DistinctColumn', () => {
     const consoleSpy = jest
       .spyOn(console, 'error')
       .mockImplementation(() => {});
-    const githubDb = {
+    const githubDbV2 = {
       getTableRows: jest.fn().mockRejectedValue(new Error('boom')),
     };
     const { container } = render(
       <MemoryRouter>
-        <PageContext.Provider value={makePageCtx(githubDb)}>
+        <PageContext.Provider value={makePageCtx(githubDbV2)}>
           <DistinctColumn columnKey="tags" />
         </PageContext.Provider>
       </MemoryRouter>,
     );
     await waitFor(() => {
-      expect(githubDb.getTableRows).toHaveBeenCalled();
+      expect(githubDbV2.getTableRows).toHaveBeenCalled();
     });
     expect(screen.queryByRole('link')).not.toBeInTheDocument();
     expect(

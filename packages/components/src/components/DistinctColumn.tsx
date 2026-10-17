@@ -8,7 +8,7 @@ import PageContext from '../contexts/page';
 import { RowType } from '../types/Data';
 
 const DistinctColumn = ({ columnKey }: { columnKey: string }) => {
-  const { githubDb, dbName, tableName } = useContext(PageContext);
+  const { githubDbV2, dbName, tableName } = useContext(PageContext);
   const [loading, setLoading] = useState(false);
   const [content, setContent] = useState<RowType>([]);
 
@@ -19,7 +19,7 @@ const DistinctColumn = ({ columnKey }: { columnKey: string }) => {
   const getDataAsync = async () => {
     try {
       setLoading(true);
-      const contentAndSha = await githubDb!.getTableRows(dbName, tableName);
+      const contentAndSha = await githubDbV2!.getTableRows(dbName, tableName);
       setLoading(false);
       setContent(contentAndSha.content);
     } catch (error) {

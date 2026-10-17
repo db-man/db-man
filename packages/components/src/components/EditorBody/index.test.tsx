@@ -66,7 +66,7 @@ const pageCtx = {
   columns,
   primaryKey: 'name',
   tables: [],
-  githubDb: null,
+  githubDbV2: null,
 } as any;
 
 function renderEditor(props: Partial<Parameters<typeof EditorBody>[0]> = {}) {

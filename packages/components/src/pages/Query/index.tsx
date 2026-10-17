@@ -39,7 +39,7 @@ const getColumns = (obj: any) => {
 
 export default function QueryPage() {
   const { dbs, getTablesByDbName } = useAppContext();
-  const { githubDb } = useContext(CommonPageContext);
+  const { githubDbV2 } = useContext(CommonPageContext);
   const [selectedDbTableNames, setSelectedDbTableNames] = React.useState<
     string[]
   >(
@@ -71,14 +71,14 @@ export default function QueryPage() {
   useEffect(() => {
     selectedDbTableNames.forEach((dbTableName) => {
       const [dbName, tableName] = dbTableName.split('/');
-      githubDb?.getTableRows(dbName, tableName).then((response) => {
+      githubDbV2?.getTableRows(dbName, tableName).then((response) => {
         setTablesRows((prev) => ({
           ...prev,
           [dbTableName]: response.content,
         }));
       });
     });
-  }, [githubDb, selectedDbTableNames]);
+  }, [githubDbV2, selectedDbTableNames]);
 
   useEffect(() => {
     try {

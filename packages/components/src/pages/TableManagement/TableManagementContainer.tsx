@@ -18,7 +18,7 @@ const TableManagementContainer = ({
   tableName: string;
 }) => {
   const [messageApi, contextHolder] = message.useMessage();
-  const { githubDb } = useContext(CommonPageContext);
+  const { githubDbV2 } = useContext(CommonPageContext);
 
   const [dbSchema, setDbSchema] = useState<types.DatabaseSchema | null>(null);
   const [databaseSchemaSha, setDatabaseSchemaSha] = useState<string | null>(
@@ -28,8 +28,8 @@ const TableManagementContainer = ({
 
   useEffect(() => {
     setIsLoading(true);
-    githubDb
-      ?.getDbTablesSchemaV2Async(dbName)
+    githubDbV2
+      ?.getDbTablesSchemaV2(dbName)
       .then(({ obj, sha }) => {
         setDbSchema(obj);
         setDatabaseSchemaSha(sha);
@@ -40,7 +40,7 @@ const TableManagementContainer = ({
       .finally(() => {
         setIsLoading(false);
       });
-  }, [dbName, githubDb, messageApi]);
+  }, [dbName, githubDbV2, messageApi]);
 
   if (!dbSchema || !databaseSchemaSha) {
     return <div>dbSchema or databaseSchemaSha is not loaded</div>;
@@ -68,7 +68,7 @@ const TableManagementContainer = ({
     };
 
     setIsLoading(true);
-    githubDb
+    githubDbV2
       ?.updateDatabaseSchema(newDbSchema, databaseSchemaSha)
       .then(({ commit }) => {
         messageApi.success(

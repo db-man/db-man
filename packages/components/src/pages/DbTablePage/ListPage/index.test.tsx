@@ -7,7 +7,7 @@ import {
   screen,
   waitFor,
 } from '@testing-library/react';
-import { GithubDb } from '@db-man/github';
+import { GithubDbV2 } from '@db-man/github';
 import { message } from 'antd';
 
 import { STRING, STRING_ARRAY } from '../../../constants';
@@ -53,7 +53,7 @@ const context: PageContextType = {
   columns,
   primaryKey: 'userId',
   tables: [],
-  githubDb: { getTableRows: mockGetTableRows } as unknown as GithubDb,
+  githubDbV2: { getTableRows: mockGetTableRows } as unknown as GithubDbV2,
 };
 
 const appContext = (tables: any[] = []): AppContextProps => ({
@@ -162,7 +162,7 @@ describe('ListPage', () => {
     clearToasts();
   });
 
-  it('shows a loading tip, then renders the rows returned by githubDb', async () => {
+  it('shows a loading tip, then renders the rows returned by githubDbV2', async () => {
     let resolveGetTableRows: (value: unknown) => void = () => {};
     mockGetTableRows.mockReturnValue(
       new Promise((resolve) => {

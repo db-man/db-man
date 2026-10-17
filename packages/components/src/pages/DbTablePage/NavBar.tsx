@@ -15,7 +15,7 @@ const { Text } = Typography;
  * This component depends on page context, so only used in Application/Page
  */
 const NavBar = () => {
-  const { dbName, tableName, action, primaryKey, githubDb, columns } =
+  const { dbName, tableName, action, primaryKey, githubDbV2, columns } =
     useContext(PageContext);
 
   const renderReferenceTableLink = () => {
@@ -50,7 +50,7 @@ const NavBar = () => {
   const githubFileLink = primaryKeyVal ? (
     <a
       title="GitHub File Path"
-      href={githubDb?.getGitHubFullPath(
+      href={githubDbV2?.getGitHubFullPath(
         `${localStorage.getItem(
           constants.LS_KEY_GITHUB_REPO_PATH,
         )}/${dbName}/${tableName}/${utils.validFilename(primaryKeyVal)}.json`,
@@ -113,11 +113,11 @@ const NavBar = () => {
       <Text>GitHub Link: </Text>
       <a
         title="GitHub File Path"
-        href={githubDb?.getDataUrl(dbName, tableName)}
+        href={githubDbV2?.getTableDataUrl(dbName, tableName)}
         target="_blank"
         rel="noreferrer"
       >
-        {githubDb?.getDataPath(dbName, tableName)}
+        {githubDbV2?.getTableDataPath(dbName, tableName)}
       </a>
       {githubFileLink && (
         <>

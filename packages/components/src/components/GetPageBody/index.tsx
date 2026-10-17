@@ -7,7 +7,7 @@ import Detail from './Detail';
 import { RowType } from '../../types/Data';
 
 const GetPageBody = () => {
-  const { dbName, tableName, appModes, primaryKey, githubDb, columns } =
+  const { dbName, tableName, appModes, primaryKey, githubDbV2, columns } =
     useContext(PageContext);
 
   const [contentLoading, setContentLoading] = React.useState(false);
@@ -48,20 +48,25 @@ const GetPageBody = () => {
       return utils.getUrlParams()[primaryKey];
     };
     // ValueType vs DataType
-    return githubDb!
-      .getRecordFileContentAndSha(dbName, tableName, currentId())
-      .then(({ content }: { content: RowType }) => {
+    return githubDbV2!
+      .getRow(dbName, tableName, currentId())
+      .then((res: { row: RowType } | null) => {
         setContentLoaded(true);
-        setRecord(content);
+
+        if (res && res.row) {
+          setRecord(res.row);
+        } else {
+          message.error('item not found in db');
+        }
       })
       .catch((err: Error) => {
-        console.error('githubDb.getRecordFileContentAndSha failed, err:', err);
-        message.error('something wrong in githubDb.getRecordFileContentAndSha');
+        console.error('githubDbV2.getRow failed, err:', err);
+        message.error('something wrong in githubDbV2.getRow');
       });
-  }, [dbName, tableName, githubDb, primaryKey]);
+  }, [dbName, tableName, githubDbV2, primaryKey]);
 
   const getTableRowsAsync = useCallback(() => {
-    return githubDb
+    return githubDbV2
       ?.getTableRows(dbName, tableName)
       .then(({ content }: { content: RowType }) => {
         return content as RowType[];
@@ -79,7 +84,7 @@ const GetPageBody = () => {
         console.error('getTableRows failed, err:', err);
         message.error('something wrong in getTableRows');
       });
-  }, [dbName, tableName, getInitialFormFields, githubDb]);
+  }, [dbName, tableName, getInitialFormFields, githubDbV2]);
 
   // page mount or db/table change load data
   useEffect(() => {
@@ -95,7 +100,7 @@ const GetPageBody = () => {
     const getRefTablePromises = columns
       .filter(({ referenceTable }) => referenceTable)
       .map(({ referenceTable }) => {
-        return githubDb!
+        return githubDbV2!
           .getTableRows(dbName, referenceTable!)
           .then(({ content }: { content: RowType[] }) => {
             setRefTables((prevRefTables) => ({
@@ -119,7 +124,7 @@ const GetPageBody = () => {
     columns,
     getSingleRecordAsync,
     getTableRowsAsync,
-    githubDb,
+    githubDbV2,
     appModes,
   ]);
 

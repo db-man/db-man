@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { types, GithubDb } from '@db-man/github';
+import { types, GithubDbV2 } from '@db-man/github';
 
 import DbColumn from '../types/DbColumn';
 import DbTable from '../types/DbTable';
@@ -15,8 +15,7 @@ export interface PageContextType {
   columns: DbColumn[];
   primaryKey: string;
   tables: DbTable[];
-  // githubDb: GithubDbType | null;
-  githubDb: GithubDb | null;
+  githubDbV2: GithubDbV2 | null;
 }
 
 // Store all page info, include db, table, and columns
@@ -31,7 +30,7 @@ const PageContext = React.createContext<PageContextType>({
   columns: [],
   primaryKey: '', // primary key of current db table
   tables: [],
-  githubDb: null, // GitHubDb from @db-man/github
+  githubDbV2: null, // GithubDbV2 from @db-man/github
 });
 
 export default PageContext;

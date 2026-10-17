@@ -16,13 +16,13 @@ const { Text } = Typography;
 const defaultCode = 'return rows.slice(0, 10);';
 
 export default function QueryPage() {
-  const { dbName, tableName, githubDb } = useContext(PageContext);
+  const { dbName, tableName, githubDbV2 } = useContext(PageContext);
   const [code, setCode] = React.useState(defaultCode);
   const [result, setResult] = React.useState({ obj: '', err: '' });
   const [content, setContent] = React.useState<RowType>([]);
 
   useEffect(() => {
-    githubDb?.getTableRows(dbName, tableName).then((response) => {
+    githubDbV2?.getTableRows(dbName, tableName).then((response) => {
       setContent(response.content);
     });
   }, []);

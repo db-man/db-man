@@ -16,7 +16,7 @@ import * as constants from '../../constants';
 import { RowType } from '../../types/Data';
 
 const CreatePage = () => {
-  const { appModes, githubDb, dbName, tableName, primaryKey, columns } =
+  const { appModes, githubDbV2, dbName, tableName, primaryKey, columns } =
     useContext(PageContext);
 
   const [feedback, setFeedback] = useState<{
@@ -42,7 +42,7 @@ const CreatePage = () => {
     setTableFileLoading(true);
     setFeedback(null);
     try {
-      const _result = await githubDb?.getTableRows(dbName, tableName);
+      const _result = await githubDbV2?.getTableRows(dbName, tableName);
       if (_result) {
         setRows(_result.content);
         setTableFileSha(_result.sha);
@@ -58,7 +58,7 @@ const CreatePage = () => {
       });
     }
     setTableFileLoading(false);
-  }, [dbName, githubDb, tableName]);
+  }, [dbName, githubDbV2, tableName]);
 
   // Get single record file, the whole table file will be used to de-dup
   const getData = useCallback(() => {
@@ -123,7 +123,7 @@ const CreatePage = () => {
 
     setSaveLoading(true);
     try {
-      const _result = await githubDb?.updateTableFile(
+      const _result = await githubDbV2?.updateTableFile(
         dbName,
         tableName,
         newContent,
@@ -166,13 +166,7 @@ const CreatePage = () => {
     setSaveLoading(true);
     setFeedback(null);
     try {
-      const _result = await githubDb?.updateRecordFile(
-        dbName,
-        tableName,
-        primaryKey,
-        record,
-        null, // recordFileSha
-      );
+      const _result = await githubDbV2?.insertRow(dbName, tableName, record);
 
       if (_result) {
         setFeedback({
@@ -186,7 +180,7 @@ const CreatePage = () => {
         });
       }
     } catch (err) {
-      console.error('updateRecordFile, err:', err);
+      console.error('insertRow, err:', err);
       setFeedback({
         type: 'error',
         message: buildErrorMessage(
@@ -239,7 +233,7 @@ const CreatePage = () => {
           <div>
             Loading file:{' '}
             <a
-              href={githubDb?.getDataUrl(dbName, tableName)}
+              href={githubDbV2?.getTableDataUrl(dbName, tableName)}
               target="_blank"
               rel="noreferrer"
             >

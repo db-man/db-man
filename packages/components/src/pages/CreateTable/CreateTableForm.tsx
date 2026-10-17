@@ -22,7 +22,7 @@ const defaultFormValues: FormValueType = {
 };
 
 const CreateTableForm = ({ dbName }: { dbName: string }) => {
-  const { githubDb } = useContext(CommonPageContext);
+  const { githubDbV2 } = useContext(CommonPageContext);
   const [messageApi, contextHolder] = message.useMessage();
 
   const [formValues, setFormValues] = useState(defaultFormValues);
@@ -49,7 +49,7 @@ const CreateTableForm = ({ dbName }: { dbName: string }) => {
 
     setSaveLoading(true);
     try {
-      const _result = await githubDb?.createTableSchema(dbName, tableConfig);
+      const _result = await githubDbV2?.createTableSchema(dbName, tableConfig);
 
       if (_result) {
         messageApi.success(
@@ -61,7 +61,7 @@ const CreateTableForm = ({ dbName }: { dbName: string }) => {
         );
       }
     } catch (err) {
-      console.error('githubDb.createTableSchema, err:', err);
+      console.error('githubDbV2.createTableSchema, err:', err);
       setErrorMessage('Failed to create table schema on server!');
     }
 

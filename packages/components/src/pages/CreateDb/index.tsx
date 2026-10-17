@@ -22,7 +22,7 @@ const defaultFormValues: FormValueType = {
 };
 
 const CreateDbPage = () => {
-  const { githubDb } = useContext(CommonPageContext);
+  const { githubDbV2 } = useContext(CommonPageContext);
   const [messageApi, contextHolder] = message.useMessage();
 
   const [formValues, setFormValues] = useState(defaultFormValues);
@@ -49,7 +49,7 @@ const CreateDbPage = () => {
 
     setSaveLoading(true);
     try {
-      const _result = await githubDb?.createDatabaseSchema(dbConfig);
+      const _result = await githubDbV2?.createDatabaseSchema(dbConfig);
 
       if (_result) {
         messageApi.success(

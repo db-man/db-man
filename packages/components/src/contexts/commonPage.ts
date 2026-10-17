@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { GithubDb } from '@db-man/github';
+import { GithubDbV2 } from '@db-man/github';
 
 // TODO: Already used GithubDb from @db-man/github as the ts type, so better to remove this type (need to search all places where using `GithubDbType` also need to remove)
 // // TODO: move this to @db-man/github
@@ -71,15 +71,14 @@ import { GithubDb } from '@db-man/github';
 
 export interface CommonPageContextType {
   appModes: string[];
-  // githubDb: GithubDbType | null;
-  githubDb: GithubDb | null;
+  githubDbV2: GithubDbV2 | null;
 }
 
 // Store all page info, include db, table, and columns
 // Setter: src/layout/DbTablePage.tsx
 const CommonPageContext = React.createContext<CommonPageContextType>({
   appModes: [], // all db modes: 'split-table'
-  githubDb: null, // GitHubDb from @db-man/github
+  githubDbV2: null, // GitHubDbV2 from @db-man/github
 });
 
 export default CommonPageContext;

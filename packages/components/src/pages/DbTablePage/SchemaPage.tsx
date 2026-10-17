@@ -172,19 +172,21 @@ const genColumn = (
 const footer = ({
   dbName,
   tableName,
-  githubDb,
+  githubDbV2,
 }: {
   dbName: string;
   tableName: string;
-  githubDb: PageContextType['githubDb'];
+  githubDbV2: PageContextType['githubDbV2'];
 }) =>
   function TableFooter() {
     return (
       <div>
         Table column definition:{' '}
-        {githubDb ? (
+        {githubDbV2 ? (
           <ExternalLink
-            href={githubDb.getGitHubFullPath(githubDb.getDbConfigPath(dbName))}
+            href={githubDbV2.getGitHubFullPath(
+              githubDbV2.getDbConfigPath(dbName),
+            )}
             text={DB_CFG_FILENAME}
           />
         ) : null}{' '}
@@ -199,7 +201,7 @@ export default function SchemaPage() {
     dbName,
     tableName,
     columns: dbTableColumns,
-    githubDb,
+    githubDbV2,
   } = useContext(PageContext);
   const location = useLocation();
 
@@ -221,7 +223,7 @@ export default function SchemaPage() {
             dataSource={dbTableColumns}
             columns={genColumn(dbName, dbTableColumns)}
             pagination={false}
-            footer={footer({ dbName, tableName, githubDb })}
+            footer={footer({ dbName, tableName, githubDbV2 })}
           />
         </div>
       ),

@@ -21,20 +21,20 @@ const { reloadDbsSchemaAsync } = jest.requireMock(
 
 const commit = { html_url: 'https://github.com/db-man/db.test/commit/7' };
 
-function makeGithubDb(overrides: Record<string, unknown> = {}) {
+function makeGithubDbV2(overrides: Record<string, unknown> = {}) {
   return {
     createDatabaseSchema: jest.fn().mockResolvedValue({ commit }),
     ...overrides,
   };
 }
 
-function renderPage(githubDb = makeGithubDb()) {
+function renderPage(githubDbV2 = makeGithubDbV2()) {
   render(
-    <CommonPageContext.Provider value={{ appModes: [], githubDb } as any}>
+    <CommonPageContext.Provider value={{ appModes: [], githubDbV2 } as any}>
       <CreateDbPage />
     </CommonPageContext.Provider>,
   );
-  return { githubDb };
+  return { githubDbV2 };
 }
 
 const nameInput = () => screen.getAllByRole('textbox')[0] as HTMLInputElement;
@@ -49,14 +49,14 @@ beforeEach(() => {
 
 describe('CreateDbPage', () => {
   it('creates the database schema from the form values', async () => {
-    const { githubDb } = renderPage();
+    const { githubDbV2 } = renderPage();
 
     fireEvent.change(nameInput(), { target: { value: 'blog' } });
     fireEvent.change(descriptionInput(), { target: { value: 'My blog' } });
     fireEvent.click(createButton());
 
     await waitFor(() => {
-      expect(githubDb.createDatabaseSchema).toHaveBeenCalledWith({
+      expect(githubDbV2.createDatabaseSchema).toHaveBeenCalledWith({
         name: 'blog',
         description: 'My blog',
         tables: [],
@@ -68,7 +68,7 @@ describe('CreateDbPage', () => {
   });
 
   it('creates the database schema from the JSON editor', async () => {
-    const { githubDb } = renderPage();
+    const { githubDbV2 } = renderPage();
 
     fireEvent.click(screen.getByRole('tab', { name: 'JSON' }));
     const textareas = (await screen.findAllByRole(
@@ -83,7 +83,7 @@ describe('CreateDbPage', () => {
     fireEvent.click(createButton());
 
     await waitFor(() => {
-      expect(githubDb.createDatabaseSchema).toHaveBeenCalledWith({
+      expect(githubDbV2.createDatabaseSchema).toHaveBeenCalledWith({
         name: 'json-db',
         description: 'from json',
         tables: [],
@@ -92,10 +92,10 @@ describe('CreateDbPage', () => {
   });
 
   it('shows an error alert when creation fails', async () => {
-    const githubDb = makeGithubDb({
+    const githubDbV2 = makeGithubDbV2({
       createDatabaseSchema: jest.fn().mockRejectedValue(new Error('boom')),
     });
-    renderPage(githubDb);
+    renderPage(githubDbV2);
 
     fireEvent.click(createButton());
 

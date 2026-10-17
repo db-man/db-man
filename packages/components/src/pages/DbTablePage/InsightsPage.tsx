@@ -8,12 +8,12 @@ import PageContext from '../../contexts/page';
 const { Text } = Typography;
 
 export default function InsightsPage() {
-  const { dbName, tableName, githubDb } = useContext(PageContext);
+  const { dbName, tableName, githubDbV2 } = useContext(PageContext);
   const [content, setContent] = React.useState<string[]>([]);
   const [errMsg, setErrMsg] = React.useState<string>('');
 
   useEffect(() => {
-    githubDb
+    githubDbV2
       ?.getTableInsights(dbName, tableName)
       .then((response) => {
         let tmp = insightsUtils.parseGitCommitDataToCSV(response);
@@ -26,7 +26,7 @@ export default function InsightsPage() {
           'Failed to get insights from server! Details: ' + err.message,
         );
       });
-  }, [githubDb, dbName, tableName]);
+  }, [githubDbV2, dbName, tableName]);
 
   console.debug('content', content);
 

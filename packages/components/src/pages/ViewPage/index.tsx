@@ -19,7 +19,7 @@ const { SHOW_PARENT } = TreeSelect;
 export default function ViewPage() {
   const { dbs, getTablesByDbName, getViewByDbNameViewName } = useAppContext();
   const { dbName, viewName } = useParams();
-  const { githubDb } = useContext(CommonPageContext);
+  const { githubDbV2 } = useContext(CommonPageContext);
   const [pageError, setPageError] = useState<string | null>(null);
   const [selectedDbTableNames, setSelectedDbTableNames] = useState<string[]>(
     JSON.parse(
@@ -47,7 +47,7 @@ export default function ViewPage() {
   useEffect(() => {
     selectedDbTableNames.forEach((dbTableName) => {
       const [dbName, tableName] = dbTableName.split('/');
-      githubDb
+      githubDbV2
         ?.getTableRows(dbName, tableName)
         .then((response: { content: RowType[] }) => {
           setTablesRows((prev) => ({
@@ -56,7 +56,7 @@ export default function ViewPage() {
           }));
         });
     });
-  }, [githubDb, selectedDbTableNames]);
+  }, [githubDbV2, selectedDbTableNames]);
 
   useEffect(() => {
     if (!dbName || !viewName) {
@@ -74,7 +74,7 @@ export default function ViewPage() {
     console.log('codeOrFile:', codeOrFile);
 
     if (codeOrFile.startsWith('query_file:')) {
-      githubDb
+      githubDbV2
         ?.getDbViewScriptFileContentAndSha(
           dbName,
           codeOrFile.replace('query_file:', ''),

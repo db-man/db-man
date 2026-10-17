@@ -19,7 +19,7 @@ function renderDetail({
   url?: string;
 }) {
   window.history.replaceState({}, '', url);
-  const githubDb = {
+  const githubDbV2 = {
     getTableRows: jest.fn().mockResolvedValue({ content: rows, sha: 'sha' }),
   };
   const pageCtx = {
@@ -30,7 +30,7 @@ function renderDetail({
     columns,
     tables: [],
     primaryKey: 'userId',
-    githubDb,
+    githubDbV2,
   };
 
   render(
@@ -48,7 +48,7 @@ function renderDetail({
     </AppContext.Provider>,
   );
 
-  return { githubDb };
+  return { githubDbV2 };
 }
 
 beforeEach(() => {

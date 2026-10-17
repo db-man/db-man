@@ -25,7 +25,7 @@ const pageCtx = {
   columns: [],
   primaryKey: 'name',
   tables,
-  githubDb: null,
+  githubDbV2: null,
 } as any;
 
 const column = {

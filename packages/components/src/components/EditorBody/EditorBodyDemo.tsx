@@ -103,7 +103,7 @@ const FormDemo = () => {
           columns: tables[0].columns,
           primaryKey: 'userId',
           tables,
-          githubDb: null,
+          githubDbV2: null,
         }}
       >
         <EditorBody
