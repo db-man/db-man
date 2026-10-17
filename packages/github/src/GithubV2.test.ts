@@ -442,19 +442,6 @@ describe('GithubV2', () => {
       });
     });
 
-    it("should default the commit message to 'Create file'", async () => {
-      mockCreateOrUpdateFileContents.mockResolvedValueOnce({ data: {} });
-
-      await g.createFile({
-        path: 'dbs/iam/users.data.json',
-        content: '[]',
-      });
-
-      expect(mockCreateOrUpdateFileContents).toHaveBeenCalledWith(
-        expect.objectContaining({ message: 'Create file' }),
-      );
-    });
-
     it('should reject a sha, because that is an overwrite and belongs to saveFile', async () => {
       // `sha` is typed as `never`, so only an untyped caller can get here.
       await expect(
@@ -478,7 +465,11 @@ describe('GithubV2', () => {
       });
 
       const err = await g
-        .createFile({ path: 'dbs/iam/users.data.json', content: '[]' })
+        .createFile({
+          path: 'dbs/iam/users.data.json',
+          content: '[]',
+          message: 'm',
+        })
         .catch((e) => e);
 
       expect(err).toBeInstanceOf(Error);
@@ -501,7 +492,11 @@ describe('GithubV2', () => {
       });
 
       const err = await g
-        .createFile({ path: 'dbs/iam/users.data.json', content: '[]' })
+        .createFile({
+          path: 'dbs/iam/users.data.json',
+          content: '[]',
+          message: 'm',
+        })
         .catch((e) => e);
 
       expect(err.type).toBe('ALREADY_EXISTS');
@@ -519,7 +514,7 @@ describe('GithubV2', () => {
       mockCreateOrUpdateFileContents.mockRejectedValueOnce(upstream);
 
       await expect(
-        g.saveFile({ path: 'p', content: '[]', sha: 's' }),
+        g.saveFile({ path: 'p', content: '[]', sha: 's', message: 'm' }),
       ).rejects.toBe(upstream);
     });
   });
@@ -549,20 +544,6 @@ describe('GithubV2', () => {
       });
     });
 
-    it("should default the commit message to 'Update file'", async () => {
-      mockCreateOrUpdateFileContents.mockResolvedValueOnce({ data: {} });
-
-      await g.saveFile({
-        path: 'dbs/iam/users.data.json',
-        content: '[]',
-        sha: 's',
-      });
-
-      expect(mockCreateOrUpdateFileContents).toHaveBeenCalledWith(
-        expect.objectContaining({ message: 'Update file' }),
-      );
-    });
-
     it('should require a sha, because without it this is a create', async () => {
       await expect(
         g.saveFile({
@@ -586,6 +567,7 @@ describe('GithubV2', () => {
           path: 'dbs/iam/users.data.json',
           content: '[]',
           sha: 'stale-sha',
+          message: 'm',
         })
         .catch((e) => e);
 
@@ -601,7 +583,7 @@ describe('GithubV2', () => {
       mockCreateOrUpdateFileContents.mockRejectedValueOnce(upstream);
 
       await expect(
-        g.saveFile({ path: 'p', content: '[]', sha: 's' }),
+        g.saveFile({ path: 'p', content: '[]', sha: 's', message: 'm' }),
       ).rejects.toBe(upstream);
     });
 
@@ -613,7 +595,7 @@ describe('GithubV2', () => {
       mockCreateOrUpdateFileContents.mockRejectedValueOnce(upstream);
 
       await expect(
-        g.saveFile({ path: 'p', content: '[]', sha: 's' }),
+        g.saveFile({ path: 'p', content: '[]', sha: 's', message: 'm' }),
       ).rejects.toBe(upstream);
     });
   });
@@ -639,20 +621,6 @@ describe('GithubV2', () => {
         committer: BOT,
         author: BOT,
       });
-    });
-
-    it("should default the commit message to 'Delete file'", async () => {
-      mockDeleteFile.mockResolvedValueOnce({ data: {} });
-
-      // Open question (registered in the plan, not fixed here): DeleteFileType
-      // declares `message` as required while the write entries make it optional,
-      // so this default is only reachable from untyped callers. The cast is what
-      // it takes to exercise it.
-      await g.deleteFile({ path: 'dbs/iam/users/1.json', sha: 's' } as any);
-
-      expect(mockDeleteFile).toHaveBeenCalledWith(
-        expect.objectContaining({ message: 'Delete file' }),
-      );
     });
 
     it('should map a 409 conflict to the documented error message', async () => {

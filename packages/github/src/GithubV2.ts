@@ -34,7 +34,7 @@ type WriteFileParams = {
 type CreateFileParams = {
   path: string;
   content: any;
-  message?: string;
+  message: string;
   /**
    * Must not be passed — overwriting a known version is what `saveFile()` is
    * for. Declared as `never` so TypeScript rejects it at the call site instead
@@ -51,7 +51,7 @@ type SaveFileParams = {
    * refuses the write if the file has changed since that read.
    */
   sha: string;
-  message?: string;
+  message: string;
 };
 
 const botName = 'db-man-bot';
@@ -375,7 +375,7 @@ export default class GithubV2 {
   async createFile({
     path,
     content,
-    message = 'Create file',
+    message,
     sha,
   }: CreateFileParams) {
     if (sha !== undefined && sha !== null) {
@@ -401,7 +401,7 @@ export default class GithubV2 {
     path,
     content,
     sha,
-    message = 'Update file',
+    message,
   }: SaveFileParams) {
     if (sha === undefined || sha === null) {
       throw new Error(
@@ -512,7 +512,7 @@ export default class GithubV2 {
    * response.commit.html_url https://github.com/username/reponame/commit/a7f...04d
    * response.content
    */
-  async deleteFile({ path, sha, message = 'Delete file' }: DeleteFileType) {
+  async deleteFile({ path, sha, message }: DeleteFileType) {
     try {
       // https://octokit.github.io/rest.js/v18#repos-delete-file
       const { data } = await octokit(
