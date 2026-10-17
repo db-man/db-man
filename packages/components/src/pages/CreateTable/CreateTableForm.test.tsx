@@ -11,7 +11,7 @@ jest.mock('../../pages/Settings/helpers', () => ({
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { reloadDbsSchemaAsync } = jest.requireMock(
-  '../../pages/Settings/helpers'
+  '../../pages/Settings/helpers',
 );
 
 const commit = { html_url: 'https://github.com/db-man/db.test/commit/8' };
@@ -27,13 +27,12 @@ function renderForm(githubDb = makeGithubDb(), dbName = 'iam') {
   render(
     <CommonPageContext.Provider value={{ appModes: [], githubDb } as any}>
       <CreateTableForm dbName={dbName} />
-    </CommonPageContext.Provider>
+    </CommonPageContext.Provider>,
   );
   return { githubDb };
 }
 
-const nameInput = () =>
-  screen.getAllByRole('textbox')[0] as HTMLInputElement;
+const nameInput = () => screen.getAllByRole('textbox')[0] as HTMLInputElement;
 const createButton = () => screen.getByRole('button', { name: 'Create' });
 
 beforeEach(() => {
@@ -55,7 +54,9 @@ describe('CreateTableForm', () => {
         tables: [],
       });
     });
-    expect(await screen.findByText('Table schema created.')).toBeInTheDocument();
+    expect(
+      await screen.findByText('Table schema created.'),
+    ).toBeInTheDocument();
   });
 
   it('passes the dbName it was given', async () => {
@@ -66,7 +67,7 @@ describe('CreateTableForm', () => {
     await waitFor(() => {
       expect(githubDb.createTableSchema).toHaveBeenCalledWith(
         'shop',
-        expect.anything()
+        expect.anything(),
       );
     });
   });
@@ -80,7 +81,7 @@ describe('CreateTableForm', () => {
     fireEvent.click(createButton());
 
     expect(
-      await screen.findByText('Failed to create table schema on server!')
+      await screen.findByText('Failed to create table schema on server!'),
     ).toBeInTheDocument();
   });
 
@@ -97,7 +98,7 @@ describe('CreateTableForm', () => {
         'tok2',
         'o',
         'r',
-        expect.anything()
+        expect.anything(),
       );
     });
   });

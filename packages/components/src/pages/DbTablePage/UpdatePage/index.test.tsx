@@ -1,5 +1,11 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+  within,
+} from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 
 import UpdatePage from './index';
@@ -61,7 +67,7 @@ function renderPage({
           <UpdatePage />
         </PageContext.Provider>
       </AppContext.Provider>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
   return { githubDb };
 }
@@ -98,7 +104,7 @@ describe('UpdatePage', () => {
       expect(githubDb.getRecordFileContentAndSha).toHaveBeenCalledWith(
         'iam',
         'users',
-        'u1'
+        'u1',
       );
     });
     expect(githubDb.getTableRows).not.toHaveBeenCalled();
@@ -178,7 +184,7 @@ describe('UpdatePage', () => {
         'iam',
         'users',
         'u1',
-        'record-sha'
+        'record-sha',
       );
     });
     expect(await screen.findByText('Record deleted.')).toBeInTheDocument();
@@ -197,7 +203,7 @@ describe('UpdatePage', () => {
     fireEvent.click(await screen.findByText('Yes'));
 
     expect(
-      await screen.findByText('Only supported in split-table mode!')
+      await screen.findByText('Only supported in split-table mode!'),
     ).toBeInTheDocument();
     expect(githubDb.deleteRecordFile).not.toHaveBeenCalled();
   });
@@ -211,7 +217,9 @@ describe('UpdatePage', () => {
     });
 
     await waitFor(() => {
-      expect(screen.queryByRole('button', { name: 'Save' })).not.toBeInTheDocument();
+      expect(
+        screen.queryByRole('button', { name: 'Save' }),
+      ).not.toBeInTheDocument();
     });
   });
 
@@ -251,7 +259,7 @@ describe('UpdatePage', () => {
   it('overrides form values from the __replace_fields__ query param', async () => {
     renderPage({
       url: `/iam/users/update?userId=u1&__replace_fields__=${encodeURIComponent(
-        JSON.stringify({ name: 'Overridden' })
+        JSON.stringify({ name: 'Overridden' }),
       )}`,
     });
 
@@ -279,7 +287,7 @@ describe('UpdatePage', () => {
     renderPage({ appModes: ['split-table'], githubDb });
 
     expect(
-      await screen.findByText(/Failed to get file from server!/)
+      await screen.findByText(/Failed to get file from server!/),
     ).toBeInTheDocument();
     expect(screen.getByText(/Reason: gone/)).toBeInTheDocument();
   });
@@ -296,7 +304,7 @@ describe('UpdatePage', () => {
     fireEvent.click(saveButton());
 
     expect(
-      await screen.findByText(/Failed to update record file on server!/)
+      await screen.findByText(/Failed to update record file on server!/),
     ).toBeInTheDocument();
   });
 });

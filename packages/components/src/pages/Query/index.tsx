@@ -43,7 +43,9 @@ export default function QueryPage() {
   const [selectedDbTableNames, setSelectedDbTableNames] = React.useState<
     string[]
   >(
-    JSON.parse(localStorage.getItem(LS_QUERY_PAGE_SELECTED_TABLE_NAMES) || '[]')
+    JSON.parse(
+      localStorage.getItem(LS_QUERY_PAGE_SELECTED_TABLE_NAMES) || '[]',
+    ),
   );
   const [code, setCode] = React.useState('return [];');
   const [result, setResult] = React.useState<{ obj: any; err: string }>({
@@ -101,7 +103,7 @@ export default function QueryPage() {
     setSelectedDbTableNames(newValue);
     localStorage.setItem(
       LS_QUERY_PAGE_SELECTED_TABLE_NAMES,
-      JSON.stringify(newValue)
+      JSON.stringify(newValue),
     );
   };
 

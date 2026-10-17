@@ -62,7 +62,7 @@ function renderField({
           />
         </PageContext.Provider>
       </AppContext.Provider>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 }
 
@@ -103,7 +103,7 @@ describe('StringFormField', () => {
     });
     expect(warnSpy).toHaveBeenCalledTimes(1);
     expect(warnSpy.mock.calls[0][0]).toEqual(
-      expect.objectContaining({ type: 'div' })
+      expect.objectContaining({ type: 'div' }),
     );
   });
 
@@ -152,7 +152,7 @@ describe('StringFormField', () => {
       pageCtx: makePageCtx({ appModes: ['split-table'] }),
     });
     expect(screen.getByRole('textbox').className).toContain(
-      'ant-input-status-error'
+      'ant-input-status-error',
     );
   });
 
@@ -169,8 +169,9 @@ describe('StringFormField', () => {
       referenceTable: 'users',
     } as DbColumn;
     renderField({ column: col, value: 'chenyang' });
-    expect(
-      screen.getByRole('link', { name: 'Create' })
-    ).toHaveAttribute('href', '/iam/users/create?name=chenyang');
+    expect(screen.getByRole('link', { name: 'Create' })).toHaveAttribute(
+      'href',
+      '/iam/users/create?name=chenyang',
+    );
   });
 });

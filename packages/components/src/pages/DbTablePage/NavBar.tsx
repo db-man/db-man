@@ -25,13 +25,13 @@ const NavBar = () => {
         <span key={idx}>
           <Text>{`${column.referenceTable}(`}</Text>
           <a
-            key='create-link'
+            key="create-link"
             href={`/${dbName}/${column.referenceTable}/create`}
           >
             Create
           </a>
           <Text>,</Text>
-          <a key='list-link' href={`/${dbName}/${column.referenceTable}/list`}>
+          <a key="list-link" href={`/${dbName}/${column.referenceTable}/list`}>
             List
           </a>
           <Text>{`)`}</Text>
@@ -43,20 +43,20 @@ const NavBar = () => {
   const filter = encodeURIComponent(
     JSON.stringify({
       [primaryKey]: primaryKeyVal,
-    })
+    }),
   );
 
   // Only when appModes have "split-table"
   const githubFileLink = primaryKeyVal ? (
     <a
-      title='GitHub File Path'
+      title="GitHub File Path"
       href={githubDb?.getGitHubFullPath(
         `${localStorage.getItem(
-          constants.LS_KEY_GITHUB_REPO_PATH
-        )}/${dbName}/${tableName}/${utils.validFilename(primaryKeyVal)}.json`
+          constants.LS_KEY_GITHUB_REPO_PATH,
+        )}/${dbName}/${tableName}/${utils.validFilename(primaryKeyVal)}.json`,
       )}
-      target='_blank'
-      rel='noreferrer'
+      target="_blank"
+      rel="noreferrer"
     >
       {`${utils.validFilename(primaryKeyVal)}.json`}
     </a>
@@ -92,7 +92,7 @@ const NavBar = () => {
   );
 
   return (
-    <div className='dbm-nav-bar'>
+    <div className="dbm-nav-bar">
       <span>
         <Text>Table: {tableName} (</Text>
         <span>{createLink}</span>
@@ -112,10 +112,10 @@ const NavBar = () => {
       {/* GitHub link of DB table file, e.g. "dbs/iam/users.data.json" */}
       <Text>GitHub Link: </Text>
       <a
-        title='GitHub File Path'
+        title="GitHub File Path"
         href={githubDb?.getDataUrl(dbName, tableName)}
-        target='_blank'
-        rel='noreferrer'
+        target="_blank"
+        rel="noreferrer"
       >
         {githubDb?.getDataPath(dbName, tableName)}
       </a>

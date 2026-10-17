@@ -41,7 +41,12 @@ const columns = [
     type: 'STRING_ARRAY',
     'type:createUpdatePage': 'MultiLineInputBox',
   },
-  { id: 'hidden', name: 'Hidden', type: 'STRING', 'type:createUpdatePage': 'HIDE' },
+  {
+    id: 'hidden',
+    name: 'Hidden',
+    type: 'STRING',
+    'type:createUpdatePage': 'HIDE',
+  },
 ] as unknown as DbColumn[];
 
 const defaultValues = { name: 'chenyang', age: 30, active: true } as RowType;
@@ -64,9 +69,7 @@ const pageCtx = {
   githubDb: null,
 } as any;
 
-function renderEditor(
-  props: Partial<Parameters<typeof EditorBody>[0]> = {}
-) {
+function renderEditor(props: Partial<Parameters<typeof EditorBody>[0]> = {}) {
   const onSubmit = jest.fn();
   const onDelete = jest.fn();
   const utils = render(
@@ -81,7 +84,7 @@ function renderEditor(
           {...props}
         />
       </PageContext.Provider>
-    </AppContext.Provider>
+    </AppContext.Provider>,
   );
   return { ...utils, onSubmit, onDelete };
 }
@@ -99,7 +102,7 @@ describe('EditorBody', () => {
     expect(fields.length).toBe(columns.length - 1);
     expect(container.querySelector('.dbm-form')).toHaveTextContent('Name');
     expect(container.querySelector('.dbm-form')).not.toHaveTextContent(
-      'Hidden'
+      'Hidden',
     );
   });
 
@@ -123,7 +126,7 @@ describe('EditorBody', () => {
     const { onSubmit } = renderEditor();
     fireEvent.click(screen.getByRole('button', { name: 'Save' }));
     expect(onSubmit).toHaveBeenCalledWith(
-      expect.objectContaining({ name: 'chenyang', level: 'low' })
+      expect.objectContaining({ name: 'chenyang', level: 'low' }),
     );
   });
 
@@ -132,7 +135,7 @@ describe('EditorBody', () => {
     fireEvent.change(getNameInput(), { target: { value: 'newname' } });
     fireEvent.click(screen.getByRole('button', { name: 'Save' }));
     expect(onSubmit).toHaveBeenCalledWith(
-      expect.objectContaining({ name: 'newname' })
+      expect.objectContaining({ name: 'newname' }),
     );
   });
 
@@ -143,7 +146,7 @@ describe('EditorBody', () => {
     renderEditor();
     fireEvent.change(getNameInput(), { target: { value: 'a b' } });
     expect(warnSpy).toHaveBeenCalledWith(
-      'Primary key cannot contain whitespace character'
+      'Primary key cannot contain whitespace character',
     );
   });
 
@@ -176,14 +179,14 @@ describe('EditorBody', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Delete' }));
     fireEvent.click(await screen.findByText('Yes'));
     expect(onDelete).toHaveBeenCalledWith(
-      expect.objectContaining({ name: 'chenyang' })
+      expect.objectContaining({ name: 'chenyang' }),
     );
   });
 
   it('hides the Delete button when showDelete is false', () => {
     renderEditor({ showDelete: false });
     expect(
-      screen.queryByRole('button', { name: 'Delete' })
+      screen.queryByRole('button', { name: 'Delete' }),
     ).not.toBeInTheDocument();
   });
 
@@ -191,21 +194,24 @@ describe('EditorBody', () => {
     renderEditor();
     expect(screen.getByText('Reset').closest('a')).toHaveAttribute(
       'href',
-      '/iam/users/create'
+      '/iam/users/create',
     );
   });
 
   it('disables Save while loading', () => {
     renderEditor({ loading: true });
     expect(
-      (screen.getByText('Save').closest('button') as HTMLButtonElement).disabled
+      (screen.getByText('Save').closest('button') as HTMLButtonElement)
+        .disabled,
     ).toBe(true);
   });
 
   it('keeps the JSON editor in sync with the form', async () => {
     renderEditor();
     fireEvent.click(screen.getByRole('tab', { name: 'JSON' }));
-    const textareas = (await screen.findAllByRole('textbox')) as HTMLTextAreaElement[];
+    const textareas = (await screen.findAllByRole(
+      'textbox',
+    )) as HTMLTextAreaElement[];
     const jsonTextarea = textareas.find((t) => t.value.startsWith('{'));
     expect(jsonTextarea?.value).toContain('"chenyang"');
   });
@@ -213,7 +219,9 @@ describe('EditorBody', () => {
   it('submits values edited in the JSON editor', async () => {
     const { onSubmit } = renderEditor();
     fireEvent.click(screen.getByRole('tab', { name: 'JSON' }));
-    const textareas = (await screen.findAllByRole('textbox')) as HTMLTextAreaElement[];
+    const textareas = (await screen.findAllByRole(
+      'textbox',
+    )) as HTMLTextAreaElement[];
     const jsonTextarea = textareas.find((t) => t.value.startsWith('{'));
     expect(jsonTextarea).toBeDefined();
     fireEvent.change(jsonTextarea as HTMLElement, {
@@ -221,7 +229,7 @@ describe('EditorBody', () => {
     });
     fireEvent.click(screen.getByRole('button', { name: 'Save' }));
     expect(onSubmit).toHaveBeenCalledWith(
-      expect.objectContaining({ name: 'jsonname' })
+      expect.objectContaining({ name: 'jsonname' }),
     );
   });
 
@@ -230,7 +238,7 @@ describe('EditorBody', () => {
     fireEvent.click(screen.getByRole('radio', { name: 'high' }));
     fireEvent.click(screen.getByRole('button', { name: 'Save' }));
     expect(onSubmit).toHaveBeenCalledWith(
-      expect.objectContaining({ level: 'high' })
+      expect.objectContaining({ level: 'high' }),
     );
   });
 });

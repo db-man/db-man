@@ -123,7 +123,7 @@ const ListPage = (props: ListPageProps) => {
     columns,
     filter,
     sorter,
-    rows
+    rows,
   );
 
   const handleKeyDown = (e: KeyboardEvent) => {
@@ -184,7 +184,7 @@ const ListPage = (props: ListPageProps) => {
   const handleTableChange: TableProps<RowType>['onChange'] = (
     pagination,
     filters,
-    newSorter /* , extra */
+    newSorter /* , extra */,
   ) => {
     setPage(pagination.current || defaultPage);
     setPageSize(pagination.pageSize || defaultPageSize);
@@ -230,7 +230,7 @@ const ListPage = (props: ListPageProps) => {
       const { content } = await githubDb!.getTableRows(
         dbName,
         tableName,
-        controllerRef.current.signal
+        controllerRef.current.signal,
       );
       setRows(content);
       setContentTableName(tableName);
@@ -244,7 +244,7 @@ const ListPage = (props: ListPageProps) => {
   const alertDuplicatedRowKey = () => {
     if (!rows) return null;
     const duplicatedRowKeys = findDuplicates(
-      rows.map((item) => item[primaryKey])
+      rows.map((item) => item[primaryKey]),
     );
     if (duplicatedRowKeys.length === 0) return null;
     return (

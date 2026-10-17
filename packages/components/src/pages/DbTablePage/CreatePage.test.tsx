@@ -1,5 +1,11 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+  within,
+} from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { message } from 'antd';
 
@@ -22,9 +28,7 @@ const commit = { html_url: 'https://github.com/db-man/db.test/commit/1' };
  */
 function makeGithubDb(overrides: Record<string, unknown> = {}) {
   return {
-    getTableRows: jest
-      .fn()
-      .mockResolvedValue({ content: [], sha: 'sha-1' }),
+    getTableRows: jest.fn().mockResolvedValue({ content: [], sha: 'sha-1' }),
     updateTableFile: jest.fn().mockResolvedValue({ commit }),
     updateRecordFile: jest.fn().mockResolvedValue({ commit }),
     getDataUrl: () =>
@@ -61,7 +65,7 @@ function renderPage({
           <CreatePage />
         </PageContext.Provider>
       </AppContext.Provider>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
   return { githubDb };
 }
@@ -121,7 +125,7 @@ describe('CreatePage', () => {
     expect(screen.getByText('Success')).toBeInTheDocument();
     expect(screen.getByText('Commit link').closest('a')).toHaveAttribute(
       'href',
-      commit.html_url
+      commit.html_url,
     );
   });
 
@@ -139,11 +143,7 @@ describe('CreatePage', () => {
     });
     const [dbName, tableName, primaryKey, record, recordFileSha] =
       githubDb.updateRecordFile.mock.calls[0];
-    expect([dbName, tableName, primaryKey]).toEqual([
-      'iam',
-      'users',
-      'userId',
-    ]);
+    expect([dbName, tableName, primaryKey]).toEqual(['iam', 'users', 'userId']);
     expect(record).toMatchObject({ userId: 'u1' });
     expect(recordFileSha).toBeNull();
     expect(githubDb.updateTableFile).not.toHaveBeenCalled();
@@ -179,7 +179,7 @@ describe('CreatePage', () => {
     renderPage({ githubDb });
 
     expect(
-      await screen.findByText(/Failed to get table file from server!/)
+      await screen.findByText(/Failed to get table file from server!/),
     ).toBeInTheDocument();
     expect(screen.getByText(/Reason: offline/)).toBeInTheDocument();
   });
@@ -197,13 +197,17 @@ describe('CreatePage', () => {
     fireEvent.click(saveButton());
 
     expect(
-      await screen.findByText(/Failed to update table file on server!/)
+      await screen.findByText(/Failed to update table file on server!/),
     ).toBeInTheDocument();
     expect(screen.getByText(/Reason: conflict/)).toBeInTheDocument();
   });
 
   it('prefills the form from the URL query params, wrapping STRING_ARRAY values', async () => {
-    window.history.replaceState({}, '', '/iam/users/create?userId=from-url&tags=vip');
+    window.history.replaceState(
+      {},
+      '',
+      '/iam/users/create?userId=from-url&tags=vip',
+    );
     const { githubDb } = renderPage();
     await waitFor(() => {
       expect(githubDb.getTableRows).toHaveBeenCalled();

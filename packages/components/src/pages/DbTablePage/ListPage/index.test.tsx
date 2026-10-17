@@ -1,6 +1,12 @@
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import { GithubDb } from '@db-man/github';
 import { message } from 'antd';
 
@@ -85,7 +91,7 @@ const renderListPage = (options?: Parameters<typeof ui>[0]) =>
 const row = (
   userId: string,
   name: string,
-  createdAt = '2021-07-04 09:16:01'
+  createdAt = '2021-07-04 09:16:01',
 ) => ({ userId, name, createdAt, updatedAt: createdAt });
 
 const pad = (n: number) => String(n).padStart(2, '0');
@@ -104,9 +110,9 @@ const manyRows = Array.from({ length: 12 }, (_, i) => ({
 /** The visible rows of the antd table, as arrays of cell texts. */
 const tableRows = () =>
   Array.from(
-    document.querySelectorAll('.ant-table-tbody tr.ant-table-row')
+    document.querySelectorAll('.ant-table-tbody tr.ant-table-row'),
   ).map((tr) =>
-    Array.from(tr.querySelectorAll('td')).map((td) => td.textContent)
+    Array.from(tr.querySelectorAll('td')).map((td) => td.textContent),
   );
 
 /** The "Name" column of the visible rows, i.e. the order they are shown in. */
@@ -133,7 +139,7 @@ const clickColumnHeader = (name: string) => {
   // The column title also shows up as a filter label above the table, so the
   // header cell has to be picked by element, not by text.
   const header = Array.from(
-    document.querySelectorAll('.ant-table-thead th')
+    document.querySelectorAll('.ant-table-thead th'),
   ).find((th) => th.textContent === name);
   expect(header).toBeDefined();
   fireEvent.click(header!);
@@ -161,7 +167,7 @@ describe('ListPage', () => {
     mockGetTableRows.mockReturnValue(
       new Promise((resolve) => {
         resolveGetTableRows = resolve;
-      })
+      }),
     );
 
     renderListPage();
@@ -176,7 +182,7 @@ describe('ListPage', () => {
     expect(mockGetTableRows).toHaveBeenCalledWith(
       'iam',
       'users',
-      expect.anything()
+      expect.anything(),
     );
   });
 
@@ -186,7 +192,7 @@ describe('ListPage', () => {
     renderListPage();
 
     expect(
-      await screen.findByText(/Failed to get data: boom/i)
+      await screen.findByText(/Failed to get data: boom/i),
     ).toBeInTheDocument();
   });
 
@@ -197,9 +203,7 @@ describe('ListPage', () => {
 
     renderListPage();
 
-    expect(
-      await screen.findByText(/Duplicated row keys/i)
-    ).toBeInTheDocument();
+    expect(await screen.findByText(/Duplicated row keys/i)).toBeInTheDocument();
   });
 
   it('warns about rows which have no primary key', async () => {
@@ -226,14 +230,14 @@ describe('ListPage', () => {
     });
 
     await waitFor(() =>
-      expect(screen.queryByText('Ben')).not.toBeInTheDocument()
+      expect(screen.queryByText('Ben')).not.toBeInTheDocument(),
     );
     expect(screen.getByText('David')).toBeInTheDocument();
 
     // The filter is also written into the URL by the debounced `updateUrl`
     await flushDebouncedUrl();
     expect(window.location.search).toContain(
-      `filter=${encodeURIComponent(JSON.stringify({ name: 'Dav' }))}`
+      `filter=${encodeURIComponent(JSON.stringify({ name: 'Dav' }))}`,
     );
   });
 
@@ -245,8 +249,8 @@ describe('ListPage', () => {
       {},
       '',
       `/?sorter=${encodeURIComponent(
-        JSON.stringify({ columnKey: 'name', order: 'ascend' })
-      )}`
+        JSON.stringify({ columnKey: 'name', order: 'ascend' }),
+      )}`,
     );
 
     renderListPage();
@@ -298,11 +302,11 @@ describe('ListPage', () => {
     const encoded = encodeURIComponent('https://example.com?id=1&name=John');
     expect(screen.getByRole('link', { name: 'Update' })).toHaveAttribute(
       'href',
-      `/iam/users/update?userId=${encoded}`
+      `/iam/users/update?userId=${encoded}`,
     );
     expect(screen.getByRole('link', { name: 'Detail' })).toHaveAttribute(
       'href',
-      `/iam/users/get?userId=${encoded}`
+      `/iam/users/get?userId=${encoded}`,
     );
   });
 
@@ -322,7 +326,9 @@ describe('ListPage', () => {
       tables: [
         {
           name: 'users_ref',
-          columns: [{ id: 'refId', name: 'Ref ID', type: STRING, primary: true }],
+          columns: [
+            { id: 'refId', name: 'Ref ID', type: STRING, primary: true },
+          ],
         },
       ],
     });
@@ -335,14 +341,19 @@ describe('ListPage', () => {
 
     expect(await screen.findByRole('link', { name: '123' })).toHaveAttribute(
       'href',
-      '/iam/users_ref/get?refId=123'
+      '/iam/users_ref/get?refId=123',
     );
   });
 
   it('renders the ref-table link only for STRING_ARRAY columns that have values', async () => {
     mockGetTableRows.mockResolvedValue({
       content: [
-        { userId: 'r1', tags: [], createdAt: '2021-01-01', updatedAt: '2021-01-01' },
+        {
+          userId: 'r1',
+          tags: [],
+          createdAt: '2021-01-01',
+          updatedAt: '2021-01-01',
+        },
         {
           userId: 'r2',
           tags: ['t1'],
@@ -365,7 +376,9 @@ describe('ListPage', () => {
       tables: [
         {
           name: 'tags_ref',
-          columns: [{ id: 'tagId', name: 'Tag ID', type: STRING, primary: true }],
+          columns: [
+            { id: 'tagId', name: 'Tag ID', type: STRING, primary: true },
+          ],
         },
       ],
     });
@@ -379,7 +392,7 @@ describe('ListPage', () => {
     mockGetTableRows.mockImplementation((_dbName: string, table: string) =>
       Promise.resolve({
         content: table === 'users' ? [row('1', 'David')] : [row('2', 'Ben')],
-      })
+      }),
     );
 
     const { rerender } = renderListPage();
@@ -394,7 +407,7 @@ describe('ListPage', () => {
     expect(mockGetTableRows).toHaveBeenLastCalledWith(
       'iam',
       'groups',
-      expect.anything()
+      expect.anything(),
     );
   });
 
@@ -442,7 +455,7 @@ describe('ListPage', () => {
     expect(document.querySelectorAll('.dbm-dd-image-link')).toHaveLength(10);
 
     fireEvent.click(
-      screen.getByTitle('Next Page').querySelector('button') as HTMLElement
+      screen.getByTitle('Next Page').querySelector('button') as HTMLElement,
     );
 
     expect(document.querySelectorAll('.dbm-dd-image-link')).toHaveLength(2);
@@ -459,7 +472,7 @@ describe('ListPage', () => {
     switchView('Image View');
 
     expect(
-      await screen.findByText(/Which column data to render the image list/i)
+      await screen.findByText(/Which column data to render the image list/i),
     ).toBeInTheDocument();
   });
 
@@ -468,7 +481,7 @@ describe('ListPage', () => {
     mockGetTableRows.mockReturnValue(
       new Promise((resolve) => {
         resolveRows = resolve;
-      })
+      }),
     );
     window.history.replaceState({}, '', '/?view=nonsense');
 
@@ -480,7 +493,7 @@ describe('ListPage', () => {
 
     resolveRows({ content: [row('1', 'David')] });
     await waitFor(() =>
-      expect(screen.queryByText(/Loading iam\/users/i)).not.toBeInTheDocument()
+      expect(screen.queryByText(/Loading iam\/users/i)).not.toBeInTheDocument(),
     );
 
     expect(document.querySelector('.ant-table')).toBeNull();
@@ -515,7 +528,7 @@ describe('ListPage', () => {
     expect(activePage()).toBe('1');
 
     fireEvent.click(
-      screen.getByTitle('Next Page').querySelector('button') as HTMLElement
+      screen.getByTitle('Next Page').querySelector('button') as HTMLElement,
     );
 
     await waitFor(() => expect(activePage()).toBe('2'));
@@ -548,8 +561,8 @@ describe('ListPage', () => {
     await flushDebouncedUrl();
     expect(window.location.search).toContain(
       `sorter=${encodeURIComponent(
-        JSON.stringify({ columnKey: 'name', order: 'descend' })
-      )}`
+        JSON.stringify({ columnKey: 'name', order: 'descend' }),
+      )}`,
     );
   });
 
@@ -564,7 +577,9 @@ describe('ListPage', () => {
 
     // Already on the last page
     pressKey('ArrowRight');
-    expect(await screen.findByText('This is the last page!')).toBeInTheDocument();
+    expect(
+      await screen.findByText('This is the last page!'),
+    ).toBeInTheDocument();
     expect(activePage()).toBe('2');
 
     pressKey('ArrowLeft');
@@ -572,7 +587,9 @@ describe('ListPage', () => {
 
     // Already on the first page
     pressKey('ArrowLeft');
-    expect(await screen.findByText('This is the first page!')).toBeInTheDocument();
+    expect(
+      await screen.findByText('This is the first page!'),
+    ).toBeInTheDocument();
     expect(activePage()).toBe('1');
 
     await flushDebouncedUrl();
@@ -591,7 +608,9 @@ describe('ListPage', () => {
     pressKey('ArrowRight');
 
     expect(activePage()).toBe('1');
-    expect(screen.queryByText('This is the last page!')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('This is the last page!'),
+    ).not.toBeInTheDocument();
   });
 
   it('ignores keys other than the arrow keys', async () => {
@@ -623,7 +642,9 @@ describe('ListPage', () => {
       tables: [
         {
           name: 'users_ref',
-          columns: [{ id: 'refId', name: 'Ref ID', type: STRING, primary: true }],
+          columns: [
+            { id: 'refId', name: 'Ref ID', type: STRING, primary: true },
+          ],
         },
       ],
     });

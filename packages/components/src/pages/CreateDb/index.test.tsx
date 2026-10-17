@@ -16,7 +16,7 @@ jest.mock('../../pages/Settings/helpers', () => ({
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { reloadDbsSchemaAsync } = jest.requireMock(
-  '../../pages/Settings/helpers'
+  '../../pages/Settings/helpers',
 );
 
 const commit = { html_url: 'https://github.com/db-man/db.test/commit/7' };
@@ -32,13 +32,12 @@ function renderPage(githubDb = makeGithubDb()) {
   render(
     <CommonPageContext.Provider value={{ appModes: [], githubDb } as any}>
       <CreateDbPage />
-    </CommonPageContext.Provider>
+    </CommonPageContext.Provider>,
   );
   return { githubDb };
 }
 
-const nameInput = () =>
-  screen.getAllByRole('textbox')[0] as HTMLInputElement;
+const nameInput = () => screen.getAllByRole('textbox')[0] as HTMLInputElement;
 const descriptionInput = () =>
   screen.getAllByRole('textbox')[1] as HTMLInputElement;
 const createButton = () => screen.getByRole('button', { name: 'Create' });
@@ -63,17 +62,23 @@ describe('CreateDbPage', () => {
         tables: [],
       });
     });
-    expect(await screen.findByText('Database schema created.')).toBeInTheDocument();
+    expect(
+      await screen.findByText('Database schema created.'),
+    ).toBeInTheDocument();
   });
 
   it('creates the database schema from the JSON editor', async () => {
     const { githubDb } = renderPage();
 
     fireEvent.click(screen.getByRole('tab', { name: 'JSON' }));
-    const textareas = (await screen.findAllByRole('textbox')) as HTMLTextAreaElement[];
+    const textareas = (await screen.findAllByRole(
+      'textbox',
+    )) as HTMLTextAreaElement[];
     const jsonTextarea = textareas.find((t) => t.value.startsWith('{'));
     fireEvent.change(jsonTextarea as HTMLElement, {
-      target: { value: '{"name": "json-db", "description": "from json", "tables": []}' },
+      target: {
+        value: '{"name": "json-db", "description": "from json", "tables": []}',
+      },
     });
     fireEvent.click(createButton());
 
@@ -95,7 +100,7 @@ describe('CreateDbPage', () => {
     fireEvent.click(createButton());
 
     expect(
-      await screen.findByText('Failed to create database schema on server!')
+      await screen.findByText('Failed to create database schema on server!'),
     ).toBeInTheDocument();
   });
 
@@ -112,7 +117,7 @@ describe('CreateDbPage', () => {
         'tok',
         'db-man',
         'db',
-        expect.anything()
+        expect.anything(),
       );
     });
   });

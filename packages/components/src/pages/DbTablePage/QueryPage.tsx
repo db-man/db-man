@@ -42,12 +42,12 @@ export default function QueryPage() {
   }, [content, code]);
 
   return (
-    <div className='dbm-query-page'>
+    <div className="dbm-query-page">
       <Row>
         <Col span={16}>
           Code:
           <ReactSimpleCodeEditor
-            height='50em'
+            height="50em"
             value={code}
             onChange={setCode}
           />

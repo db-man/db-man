@@ -1,5 +1,11 @@
 import React from 'react';
-import { render, screen, waitFor, within, fireEvent } from '@testing-library/react';
+import {
+  render,
+  screen,
+  waitFor,
+  within,
+  fireEvent,
+} from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { GithubDb } from '@db-man/github';
 
@@ -68,7 +74,7 @@ function renderPage({
       <PageContext.Provider value={pageCtx as any}>
         <SchemaPage />
       </PageContext.Provider>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
   return { githubDb };
 }
@@ -107,7 +113,7 @@ describe('SchemaPage', () => {
   it('renders a plain text id for non STRING_ARRAY columns', () => {
     renderPage();
     expect(
-      within(bodyRows()[0]).queryByRole('link', { name: 'userId' })
+      within(bodyRows()[0]).queryByRole('link', { name: 'userId' }),
     ).not.toBeInTheDocument();
     expect(bodyRows()[0].textContent).toContain('userId');
   });
@@ -141,7 +147,7 @@ describe('SchemaPage', () => {
   it('shows the validation message when the table has no columns', () => {
     renderPage({ dbTableColumns: [] });
     expect(
-      screen.getByText(/No columns defined in the table./)
+      screen.getByText(/No columns defined in the table./),
     ).toBeInTheDocument();
   });
 
@@ -152,7 +158,7 @@ describe('SchemaPage', () => {
       ],
     });
     expect(
-      screen.getByText(/Column userId: Invalid key: mysteryKey;/)
+      screen.getByText(/Column userId: Invalid key: mysteryKey;/),
     ).toBeInTheDocument();
   });
 
@@ -162,11 +168,11 @@ describe('SchemaPage', () => {
     const footer = document.querySelector('.ant-table-footer') as HTMLElement;
     expect(within(footer).getByText('dbcfg.json').closest('a')).toHaveAttribute(
       'href',
-      'https://github.com/db-man/db/blob/main/dbs/iam/dbcfg.json'
+      'https://github.com/db-man/db/blob/main/dbs/iam/dbcfg.json',
     );
     expect(within(footer).getByText('users').closest('a')).toHaveAttribute(
       'href',
-      '/_management/iam/users'
+      '/_management/iam/users',
     );
   });
 
@@ -175,7 +181,7 @@ describe('SchemaPage', () => {
     fireEvent.click(screen.getByRole('tab', { name: 'JSON' }));
     // `react-simple-code-editor` renders a contenteditable div, not a textarea
     const editor = document.querySelector(
-      '.npm__react-simple-code-editor__textarea'
+      '.npm__react-simple-code-editor__textarea',
     );
     expect(editor?.textContent).toBe(JSON.stringify(columns, null, '  '));
   });
@@ -186,7 +192,7 @@ describe('SchemaPage', () => {
       expect(githubDb.getTableRows).toHaveBeenCalledWith('iam', 'users');
     });
     expect(
-      document.querySelector('.dbm-distinct-column-component')
+      document.querySelector('.dbm-distinct-column-component'),
     ).toBeInTheDocument();
     expect(screen.queryByText('Table Schema:')).not.toBeInTheDocument();
   });

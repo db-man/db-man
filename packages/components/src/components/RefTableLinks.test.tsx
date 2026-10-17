@@ -43,7 +43,7 @@ function renderRefTableLinks(value: string | string[] | null, col = column) {
           <RefTableLinks value={value} column={col} />
         </PageContext.Provider>
       </AppContext.Provider>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 }
 
@@ -52,7 +52,7 @@ describe('RefTableLinks', () => {
     renderRefTableLinks('chen');
     expect(screen.getByText('chen').closest('a')).toHaveAttribute(
       'href',
-      '/iam/users/get?name=chen'
+      '/iam/users/get?name=chen',
     );
   });
 
@@ -60,11 +60,11 @@ describe('RefTableLinks', () => {
     renderRefTableLinks(['a', 'b']);
     expect(screen.getByText('a').closest('a')).toHaveAttribute(
       'href',
-      '/iam/users/get?name=a'
+      '/iam/users/get?name=a',
     );
     expect(screen.getByText('b').closest('a')).toHaveAttribute(
       'href',
-      '/iam/users/get?name=b'
+      '/iam/users/get?name=b',
     );
   });
 
@@ -83,7 +83,7 @@ describe('RefTableLinks', () => {
     const badColumn = { ...column, referenceTable: 'nopk' } as any;
     renderRefTableLinks('chen', badColumn);
     expect(
-      screen.getByText('Ref table primary column not found')
+      screen.getByText('Ref table primary column not found'),
     ).toBeInTheDocument();
   });
 });
