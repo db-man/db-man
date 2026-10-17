@@ -35,7 +35,7 @@ function renderWithProviders(ui: React.ReactNode) {
       <AppContext.Provider value={appCtx}>
         <PageContext.Provider value={pageCtx}>{ui}</PageContext.Provider>
       </AppContext.Provider>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 }
 
@@ -43,18 +43,18 @@ describe('FieldWrapperForDetailPage', () => {
   it('renders the column label and children', () => {
     const column = { id: 'name', name: 'Name', type: 'STRING' } as DbColumn;
     const { container } = renderWithProviders(
-      <FieldWrapperForDetailPage column={column} value='chenyang'>
+      <FieldWrapperForDetailPage column={column} value="chenyang">
         <div>child-body</div>
-      </FieldWrapperForDetailPage>
+      </FieldWrapperForDetailPage>,
     );
     expect(container.querySelector('.dbm-field-label')).toHaveTextContent(
-      'Name'
+      'Name',
     );
     expect(container.querySelector('.dbm-field-label')).toHaveTextContent(
-      'name'
+      'name',
     );
     expect(container.querySelector('.dbm-field-label')).not.toHaveTextContent(
-      'count:'
+      'count:',
     );
     expect(screen.getByText('child-body')).toBeInTheDocument();
   });
@@ -66,13 +66,17 @@ describe('FieldWrapperForDetailPage', () => {
       type: constants.STRING_ARRAY,
     } as DbColumn;
     const { container } = renderWithProviders(
-      <FieldWrapperForDetailPage column={column} value={['a', 'b']} children={null} />
+      <FieldWrapperForDetailPage
+        column={column}
+        value={['a', 'b']}
+        children={null}
+      />,
     );
     expect(container.querySelector('.dbm-field-label')).toHaveTextContent(
-      '(count:2)'
+      '(count:2)',
     );
     expect(
-      container.querySelector('.dbm-string-array-form-field')
+      container.querySelector('.dbm-string-array-form-field'),
     ).toBeInTheDocument();
   });
 
@@ -83,10 +87,10 @@ describe('FieldWrapperForDetailPage', () => {
       type: constants.STRING_ARRAY,
     } as DbColumn;
     const { container } = renderWithProviders(
-      <FieldWrapperForDetailPage column={column} value={[]} children={null} />
+      <FieldWrapperForDetailPage column={column} value={[]} children={null} />,
     );
     expect(container.querySelector('.dbm-field-label')).toHaveTextContent(
-      '(count:0)'
+      '(count:0)',
     );
   });
 
@@ -98,7 +102,11 @@ describe('FieldWrapperForDetailPage', () => {
       referenceTable: 'users',
     } as DbColumn;
     renderWithProviders(
-      <FieldWrapperForDetailPage column={column} value='chenyang' children={null} />
+      <FieldWrapperForDetailPage
+        column={column}
+        value="chenyang"
+        children={null}
+      />,
     );
     const create = screen.getByRole('link', { name: 'Create' });
     expect(create).toHaveAttribute('href', '/iam/users/create?name=chenyang');
@@ -112,8 +120,14 @@ describe('FieldWrapperForDetailPage', () => {
       referenceTable: 'users',
     } as DbColumn;
     renderWithProviders(
-      <FieldWrapperForDetailPage column={column} value={['a', 'b']} children={null} />
+      <FieldWrapperForDetailPage
+        column={column}
+        value={['a', 'b']}
+        children={null}
+      />,
     );
-    expect(screen.queryByRole('link', { name: 'Create' })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('link', { name: 'Create' }),
+    ).not.toBeInTheDocument();
   });
 });
