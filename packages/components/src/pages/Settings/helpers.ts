@@ -26,7 +26,7 @@ const loadDbsSchemaAsync = async (github: any, repoPath: string) => {
       .map((dbName: string) => {
         return github
           .getFileContentAndSha(
-            `${repoPath}/${dbName}/${constants.DB_CFG_FILENAME}`
+            `${repoPath}/${dbName}/${constants.DB_CFG_FILENAME}`,
           )
           .then((res: any) => {
             const databaseSchema: types.DatabaseSchema = res.content;
@@ -43,12 +43,12 @@ const loadDbsSchemaAsync = async (github: any, repoPath: string) => {
               err.cause.status === 404
             ) {
               throw new Error(
-                `Database config file ${constants.DB_CFG_FILENAME} not found for database "${dbName}"`
+                `Database config file ${constants.DB_CFG_FILENAME} not found for database "${dbName}"`,
               );
             }
             throw err;
           });
-      })
+      }),
   );
 
   return dbsSchema;
@@ -71,23 +71,23 @@ const validateDbsSchame = (dbsSchema: types.DatabaseMap) => {
       }
       if (!table.columns) {
         errors.push(
-          `Missing table columns, tableName: ${table.name}, dbName:${dbName}`
+          `Missing table columns, tableName: ${table.name}, dbName:${dbName}`,
         );
       }
       table.columns.forEach((column, colIndex) => {
         if (!column.id) {
           errors.push(
-            `Missing column id, tableName: ${table.name}, dbName:${dbName}, colIndex:${colIndex}`
+            `Missing column id, tableName: ${table.name}, dbName:${dbName}, colIndex:${colIndex}`,
           );
         }
         if (!column.name) {
           errors.push(
-            `Missing column name, tableName: ${table.name}, dbName:${dbName}, colIndex:${colIndex}`
+            `Missing column name, tableName: ${table.name}, dbName:${dbName}, colIndex:${colIndex}`,
           );
         }
         if (!column.type) {
           errors.push(
-            `Missing column type, tableName: ${table.name}, dbName:${dbName}, colIndex:${colIndex}`
+            `Missing column type, tableName: ${table.name}, dbName:${dbName}, colIndex:${colIndex}`,
           );
         }
       });
@@ -104,7 +104,7 @@ const validateDbsSchame = (dbsSchema: types.DatabaseMap) => {
 export const saveConnectionToLocalStorage = (
   token: string,
   owner: string,
-  repo: string
+  repo: string,
 ) => {
   // Set db connection info
   localStorage.setItem(constants.LS_KEY_GITHUB_OWNER, owner);
@@ -116,7 +116,7 @@ export const reloadDbsSchemaAsync = async (
   token: string,
   owner: string,
   repoName: string,
-  messageApi: MessageInstance
+  messageApi: MessageInstance,
 ) => {
   messageApi.info('Start loading DBs schema...');
 
@@ -136,7 +136,7 @@ export const reloadDbsSchemaAsync = async (
     errMsg(
       `Failed to get dbs.json! Reason: ${
         err instanceof Error ? err.message : 'Unknown error'
-      }.`
+      }.`,
     );
     return;
   }
@@ -163,7 +163,7 @@ export const reloadDbsSchemaAsync = async (
       `Failed to get DB schema! ${
         err instanceof Error ? err.message : 'Unknown error'
       }.`,
-      err as Error
+      err as Error,
     );
     return;
   }
