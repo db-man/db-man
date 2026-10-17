@@ -27,14 +27,14 @@ describe('DistinctColumn', () => {
     render(
       <MemoryRouter>
         <PageContext.Provider value={makePageCtx(githubDb)}>
-          <DistinctColumn columnKey='tags' />
+          <DistinctColumn columnKey="tags" />
         </PageContext.Provider>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     await waitFor(() => {
       expect(screen.getByText('a').closest('a')).toHaveAttribute(
         'href',
-        expect.stringContaining('/iam/records/list?filter=')
+        expect.stringContaining('/iam/records/list?filter='),
       );
     });
     expect(screen.getByText('a')).toBeInTheDocument();
@@ -53,15 +53,17 @@ describe('DistinctColumn', () => {
     const { container } = render(
       <MemoryRouter>
         <PageContext.Provider value={makePageCtx(githubDb)}>
-          <DistinctColumn columnKey='tags' />
+          <DistinctColumn columnKey="tags" />
         </PageContext.Provider>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     await waitFor(() => {
       expect(githubDb.getTableRows).toHaveBeenCalled();
     });
     expect(screen.queryByRole('link')).not.toBeInTheDocument();
-    expect(container.querySelector('.dbm-distinct-column-component')).toBeInTheDocument();
+    expect(
+      container.querySelector('.dbm-distinct-column-component'),
+    ).toBeInTheDocument();
     consoleSpy.mockRestore();
   });
 });
