@@ -27,7 +27,7 @@ const makeMessageApi = () =>
     error: jest.fn(),
     warning: jest.fn(),
     success: jest.fn(),
-  } as unknown as MessageInstance);
+  }) as unknown as MessageInstance;
 
 /** Wire `new Github(...)` to a fake client and return it. */
 const makeGithub = () => {
@@ -59,11 +59,11 @@ describe('saveConnectionToLocalStorage', () => {
     saveConnectionToLocalStorage('tok', 'owner1', 'repo1');
 
     expect(
-      localStorage.getItem(constants.LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN)
+      localStorage.getItem(constants.LS_KEY_GITHUB_PERSONAL_ACCESS_TOKEN),
     ).toBe('tok');
     expect(localStorage.getItem(constants.LS_KEY_GITHUB_OWNER)).toBe('owner1');
     expect(localStorage.getItem(constants.LS_KEY_GITHUB_REPO_NAME)).toBe(
-      'repo1'
+      'repo1',
     );
   });
 });
@@ -100,7 +100,7 @@ describe('reloadDbsSchemaAsync', () => {
     await reloadDbsSchemaAsync('tok', 'owner', 'repo', messageApi);
 
     expect(errMsgMock).toHaveBeenCalledWith(
-      expect.stringContaining('Failed to get dbs.json! Reason: boom')
+      expect.stringContaining('Failed to get dbs.json! Reason: boom'),
     );
     expect(github.getContentByPath).not.toHaveBeenCalled();
     expect(localStorage.getItem(constants.LS_KEY_GITHUB_REPO_PATH)).toBeNull();
@@ -112,9 +112,7 @@ describe('reloadDbsSchemaAsync', () => {
 
     await reloadDbsSchemaAsync('tok', 'owner', 'repo', makeMessageApi());
 
-    expect(errMsgMock).toHaveBeenCalledWith(
-      'Repo path not found in dbs.json!'
-    );
+    expect(errMsgMock).toHaveBeenCalledWith('Repo path not found in dbs.json!');
     expect(github.getContentByPath).not.toHaveBeenCalled();
     expect(localStorage.getItem(constants.LS_KEY_GITHUB_REPO_MODES)).toBeNull();
   });
@@ -125,9 +123,7 @@ describe('reloadDbsSchemaAsync', () => {
 
     await reloadDbsSchemaAsync('tok', 'owner', 'repo', makeMessageApi());
 
-    expect(errMsgMock).toHaveBeenCalledWith(
-      'DB modes not found in dbs.json!'
-    );
+    expect(errMsgMock).toHaveBeenCalledWith('DB modes not found in dbs.json!');
     expect(github.getContentByPath).not.toHaveBeenCalled();
     expect(localStorage.getItem(constants.LS_KEY_DBS_SCHEMA)).toBeNull();
   });
@@ -141,17 +137,17 @@ describe('reloadDbsSchemaAsync', () => {
 
     expect(github.getContentByPath).toHaveBeenCalledWith('dbs');
     expect(github.getFileContentAndSha).toHaveBeenCalledWith(
-      'dbs/iam/dbcfg.json'
+      'dbs/iam/dbcfg.json',
     );
     expect(localStorage.getItem(constants.LS_KEY_GITHUB_REPO_PATH)).toBe('dbs');
     expect(localStorage.getItem(constants.LS_KEY_GITHUB_REPO_MODES)).toBe(
-      'split-table'
+      'split-table',
     );
     expect(
-      JSON.parse(localStorage.getItem(constants.LS_KEY_DBS_SCHEMA) as string)
+      JSON.parse(localStorage.getItem(constants.LS_KEY_DBS_SCHEMA) as string),
     ).toEqual({ iam: dbSchema });
     expect(messageApi.info).toHaveBeenCalledWith(
-      'Finish loading DBs schema! Will reload window in 3s!'
+      'Finish loading DBs schema! Will reload window in 3s!',
     );
     expect(messageApi.error).not.toHaveBeenCalled();
   });
@@ -160,16 +156,16 @@ describe('reloadDbsSchemaAsync', () => {
     const github = makeGithub();
     resolveSchema(github, dbSchema);
     github.getFileContentAndSha.mockRejectedValue(
-      Object.assign(new Error('Not Found'), { cause: { status: 404 } })
+      Object.assign(new Error('Not Found'), { cause: { status: 404 } }),
     );
 
     await reloadDbsSchemaAsync('tok', 'owner', 'repo', makeMessageApi());
 
     expect(errMsgMock).toHaveBeenCalledWith(
       expect.stringContaining(
-        'Database config file dbcfg.json not found for database "iam"'
+        'Database config file dbcfg.json not found for database "iam"',
       ),
-      expect.anything()
+      expect.anything(),
     );
     expect(localStorage.getItem(constants.LS_KEY_DBS_SCHEMA)).toBeNull();
   });
@@ -183,7 +179,7 @@ describe('reloadDbsSchemaAsync', () => {
 
     expect(errMsgMock).toHaveBeenCalledWith(
       expect.stringContaining('Failed to get DB schema! rate limited'),
-      expect.anything()
+      expect.anything(),
     );
   });
 
@@ -233,7 +229,7 @@ describe('reloadDbsSchemaAsync', () => {
         await reloadDbsSchemaAsync('tok', 'owner', 'repo', messageApi);
 
         expect(messageApi.error).toHaveBeenCalledWith(
-          'DB schema is invalid! Will not save to localStorage!'
+          'DB schema is invalid! Will not save to localStorage!',
         );
         expect(localStorage.getItem(constants.LS_KEY_DBS_SCHEMA)).toBeNull();
       });
@@ -250,7 +246,7 @@ describe('reloadDbsSchemaAsync', () => {
       });
 
       await expect(
-        reloadDbsSchemaAsync('tok', 'owner', 'repo', makeMessageApi())
+        reloadDbsSchemaAsync('tok', 'owner', 'repo', makeMessageApi()),
       ).rejects.toThrow(TypeError);
     });
   });
