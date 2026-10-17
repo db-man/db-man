@@ -4,8 +4,9 @@
 - 范围：`packages/github`（`@db-man/github`），连带少量 `packages/components` 调用点
 - 状态：**Stage 1.1、1.2 已完成并合并**（1.1 = PR #1 / 合并提交 `006919f`；1.2 = PR #2 /  
   合并提交 `a1f71bb`，CI 绿）。**Stage 2.1 的行级 API 已在 V2 侧实现**（2026-10-11，形态见 §2.1.1；
-  portal 迁移到 V2 仍未做，所以那 5 处 `isSplitTable()` 还在）。Stage 1.3 / 1.4、Stage 2 的其余子项
-  与 Stage 3 **未开工**
+  portal 迁移到 V2 仍未做，所以那 5 处 `isSplitTable()` 还在）。**Stage 1.4 的 V2 侧已完成**（2026-10-17：
+  `GithubV2` 的 `createFile` / `saveFile` / `deleteFile` 改成 `message` 必填、删掉三个默认值；V1 侧未动，
+  故该节推荐的“选项 1”今后只适用于 V1）。Stage 1.3、Stage 2 的其余子项与 Stage 3 **未开工**
 - 行号基准：2026-10-09 23:00 的工作区状态（`packages/github` 的 `tsconfig.include` 是  
   `./src/**/*.ts`，测试文件与源码同目录，改动会让行号漂移——引用行号前先 `grep -nE` 复核）
 - 前置：`docs/plans/2026-10-09-primary-key-val-type.md`（主键类型收口 `PrimaryKeyVal`）  
