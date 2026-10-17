@@ -4,7 +4,6 @@ import { Base64 } from 'js-base64';
 import octokit from './octokit';
 import {
   DbsCfgContentAndShaType,
-  DeleteFileType,
   FileContentAndSha,
   FileOrDir,
   RawFileContentAndSha,
@@ -50,6 +49,19 @@ type SaveFileParams = {
    * Required. The version you read with `getFileContentAndSha()` — GitHub
    * refuses the write if the file has changed since that read.
    */
+  sha: string;
+  message: string;
+};
+
+/**
+ * Deliberately its own shape rather than `DeleteFileType` from `types.ts`.
+ * That one is shared with v1's `Github.deleteFile` (published since 0.1.79) and
+ * may be loosened to make `message` optional; declaring the shape here keeps
+ * this class's requirement — a message is always given — independent of what
+ * v1 decides. The duplicate is the point: merging the two back re-couples them.
+ */
+type DeleteFileParams = {
+  path: string;
   sha: string;
   message: string;
 };
@@ -512,7 +524,7 @@ export default class GithubV2 {
    * response.commit.html_url https://github.com/username/reponame/commit/a7f...04d
    * response.content
    */
-  async deleteFile({ path, sha, message }: DeleteFileType) {
+  async deleteFile({ path, sha, message }: DeleteFileParams) {
     try {
       // https://octokit.github.io/rest.js/v18#repos-delete-file
       const { data } = await octokit(
