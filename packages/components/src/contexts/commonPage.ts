@@ -2,7 +2,7 @@ import React from 'react';
 
 import { GithubDbV2 } from '@db-man/github';
 
-// TODO: Already used GithubDb from @db-man/github as the ts type, so better to remove this type (need to search all places where using `GithubDbType` also need to remove)
+// TODO: Already used GithubDbV2 from @db-man/github as the ts type, so better to remove this type (need to search all places where using `GithubDbType` also need to remove)
 // // TODO: move this to @db-man/github
 // export interface GithubDbType {
 //   getTableRows: (
@@ -26,7 +26,7 @@ import { GithubDbV2 } from '@db-man/github';
 //     };
 //   }>;
 //   // updateTableFile: any;
-//   updateRecordFile: (
+//   updateRow: (
 //     dbName: string,
 //     tableName: string,
 //     recordId: string,
@@ -47,8 +47,8 @@ import { GithubDbV2 } from '@db-man/github';
 //       html_url?: string;
 //     };
 //   }>;
-//   getDataUrl: (dbName: string, tableName: string) => string;
-//   getRecordFileContentAndSha: (
+//   getTableDataUrl: (dbName: string, tableName: string) => string;
+//   getRow: (
 //     dbName: string,
 //     tableName: string,
 //     recordId: string,
@@ -56,8 +56,8 @@ import { GithubDbV2 } from '@db-man/github';
 //   ) => Promise<{ content: RowType; sha: string }>;
 //   getGitHubRepoPath: () => string;
 //   getGitHubFullPath: (path: string) => string;
-//   getDataPath: (dbName: string, tableName: string) => string;
-//   deleteRecordFile: (
+//   getTableDataUrl: (dbName: string, tableName: string) => string;
+//   deleteRow: (
 //     dbName: string,
 //     tableName: string,
 //     recordId: string,

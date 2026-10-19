@@ -26,13 +26,13 @@ function makeGithubDbV2(overrides: Record<string, unknown> = {}) {
       content: [{ userId: 'u1', name: 'Alice' }],
       sha: 'table-sha',
     }),
-    getRecordFileContentAndSha: jest.fn().mockResolvedValue({
+    getRow: jest.fn().mockResolvedValue({
       content: { userId: 'u1', name: 'Alice' },
       sha: 'record-sha',
     }),
     updateTableFile: jest.fn().mockResolvedValue({ commit }),
-    updateRecordFile: jest.fn().mockResolvedValue({ commit }),
-    deleteRecordFile: jest.fn().mockResolvedValue({ commit }),
+    updateRow: jest.fn().mockResolvedValue({ commit }),
+    deleteRow: jest.fn().mockResolvedValue({ commit }),
     ...overrides,
   };
 }
@@ -90,7 +90,7 @@ describe('UpdatePage', () => {
     await waitFor(() => {
       expect(githubDbV2.getTableRows).toHaveBeenCalledWith('iam', 'users');
     });
-    expect(githubDbV2.getRecordFileContentAndSha).not.toHaveBeenCalled();
+    expect(githubDbV2.getRow).not.toHaveBeenCalled();
     await waitFor(() => {
       expect(fieldInput(0)).toHaveValue('u1');
     });
@@ -101,11 +101,7 @@ describe('UpdatePage', () => {
     const { githubDbV2 } = renderPage({ appModes: ['split-table'] });
 
     await waitFor(() => {
-      expect(githubDbV2.getRecordFileContentAndSha).toHaveBeenCalledWith(
-        'iam',
-        'users',
-        'u1',
-      );
+      expect(githubDbV2.getRow).toHaveBeenCalledWith('iam', 'users', 'u1');
     });
     expect(githubDbV2.getTableRows).not.toHaveBeenCalled();
     await waitFor(() => {
@@ -134,7 +130,7 @@ describe('UpdatePage', () => {
     expect(newRows).toHaveLength(1);
     expect(newRows[0]).toMatchObject({ userId: 'u1', name: 'Alice2' });
     expect(newRows[0].updatedAt).toEqual(expect.any(String));
-    expect(githubDbV2.updateRecordFile).not.toHaveBeenCalled();
+    expect(githubDbV2.updateRow).not.toHaveBeenCalled();
 
     expect(await screen.findByText('Record saved.')).toBeInTheDocument();
   });
@@ -142,7 +138,7 @@ describe('UpdatePage', () => {
   it('writes a single record file in split-table mode', async () => {
     const { githubDbV2 } = renderPage({ appModes: ['split-table'] });
     await waitFor(() => {
-      expect(githubDbV2.getRecordFileContentAndSha).toHaveBeenCalled();
+      expect(githubDbV2.getRow).toHaveBeenCalled();
     });
     await waitFor(() => {
       expect(fieldInput(1)).toHaveValue('Alice');
@@ -152,10 +148,10 @@ describe('UpdatePage', () => {
     fireEvent.click(saveButton());
 
     await waitFor(() => {
-      expect(githubDbV2.updateRecordFile).toHaveBeenCalled();
+      expect(githubDbV2.updateRow).toHaveBeenCalled();
     });
     const [dbName, tableName, primaryKey, record, recordFileSha] =
-      githubDbV2.updateRecordFile.mock.calls[0];
+      githubDbV2.updateRow.mock.calls[0];
     expect([dbName, tableName, primaryKey, recordFileSha]).toEqual([
       'iam',
       'users',
@@ -170,7 +166,7 @@ describe('UpdatePage', () => {
   it('deletes the record file after confirming, in split-table mode', async () => {
     const { githubDbV2 } = renderPage({ appModes: ['split-table'] });
     await waitFor(() => {
-      expect(githubDbV2.getRecordFileContentAndSha).toHaveBeenCalled();
+      expect(githubDbV2.getRow).toHaveBeenCalled();
     });
     await waitFor(() => {
       expect(saveButton()).toBeInTheDocument();
@@ -180,7 +176,7 @@ describe('UpdatePage', () => {
     fireEvent.click(await screen.findByText('Yes'));
 
     await waitFor(() => {
-      expect(githubDbV2.deleteRecordFile).toHaveBeenCalledWith(
+      expect(githubDbV2.deleteRow).toHaveBeenCalledWith(
         'iam',
         'users',
         'u1',
@@ -205,7 +201,7 @@ describe('UpdatePage', () => {
     expect(
       await screen.findByText('Only supported in split-table mode!'),
     ).toBeInTheDocument();
-    expect(githubDbV2.deleteRecordFile).not.toHaveBeenCalled();
+    expect(githubDbV2.deleteRow).not.toHaveBeenCalled();
   });
 
   it('renders no form when the URL id is not in the table file', async () => {
@@ -280,9 +276,7 @@ describe('UpdatePage', () => {
 
   it('shows the error when the record file cannot be loaded', async () => {
     const githubDbV2 = makeGithubDbV2({
-      getRecordFileContentAndSha: jest
-        .fn()
-        .mockRejectedValue(new Error('gone')),
+      getRow: jest.fn().mockRejectedValue(new Error('gone')),
     });
     renderPage({ appModes: ['split-table'], githubDbV2 });
 
@@ -294,7 +288,7 @@ describe('UpdatePage', () => {
 
   it('shows the error when saving the record file fails', async () => {
     const githubDbV2 = makeGithubDbV2({
-      updateRecordFile: jest.fn().mockRejectedValue(new Error('conflict')),
+      updateRow: jest.fn().mockRejectedValue(new Error('conflict')),
     });
     renderPage({ appModes: ['split-table'], githubDbV2 });
     await waitFor(() => {

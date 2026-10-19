@@ -6,7 +6,7 @@ import { LS_KEY_DBS_SCHEMA } from '../../constants';
 import DbTablePage from './DbTablePage';
 
 /**
- * `DbTablePage` builds its own `GithubDb` (`useRef(new GithubDb({...}))`), so
+ * `DbTablePage` builds its own `GithubDbV2` (`useRef(new GithubDbV2({...}))`), so
  * the module has to be mocked — it cannot be injected through a context.
  *
  * The replacement MUST be a plain class, not `jest.fn()`: CRA sets
@@ -15,7 +15,7 @@ import DbTablePage from './DbTablePage';
  * time. The `mock*` name prefix is required by jest for variables referenced
  * inside a `jest.mock` factory.
  */
-const mockGetDbTablesSchemaAsync = jest.fn();
+const mockGetDbTablesSchema = jest.fn();
 const mockGetTableRows = jest.fn();
 
 jest.mock('@db-man/github', () => {
@@ -25,14 +25,14 @@ jest.mock('@db-man/github', () => {
   >;
   return {
     ...actual,
-    GithubDb: class GithubDbMock {
-      getDbTablesSchemaAsync = mockGetDbTablesSchemaAsync;
+    GithubDbV2: class GithubDbV2Mock {
+      getDbTablesSchema = mockGetDbTablesSchema;
       getTableRows = mockGetTableRows;
       // NavBar renders GitHub links while the page shell renders. These are not
       // asserted on, but they must exist or the shell throws.
-      getDataUrl = () =>
+      getTableDataUrl = () =>
         'https://github.com/db-man/db.test/blob/main/dbs/iam/users.data.json';
-      getDataPath = () => 'dbs/iam/users.data.json';
+      getTableDataPath = () => 'dbs/iam/users.data.json';
     },
   };
 });
@@ -67,13 +67,13 @@ const renderPage = (props: {
   render(
     <BrowserRouter>
       <DbTablePage {...props} />
-    </BrowserRouter>
+    </BrowserRouter>,
   );
 
 describe('DbTablePage', () => {
   beforeEach(() => {
-    mockGetDbTablesSchemaAsync.mockReset();
-    mockGetDbTablesSchemaAsync.mockResolvedValue(undefined);
+    mockGetDbTablesSchema.mockReset();
+    mockGetDbTablesSchema.mockResolvedValue(undefined);
     mockGetTableRows.mockReset();
     mockGetTableRows.mockResolvedValue({ content: [] });
 
@@ -84,7 +84,7 @@ describe('DbTablePage', () => {
     renderPage({ dbName: 'iam', tableName: 'empty', action: 'list' });
 
     expect(
-      screen.getByText(/No columns found for this table/i)
+      screen.getByText(/No columns found for this table/i),
     ).toBeInTheDocument();
   });
 
@@ -92,7 +92,7 @@ describe('DbTablePage', () => {
     renderPage({ dbName: 'iam', tableName: 'nope', action: 'list' });
 
     expect(
-      screen.getByText(/No columns found for this table/i)
+      screen.getByText(/No columns found for this table/i),
     ).toBeInTheDocument();
   });
 
@@ -100,7 +100,7 @@ describe('DbTablePage', () => {
     renderPage({ dbName: 'iam', tableName: 'users', action: 'no-such-action' });
 
     expect(
-      screen.getByText(/404 - PageComponent Not Found/i)
+      screen.getByText(/404 - PageComponent Not Found/i),
     ).toBeInTheDocument();
     expect(screen.getByText('/iam/users/no-such-action')).toBeInTheDocument();
   });
@@ -114,13 +114,13 @@ describe('DbTablePage', () => {
       expect(mockGetTableRows).toHaveBeenCalledWith(
         'iam',
         'users',
-        expect.anything()
-      )
+        expect.anything(),
+      ),
     );
   });
 
   it('warns when the offline and online db schemas differ', async () => {
-    mockGetDbTablesSchemaAsync.mockResolvedValue({
+    mockGetDbTablesSchema.mockResolvedValue({
       name: 'iam',
       description: 'Changed on GitHub',
       tables: [],
@@ -132,8 +132,8 @@ describe('DbTablePage', () => {
       await screen.findByText(
         /Offline and online schema are different/i,
         {},
-        { timeout: 3000 }
-      )
+        { timeout: 3000 },
+      ),
     ).toBeInTheDocument();
   });
 });

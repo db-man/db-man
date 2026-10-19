@@ -172,7 +172,7 @@ const UpdatePage = () => {
         ),
       });
     } catch (err) {
-      console.error('updateRecordFile, err:', err);
+      console.error('updateRow, err:', err);
       setFeedback({
         type: 'error',
         message: buildErrorMessage(
@@ -214,7 +214,7 @@ const UpdatePage = () => {
         ),
       });
     } catch (err) {
-      console.error('deleteRecordFile, err:', err);
+      console.error('deleteRow, err:', err);
       setFeedback({
         type: 'error',
         message: buildErrorMessage(
@@ -273,7 +273,7 @@ const UpdatePage = () => {
         });
       }
     } catch (err) {
-      console.error('getRecordFileContentAndSha, error:', err);
+      console.error('getRow, error:', err);
       setFeedback({
         type: 'error',
         message: buildErrorMessage('Failed to get file from server!', err),

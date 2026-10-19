@@ -23,15 +23,15 @@ const columns = [
 const commit = { html_url: 'https://github.com/db-man/db.test/commit/1' };
 
 /**
- * `GithubDb` reaches the page through `PageContext`, so a plain stub object is
+ * `GithubDbV2` reaches the page through `PageContext`, so a plain stub object is
  * enough — the module itself does not need mocking here.
  */
 function makeGithubDbV2(overrides: Record<string, unknown> = {}) {
   return {
     getTableRows: jest.fn().mockResolvedValue({ content: [], sha: 'sha-1' }),
     updateTableFile: jest.fn().mockResolvedValue({ commit }),
-    updateRecordFile: jest.fn().mockResolvedValue({ commit }),
-    getDataUrl: () =>
+    updateRow: jest.fn().mockResolvedValue({ commit }),
+    getTableDataUrl: () =>
       'https://github.com/db-man/db.test/blob/main/dbs/iam/users.data.json',
     ...overrides,
   };
@@ -139,10 +139,10 @@ describe('CreatePage', () => {
     fireEvent.click(saveButton());
 
     await waitFor(() => {
-      expect(githubDbV2.updateRecordFile).toHaveBeenCalled();
+      expect(githubDbV2.updateRow).toHaveBeenCalled();
     });
     const [dbName, tableName, primaryKey, record, recordFileSha] =
-      githubDbV2.updateRecordFile.mock.calls[0];
+      githubDbV2.updateRow.mock.calls[0];
     expect([dbName, tableName, primaryKey]).toEqual(['iam', 'users', 'userId']);
     expect(record).toMatchObject({ userId: 'u1' });
     expect(recordFileSha).toBeNull();
